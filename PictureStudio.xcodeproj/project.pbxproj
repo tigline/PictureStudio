@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3D7505CCECDB7A1EE388FACD /* libPods-PictureStudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D552EC3AE84972F5EBFA1999 /* libPods-PictureStudio.a */; };
 		936FAC2B20200B9A00F80BCF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 936FAC2A20200B9A00F80BCF /* AppDelegate.m */; };
 		936FAC2E20200B9A00F80BCF /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 936FAC2D20200B9A00F80BCF /* ViewController.m */; };
 		936FAC3120200B9A00F80BCF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 936FAC2F20200B9A00F80BCF /* Main.storyboard */; };
@@ -14,6 +15,7 @@
 		936FAC3620200B9A00F80BCF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 936FAC3420200B9A00F80BCF /* LaunchScreen.storyboard */; };
 		936FAC3920200B9A00F80BCF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 936FAC3820200B9A00F80BCF /* main.m */; };
 		936FAC4320200B9A00F80BCF /* PictureStudioTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 936FAC4220200B9A00F80BCF /* PictureStudioTests.m */; };
+		CA77FD7BEBFA8FC98070EEF6 /* libPods-PictureStudioTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FBE47B7FBE857DD390CAF1A /* libPods-PictureStudioTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,6 +29,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0FBE47B7FBE857DD390CAF1A /* libPods-PictureStudioTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PictureStudioTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		68AFF48AE0E9AFCEE83E38DA /* Pods-PictureStudioTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PictureStudioTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PictureStudioTests/Pods-PictureStudioTests.debug.xcconfig"; sourceTree = "<group>"; };
 		936FAC2620200B9A00F80BCF /* PictureStudio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PictureStudio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		936FAC2920200B9A00F80BCF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		936FAC2A20200B9A00F80BCF /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -40,6 +44,10 @@
 		936FAC3E20200B9A00F80BCF /* PictureStudioTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PictureStudioTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		936FAC4220200B9A00F80BCF /* PictureStudioTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PictureStudioTests.m; sourceTree = "<group>"; };
 		936FAC4420200B9A00F80BCF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AAE5E6A04762F2F9333FC11A /* Pods-PictureStudio.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PictureStudio.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PictureStudio/Pods-PictureStudio.debug.xcconfig"; sourceTree = "<group>"; };
+		C1CA1C5684A7B142E0E5A154 /* Pods-PictureStudioTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PictureStudioTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PictureStudioTests/Pods-PictureStudioTests.release.xcconfig"; sourceTree = "<group>"; };
+		D552EC3AE84972F5EBFA1999 /* libPods-PictureStudio.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PictureStudio.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2D41101F59DA7FA2FD3FB6F /* Pods-PictureStudio.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PictureStudio.release.xcconfig"; path = "Pods/Target Support Files/Pods-PictureStudio/Pods-PictureStudio.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D7505CCECDB7A1EE388FACD /* libPods-PictureStudio.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,18 +63,32 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA77FD7BEBFA8FC98070EEF6 /* libPods-PictureStudioTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		18D7E9E1DF3382CFCFDAC36B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				AAE5E6A04762F2F9333FC11A /* Pods-PictureStudio.debug.xcconfig */,
+				E2D41101F59DA7FA2FD3FB6F /* Pods-PictureStudio.release.xcconfig */,
+				68AFF48AE0E9AFCEE83E38DA /* Pods-PictureStudioTests.debug.xcconfig */,
+				C1CA1C5684A7B142E0E5A154 /* Pods-PictureStudioTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		936FAC1D20200B9A00F80BCF = {
 			isa = PBXGroup;
 			children = (
 				936FAC2820200B9A00F80BCF /* PictureStudio */,
 				936FAC4120200B9A00F80BCF /* PictureStudioTests */,
 				936FAC2720200B9A00F80BCF /* Products */,
+				18D7E9E1DF3382CFCFDAC36B /* Pods */,
+				F25F94BCEE068E820AFA5EA8 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -103,6 +126,15 @@
 			path = PictureStudioTests;
 			sourceTree = "<group>";
 		};
+		F25F94BCEE068E820AFA5EA8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D552EC3AE84972F5EBFA1999 /* libPods-PictureStudio.a */,
+				0FBE47B7FBE857DD390CAF1A /* libPods-PictureStudioTests.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -110,9 +142,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 936FAC4720200B9A00F80BCF /* Build configuration list for PBXNativeTarget "PictureStudio" */;
 			buildPhases = (
+				84A92729FCDC2EFE893AA2D8 /* [CP] Check Pods Manifest.lock */,
 				936FAC2220200B9A00F80BCF /* Sources */,
 				936FAC2320200B9A00F80BCF /* Frameworks */,
 				936FAC2420200B9A00F80BCF /* Resources */,
+				CAB0006819F78B92EE386521 /* [CP] Embed Pods Frameworks */,
+				E8861C85DF7B486EB3A9A809 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -127,9 +162,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 936FAC4A20200B9A00F80BCF /* Build configuration list for PBXNativeTarget "PictureStudioTests" */;
 			buildPhases = (
+				E511B319B0F6FD90B15C434B /* [CP] Check Pods Manifest.lock */,
 				936FAC3A20200B9A00F80BCF /* Sources */,
 				936FAC3B20200B9A00F80BCF /* Frameworks */,
 				936FAC3C20200B9A00F80BCF /* Resources */,
+				A53D1628FE06AF888B4493C4 /* [CP] Embed Pods Frameworks */,
+				CDAD6096EE993769C19A104D /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -199,6 +237,108 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		84A92729FCDC2EFE893AA2D8 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PictureStudio-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A53D1628FE06AF888B4493C4 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PictureStudioTests/Pods-PictureStudioTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CAB0006819F78B92EE386521 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PictureStudio/Pods-PictureStudio-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CDAD6096EE993769C19A104D /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PictureStudioTests/Pods-PictureStudioTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E511B319B0F6FD90B15C434B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PictureStudioTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E8861C85DF7B486EB3A9A809 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-PictureStudio/Pods-PictureStudio-resources.sh",
+				"${PODS_ROOT}/TZImagePickerController/TZImagePickerController/TZImagePickerController/TZImagePickerController.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TZImagePickerController.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PictureStudio/Pods-PictureStudio-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		936FAC2220200B9A00F80BCF /* Sources */ = {
@@ -355,6 +495,7 @@
 		};
 		936FAC4820200B9A00F80BCF /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AAE5E6A04762F2F9333FC11A /* Pods-PictureStudio.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -369,6 +510,7 @@
 		};
 		936FAC4920200B9A00F80BCF /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E2D41101F59DA7FA2FD3FB6F /* Pods-PictureStudio.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -383,6 +525,7 @@
 		};
 		936FAC4B20200B9A00F80BCF /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 68AFF48AE0E9AFCEE83E38DA /* Pods-PictureStudioTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -398,6 +541,7 @@
 		};
 		936FAC4C20200B9A00F80BCF /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C1CA1C5684A7B142E0E5A154 /* Pods-PictureStudioTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
