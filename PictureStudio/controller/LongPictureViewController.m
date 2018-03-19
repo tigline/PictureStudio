@@ -37,9 +37,16 @@
         UIImageView *imageView = [[UIImageView alloc]initWithFrame:cgpos];
         [imageView setImage:_resultImage];
         [_longPictureView addSubview:imageView];
+        [_longPictureView setUserInteractionEnabled:YES];
+        UITapGestureRecognizer* imgMsgTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchOnImage:)];
+        [_longPictureView addGestureRecognizer:imgMsgTap];
         
     }
     
+}
+
+-(void)touchOnImage:(UITapGestureRecognizer*)sender{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event

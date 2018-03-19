@@ -7,7 +7,7 @@
 //
 
 #import "JointPicture.h"
-
+#include "opencv2/opencv.hpp"
 #include "opencv2/nonfree/nonfree.hpp"
 #include "opencv2/legacy/legacy.hpp"
 #include <vector>
@@ -29,26 +29,37 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
     //    NSString *path01 = [[images objectAtIndex:0] objectForKey:@"PHImageFileURLKey"];
     //    NSString *path02 = [[images objectAtIndex:1] objectForKey:@"PHImageFileURLKey"];
     //    UIImage *image = [UIImage imageWithContentsOfFile:path01];
-    //    Mat image01=imread([path01 UTF8String]);
-    //    Mat image02=imread([path02 UTF8String]);
+    //NSString *path01 = [[NSBundle mainBundle] pathForResource:@"test01" ofType:@"jpg"];
     Mat imageTransform1;
     Mat image01;
     Mat image002;
     Mat resultMat;
+    clock_t start_surf = clock();
     for (int i = 0; i < images.count-1; i++) {
         
         if (resultMat.data == NULL) {
-            NSLog(@"imageTransform1.data == NULL");
+            
             image01 = [self cvMatFromUIImage:[images objectAtIndex:i]];
+//            NSLog(@"imageTransform1.data == NULL");
+//            NSString *imageName = [NSString stringWithFormat:@"IMG_251%d",i];
+//            NSString *path = [[NSBundle mainBundle] pathForResource:imageName ofType:@"jpg"];
+//            image01 = imread([path UTF8String]);
         } else {
             image01 = resultMat;
             
         }
         if (i + 1 < images.count) {
+            
             image002 = [self cvMatFromUIImage:[images objectAtIndex:i+1]];
+//            NSString *imageName = [NSString stringWithFormat:@"IMG_251%d",i+1];
+//            NSString *path = [[NSBundle mainBundle] pathForResource:imageName ofType:@"jpg"];
+//            image002 = imread([path UTF8String]);
         }
         
-        
+//        clock_t init_picture = clock();
+//        double totaltime_initPicture;
+//        totaltime_initPicture = (double)(init_picture - start_surf)/CLOCKS_PER_SEC;
+//        cout<<"图片转换的运行时间："<<totaltime_initPicture<<"秒！"<<endl;
         
         //    image01 = [self cvMatFromUIImage:[images objectAtIndex:0]];
         //    image002 = [self cvMatFromUIImage:[images objectAtIndex:1]];
@@ -59,25 +70,37 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         Mat image1,image2;
         cvtColor(image01,image1,CV_RGB2GRAY);
         cvtColor(image02,image2,CV_RGB2GRAY);
-        
+
+
         
         //提取特征点
-        SiftFeatureDetector siftDetector(800);  // 海塞矩阵阈值
+        SiftFeatureDetector siftDetector(100);  // 海塞矩阵阈值  #最耗时操作一
         vector<KeyPoint> keyPoint1,keyPoint2;
         siftDetector.detect(image1,keyPoint1);
         siftDetector.detect(image2,keyPoint2);
         
-        //特征点描述，为下边的特征点匹配做准备
+        double totaltime_initPicture;
+        clock_t sift_picture = clock();
+        totaltime_initPicture = (double)(sift_picture - start_surf)/CLOCKS_PER_SEC;
+        cout<<"提取特征点："<<totaltime_initPicture<<"秒！"<<endl;
+        
+        //特征点描述，为下边的特征点匹配做准备  #最耗时操作二
         SiftDescriptorExtractor siftDescriptor;
         Mat imageDesc1,imageDesc2;
         siftDescriptor.compute(image1,keyPoint1,imageDesc1);
         siftDescriptor.compute(image2,keyPoint2,imageDesc2);
+        
+        clock_t siftd_picture = clock();
+        totaltime_initPicture = (double)(siftd_picture - start_surf)/CLOCKS_PER_SEC;
+        cout<<"特征点描述，为下边的特征点匹配做准备："<<totaltime_initPicture<<"秒！"<<endl;
         
         //获得匹配特征点，并提取最优配对
         FlannBasedMatcher matcher;
         vector<DMatch> matchePoints;
         matcher.match(imageDesc1,imageDesc2,matchePoints,Mat());
         sort(matchePoints.begin(),matchePoints.end()); //特征点排序
+        
+
         //获取排在前N个的最优匹配特征点
         vector<Point2f> imagePoints1,imagePoints2;
         for(int i=0;i<10;i++)
@@ -85,6 +108,8 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             imagePoints1.push_back(keyPoint1[matchePoints[i].queryIdx].pt);
             imagePoints2.push_back(keyPoint2[matchePoints[i].trainIdx].pt);
         }
+        
+
         
         //获取图像1到图像2的投影映射矩阵，尺寸为3*3
         Mat homo=findHomography(imagePoints1,imagePoints2,CV_RANSAC);
@@ -101,16 +126,20 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         basedImagePoint=keyPoint2[matchePoints[0].trainIdx].pt;
         
         //图像配准
-        
         warpPerspective(image01,imageTransform1,adjustMat*homo,cv::Size(image01.cols,image01.rows+image02.rows));
         //在最强匹配点的位置处衔接，最强匹配点上侧是图1，下侧是图2，这样直接替换图像衔接不好，光线有突变
         Mat ROIMat=image02(cv::Rect(cv::Point(0,basedImagePoint.y),cv::Point(image02.cols,image02.rows)));
-        UIImage *imageTransform01 = [self imageWithCVMat:imageTransform1];
+        //UIImage *imageTransform01 = [self imageWithCVMat:imageTransform1];
         ROIMat.copyTo(Mat(imageTransform1,cv::Rect(0,targetLinkPoint.y,image02.cols,image02.rows-basedImagePoint.y+1)));
-        UIImage *imageTransform02 = [self imageWithCVMat:ROIMat];
+        //UIImage *imageTransform02 = [self imageWithCVMat:ROIMat];
         resultMat = imageTransform1(cv::Rect(cv::Point(0,image01.rows-originalLinkPoint.y+basedImagePoint.y),cv::Point(imageTransform1.cols,imageTransform1.rows)));
     }
     UIImage *imageTransform03 = [self imageWithCVMat:resultMat];
+    
+    clock_t end_surf = clock();
+    double totaltime_surf;
+    totaltime_surf = (double)(end_surf - start_surf)/CLOCKS_PER_SEC;
+    cout<<"常规程序的运行时间："<<totaltime_surf<<"秒！"<<endl;
     //return [self imageWithCVMat:imageTransform1];
     state(imageTransform03);
     
