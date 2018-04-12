@@ -8,6 +8,13 @@
 
 #import "AppDelegate.h"
 
+#import "ViewController.h"
+void uncaughtExceptionHandler(NSException *exception) {
+    NSSLog(@"CRASH: %@", exception);
+    NSSLog(@"Stack Trace: %@", [exception callStackSymbols]);
+    // Internal error reporting
+}
+
 @interface AppDelegate ()
 
 @end
@@ -17,6 +24,14 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:[[ViewController alloc] init]];
+    
+    self.window.rootViewController = nav;
+    
+    [self.window makeKeyAndVisible];
     return YES;
 }
 

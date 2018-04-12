@@ -1,11 +1,11 @@
 PODS:
-  - TZImagePickerController
+  - TZImagePickerController (1.9.3)
 
 DEPENDENCIES:
   - TZImagePickerController
 
 SPEC CHECKSUMS:
-  TZImagePickerController: 3b9413ae5d049b1fdc5b0c720ad283f35b679a50
+  TZImagePickerController: 079ab986018c22793462e531045a75e366b18252
 
 PODFILE CHECKSUM: ed1115e328af8970e20a4119e622f179f20cdeac
 
