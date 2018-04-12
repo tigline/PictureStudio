@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFit" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="49" id="DQN-SW-5UE" customClass="ALiAssetGroupCell">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="DQN-SW-5UE" id="pbz-hG-sye">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="48.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wcw-1E-ne6">
+                        <rect key="frame" x="12" y="12.5" width="24" height="24"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="24" id="Qub-CQ-WP0"/>
+                            <constraint firstAttribute="height" constant="24" id="Zwu-Uq-mZO"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yJ4-BJ-XpN">
+                        <rect key="frame" x="48" y="16.5" width="35.5" height="17"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="album_selected" translatesAutoresizingMaskIntoConstraints="NO" id="70j-IP-sLh">
+                        <rect key="frame" x="348" y="20" width="10.5" height="10.5"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="10.5" id="NRI-iI-1id"/>
+                            <constraint firstAttribute="height" constant="10.5" id="UBo-mC-3Qn"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oYV-aP-8DU">
+                        <rect key="frame" x="93.5" y="18" width="31" height="14.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="wcw-1E-ne6" firstAttribute="centerY" secondItem="pbz-hG-sye" secondAttribute="centerY" id="8Hw-sh-E6z"/>
+                    <constraint firstItem="yJ4-BJ-XpN" firstAttribute="leading" secondItem="wcw-1E-ne6" secondAttribute="trailing" constant="12" id="D4p-sf-DcK"/>
+                    <constraint firstItem="oYV-aP-8DU" firstAttribute="leading" secondItem="yJ4-BJ-XpN" secondAttribute="trailing" constant="10" id="Ink-K0-xSB"/>
+                    <constraint firstItem="70j-IP-sLh" firstAttribute="centerY" secondItem="oYV-aP-8DU" secondAttribute="centerY" id="LH1-Z6-stF"/>
+                    <constraint firstItem="wcw-1E-ne6" firstAttribute="leading" secondItem="pbz-hG-sye" secondAttribute="leading" constant="12" id="XyI-w2-MeU"/>
+                    <constraint firstAttribute="trailing" secondItem="70j-IP-sLh" secondAttribute="trailing" constant="16" id="Yoc-0O-IhH"/>
+                    <constraint firstItem="oYV-aP-8DU" firstAttribute="centerY" secondItem="yJ4-BJ-XpN" secondAttribute="centerY" id="gSA-Gy-Hqe"/>
+                    <constraint firstItem="yJ4-BJ-XpN" firstAttribute="centerY" secondItem="wcw-1E-ne6" secondAttribute="centerY" id="mSw-Yu-Q2S"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="assetsCountLabel" destination="oYV-aP-8DU" id="dY1-hU-3b0"/>
+                <outlet property="assetsNameLabel" destination="yJ4-BJ-XpN" id="Y8T-zM-8fr"/>
+                <outlet property="checkImageView" destination="70j-IP-sLh" id="iwq-T8-ku5"/>
+                <outlet property="thumbnailView" destination="wcw-1E-ne6" id="ZiD-mi-LL5"/>
+            </connections>
+            <point key="canvasLocation" x="-106.5" y="-170.5"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="album_selected" width="12" height="12"/>
+    </resources>
+</document>
