@@ -702,60 +702,13 @@
         // 已经达到最大选择数 [NSString stringWithFormat:@"最多只能选择%ld个",manager.maxNum]
         return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"最多只能选择%ld个"],self.configuration.maxNum];
     }
-    if (self.type == HXPhotoManagerSelectedTypePhotoAndVideo) {
-        if ((model.type == HXPhotoModelMediaTypePhoto || model.type == HXPhotoModelMediaTypePhotoGif) || (model.type == HXPhotoModelMediaTypeCameraPhoto || model.type == HXPhotoModelMediaTypeLivePhoto)) {
-            if (self.configuration.videoMaxNum > 0) {
-                if (!self.configuration.selectTogether) { // 是否支持图片视频同时选择
-                    if (self.selectedVideos.count > 0 ) {
-                        // 已经选择了视频,不能再选图片
-                        return [NSBundle hx_localizedStringForKey:@"图片不能和视频同时选择"];
-                    }
-                }
-            }
-            if (self.selectedPhotos.count == self.configuration.photoMaxNum) {
-                // 已经达到图片最大选择数
-                
-                return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"最多只能选择%ld张图片"],self.configuration.photoMaxNum];
-            }
-        }else if (model.type == HXPhotoModelMediaTypeVideo || model.type == HXPhotoModelMediaTypeCameraVideo) {
-            if (self.configuration.photoMaxNum > 0) {
-                if (!self.configuration.selectTogether) { // 是否支持图片视频同时选择
-                    if (self.selectedPhotos.count > 0 ) {
-                        // 已经选择了图片,不能再选视频
-                        return [NSBundle hx_localizedStringForKey:@"视频不能和图片同时选择"];
-                    }
-                }
-            }
-            if ([self beforeSelectVideoCountIsMaximum]) {
-                // 已经达到视频最大选择数
-                
-                return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"最多只能选择%ld个视频"],self.configuration.videoMaxNum];
-            }
-        }
-    }else if (self.type == HXPhotoManagerSelectedTypePhoto) {
+     if (self.type == HXPhotoManagerSelectedTypePhoto) {
         if ([self beforeSelectPhotoCountIsMaximum]) {
             // 已经达到图片最大选择数
             return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"最多只能选择%ld张图片"],self.configuration.photoMaxNum];
         }
-    }else if (self.type == HXPhotoManagerSelectedTypeVideo) {
-        if ([self beforeSelectVideoCountIsMaximum]) {
-            // 已经达到视频最大选择数
-            return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"最多只能选择%ld个视频"],self.configuration.videoMaxNum];
-        }
     }
-    if (model.type == HXPhotoModelMediaTypeVideo) {
-        if (model.asset.duration < 3) {
-            return [NSBundle hx_localizedStringForKey:@"视频少于3秒,无法选择"];
-        }else if (model.asset.duration > self.configuration.videoMaxDuration) {
-            return [NSBundle hx_localizedStringForKey:@"视频过大,无法选择"];
-        }
-    }else if (model.type == HXPhotoModelMediaTypeCameraVideo) {
-        if (model.videoDuration < 3) {
-            return [NSBundle hx_localizedStringForKey:@"视频少于3秒,无法选择"];
-        }else if (model.videoDuration > self.configuration.videoMaxDuration) {
-            return [NSBundle hx_localizedStringForKey:@"视频过大,无法选择"];
-        }
-    }
+
     return nil;
 }
 #pragma mark - < 关于选择完成之前的一些方法 > 
@@ -835,17 +788,10 @@
             [self.selectedCameraPhotos addObject:model];
             [self.selectedCameraList addObject:model];
         }
-    }else if (model.subType == HXPhotoModelMediaSubTypeVideo) {
-        [self.selectedVideos addObject:model];
-        if (model.type == HXPhotoModelMediaTypeCameraVideo) {
-            // 为相机录的视频时
-            [self.selectedCameraVideos addObject:model];
-            [self.selectedCameraList addObject:model];
-        }
     }
     [self.selectedList addObject:model];
     model.selected = YES;
-    model.selectIndexStr = [NSString stringWithFormat:@"%ld",[self.selectedList indexOfObject:model] + 1];
+    //model.selectIndexStr = [NSString stringWithFormat:@"%ld",[self.selectedList indexOfObject:model] + 1];
 }
 - (void)beforeSelectedListAddEditPhotoModel:(HXPhotoModel *)model {
     [self beforeSelectedListAddPhotoModel:model];

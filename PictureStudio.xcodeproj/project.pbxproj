@@ -11,8 +11,6 @@
 		708248A2204EC6FC000D60A3 /* LongPictureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248A0204EC6FC000D60A3 /* LongPictureViewController.m */; };
 		708248A6204EC70A000D60A3 /* JointPicture.mm in Sources */ = {isa = PBXBuildFile; fileRef = 708248A4204EC70A000D60A3 /* JointPicture.mm */; };
 		708248AE204ED48B000D60A3 /* FilePathUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248AD204ED48B000D60A3 /* FilePathUtils.m */; };
-		708248B7206135FF000D60A3 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 708248A7204ECD41000D60A3 /* opencv2.framework */; };
-		708248B82061360A000D60A3 /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 708248A9204ECD4C000D60A3 /* libjpeg.a */; };
 		708248BB206A90E9000D60A3 /* HXPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248B9206A90E8000D60A3 /* HXPhotoManager.m */; };
 		708248BE206A9103000D60A3 /* HXPhotoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248BC206A9103000D60A3 /* HXPhotoModel.m */; };
 		708248C3206A9153000D60A3 /* HXAlbumModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248BF206A9152000D60A3 /* HXAlbumModel.m */; };
@@ -35,6 +33,8 @@
 		70C5D1882079256800FE5B9A /* AssetGroupTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 70C5D1872079256800FE5B9A /* AssetGroupTableViewCell.m */; };
 		70C5D18B207926A400FE5B9A /* AssetTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70C5D18A207926A400FE5B9A /* AssetTitleView.m */; };
 		70D24BBD207FA9CA003430BA /* UINavigationBar+Color.m in Sources */ = {isa = PBXBuildFile; fileRef = 70D24BBC207FA9CA003430BA /* UINavigationBar+Color.m */; };
+		93539C6D20808EF100B7D29C /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 708248A7204ECD41000D60A3 /* opencv2.framework */; };
+		93539C6E20808EFB00B7D29C /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 708248A9204ECD4C000D60A3 /* libjpeg.a */; };
 		936FAC2B20200B9A00F80BCF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 936FAC2A20200B9A00F80BCF /* AppDelegate.m */; };
 		936FAC2E20200B9A00F80BCF /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 936FAC2D20200B9A00F80BCF /* ViewController.m */; };
 		936FAC3120200B9A00F80BCF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 936FAC2F20200B9A00F80BCF /* Main.storyboard */; };
@@ -135,8 +135,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				708248B82061360A000D60A3 /* libjpeg.a in Frameworks */,
-				708248B7206135FF000D60A3 /* opencv2.framework in Frameworks */,
+				93539C6E20808EFB00B7D29C /* libjpeg.a in Frameworks */,
+				93539C6D20808EF100B7D29C /* opencv2.framework in Frameworks */,
 				3D7505CCECDB7A1EE388FACD /* libPods-PictureStudio.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

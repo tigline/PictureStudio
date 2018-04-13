@@ -13,8 +13,8 @@
 
 @protocol PhotoEditBottomViewDelegate <NSObject>
 @optional
-- (void)datePhotoBottomViewDidPreviewBtn;
-- (void)datePhotoBottomViewDidDoneBtn;
+- (void)datePhotoBottomViewDidCombineBtn;
+- (void)datePhotoBottomViewDidScrollBtn;
 - (void)datePhotoBottomViewDidEditBtn;
 @end
 
@@ -25,7 +25,6 @@
 @property (assign, nonatomic) BOOL previewBtnEnabled;
 @property (assign, nonatomic) BOOL doneBtnEnabled;
 @property (assign, nonatomic) NSInteger selectCount;
-@property (strong, nonatomic) UIButton *originalBtn;
 @property (strong, nonatomic) UIToolbar *bgView;
 @end
 

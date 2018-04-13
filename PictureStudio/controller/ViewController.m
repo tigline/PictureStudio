@@ -46,6 +46,7 @@ ImgCollectionViewCellDelegate
 @property (nonatomic, strong) UIViewController *assetPopoViewController;
 @property (nonatomic, strong) ALiAssetGroupsView *assetGroupView;
 @property (nonatomic, assign) NSInteger currentSectionIndex;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *aboutMeBtn;
 
 @end
 
@@ -57,19 +58,11 @@ ImgCollectionViewCellDelegate
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    [self.navigationController.navigationBar setColor:[[UIColor whiteColor]colorWithAlphaComponent:0.99f]];
-    //[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-    //self.navigationController.popoverPresentationController.delegate = (id)self;
-    //[self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:1 green:1 blue:1 alpha:0.01]];
-    //self.navigationController.navigationBar.clipsToBounds = YES;
-//    [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-//    self.navigationController.navigationBar.shadowImage = [UIImage new];
-    
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    
+    self.navigationItem.titleView = self.groupTitleView;
+    CGFloat width = [self.groupTitleView updateTitleConstraints:YES];
+    self.groupTitleView.frame = CGRectMake(0, 0, width, 40);
     [self askForAuthorize];
-    
 }
 
 - (void)askForAuthorize
@@ -84,6 +77,7 @@ ImgCollectionViewCellDelegate
             });
         }else{
             NSLog(@"Denied or Restricted");
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self buildRestrictedUI];
             });
@@ -98,9 +92,9 @@ ImgCollectionViewCellDelegate
     tipBtn.titleLabel.font = [UIFont systemFontOfSize:13];
     tipBtn.titleLabel.numberOfLines = 2;
     tipBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
-    [tipBtn setTitle:@"相册权限未开启，请在设置中选择当前应用,开启相册功能 \n 点击去设置" forState:UIControlStateNormal];
+    [tipBtn setTitle:@"相册权限未开启，请在设置中选择当前应用,\n开启相册功能点击去设置" forState:UIControlStateNormal];
     tipBtn.frame = CGRectMake(0, (SCREEN_H/2.)-25, SCREEN_W, 50);
-    tipBtn.backgroundColor = [UIColor greenColor];
+    tipBtn.backgroundColor = [UIColor lightGrayColor];
     [self.view addSubview:tipBtn];
     [self.view bringSubviewToFront:tipBtn];
     [tipBtn addTarget:self action:@selector(openAuthorization) forControlEvents:UIControlEventTouchUpInside];
@@ -168,7 +162,7 @@ ImgCollectionViewCellDelegate
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 weakSelf.groupTitleView.titleButton.text = weakSelf.albumModel.albumName;
-                CGFloat width = [self.groupTitleView updateTitleConstraints];
+                CGFloat width = [self.groupTitleView updateTitleConstraints:NO];
                 self.groupTitleView.frame = CGRectMake(0, 0, width, 40);
                 [weakSelf.collectionView reloadData];
                 [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
@@ -214,24 +208,23 @@ ImgCollectionViewCellDelegate
         }
     }
     
-    self.navigationItem.titleView = self.groupTitleView;
-    CGFloat width = [self.groupTitleView updateTitleConstraints];
-    self.groupTitleView.frame = CGRectMake(0, 0, width, 40);
+//    self.navigationItem.titleView = self.groupTitleView;
+//    CGFloat width = [self.groupTitleView updateTitleConstraints:NO];
+//    self.groupTitleView.frame = CGRectMake(0, 0, width, 40);
     self.currentSectionIndex = 0;
     __weak typeof(self) weakSelf = self;
     self.groupTitleView.titleViewDidClick = ^{
-        
         [weakSelf getAssetsGroup];
         weakSelf.assetGroupView.indexAssetsGroup = weakSelf.currentSectionIndex;
     };
     
     _assetPopoViewController =  [self popoverViewController];
     
-    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"about"] style:UIBarButtonItemStyleDone target:self action:@selector(aboutMe)];
-    [rightBarButton setBackgroundImage:[UIImage imageNamed:@"about"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-    [rightBarButton setBackgroundImage:[UIImage imageNamed:@"about_pressed"] forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
+//    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"about"] style:UIBarButtonItemStyleDone target:self action:@selector(aboutMe)];
+    [_aboutMeBtn setBackgroundImage:[UIImage imageNamed:@"about"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    [_aboutMeBtn setBackgroundImage:[UIImage imageNamed:@"about_pressed"] forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
 
-    self.navigationItem.rightBarButtonItem = rightBarButton;
+//    self.navigationItem.rightBarButtonItem = rightBarButton;
 
     [self.view addSubview:self.collectionView];
     [self.view addSubview:self.bottomView];
@@ -311,7 +304,7 @@ ImgCollectionViewCellDelegate
     HXPhotoModel *model;
     model = self.allArray[indexPath.item];
     
-    //ImgCollectionViewCell *cell = (ImgCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+//    ImgCollectionViewCell *cell = (ImgCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
     
 
 //    NSInteger currentIndex = [self.previewArray indexOfObject:cell.model];
@@ -377,7 +370,7 @@ ImgCollectionViewCellDelegate
 }
 - (void)imgCollectionViewCell:(ImgCollectionViewCell *)cell didSelectBtn:(UIButton *)selectBtn {
     if (selectBtn.selected) {
-        if (cell.model.type != HXPhotoModelMediaTypeCameraVideo && cell.model.type != HXPhotoModelMediaTypeCameraPhoto) {
+        if (cell.model.type != HXPhotoModelMediaTypeCameraPhoto) {
             cell.model.thumbPhoto = nil;
             cell.model.previewPhoto = nil;
         }
@@ -394,7 +387,7 @@ ImgCollectionViewCellDelegate
         if (cell.model.type != HXPhotoModelMediaTypeCameraVideo && cell.model.type != HXPhotoModelMediaTypeCameraPhoto) {
             cell.model.thumbPhoto = cell.imageView.image;
         }
-        //[self.manager beforeSelectedListAddPhotoModel:cell.model];
+        [self.manager beforeSelectedListAddPhotoModel:cell.model];
         cell.selectMaskLayer.hidden = NO;
         selectBtn.selected = YES;
         [selectBtn setTitle:cell.model.selectIndexStr forState:UIControlStateSelected];
@@ -451,12 +444,10 @@ ImgCollectionViewCellDelegate
         //_assetGroupView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         [_assetGroupView.touchButton addTarget:self action:@selector(hideAssetsGroupView) forControlEvents:UIControlEventTouchUpInside];
         WEAKSELF(weakSelf);
-        
         _assetGroupView.groupSelectedBlock = ^(HXAlbumModel *selectedAlbumModel){
             [weakSelf groupViewDidSelected:selectedAlbumModel];
         };
         //[self.view addSubview:_assetGroupView];
-        
     }
     return _assetGroupView;
 }
@@ -565,7 +556,7 @@ ImgCollectionViewCellDelegate
         //更新标题
         self.currentSectionIndex = selectedAlbumModel.index;
         self.groupTitleView.titleButton.text = selectedAlbumModel.albumName;
-        CGFloat width = [self.groupTitleView updateTitleConstraints];
+        CGFloat width = [self.groupTitleView updateTitleConstraints:NO];
         self.groupTitleView.frame = CGRectMake(0, 0, width, 40);
         [self getPhotoListByAblumModel:selectedAlbumModel];
     }
