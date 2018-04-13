@@ -5,7 +5,7 @@ target 'PictureStudio' do
   # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
   # use_frameworks!
 
-  pod 'TZImagePickerController'
+  
 
   target 'PictureStudioTests' do
     inherit! :search_paths

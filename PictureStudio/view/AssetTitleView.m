@@ -22,26 +22,31 @@
 
 - (void)buildUI
 {
+
     [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(eventHandler)]];
 }
 
-- (CGFloat)updateTitleConstraints
+- (CGFloat)updateTitleConstraints:(BOOL)isFirst
 {
     [self.titleButton sizeToFit];
     
     CGFloat width = CGRectGetWidth(self.titleButton.frame)/2 + 2 + CGRectGetWidth(self.arrowBtn.frame) + 15;
-    
+
     self.size = CGSizeMake(width * 2, self.frame.size.height);
-    
-    self.titleButton.center = CGPointMake(self.frame.size.width / 2, self.frame.size.height / 2);
-    
+    if (isFirst) {
+        self.titleButton.center = CGPointMake(self.frame.size.width / 2, self.frame.size.height / 2 + 20);
+    } else {
+        self.titleButton.center = CGPointMake(self.frame.size.width / 2, self.frame.size.height / 2);
+    }
+
     self.arrowBtn.originX = self.titleButton.rightTop.x + 10;
-    
+
     self.arrowBtn.center = CGPointMake(self.arrowBtn.center.x, self.titleButton.center.y);
-    
-    self.arrowBtn.transform = CGAffineTransformRotate(self.arrowBtn.transform, M_PI);
-    
+
+    //self.arrowBtn.transform = CGAffineTransformRotate(self.arrowBtn.transform, M_PI);
+
     return CGRectGetMaxX(self.arrowBtn.frame) + 10;
+
 }
 
 
@@ -57,7 +62,7 @@
 - (UILabel *)titleButton{
     if (!_titleButton) {
         _titleButton = [[UILabel alloc] init];
-        _titleButton.text = @"所有照片";
+        _titleButton.text = @"All Photos";
         _titleButton.font = [UIFont systemFontOfSize:20.];
         _titleButton.textColor = [UIColor blackColor];
         [self addSubview:_titleButton];

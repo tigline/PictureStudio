@@ -15,5 +15,5 @@
 
 @property (nonatomic, copy) void (^titleViewDidClick)(void);
 
-- (CGFloat)updateTitleConstraints;
+- (CGFloat)updateTitleConstraints:(BOOL)isFirst;
 @end
