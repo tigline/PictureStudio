@@ -1,16 +1,16 @@
 //
 //  ArtAssetGroupsView.m
-//  DesignBox
+//  PictureStudio
 //
-//  Created by leoliu on 15/8/28.
-//  Copyright (c) 2015年 GK. All rights reserved.
+//  Created by Aaron Hou on 30/01/2018.
+//  Copyright © 2018 Aaron Hou. All rights reserved.
 //
 
-#import "ALiAssetGroupsView.h"
-#import "ALiAssetGroupCell.h"
+#import "AHAssetGroupsView.h"
+#import "AHAssetGroupCell.h"
 #import "UIView+HXExtension.h"
 
-@interface ALiAssetGroupsView()<UIGestureRecognizerDelegate,UITableViewDataSource,UITableViewDelegate>
+@interface AHAssetGroupsView()<UIGestureRecognizerDelegate,UITableViewDataSource,UITableViewDelegate>
 
 @property (nonatomic, strong) UITableView  *tableView;
 @property (nonatomic, strong) NSIndexPath  *selectedIndexPath;
@@ -19,7 +19,7 @@
 
 static CGFloat kHeightAssetsGroupCell = 47.8;
 
-@implementation ALiAssetGroupsView
+@implementation AHAssetGroupsView
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -46,8 +46,8 @@ static CGFloat kHeightAssetsGroupCell = 47.8;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 
-    //ALiAssetGroupCell *cell = [[ALiAssetGroupCell alloc]initWithStyle:UITableViewCellStyleValue2 reuseIdentifier: @"ALiAssetGroupCell"];
-    ALiAssetGroupCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ALiAssetGroupCell"];
+    //AHAssetGroupCell *cell = [[AHAssetGroupCell alloc]initWithStyle:UITableViewCellStyleValue2 reuseIdentifier: @"AHAssetGroupCell"];
+    AHAssetGroupCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AHAssetGroupCell"];
     //cell.assetsGroup = self.assetsGroups[indexPath.row];
     cell.model = self.assetsGroups[indexPath.row];
     if (_indexAssetsGroup == indexPath.row) {
@@ -85,10 +85,10 @@ static CGFloat kHeightAssetsGroupCell = 47.8;
 - (UITableView *)tableView{
     if (!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.size.width, self.size.height) style:UITableViewStylePlain];
-        //[_tableView registerClass:[ALiAssetGroupCell class] forCellReuseIdentifier:@"ALiAssetGroupCell"];
+        //[_tableView registerClass:[AHAssetGroupCell class] forCellReuseIdentifier:@"AHAssetGroupCell"];
         
-        UINib *mfbCellNib = [UINib nibWithNibName:@"AliAssetGroupCell" bundle:nil];
-        [_tableView registerNib:mfbCellNib forCellReuseIdentifier:@"ALiAssetGroupCell"];
+        UINib *mfbCellNib = [UINib nibWithNibName:@"AHAssetGroupCell" bundle:nil];
+        [_tableView registerNib:mfbCellNib forCellReuseIdentifier:@"AHAssetGroupCell"];
         _tableView.delegate = self;
         _tableView.dataSource = self;
         _tableView.showsHorizontalScrollIndicator = NO;

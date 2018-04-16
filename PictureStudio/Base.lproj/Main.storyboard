@@ -41,11 +41,16 @@
                                     <constraint firstAttribute="width" constant="190" id="dzW-ZP-zJU"/>
                                 </constraints>
                             </imageView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="MU0-l6-NCD">
+                                <rect key="frame" x="177" y="323" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="wyG-7i-jeg" firstAttribute="centerY" secondItem="ntf-9y-MH6" secondAttribute="centerY" id="AJZ-FE-W5j"/>
                             <constraint firstItem="wyG-7i-jeg" firstAttribute="centerX" secondItem="ntf-9y-MH6" secondAttribute="centerX" id="Lqf-6W-m6e"/>
+                            <constraint firstItem="MU0-l6-NCD" firstAttribute="centerY" secondItem="ntf-9y-MH6" secondAttribute="centerY" id="Vg1-Y2-vA6"/>
+                            <constraint firstItem="MU0-l6-NCD" firstAttribute="centerX" secondItem="ntf-9y-MH6" secondAttribute="centerX" id="Y3x-XV-iwT"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="sCQ-Dc-i6Z"/>
                     </view>
@@ -54,6 +59,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="aboutMeBtn" destination="1fG-3h-Rap" id="dVP-tL-fPb"/>
+                        <outlet property="combineIndicatorView" destination="MU0-l6-NCD" id="ydl-yv-4Mq"/>
                         <segue destination="MBT-LT-jHU" kind="show" identifier="goLongPicture" id="Zx8-CY-HUL"/>
                     </connections>
                 </viewController>
@@ -70,13 +76,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qjg-EL-pho">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                             </scrollView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="Qjg-EL-pho" firstAttribute="trailing" secondItem="4dV-Bd-WVG" secondAttribute="trailing" id="1gD-oN-6rZ"/>
-                            <constraint firstItem="Qjg-EL-pho" firstAttribute="top" secondItem="jdG-ny-dTD" secondAttribute="top" id="Aw4-AR-NvB"/>
+                            <constraint firstItem="Qjg-EL-pho" firstAttribute="top" secondItem="jdG-ny-dTD" secondAttribute="top" constant="64" id="Aw4-AR-NvB"/>
                             <constraint firstItem="Qjg-EL-pho" firstAttribute="bottom" secondItem="4dV-Bd-WVG" secondAttribute="bottom" id="go8-0u-Rtd"/>
                             <constraint firstItem="Qjg-EL-pho" firstAttribute="leading" secondItem="4dV-Bd-WVG" secondAttribute="leading" id="i7m-NE-lWW"/>
                         </constraints>
@@ -88,7 +94,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wOc-Vn-cFk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1172" y="113"/>
+            <point key="canvasLocation" x="1172" y="112.89355322338831"/>
         </scene>
     </scenes>
     <resources>

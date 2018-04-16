@@ -1,9 +1,9 @@
 //
 //  ArtAssetGroupCell.h
-//  DesignBox
+//  PictureStudio
 //
-//  Created by leoliu on 15/8/28.
-//  Copyright (c) 2015年 GK. All rights reserved.
+//  Created by Aaron Hou on 30/01/2018.
+//  Copyright © 2018 Aaron Hou. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -14,7 +14,7 @@ static const NSString *kPHTitle = @"PHTitle";
 static const NSString *kPHCount = @"PHCount";
 
 
-@interface ALiAssetGroupCell : UITableViewCell
+@interface AHAssetGroupCell : UITableViewCell
 
 @property (nonatomic, strong) NSDictionary *assetsGroup;
 @property (strong, nonatomic) HXAlbumModel *model;

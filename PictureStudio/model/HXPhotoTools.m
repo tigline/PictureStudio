@@ -1,9 +1,9 @@
 //
 //  HXPhotoTools.m
-//  微博照片选择
+//  PictureStudio
 //
-//  Created by 洪欣 on 17/2/8.
-//  Copyright © 2017年 洪欣. All rights reserved.
+//  Created by mickey on 2018/4/7.
+//  Copyright © 2018年 Aaron Hou. All rights reserved.
 //
 
 #import "HXPhotoTools.h"
@@ -302,9 +302,7 @@
     option.resizeMode = PHImageRequestOptionsResizeModeFast;
     return [[PHImageManager defaultManager] requestImageForAsset:model.asset targetSize:model.requestSize contentMode:PHImageContentModeAspectFill options:option resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         BOOL downloadFinined = (![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey]);
-//        if ([[info objectForKey:PHImageResultIsInCloudKey] boolValue]) {
-//            NSSLog(@"icloud上的资源!!!");
-//        }
+
         if (downloadFinined && result) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (completion) completion(result,model);

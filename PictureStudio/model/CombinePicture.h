@@ -8,14 +8,14 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-@interface JointPicture : NSObject
+@interface CombinePicture : NSObject
 
 //@property (nonatomic, assign) NSArray *imageAsset
-typedef void (^JointCompletely)(UIImage* longPicture); // Connection block
+typedef void (^CombineCompletely)(UIImage* longPicture); // Connection block
 
-@property (nonatomic, strong) JointCompletely jointCompletelyBlock;
+@property (nonatomic, strong) CombineCompletely jointCompletelyBlock;
 
-+(void)jointPictures:(NSArray *)images complete:(JointCompletely)state;
++(void)CombinePictures:(NSArray *)images complete:(CombineCompletely)state;
 
 
 
