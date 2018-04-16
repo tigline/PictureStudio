@@ -1,9 +1,9 @@
 //
 //  NSBundle+HXWeiboPhotoPicker.m
-//  微博照片选择
+//  PictureStudio
 //
-//  Created by 洪欣 on 2017/7/25.
-//  Copyright © 2017年 洪欣. All rights reserved.
+//  Created by Aaron Hou on 30/01/2018.
+//  Copyright © 2018 Aaron Hou. All rights reserved.
 //
 
 #import "NSBundle+HXWeiboPhotoPicker.h"

@@ -1,9 +1,9 @@
 //
 //  HX_PhotoManager.h
-//  微博照片选择
+//  PictureStudio
 //
-//  Created by 洪欣 on 17/2/8.
-//  Copyright © 2017年 洪欣. All rights reserved.
+//  Created by mickey on 2018/4/7.
+//  Copyright © 2018年 Aaron Hou. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -90,10 +90,7 @@ typedef enum : NSUInteger {
  */
 - (void)getPhotoListWithAlbumModel:(HXAlbumModel *)albumModel complete:(void (^)(NSArray *allList , NSArray *previewList,NSArray *photoList ,NSArray *videoList ,NSArray *dateList , HXPhotoModel *firstSelectModel))complete;
 
-/**
- 将下载完成的iCloud上的资源模型添加到数组中
- */
-- (void)addICloudModel:(HXPhotoModel *)model;
+
 
 /**
  判断最大值
@@ -110,10 +107,6 @@ typedef enum : NSUInteger {
  */
 - (NSInteger)selectedPhotoCount;
 /**
- 完成之前选择的视频数量
- */
-- (NSInteger)selectedVideoCount;
-/**
  完成之前选择的所有数组
  */
 - (NSArray *)selectedArray;
@@ -121,10 +114,6 @@ typedef enum : NSUInteger {
  完成之前选择的照片数组
  */
 - (NSArray *)selectedPhotoArray;
-/**
- 完成之前选择的视频数组
- */
-- (NSArray *)selectedVideoArray;
 /**
  完成之前是否原图
  */
@@ -138,11 +127,7 @@ typedef enum : NSUInteger {
  @return yes or no
  */
 - (BOOL)beforeSelectPhotoCountIsMaximum;
-/**
- 完成之前的视频数组是否达到最大数
- @return yes or no
- */
-- (BOOL)beforeSelectVideoCountIsMaximum;
+
 /**
  完成之前从已选数组中删除某个模型
  */
@@ -170,10 +155,6 @@ typedef enum : NSUInteger {
  */
 - (BOOL)afterSelectPhotoCountIsMaximum;
 /**
- 完成之后选择的视频数是否达到最大
- */
-- (BOOL)afterSelectVideoCountIsMaximum;
-/**
  完成之后选择的总数
  */
 - (NSInteger)afterSelectedCount;
@@ -186,17 +167,9 @@ typedef enum : NSUInteger {
  */
 - (NSArray *)afterSelectedPhotoArray;
 /**
- 完成之后选择的视频数组
- */
-- (NSArray *)afterSelectedVideoArray;
-/**
  设置完成之后选择的照片数组
  */
 - (void)setAfterSelectedPhotoArray:(NSArray *)array;
-/**
- 设置完成之后选择的视频数组
- */
-- (void)setAfterSelectedVideoArray:(NSArray *)array;
 /**
  完成之后是否原图
  */
@@ -244,19 +217,14 @@ typedef enum : NSUInteger {
 /**  cell上添加photoView时所需要用到的方法  */
 - (void)changeAfterCameraArray:(NSArray *)array;
 - (void)changeAfterCameraPhotoArray:(NSArray *)array;
-- (void)changeAfterCameraVideoArray:(NSArray *)array;
 - (void)changeAfterSelectedCameraArray:(NSArray *)array;
 - (void)changeAfterSelectedCameraPhotoArray:(NSArray *)array;
-- (void)changeAfterSelectedCameraVideoArray:(NSArray *)array;
 - (void)changeAfterSelectedArray:(NSArray *)array;
 - (void)changeAfterSelectedPhotoArray:(NSArray *)array;
-- (void)changeAfterSelectedVideoArray:(NSArray *)array;
 - (void)changeICloudUploadArray:(NSArray *)array;
 - (NSArray *)afterCameraArray;
 - (NSArray *)afterCameraPhotoArray;
-- (NSArray *)afterCameraVideoArray;
 - (NSArray *)afterSelectedCameraArray;
 - (NSArray *)afterSelectedCameraPhotoArray;
-- (NSArray *)afterSelectedCameraVideoArray;
 - (NSArray *)afterICloudUploadArray;
 @end

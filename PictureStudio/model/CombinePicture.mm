@@ -6,7 +6,7 @@
 //  Copyright © 2018 Aaron Hou. All rights reserved.
 //
 
-#import "JointPicture.h"
+#import "CombinePicture.h"
 #include "opencv2/opencv.hpp"
 #include "opencv2/nonfree/nonfree.hpp"
 #include "opencv2/legacy/legacy.hpp"
@@ -16,20 +16,14 @@
 using namespace cv;
 using namespace std;
 
-@implementation JointPicture
-
+@implementation CombinePicture
 
 //计算原始图像点位在经过矩阵变换后在目标图像上对应位置
 Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri);
 
-+(void)jointPictures:(NSArray *)images complete:(JointCompletely)state
++(void)CombinePictures:(NSArray *)images complete:(CombineCompletely)state
 {
-    //_jointCompletelyBlock = state;
-    
-    //    NSString *path01 = [[images objectAtIndex:0] objectForKey:@"PHImageFileURLKey"];
-    //    NSString *path02 = [[images objectAtIndex:1] objectForKey:@"PHImageFileURLKey"];
-    //    UIImage *image = [UIImage imageWithContentsOfFile:path01];
-    //NSString *path01 = [[NSBundle mainBundle] pathForResource:@"test01" ofType:@"jpg"];
+
     Mat imageTransform1;
     Mat image01;
     Mat image002;
@@ -38,31 +32,21 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
     for (int i = 0; i < images.count-1; i++) {
         
         if (resultMat.data == NULL) {
-            
+            NSLog(@"imageTransform1.data == NULL");
             image01 = [self cvMatFromUIImage:[images objectAtIndex:i]];
-//            NSLog(@"imageTransform1.data == NULL");
-//            NSString *imageName = [NSString stringWithFormat:@"IMG_251%d",i];
-//            NSString *path = [[NSBundle mainBundle] pathForResource:imageName ofType:@"jpg"];
+            //路径读取图片暂不使用
+//            NSString *path = [images objectAtIndex:i];
 //            image01 = imread([path UTF8String]);
         } else {
             image01 = resultMat;
             
         }
         if (i + 1 < images.count) {
-            
             image002 = [self cvMatFromUIImage:[images objectAtIndex:i+1]];
-//            NSString *imageName = [NSString stringWithFormat:@"IMG_251%d",i+1];
-//            NSString *path = [[NSBundle mainBundle] pathForResource:imageName ofType:@"jpg"];
+            //路径读取图片暂不使用
+//            NSString *path = [images objectAtIndex:i+1];
 //            image002 = imread([path UTF8String]);
         }
-        
-//        clock_t init_picture = clock();
-//        double totaltime_initPicture;
-//        totaltime_initPicture = (double)(init_picture - start_surf)/CLOCKS_PER_SEC;
-//        cout<<"图片转换的运行时间："<<totaltime_initPicture<<"秒！"<<endl;
-        
-        //    image01 = [self cvMatFromUIImage:[images objectAtIndex:0]];
-        //    image002 = [self cvMatFromUIImage:[images objectAtIndex:1]];
         
         
         Mat image02=image002(cv::Rect(cv::Point(0,100),cv::Point(image002.cols,image002.rows)));
@@ -70,7 +54,6 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         Mat image1,image2;
         cvtColor(image01,image1,CV_RGB2GRAY);
         cvtColor(image02,image2,CV_RGB2GRAY);
-
 
         
         //提取特征点
@@ -108,9 +91,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             imagePoints1.push_back(keyPoint1[matchePoints[i].queryIdx].pt);
             imagePoints2.push_back(keyPoint2[matchePoints[i].trainIdx].pt);
         }
-        
 
-        
         //获取图像1到图像2的投影映射矩阵，尺寸为3*3
         Mat homo=findHomography(imagePoints1,imagePoints2,CV_RANSAC);
         Mat adjustMat=(Mat_<double>(3,3)<<1.0,0,0,0,1.0,image01.rows,0,0,1.0);

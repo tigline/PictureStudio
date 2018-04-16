@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface LongPictureViewController : UIViewController
-@property (nonatomic,assign) UIImage *resultImage;
+@property (nonatomic,strong) UIImage *resultImage;
 @end

@@ -1,9 +1,9 @@
 //
 //  HXAlbumModel.m
-//  微博照片选择
+//  PictureStudio
 //
-//  Created by 洪欣 on 17/2/8.
-//  Copyright © 2017年 洪欣. All rights reserved.
+//  Created by mickey on 2018/4/7.
+//  Copyright © 2018年 Aaron Hou. All rights reserved.
 //
 
 #import "HXAlbumModel.h"

@@ -1,17 +1,17 @@
 //
 //  ArtAssetGroupCell.m
-//  DesignBox
+//  PictureStudio
 //
-//  Created by leoliu on 15/8/28.
-//  Copyright (c) 2015年 GK. All rights reserved.
+//  Created by Aaron Hou on 30/01/2018.
+//  Copyright © 2018 Aaron Hou. All rights reserved.
 //
 
-#import "ALiAssetGroupCell.h"
+#import "AHAssetGroupCell.h"
 #import "UIView+HXExtension.h"
 
 #import "HXPhotoTools.h"
 
-@interface ALiAssetGroupCell()
+@interface AHAssetGroupCell()
 
 @property (weak, nonatomic) IBOutlet UIImageView *thumbnailView;
 
@@ -23,7 +23,7 @@
 @end
 
 
-@implementation ALiAssetGroupCell
+@implementation AHAssetGroupCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {

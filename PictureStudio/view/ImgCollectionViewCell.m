@@ -84,13 +84,9 @@ return self;
     }
     self.selectMaskLayer.hidden = !model.selected;
     self.selectBtn.selected = model.selected;
-    [self.selectBtn setTitle:model.selectIndexStr forState:UIControlStateSelected];
+    //[self.selectBtn setTitle:model.selectIndexStr forState:UIControlStateSelected];
     self.selectBtn.backgroundColor = model.selected ? self.selectBgColor :nil;
-    //    if (model.isICloud) {
-    //        self.selectBtn.userInteractionEnabled = NO;
-    //    }else {
-    //        self.selectBtn.userInteractionEnabled = YES;
-    //    }
+
     
     
 }

@@ -8,14 +8,14 @@
 
 #import "ViewController.h"
 #import "LongPictureViewController.h"
-#import "JointPicture.h"
+#import "CombinePicture.h"
 #import <Photos/Photos.h>
 #import "FilePathUtils.h"
 #import "ImgCollectionViewCell.h"
 #import "PhotoCollectionReusableView.h"
 #import "AssetGroupsTableView.h"
 #import "AssetTitleView.h"
-#import "ALiAssetGroupsView.h"
+#import "AHAssetGroupsView.h"
 #import "UINavigationBar+Color.h"
 
 
@@ -44,9 +44,10 @@ ImgCollectionViewCellDelegate
 @property (nonatomic, strong) AssetTitleView *groupTitleView;
 @property (nonatomic, strong) UIButton *touchButton;
 @property (nonatomic, strong) UIViewController *assetPopoViewController;
-@property (nonatomic, strong) ALiAssetGroupsView *assetGroupView;
+@property (nonatomic, strong) AHAssetGroupsView *assetGroupView;
 @property (nonatomic, assign) NSInteger currentSectionIndex;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *aboutMeBtn;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *combineIndicatorView;
 
 @end
 
@@ -59,6 +60,7 @@ ImgCollectionViewCellDelegate
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor whiteColor]];
+    _combineIndicatorView.hidden = YES;
     self.navigationItem.titleView = self.groupTitleView;
     CGFloat width = [self.groupTitleView updateTitleConstraints:YES];
     self.groupTitleView.frame = CGRectMake(0, 0, width, 40);
@@ -228,6 +230,7 @@ ImgCollectionViewCellDelegate
 
     [self.view addSubview:self.collectionView];
     [self.view addSubview:self.bottomView];
+    self.bottomView.delegate = self;
 //    self.bottomView.selectCount = self.manager.selectedArray.count;
     [self changeSubviewFrame];
 }
@@ -358,14 +361,14 @@ ImgCollectionViewCellDelegate
     return 10.0f;
 }
 
-#pragma mark - < HXDatePhotoViewCellDelegate >
+#pragma mark - < ImgCollectionViewCellDelegate >
 - (void)imgCollectionViewCellRequestICloudAssetComplete:(ImgCollectionViewCell *)cell {
     if (cell.model.dateCellIsVisible) {
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[self dateItem:cell.model] inSection:cell.model.dateSection];
         if (indexPath) {
             [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
         }
-        [self.manager addICloudModel:cell.model];
+
     }
 }
 - (void)imgCollectionViewCell:(ImgCollectionViewCell *)cell didSelectBtn:(UIButton *)selectBtn {
@@ -390,7 +393,7 @@ ImgCollectionViewCellDelegate
         [self.manager beforeSelectedListAddPhotoModel:cell.model];
         cell.selectMaskLayer.hidden = NO;
         selectBtn.selected = YES;
-        [selectBtn setTitle:cell.model.selectIndexStr forState:UIControlStateSelected];
+        //[selectBtn setTitle:cell.model.selectIndexStr forState:UIControlStateSelected];
         CAKeyframeAnimation *anim = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
         anim.duration = 0.25;
         anim.values = @[@(1.2),@(0.8),@(1.1),@(0.9),@(1.0)];
@@ -400,7 +403,7 @@ ImgCollectionViewCellDelegate
         NSMutableArray *indexPathList = [NSMutableArray array];
         NSInteger index = 0;
         for (HXPhotoModel *model in [self.manager selectedArray]) {
-            //model.selectIndexStr = [NSString stringWithFormat:@"%ld",index + 1];
+            model.selectIndexStr = [NSString stringWithFormat:@"%ld",index + 1];
             if (model.currentAlbumIndex == self.albumModel.index) {
                 if (model.dateCellIsVisible) {
                     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[self dateItem:model] inSection:model.dateSection];
@@ -417,6 +420,46 @@ ImgCollectionViewCellDelegate
     if ([self.delegate respondsToSelector:@selector(datePhotoViewControllerDidChangeSelect:selected:)]) {
         [self.delegate datePhotoViewControllerDidChangeSelect:cell.model selected:selectBtn.selected];
     }
+}
+#pragma mark - <PhotoEditBottomViewDelegate>
+
+- (void)datePhotoBottomViewDidCombineBtn {
+    if (_allArray.count < 2) {
+        
+    } else {
+
+        _combineIndicatorView.hidden = NO;
+        [_combineIndicatorView startAnimating];
+        __block NSMutableArray *photoArray = [[NSMutableArray alloc] init];
+        PHCachingImageManager *imageManager = [[PHCachingImageManager alloc] init];
+        for (int i = 0; i < _manager.selectedPhotoArray.count; i++) {
+            HXPhotoModel *model;
+            model = _manager.selectedPhotoArray[i];
+             PHAsset *phAsset = model.asset;
+             PHImageRequestOptions * options=[[PHImageRequestOptions alloc]init];
+             options.resizeMode = PHImageRequestOptionsResizeModeFast;
+             options.synchronous=YES;
+             [imageManager requestImageForAsset:phAsset targetSize:PHImageManagerMaximumSize
+                                    contentMode:PHImageContentModeDefault
+                                        options:options
+                                  resultHandler:^(UIImage *result, NSDictionary *info)
+              {
+                  [photoArray addObject:result];
+              }];
+        }
+        
+        [CombinePicture CombinePictures:photoArray complete:^(UIImage *longPicture) {
+            [_combineIndicatorView stopAnimating];
+            _combineIndicatorView.hidden = YES;
+            [self performSegueWithIdentifier:@"goLongPicture" sender:longPicture];
+        }];
+    }
+}
+- (void)datePhotoBottomViewDidScrollBtn {
+    
+}
+- (void)datePhotoBottomViewDidEditBtn {
+    
 }
 
 #pragma mark - < 懒加载 >
@@ -435,10 +478,10 @@ ImgCollectionViewCellDelegate
 }
 
 
-- (ALiAssetGroupsView *)assetGroupView
+- (AHAssetGroupsView *)assetGroupView
 {
     if (_assetGroupView == nil) {
-        _assetGroupView = [[ALiAssetGroupsView alloc] initWithFrame:CGRectMake(0, 0, 280, 280)];
+        _assetGroupView = [[AHAssetGroupsView alloc] initWithFrame:CGRectMake(0, 0, 280, 280)];
         //_assetGroupView.backgroundColor = [[UIColor whiteColor]colorWithAlphaComponent:0.5f];
         //_assetGroupView = [[ALiAssetGroupsView alloc] init];
         //_assetGroupView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
