@@ -17,6 +17,7 @@
 #import "AssetTitleView.h"
 #import "AHAssetGroupsView.h"
 #import "UINavigationBar+Color.h"
+#import "CombineIndicatorView.h"
 
 
 @interface ViewController ()<UICollectionViewDataSource,
@@ -47,7 +48,8 @@ ImgCollectionViewCellDelegate
 @property (nonatomic, strong) AHAssetGroupsView *assetGroupView;
 @property (nonatomic, assign) NSInteger currentSectionIndex;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *aboutMeBtn;
-@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *combineIndicatorView;
+@property (weak, nonatomic) UIActivityIndicatorView *combineIndicatorView;
+@property (nonatomic, strong) CombineIndicatorView* indicator;
 
 @end
 
@@ -60,7 +62,7 @@ ImgCollectionViewCellDelegate
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    _combineIndicatorView.hidden = YES;
+
     self.navigationItem.titleView = self.groupTitleView;
     CGFloat width = [self.groupTitleView updateTitleConstraints:YES];
     self.groupTitleView.frame = CGRectMake(0, 0, width, 40);
@@ -124,6 +126,7 @@ ImgCollectionViewCellDelegate
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
 }
 - (void)viewDidAppear:(BOOL)animated
 {
@@ -210,9 +213,6 @@ ImgCollectionViewCellDelegate
         }
     }
     
-//    self.navigationItem.titleView = self.groupTitleView;
-//    CGFloat width = [self.groupTitleView updateTitleConstraints:NO];
-//    self.groupTitleView.frame = CGRectMake(0, 0, width, 40);
     self.currentSectionIndex = 0;
     __weak typeof(self) weakSelf = self;
     self.groupTitleView.titleViewDidClick = ^{
@@ -230,8 +230,10 @@ ImgCollectionViewCellDelegate
 
     [self.view addSubview:self.collectionView];
     [self.view addSubview:self.bottomView];
+    
+    _indicator=[[CombineIndicatorView alloc]initWithFrame:CGRectMake(80, 120, 120, 120) superView:self.view];
+    
     self.bottomView.delegate = self;
-//    self.bottomView.selectCount = self.manager.selectedArray.count;
     [self changeSubviewFrame];
 }
 
@@ -427,9 +429,13 @@ ImgCollectionViewCellDelegate
     if (_allArray.count < 2) {
         
     } else {
-
-        _combineIndicatorView.hidden = NO;
-        [_combineIndicatorView startAnimating];
+        //无法执行
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [_indicator show:NO];
+//            [_indicator setMessage:@"Combining..."];
+//        });
+        
+        
         __block NSMutableArray *photoArray = [[NSMutableArray alloc] init];
         PHCachingImageManager *imageManager = [[PHCachingImageManager alloc] init];
         for (int i = 0; i < _manager.selectedPhotoArray.count; i++) {
@@ -449,8 +455,7 @@ ImgCollectionViewCellDelegate
         }
         
         [CombinePicture CombinePictures:photoArray complete:^(UIImage *longPicture) {
-            [_combineIndicatorView stopAnimating];
-            _combineIndicatorView.hidden = YES;
+            [_indicator hide];
             [self performSegueWithIdentifier:@"goLongPicture" sender:longPicture];
         }];
     }

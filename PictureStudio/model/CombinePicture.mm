@@ -106,11 +106,30 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         
         basedImagePoint=keyPoint2[matchePoints[0].trainIdx].pt;
         
+        Mat imageTransform;
         //图像配准
         warpPerspective(image01,imageTransform1,adjustMat*homo,cv::Size(image01.cols,image01.rows+image02.rows));
+        
+        Mat image1Overlap, image2Overlap; //图1和图2的重叠部分
+        image1Overlap = imageTransform(cv::Rect(cv::Point(image01.cols, targetLinkPoint.y - basedImagePoint.y), cv::Point(image02.cols, targetLinkPoint.y)));
+        image2Overlap = image02(cv::Rect(0, 0, image1Overlap.cols, image1Overlap.rows));
+        Mat image1ROICopy = image1Overlap.clone();  //复制一份图1的重叠部分
+        for (int i = 0; i<image1Overlap.cols; i++)
+        {
+            for (int j = 0; j<image1Overlap.rows; j++)
+            {
+                double height;
+                height = (double)j / image1Overlap.rows;  //随距离改变而改变的叠加系数
+                image1Overlap.at<Vec3b>(i, j)[0] = (1 - height)*image1ROICopy.at<Vec3b>(i, j)[0] + height*image2Overlap.at<Vec3b>(i, j)[0];
+                image1Overlap.at<Vec3b>(i, j)[1] = (1 - height)*image1ROICopy.at<Vec3b>(i, j)[1] + height*image2Overlap.at<Vec3b>(i, j)[1];
+                image1Overlap.at<Vec3b>(i, j)[2] = (1 - height)*image1ROICopy.at<Vec3b>(i, j)[2] + height*image2Overlap.at<Vec3b>(i, j)[2];
+            }
+        }
         //在最强匹配点的位置处衔接，最强匹配点上侧是图1，下侧是图2，这样直接替换图像衔接不好，光线有突变
+        //不重合的部分
         Mat ROIMat=image02(cv::Rect(cv::Point(0,basedImagePoint.y),cv::Point(image02.cols,image02.rows)));
         //UIImage *imageTransform01 = [self imageWithCVMat:imageTransform1];
+        //不重合的部分直接衔接上去
         ROIMat.copyTo(Mat(imageTransform1,cv::Rect(0,targetLinkPoint.y,image02.cols,image02.rows-basedImagePoint.y+1)));
         //UIImage *imageTransform02 = [self imageWithCVMat:ROIMat];
         resultMat = imageTransform1(cv::Rect(cv::Point(0,image01.rows-originalLinkPoint.y+basedImagePoint.y),cv::Point(imageTransform1.cols,imageTransform1.rows)));
