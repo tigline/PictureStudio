@@ -41,16 +41,11 @@
                                     <constraint firstAttribute="width" constant="190" id="dzW-ZP-zJU"/>
                                 </constraints>
                             </imageView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="MU0-l6-NCD">
-                                <rect key="frame" x="177" y="323" width="20" height="20"/>
-                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="wyG-7i-jeg" firstAttribute="centerY" secondItem="ntf-9y-MH6" secondAttribute="centerY" id="AJZ-FE-W5j"/>
                             <constraint firstItem="wyG-7i-jeg" firstAttribute="centerX" secondItem="ntf-9y-MH6" secondAttribute="centerX" id="Lqf-6W-m6e"/>
-                            <constraint firstItem="MU0-l6-NCD" firstAttribute="centerY" secondItem="ntf-9y-MH6" secondAttribute="centerY" id="Vg1-Y2-vA6"/>
-                            <constraint firstItem="MU0-l6-NCD" firstAttribute="centerX" secondItem="ntf-9y-MH6" secondAttribute="centerX" id="Y3x-XV-iwT"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="sCQ-Dc-i6Z"/>
                     </view>
@@ -59,13 +54,12 @@
                     </navigationItem>
                     <connections>
                         <outlet property="aboutMeBtn" destination="1fG-3h-Rap" id="dVP-tL-fPb"/>
-                        <outlet property="combineIndicatorView" destination="MU0-l6-NCD" id="ydl-yv-4Mq"/>
                         <segue destination="MBT-LT-jHU" kind="show" identifier="goLongPicture" id="Zx8-CY-HUL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yQH-pw-mgd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="294" y="113"/>
+            <point key="canvasLocation" x="293.60000000000002" y="112.89355322338831"/>
         </scene>
         <!--Long Picture View Controller-->
         <scene sceneID="2hw-CB-gUS">
