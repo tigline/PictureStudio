@@ -259,6 +259,21 @@
     }
 }
 
+- (BOOL)isAllScreenShotPhoto {
+    
+    BOOL isALLScreenShot = NO;
+    for (int i = 0; i < _selectedList.count; i++) {
+        HXPhotoModel *model = [[HXPhotoModel alloc] init];
+        model = [_selectedList objectAtIndex:i];
+        if (!model.isScreenShot) {
+            return NO;
+        } else {
+            isALLScreenShot = model.isScreenShot;
+        }
+    }
+    return isALLScreenShot;
+}
+
 /**
  *  是否为同一天
  */
@@ -314,9 +329,12 @@
                 }
             }
             if (asset.mediaType == PHAssetMediaTypeImage) {
+                if (asset.mediaSubtypes == PHAssetMediaSubtypePhotoScreenshot) {
+                    photoModel.isScreenShot = YES;
+                } else {
+                    photoModel.isScreenShot = NO;
+                }
                 photoModel.subType = HXPhotoModelMediaSubTypePhoto;
-                
-
                 [photoArray addObject:photoModel];
 
             }

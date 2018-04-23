@@ -69,20 +69,23 @@
 }
 - (void)setSelectCount:(NSInteger)selectCount {
     _selectCount = selectCount;
-    if (selectCount <= 0) {
-        self.combineBtn.enabled = NO;
-        self.scrollBtn.enabled = NO;
-        self.editBtn.enabled = NO;
-    }else if(selectCount == 1) {
+    
+    if(selectCount == 1) {
         self.combineBtn.enabled = NO;
         self.scrollBtn.enabled = YES;
         self.editBtn.enabled = YES;
-    }else {
+    }else if(_manager.isAllScreenShotPhoto) {
         self.combineBtn.enabled = YES;
+        self.scrollBtn.enabled = YES;
+        self.editBtn.enabled = NO;
+    }else {
+        self.combineBtn.enabled = NO;
         self.scrollBtn.enabled = YES;
         self.editBtn.enabled = NO;
     }
 }
+
+
 
 - (void)didCombineClick {
     if ([self.delegate respondsToSelector:@selector(datePhotoBottomViewDidCombineBtn)]) {

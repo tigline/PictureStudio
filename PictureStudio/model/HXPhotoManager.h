@@ -114,6 +114,8 @@ typedef enum : NSUInteger {
  完成之前选择的照片数组
  */
 - (NSArray *)selectedPhotoArray;
+
+- (BOOL)isAllScreenShotPhoto;
 /**
  完成之前是否原图
  */

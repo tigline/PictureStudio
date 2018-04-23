@@ -22,7 +22,8 @@ typedef enum : NSUInteger {
 
 typedef enum : NSUInteger {
     HXPhotoModelMediaSubTypePhoto = 0, // 照片
-    HXPhotoModelMediaSubTypeVideo // 视频
+    HXPhotoModelMediaSubTypeVideo, // 视频
+    HXPhotoModelMediaSubTypeScreenShot
 } HXPhotoModelMediaSubType;
 
 @interface HXPhotoModel : NSObject
@@ -59,6 +60,8 @@ typedef enum : NSUInteger {
 
 /**  是否正在下载iCloud上的资源  */
 @property (assign, nonatomic) BOOL iCloudDownloading;
+/**  是否正在下载iCloud上的资源  */
+@property (assign, nonatomic) BOOL isScreenShot;
 /**  iCloud下载进度  */
 @property (assign, nonatomic) CGFloat iCloudProgress;
 /**  下载iCloud的请求id  */
