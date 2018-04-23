@@ -72,15 +72,19 @@
     
     if(selectCount == 1) {
         self.combineBtn.enabled = NO;
-        self.scrollBtn.enabled = YES;
+        self.scrollBtn.enabled = NO;
         self.editBtn.enabled = YES;
     }else if(_manager.isAllScreenShotPhoto) {
         self.combineBtn.enabled = YES;
         self.scrollBtn.enabled = YES;
         self.editBtn.enabled = NO;
-    }else {
+    }else if(selectCount > 1){
         self.combineBtn.enabled = NO;
         self.scrollBtn.enabled = YES;
+        self.editBtn.enabled = NO;
+    }else {
+        self.combineBtn.enabled = NO;
+        self.scrollBtn.enabled = NO;
         self.editBtn.enabled = NO;
     }
 }

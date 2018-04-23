@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 #import "LongPictureViewController.h"
-#import "CombinePicture.h"
+//#import "CombinePicture.h"
 #import <Photos/Photos.h>
 #import "FilePathUtils.h"
 #import "ImgCollectionViewCell.h"
@@ -18,7 +18,7 @@
 #import "AHAssetGroupsView.h"
 #import "UINavigationBar+Color.h"
 #import "CombineIndicatorView.h"
-
+#import "CombinePictureTest.h"
 
 @interface ViewController ()<UICollectionViewDataSource,
 UICollectionViewDelegate,
@@ -454,7 +454,7 @@ ImgCollectionViewCellDelegate
               }];
         }
         
-        [CombinePicture CombinePictures:photoArray complete:^(UIImage *longPicture) {
+        [CombinePictureTest CombinePictures:photoArray complete:^(UIImage *longPicture) {
             [_indicator hide];
             [self performSegueWithIdentifier:@"goLongPicture" sender:longPicture];
         }];
