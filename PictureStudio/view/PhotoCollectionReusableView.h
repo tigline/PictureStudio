@@ -10,5 +10,4 @@
 
 @interface PhotoCollectionReusableView : UICollectionReusableView
 @property (assign, nonatomic) NSInteger photoCount;
-@property (assign, nonatomic) NSInteger videoCount;
 @end

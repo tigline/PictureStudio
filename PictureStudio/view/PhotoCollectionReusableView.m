@@ -26,14 +26,9 @@
     [self addSubview:self.titleLb];
 }
 - (void)setVideoCount:(NSInteger)videoCount {
-    _videoCount = videoCount;
-    if (self.photoCount > 0 && videoCount > 0) {
-        self.titleLb.text = [NSString stringWithFormat:@"%ld 张照片、%ld 个视频",self.photoCount,videoCount];
-    }else if (self.photoCount > 0) {
-        self.titleLb.text = [NSString stringWithFormat:@"%ld 张照片",self.photoCount];
-    }else {
-        self.titleLb.text = [NSString stringWithFormat:@"%ld 个视频",videoCount];
-    }
+
+    self.titleLb.text = [NSString stringWithFormat:@"%ld 张照片",self.photoCount];
+   
 }
 - (void)layoutSubviews {
     [super layoutSubviews];

@@ -26,32 +26,35 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
     
     Mat imageTransform1;
     Mat tempImage;
+    Mat image02;
     Mat image01;
-    Mat image002;
+    Mat image001;
     Mat resultMat;
+    float curUseHeight = 0.0;
     clock_t start_surf = clock();
     for (int i = 0; i < images.count-1; i++) {
         
         if (resultMat.data == NULL) {
             NSLog(@"imageTransform1.data == NULL");
-            image01 = [self cvMatFromUIImage:[images objectAtIndex:i]];
+            image001 = [self cvMatFromUIImage:[images objectAtIndex:i]];
             //路径读取图片暂不使用
             //            NSString *path = [images objectAtIndex:i];
             //            image01 = imread([path UTF8String]);
+            image01=image001(cv::Rect(cv::Point(0,128),cv::Point(image001.cols,image001.rows)));
         } else {
             tempImage = resultMat;
-            image01 = resultMat(cv::Rect(cv::Point(0,resultMat.rows-1344),cv::Point(image002.cols,resultMat.rows)));
+            image01 = resultMat(cv::Rect(cv::Point(0,resultMat.rows-1344+128),cv::Point(image02.cols,resultMat.rows)));
             
         }
         if (i + 1 < images.count) {
-            image002 = [self cvMatFromUIImage:[images objectAtIndex:i+1]];
+            image02 = [self cvMatFromUIImage:[images objectAtIndex:i+1]];
             //路径读取图片暂不使用
             //            NSString *path = [images objectAtIndex:i+1];
             //            image002 = imread([path UTF8String]);
         }
         
         
-        Mat image02=image002(cv::Rect(cv::Point(0,128),cv::Point(image002.cols,image002.rows)));
+        
         //灰度图转换
         Mat image1,image2;
         cvtColor(image01,image1,CV_RGB2GRAY);
@@ -64,7 +67,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         //SiftFeatureDetector siftDetector(5000);  // 海塞矩阵阈值  #最耗时操作一
         //SurfFeatureDetector siftDetector(1000);
         //Ptr<FeatureDetector> siftDetector = FeatureDetector::create("SURF");
-        FastFeatureDetector siftDetector(180);
+        FastFeatureDetector siftDetector(185);
         vector<KeyPoint> keyPoint1,keyPoint2;
         siftDetector.detect(image1,keyPoint1);
         siftDetector.detect(image2,keyPoint2);
@@ -112,7 +115,14 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         sort(matchePoints.begin(),matchePoints.end()); //特征点排序
         //获取排在前N个的最优匹配特征点
         vector<Point2f> imagePoints1,imagePoints2;
-        for(int i=0;i<100;i++)
+        
+        long usefullCount;
+        if (matchePoints.size() < 100) {
+            usefullCount = matchePoints.size();
+        } else {
+            usefullCount = 100;
+        }
+        for(int i=0;i<usefullCount;i++)
         {
             Point2f tempPoint1 = keyPoint1[matchePoints[i].queryIdx].pt;
             Point2f tempPoint2 = keyPoint2[matchePoints[i].trainIdx].pt;
@@ -173,16 +183,10 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
 
         
         UIImage *imageGoodMatchPoints = [self imageWithCVMat:img_matches];
-        
-        
-        
         //获取图像1到图像2的投影映射矩阵，尺寸为3*3
 //        Mat homo=findHomography(imagePoints1,imagePoints2,CV_RANSAC);
-//
 //        Mat adjustMat=(Mat_<double>(3,3)<<1.0,0,0,  0,1.0,image01.rows,  0,0,1.0);
-//
 //        Mat adjustHomo=adjustMat*homo;
-        
         
         //获取最强配对点在原始图像和矩阵变换后图像上的对应位置，用于图像拼接点的定位
         Point2f originalLinkPoint,targetLinkPoint,basedImagePoint;
@@ -200,6 +204,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         NSLog(@"basedImagePoint x.y = %f / %f",basedImagePoint.x, basedImagePoint.y);
         
         
+        
         int index = 0;
         while (basedImagePoint.x != originalLinkPoint.x) {
             if (index < good_matches.size()) {
@@ -208,18 +213,28 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             }
             else
             {
-                originalLinkPoint=keyPoint1[good_matches[0].queryIdx].pt;
-                break;
+//                originalLinkPoint=keyPoint1[good_matches[0].queryIdx].pt;
+//                break;
+                resultMat = comMatC(image01, image02, resultMat);
+                curUseHeight = image02.rows;
+                continue;
             }
         }
         NSLog(@"final originalLinkPoint x.y = %f / %f",originalLinkPoint.x, originalLinkPoint.y);
-
+        
+        if(basedImagePoint.y > originalLinkPoint.y + 128) {
+            resultMat = comMatC(image01, image02, resultMat);
+            curUseHeight = image02.rows;
+            continue;
+        }
+        
+        curUseHeight = originalLinkPoint.y;
         
         Mat cutImage01;
         if (i < 1) {
-            cutImage01 = image01(cv::Rect(cv::Point(0,0), cv::Point(image01.cols, originalLinkPoint.y)));
+            cutImage01 = image001(cv::Rect(cv::Point(0,0), cv::Point(image01.cols, originalLinkPoint.y + 128)));
         } else {
-            cutImage01 = tempImage(cv::Rect(cv::Point(0,0), cv::Point(image01.cols, originalLinkPoint.y + resultMat.rows - 1344)));
+            cutImage01 = tempImage(cv::Rect(cv::Point(0,0), cv::Point(image01.cols, originalLinkPoint.y + resultMat.rows - 1344 + 128)));
         }
         
         //Mat cutImage01 = image01(cv::Rect(cv::Point(0,0), cv::Point(image01.cols, originalLinkPoint.y)));

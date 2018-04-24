@@ -297,74 +297,135 @@
 
     __block HXPhotoModel *firstSelectModel;
     //__block BOOL already = NO;
-    NSMutableArray *selectList = [NSMutableArray arrayWithArray:self.selectedList];
-    if (self.configuration.reverseDate) {
-        [albumModel.result enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(PHAsset *asset, NSUInteger idx, BOOL * _Nonnull stop) {
-            HXPhotoModel *photoModel = [[HXPhotoModel alloc] init];
-            photoModel.clarityScale = self.configuration.clarityScale;
-            photoModel.asset = asset;
+    NSMutableArray *selectList = [NSMutableArray arrayWithArray:self.selectedList];\
+    
+    NSInteger index = 0;
+    for (PHAsset *asset in albumModel.result) {
+        HXPhotoModel *photoModel = [[HXPhotoModel alloc] init];
+        photoModel.asset = asset;
+        photoModel.clarityScale = self.configuration.clarityScale;
 
-            if (selectList.count > 0) {
-                NSString *property = @"asset";
-                NSPredicate *pred = [NSPredicate predicateWithFormat:@"%K = %@", property, asset];
-                NSArray *newArray = [selectList filteredArrayUsingPredicate:pred];
-                if (newArray.count > 0) {
-                    HXPhotoModel *model = newArray.firstObject;
-                    [selectList removeObject:model];
-                    photoModel.selected = YES;
-                    if ((model.type == HXPhotoModelMediaTypePhoto || model.type == HXPhotoModelMediaTypePhotoGif) || (model.type == HXPhotoModelMediaTypeLivePhoto || model.type == HXPhotoModelMediaTypeCameraPhoto)) {
-                        if (model.type == HXPhotoModelMediaTypeCameraPhoto) {
-                            [self.selectedCameraPhotos replaceObjectAtIndex:[self.selectedCameraPhotos indexOfObject:model] withObject:photoModel];
-                        }else {
-                            [self.selectedPhotos replaceObjectAtIndex:[self.selectedPhotos indexOfObject:model] withObject:photoModel];
-                        }
+        if (selectList.count > 0) {
+            NSString *property = @"asset";
+            NSPredicate *pred = [NSPredicate predicateWithFormat:@"%K = %@", property, asset];
+            NSArray *newArray = [selectList filteredArrayUsingPredicate:pred];
+            if (newArray.count > 0) {
+                HXPhotoModel *model = newArray.firstObject;
+                [selectList removeObject:model];
+                photoModel.selected = YES;
+                if ((model.type == HXPhotoModelMediaTypePhoto || model.type == HXPhotoModelMediaTypeCameraPhoto)) {
+                    if (model.type == HXPhotoModelMediaTypeCameraPhoto) {
+                        [self.selectedCameraPhotos replaceObjectAtIndex:[self.selectedCameraPhotos indexOfObject:model] withObject:photoModel];
+                    }else {
+                        [self.selectedPhotos replaceObjectAtIndex:[self.selectedPhotos indexOfObject:model] withObject:photoModel];
                     }
-                    [self.selectedList replaceObjectAtIndex:[self.selectedList indexOfObject:model] withObject:photoModel];
-                    photoModel.thumbPhoto = model.thumbPhoto;
-                    photoModel.previewPhoto = model.previewPhoto;
-                    photoModel.selectIndexStr = model.selectIndexStr;
-                    if (!firstSelectModel) {
-                        firstSelectModel = photoModel;
-                    }
+                }
+                [self.selectedList replaceObjectAtIndex:[self.selectedList indexOfObject:model] withObject:photoModel];
+                photoModel.thumbPhoto = model.thumbPhoto;
+                photoModel.previewPhoto = model.previewPhoto;
+                photoModel.selectIndexStr = model.selectIndexStr;
+                if (!firstSelectModel) {
+                    firstSelectModel = photoModel;
                 }
             }
-            if (asset.mediaType == PHAssetMediaTypeImage) {
-                if (asset.mediaSubtypes == PHAssetMediaSubtypePhotoScreenshot) {
-                    photoModel.isScreenShot = YES;
-                } else {
-                    photoModel.isScreenShot = NO;
-                }
+        }
+        if (asset.mediaType == PHAssetMediaTypeImage) {
+            photoModel.type = HXPhotoModelMediaTypePhoto;
+            if (asset.mediaSubtypes == PHAssetMediaSubtypePhotoScreenshot) {
                 photoModel.subType = HXPhotoModelMediaSubTypePhoto;
-                [photoArray addObject:photoModel];
-
+                photoModel.isScreenShot = YES;
+            } else {
+                photoModel.subType = HXPhotoModelMediaSubTypePhoto;
+                photoModel.isScreenShot = NO;
             }
-            photoModel.currentAlbumIndex = albumModel.index;
             
+            
+            
+            
+            //                if (!photoModel.isICloud) {
+            [photoArray addObject:photoModel];
+            //                }
+        }
+        
+        photoModel.currentAlbumIndex = albumModel.index;
+        BOOL canAddPhoto = YES;
+        if (self.configuration.filtrationICloudAsset) {
             if (!photoModel.isICloud) {
                 [allArray addObject:photoModel];
                 [previewArray addObject:photoModel];
+            }else {
+                canAddPhoto = NO;
             }
-//            BOOL canAddPhoto = YES;
-//            if (self.configuration.filtrationICloudAsset) {
-//                if (!photoModel.isICloud) {
-//                    [allArray addObject:photoModel];
-//                    [previewArray addObject:photoModel];
-//                }else {
-//                    canAddPhoto = NO;
-//                }
-//            }else {
-//                [allArray addObject:photoModel];
-//                if (photoModel.isICloud) {
-//                    if (self.configuration.downloadICloudAsset) {
-//                        [previewArray addObject:photoModel];
-//                    }
-//                }else {
-//                    [previewArray addObject:photoModel];
-//                }
-//            }
-
-        }];
+        }else {
+            [allArray addObject:photoModel];
+            
+            [previewArray addObject:photoModel];
+            
+        }
+        
+        photoModel.dateItem = allArray.count - 1;
+        photoModel.dateSection = 0;
+        
+        index++;
     }
+    /*
+    if (self.cameraList.count > 0) {
+        NSInteger index = 0;
+        NSInteger photoIndex = 0;
+        NSInteger videoIndex = 0;
+        for (HXPhotoModel *model in self.cameraList) {
+            if ([self.selectedCameraList containsObject:model]) {
+                model.selected = YES;
+                model.selectedIndex = [self.selectedList indexOfObject:model];
+                model.selectIndexStr = [NSString stringWithFormat:@"%ld",model.selectedIndex + 1];
+            }else {
+                model.selected = NO;
+                model.selectIndexStr = @"";
+                model.selectedIndex = 0;
+            }
+            model.currentAlbumIndex = albumModel.index;
+            if (self.configuration.reverseDate) {
+                [allArray insertObject:model atIndex:cameraIndex + index];
+                [previewArray insertObject:model atIndex:index];
+                if (model.subType == HXPhotoModelMediaSubTypePhoto) {
+                    [photoArray insertObject:model atIndex:photoIndex];
+                    photoIndex++;
+                }else {
+                    [videoArray insertObject:model atIndex:videoIndex];
+                    videoIndex++;
+                }
+            }else {
+                NSInteger count = allArray.count;
+                [allArray insertObject:model atIndex:count - cameraIndex];
+                [previewArray addObject:model];
+                if (model.subType == HXPhotoModelMediaSubTypePhoto) {
+                    [photoArray addObject:model];
+                }else {
+                    [videoArray addObject:model];
+                }
+            }
+            if (self.configuration.showDateSectionHeader) {
+                if (self.configuration.reverseDate) {
+                    model.dateSection = 0;
+                    HXPhotoDateModel *dateModel = dateArray.firstObject;
+                    NSMutableArray *array = [NSMutableArray arrayWithArray:dateModel.photoModelArray];
+                    [array insertObject:model atIndex:cameraIndex + index];
+                    dateModel.photoModelArray = array;
+                }else {
+                    model.dateSection = dateArray.count - 1;
+                    HXPhotoDateModel *dateModel = dateArray.lastObject;
+                    NSMutableArray *array = [NSMutableArray arrayWithArray:dateModel.photoModelArray];
+                    NSInteger count = array.count;
+                    [array insertObject:model atIndex:count - cameraIndex];
+                    dateModel.photoModelArray = array;
+                }
+            }else {
+                model.dateSection = 0;
+            }
+            index++;
+        }
+    }
+    */
     if (complete) {
         complete(allArray,previewArray,photoArray,videoArray,dateArray,firstSelectModel);
     }

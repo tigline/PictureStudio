@@ -50,6 +50,7 @@ ImgCollectionViewCellDelegate
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *aboutMeBtn;
 @property (weak, nonatomic) UIActivityIndicatorView *combineIndicatorView;
 @property (nonatomic, strong) CombineIndicatorView* indicator;
+@property (weak, nonatomic) PhotoCollectionReusableView *footerView;
 
 @end
 
@@ -170,8 +171,11 @@ ImgCollectionViewCellDelegate
                 CGFloat width = [self.groupTitleView updateTitleConstraints:NO];
                 self.groupTitleView.frame = CGRectMake(0, 0, width, 40);
                 [weakSelf.collectionView reloadData];
-                [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
-                
+//                [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+                [weakSelf.view layoutIfNeeded];
+                [weakSelf.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:weakSelf.allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+                //[weakSelf.collectionView setContentOffset:CGPointMake(0, -50) animated:NO];
+                //[weakSelf.collectionView scrollRectToVisible:CGRectMake(0, weakSelf.collectionView.contentSize.height + 50, 1, 1) animated:YES];
             });
         }];
     });
@@ -187,7 +191,7 @@ ImgCollectionViewCellDelegate
     self.manager.configuration.downloadICloudAsset = NO;
     self.manager.configuration.saveSystemAblum = YES;
     self.manager.configuration.showDateSectionHeader = NO;
-    self.manager.configuration.reverseDate = YES;
+    self.manager.configuration.reverseDate = NO;
     self.manager.configuration.navigationTitleSynchColor = YES;
     self.manager.configuration.replaceCameraViewController = NO;
     self.manager.configuration.openCamera = NO;
@@ -265,7 +269,8 @@ ImgCollectionViewCellDelegate
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
     CGFloat height = [UIScreen mainScreen].bounds.size.height;
     CGFloat viewWidth = [UIScreen mainScreen].bounds.size.width;
-    self.collectionView.frame = CGRectMake(0, 0, width, height - bottomMargin);
+    //height - kNavigationBarHeight - 50
+    self.collectionView.frame = CGRectMake(0, 0, width, height - bottomMargin - 50);
     
     if (kDevice_Is_iPhoneX) {
         bottomMargin = 21;
@@ -330,6 +335,17 @@ ImgCollectionViewCellDelegate
     if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
         //        NSSLog(@"headerSection消失");
     }
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
+        PhotoCollectionReusableView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"sectionFooterId" forIndexPath:indexPath];
+        footerView.photoCount = self.allArray.count;
+        self.footerView = footerView;
+        return footerView;
+    }
+    return nil;
 }
 
 
@@ -717,3 +733,6 @@ ImgCollectionViewCellDelegate
 
 
 @end
+
+
+
