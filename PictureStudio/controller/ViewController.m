@@ -22,7 +22,7 @@
 
 @interface ViewController ()<UICollectionViewDataSource,
 UICollectionViewDelegate,
-
+UIScrollViewDelegate,
 PhotoEditBottomViewDelegate,
 ImgCollectionViewCellDelegate
 
@@ -50,7 +50,9 @@ ImgCollectionViewCellDelegate
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *aboutMeBtn;
 @property (weak, nonatomic) UIActivityIndicatorView *combineIndicatorView;
 @property (nonatomic, strong) CombineIndicatorView* indicator;
-
+@property (weak, nonatomic) PhotoCollectionReusableView *footerView;
+@property (assign, nonatomic) __block BOOL canDetectScroll;
+@property (assign, nonatomic) CGFloat lastContentOffset;
 @end
 
 
@@ -67,6 +69,7 @@ ImgCollectionViewCellDelegate
     CGFloat width = [self.groupTitleView updateTitleConstraints:YES];
     self.groupTitleView.frame = CGRectMake(0, 0, width, 40);
     [self askForAuthorize];
+    _canDetectScroll = NO;
 }
 
 - (void)askForAuthorize
@@ -156,21 +159,23 @@ ImgCollectionViewCellDelegate
 
 - (void)getPhotoListByAblumModel:(HXAlbumModel *)albumModel {
     __weak typeof(self) weakSelf = self;
+    _canDetectScroll = NO;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
         weakSelf.albumModel = albumModel;
         [weakSelf.allArray removeAllObjects];
-        [self.manager getPhotoListWithAlbumModel:albumModel complete:^(NSArray *allList, NSArray *previewList, NSArray *photoList, NSArray *videoList, NSArray *dateList, HXPhotoModel *firstSelectModel) {
+        [weakSelf.manager getPhotoListWithAlbumModel:albumModel complete:^(NSArray *allList, NSArray *previewList, NSArray *photoList, NSArray *videoList, NSArray *dateList, HXPhotoModel *firstSelectModel) {
             weakSelf.dateArray = [NSMutableArray arrayWithArray:dateList];
             weakSelf.allArray = [NSMutableArray arrayWithArray:allList];
             weakSelf.previewArray = [NSMutableArray arrayWithArray:previewList];
             dispatch_async(dispatch_get_main_queue(), ^{
-                
+                weakSelf.collectionView.frame = CGRectMake(0, 0, SCREEN_W, SCREEN_H - ButtomViewHeight);
                 weakSelf.groupTitleView.titleButton.text = weakSelf.albumModel.albumName;
                 CGFloat width = [self.groupTitleView updateTitleConstraints:NO];
-                self.groupTitleView.frame = CGRectMake(0, 0, width, 40);
+                weakSelf.groupTitleView.frame = CGRectMake(0, 0, width, 40);
                 [weakSelf.collectionView reloadData];
-                [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+                [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+                _canDetectScroll = YES;
                 
             });
         }];
@@ -187,7 +192,7 @@ ImgCollectionViewCellDelegate
     self.manager.configuration.downloadICloudAsset = NO;
     self.manager.configuration.saveSystemAblum = YES;
     self.manager.configuration.showDateSectionHeader = NO;
-    self.manager.configuration.reverseDate = YES;
+    self.manager.configuration.reverseDate = NO;
     self.manager.configuration.navigationTitleSynchColor = YES;
     self.manager.configuration.replaceCameraViewController = NO;
     self.manager.configuration.openCamera = NO;
@@ -237,6 +242,26 @@ ImgCollectionViewCellDelegate
     [self changeSubviewFrame];
 }
 
+- (void)changeSubviewFrame {
+    
+    CGFloat bottomMargin = kBottomMargin;
+    CGFloat leftMargin = 0;
+    CGFloat rightMargin = 0;
+    CGFloat width = [UIScreen mainScreen].bounds.size.width;
+    CGFloat height = [UIScreen mainScreen].bounds.size.height;
+    CGFloat viewWidth = [UIScreen mainScreen].bounds.size.width;
+    self.collectionView.frame = CGRectMake(0, 0, width, height - ButtomViewHeight);
+    
+    if (kDevice_Is_iPhoneX) {
+        bottomMargin = 21;
+        leftMargin = 35;
+        rightMargin = 35;
+        width = [UIScreen mainScreen].bounds.size.width - 70;
+    }
+    CGFloat bottomViewY = height - ButtomViewHeight - bottomMargin;
+    self.bottomView.frame = CGRectMake(0, bottomViewY, viewWidth, ButtomViewHeight + bottomMargin);
+}
+
 - (void)aboutMe {
     
 }
@@ -257,27 +282,41 @@ ImgCollectionViewCellDelegate
     return dateItem;
 }
 
-- (void)changeSubviewFrame {
+
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     
-    CGFloat bottomMargin = kBottomMargin;
-    CGFloat leftMargin = 0;
-    CGFloat rightMargin = 0;
-    CGFloat width = [UIScreen mainScreen].bounds.size.width;
-    CGFloat height = [UIScreen mainScreen].bounds.size.height;
-    CGFloat viewWidth = [UIScreen mainScreen].bounds.size.width;
-    self.collectionView.frame = CGRectMake(0, 0, width, height - bottomMargin);
+    _lastContentOffset = scrollView.contentOffset.y;
     
-    if (kDevice_Is_iPhoneX) {
-        bottomMargin = 21;
-        leftMargin = 35;
-        rightMargin = 35;
-        width = [UIScreen mainScreen].bounds.size.width - 70;
-    }
-    CGFloat bottomViewY = height - ButtomViewHeight - bottomMargin;
-    self.bottomView.frame = CGRectMake(0, bottomViewY, viewWidth, ButtomViewHeight + bottomMargin);
 }
 
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    CGFloat contentHeight = scrollView.contentSize.height - self.view.hx_h;
+    CGFloat contentOffsetY = scrollView.contentOffset.y;
+    if (contentOffsetY < contentHeight) {
+        //向下
+        if (_canDetectScroll) {
+            self.collectionView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h);
+        }
+        //[self.navigationController setNavigationBarHidden:NO animated:YES];
+        
+    } else if (scrollView.contentOffset.y > _lastContentOffset) {
+        //向上
+        
+        if (_canDetectScroll && contentOffsetY > contentHeight) {
+            self.collectionView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h - ButtomViewHeight);
+        }
+        //[self.navigationController setNavigationBarHidden:YES animated:YES];
+
+    }
+}
+
+
+- (void)scrollViewDidChangeAdjustedContentInset:(UIScrollView *)scrollView
+{
+    
+}
 
 #pragma mark - < UICollectionViewDataSource >
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -361,6 +400,17 @@ ImgCollectionViewCellDelegate
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
 {
     return 10.0f;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
+        PhotoCollectionReusableView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"sectionFooterId" forIndexPath:indexPath];
+        footerView.photoCount = self.allArray.count;
+        self.footerView = footerView;
+        return footerView;
+    }
+    return nil;
 }
 
 #pragma mark - < ImgCollectionViewCellDelegate >
