@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 #import "LongPictureViewController.h"
-#import "CombinePicture.h"
+//#import "CombinePicture.h"
 #import <Photos/Photos.h>
 #import "FilePathUtils.h"
 #import "ImgCollectionViewCell.h"
@@ -18,7 +18,7 @@
 #import "AHAssetGroupsView.h"
 #import "UINavigationBar+Color.h"
 #import "CombineIndicatorView.h"
-
+#import "CombinePictureTest.h"
 
 @interface ViewController ()<UICollectionViewDataSource,
 UICollectionViewDelegate,
@@ -53,6 +53,7 @@ ImgCollectionViewCellDelegate
 @property (weak, nonatomic) PhotoCollectionReusableView *footerView;
 @property (assign, nonatomic) __block BOOL canDetectScroll;
 @property (assign, nonatomic) CGFloat lastContentOffset;
+
 @end
 
 
@@ -174,9 +175,10 @@ ImgCollectionViewCellDelegate
                 CGFloat width = [self.groupTitleView updateTitleConstraints:NO];
                 weakSelf.groupTitleView.frame = CGRectMake(0, 0, width, 40);
                 [weakSelf.collectionView reloadData];
+
                 [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+                [weakSelf.view layoutIfNeeded];
                 _canDetectScroll = YES;
-                
             });
         }];
     });
@@ -284,9 +286,7 @@ ImgCollectionViewCellDelegate
 
 
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    
     _lastContentOffset = scrollView.contentOffset.y;
-    
 }
 
 
@@ -369,6 +369,17 @@ ImgCollectionViewCellDelegate
     if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
         //        NSSLog(@"headerSection消失");
     }
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
+        PhotoCollectionReusableView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"sectionFooterId" forIndexPath:indexPath];
+        footerView.photoCount = self.allArray.count;
+        self.footerView = footerView;
+        return footerView;
+    }
+    return nil;
 }
 
 
@@ -503,16 +514,14 @@ ImgCollectionViewCellDelegate
               }];
         }
         
-        __weak typeof(self) weakSelf = self;
-        
+
+        __weak typeof(self) weakSelf = self; 
         dispatch_async(dispatch_get_main_queue(), ^{
             [CombinePicture CombinePictures:photoArray complete:^(UIImage *longPicture) {
                 [weakSelf.view handleLoading];
                 [weakSelf performSegueWithIdentifier:@"goLongPicture" sender:longPicture];
             }];
         });
-
-        
     }
 }
 - (void)datePhotoBottomViewDidScrollBtn {
@@ -772,3 +781,6 @@ ImgCollectionViewCellDelegate
 
 
 @end
+
+
+

@@ -25,6 +25,7 @@
     self.backgroundColor = [UIColor whiteColor];
     [self addSubview:self.titleLb];
 }
+
 - (void)setPhotoCount:(NSInteger)photoCount {
     self.titleLb.text = [NSString stringWithFormat:@"%ld 张照片",photoCount];
 }

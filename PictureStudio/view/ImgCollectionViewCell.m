@@ -113,7 +113,7 @@ return self;
     self.maskView.frame = self.bounds;
     //self.stateLb.frame = CGRectMake(0, self.hx_h - 18, self.hx_w - 4, 18);
     //self.bottomMaskLayer.frame = CGRectMake(0, self.hx_h - 25, self.hx_w, 25);
-    self.selectBtn.frame = CGRectMake(self.hx_w - 26, self.hx_w - 26, 20, 20);
+    self.selectBtn.frame = CGRectMake(self.hx_w - 28, self.hx_w - 28, 25, 25);
     self.selectMaskLayer.frame = self.bounds;
     
 }

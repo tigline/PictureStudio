@@ -54,12 +54,48 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         Mat image1,image2;
         cvtColor(image01,image1,CV_RGB2GRAY);
         cvtColor(image02,image2,CV_RGB2GRAY);
-
+        
+        
+//        ORB orb;
+//        vector<KeyPoint> keyPoints_1, keyPoints_2;
+//        Mat descriptors_1, descriptors_2;
+//
+//        orb(image1, Mat(), keyPoints_1, descriptors_1);
+//        orb(image2, Mat(), keyPoints_2, descriptors_2);
+//
+//        BruteForceMatcher<HammingLUT> matcher;
+//        vector<DMatch> matches;
+//        matcher.match(descriptors_1, descriptors_2, matches);
+//
+//        double max_dist = 0; double min_dist = 100;
+//        //-- Quick calculation of max and min distances between keypoints
+//        for( int i = 0; i < descriptors_1.cols; i++ )
+//        {
+//            double dist = matches[i].distance;
+//            if( dist < min_dist ) min_dist = dist;
+//            if( dist > max_dist ) max_dist = dist;
+//        }
+//        printf("-- Max dist : %f \n", max_dist );
+//        printf("-- Min dist : %f \n", min_dist );
+//        //-- Draw only "good" matches (i.e. whose distance is less than 0.6*max_dist )
+//        //-- PS.- radiusMatch can also be used here.
+//        std::vector< DMatch > good_matches;
+//        for( int i = 0; i < descriptors_1.cols; i++ )
+//        {
+//            if( matches[i].distance < 0.6*max_dist )
+//            {
+//                good_matches.push_back( matches[i]);
+//            }
+//        }
+        
+        //cout<<"ORB："<<totaltime_initPicture<<"秒！"<<endl;
         
         //提取特征点
+
         
         //SiftFeatureDetector siftDetector(100);  // 海塞矩阵阈值  #最耗时操作一
         FastFeatureDetector siftDetector(170);
+
         vector<KeyPoint> keyPoint1,keyPoint2;
         siftDetector.detect(image1,keyPoint1);
         siftDetector.detect(image2,keyPoint2);
@@ -71,7 +107,9 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         
         //特征点描述，为下边的特征点匹配做准备  #最耗时操作二
         //SiftDescriptorExtractor siftDescriptor;
+
         OrbDescriptorExtractor siftDescriptor;
+
         Mat imageDesc1,imageDesc2;
         siftDescriptor.compute(image1,keyPoint1,imageDesc1);
         siftDescriptor.compute(image2,keyPoint2,imageDesc2);
@@ -81,10 +119,12 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         cout<<"特征点描述，为下边的特征点匹配做准备："<<totaltime_initPicture<<"秒！"<<endl;
         
         //获得匹配特征点，并提取最优配对
+
         //FlannBasedMatcher matcher;
         BFMatcher matcher;
+
         vector<DMatch> matchePoints;
-        matcher.match(imageDesc1,imageDesc2,matchePoints,Mat());
+        matchers.match(imageDesc1,imageDesc2,matchePoints,Mat());
         sort(matchePoints.begin(),matchePoints.end()); //特征点排序
         
 
@@ -141,6 +181,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         
         //Mat imageTransform;
         //图像配准
+
 //        warpPerspective(image01,imageTransform1,adjustMat*homo,cv::Size(image02.cols,image01.rows+image02.rows));
 //        if(basedImagePoint.y > originalLinkPoint.y) {
 //            resultMat = comMatC(image01, image002, resultMat);
@@ -155,6 +196,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
 //
 //        Mat image1ROICopy = image1Overlap.clone();  //复制一份图1的重叠部分
 //        UIImage *imageTransform05 = [self imageWithCVMat:image2Overlap];
+
 //        for (int j = 0; j<image1Overlap.cols; j++)
 //        {
 //            for (int i = 0; i<image1Overlap.rows; i++)
