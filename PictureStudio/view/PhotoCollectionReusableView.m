@@ -25,10 +25,9 @@
     self.backgroundColor = [UIColor whiteColor];
     [self addSubview:self.titleLb];
 }
-- (void)setVideoCount:(NSInteger)videoCount {
 
-    self.titleLb.text = [NSString stringWithFormat:@"%ld 张照片",self.photoCount];
-   
+- (void)setPhotoCount:(NSInteger)photoCount {
+    self.titleLb.text = [NSString stringWithFormat:@"%ld 张照片",photoCount];
 }
 - (void)layoutSubviews {
     [super layoutSubviews];

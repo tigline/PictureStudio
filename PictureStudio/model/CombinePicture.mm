@@ -91,9 +91,11 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         //cout<<"ORB："<<totaltime_initPicture<<"秒！"<<endl;
         
         //提取特征点
-        //OrbFeatureDetector siftDetector(100);
-        //SiftFeatureDetector siftDetector(40);  // 海塞矩阵阈值  #最耗时操作一
-        SurfFeatureDetector siftDetector(5000);
+
+        
+        //SiftFeatureDetector siftDetector(100);  // 海塞矩阵阈值  #最耗时操作一
+        FastFeatureDetector siftDetector(170);
+
         vector<KeyPoint> keyPoint1,keyPoint2;
         siftDetector.detect(image1,keyPoint1);
         siftDetector.detect(image2,keyPoint2);
@@ -105,7 +107,9 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         
         //特征点描述，为下边的特征点匹配做准备  #最耗时操作二
         //SiftDescriptorExtractor siftDescriptor;
-        SurfDescriptorExtractor siftDescriptor;
+
+        OrbDescriptorExtractor siftDescriptor;
+
         Mat imageDesc1,imageDesc2;
         siftDescriptor.compute(image1,keyPoint1,imageDesc1);
         siftDescriptor.compute(image2,keyPoint2,imageDesc2);
@@ -115,7 +119,10 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         cout<<"特征点描述，为下边的特征点匹配做准备："<<totaltime_initPicture<<"秒！"<<endl;
         
         //获得匹配特征点，并提取最优配对
-        FlannBasedMatcher matchers;
+
+        //FlannBasedMatcher matcher;
+        BFMatcher matcher;
+
         vector<DMatch> matchePoints;
         matchers.match(imageDesc1,imageDesc2,matchePoints,Mat());
         sort(matchePoints.begin(),matchePoints.end()); //特征点排序
@@ -123,7 +130,14 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
 
         //获取排在前N个的最优匹配特征点
         vector<Point2f> imagePoints1,imagePoints2;
-        for(int i=0;i<10;i++)
+        long pointCount = 0;
+        if (matchePoints.size() > 100) {
+            pointCount = 100;
+        } else {
+            pointCount = matchePoints.size();
+        }
+        
+        for(int i=0;i<pointCount;i++)
         {
             imagePoints1.push_back(keyPoint1[matchePoints[i].queryIdx].pt);
             imagePoints2.push_back(keyPoint2[matchePoints[i].trainIdx].pt);
@@ -167,20 +181,22 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         
         //Mat imageTransform;
         //图像配准
-        warpPerspective(image01,imageTransform1,adjustMat*homo,cv::Size(image02.cols,image01.rows+image02.rows));
-        if(basedImagePoint.y > originalLinkPoint.y) {
-            resultMat = comMatC(image01, image002, resultMat);
-            continue;
-        }
-        UIImage *imageTransform06 = [self imageWithCVMat:imageTransform1];
-        Mat image1Overlap, image2Overlap; //图1和图2的重叠部分
-       // image1Overlap = image01(cv::Rect(cv::Point(0, originalLinkPoint.y - basedImagePoint.y), cv::Point(image01.cols, originalLinkPoint.y)));
-        image1Overlap = imageTransform1(cv::Rect(cv::Point(0, targetLinkPoint.y - basedImagePoint.y), cv::Point(image02.cols, targetLinkPoint.y)));
-        UIImage *imageTransform04 = [self imageWithCVMat:image1Overlap];
-        image2Overlap = image02(cv::Rect(0, 0, image1Overlap.cols, image1Overlap.rows));
 
-        Mat image1ROICopy = image1Overlap.clone();  //复制一份图1的重叠部分
-        UIImage *imageTransform05 = [self imageWithCVMat:image2Overlap];
+//        warpPerspective(image01,imageTransform1,adjustMat*homo,cv::Size(image02.cols,image01.rows+image02.rows));
+//        if(basedImagePoint.y > originalLinkPoint.y) {
+//            resultMat = comMatC(image01, image002, resultMat);
+//            continue;
+//        }
+//        UIImage *imageTransform06 = [self imageWithCVMat:imageTransform1];
+//        Mat image1Overlap, image2Overlap; //图1和图2的重叠部分
+//       // image1Overlap = image01(cv::Rect(cv::Point(0, originalLinkPoint.y - basedImagePoint.y), cv::Point(image01.cols, originalLinkPoint.y)));
+//        image1Overlap = imageTransform1(cv::Rect(cv::Point(0, targetLinkPoint.y - basedImagePoint.y), cv::Point(image02.cols, targetLinkPoint.y)));
+//        UIImage *imageTransform04 = [self imageWithCVMat:image1Overlap];
+//        image2Overlap = image02(cv::Rect(0, 0, image1Overlap.cols, image1Overlap.rows));
+//
+//        Mat image1ROICopy = image1Overlap.clone();  //复制一份图1的重叠部分
+//        UIImage *imageTransform05 = [self imageWithCVMat:image2Overlap];
+
 //        for (int j = 0; j<image1Overlap.cols; j++)
 //        {
 //            for (int i = 0; i<image1Overlap.rows; i++)
