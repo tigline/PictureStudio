@@ -8,7 +8,6 @@
 
 #import "ViewController.h"
 #import "LongPictureViewController.h"
-//#import "CombinePicture.h"
 #import <Photos/Photos.h>
 #import "FilePathUtils.h"
 #import "ImgCollectionViewCell.h"
@@ -371,17 +370,6 @@ ImgCollectionViewCellDelegate
     }
 }
 
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
-    
-    if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
-        PhotoCollectionReusableView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"sectionFooterId" forIndexPath:indexPath];
-        footerView.photoCount = self.allArray.count;
-        self.footerView = footerView;
-        return footerView;
-    }
-    return nil;
-}
-
 
 //设置每个Cell的大小
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -490,12 +478,9 @@ ImgCollectionViewCellDelegate
     if (_manager.selectedPhotoArray.count < 2) {
         
     } else {
-        
         if (_manager.selectedPhotoArray.count > 3) {
             [self.view showLoadingHUDText:@"Combining..."];
         }
-        
-        
         __block NSMutableArray *photoArray = [[NSMutableArray alloc] init];
         PHCachingImageManager *imageManager = [[PHCachingImageManager alloc] init];
         for (int i = 0; i < _manager.selectedPhotoArray.count; i++) {
@@ -513,11 +498,9 @@ ImgCollectionViewCellDelegate
                   [photoArray addObject:result];
               }];
         }
-        
-
         __weak typeof(self) weakSelf = self; 
         dispatch_async(dispatch_get_main_queue(), ^{
-            [CombinePicture CombinePictures:photoArray complete:^(UIImage *longPicture) {
+            [CombinePictureTest CombinePictures:photoArray complete:^(UIImage *longPicture) {
                 [weakSelf.view handleLoading];
                 [weakSelf performSegueWithIdentifier:@"goLongPicture" sender:longPicture];
             }];

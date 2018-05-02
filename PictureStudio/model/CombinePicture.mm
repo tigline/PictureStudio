@@ -124,7 +124,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         BFMatcher matcher;
 
         vector<DMatch> matchePoints;
-        matchers.match(imageDesc1,imageDesc2,matchePoints,Mat());
+        matcher.match(imageDesc1,imageDesc2,matchePoints,Mat());
         sort(matchePoints.begin(),matchePoints.end()); //特征点排序
         
 

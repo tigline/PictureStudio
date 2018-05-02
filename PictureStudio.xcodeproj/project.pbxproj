@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		3D7505CCECDB7A1EE388FACD /* libPods-PictureStudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D552EC3AE84972F5EBFA1999 /* libPods-PictureStudio.a */; };
 		708248A2204EC6FC000D60A3 /* LongPictureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248A0204EC6FC000D60A3 /* LongPictureViewController.m */; };
-		708248A6204EC70A000D60A3 /* CombinePicture.mm in Sources */ = {isa = PBXBuildFile; fileRef = 708248A4204EC70A000D60A3 /* CombinePicture.mm */; };
 		708248AE204ED48B000D60A3 /* FilePathUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248AD204ED48B000D60A3 /* FilePathUtils.m */; };
 		708248BE206A9103000D60A3 /* HXPhotoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248BC206A9103000D60A3 /* HXPhotoModel.m */; };
 		708248C3206A9153000D60A3 /* HXAlbumModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248BF206A9152000D60A3 /* HXAlbumModel.m */; };
@@ -25,6 +24,7 @@
 		708249002078E510000D60A3 /* PhotoEditButtomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248FF2078E510000D60A3 /* PhotoEditButtomView.m */; };
 		7082490320790E0E000D60A3 /* UIView+HXExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7082490120790E0E000D60A3 /* UIView+HXExtension.m */; };
 		7082490620790F92000D60A3 /* PhotoCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7082490520790F92000D60A3 /* PhotoCollectionReusableView.m */; };
+		708811072099FDE1003A1CF4 /* CombinePictureTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 708811062099FDE1003A1CF4 /* CombinePictureTest.mm */; };
 		70C262FB207A72EF00F65EFD /* AHAssetGroupsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70C262F9207A72EF00F65EFD /* AHAssetGroupsView.m */; };
 		70C262FC207A72EF00F65EFD /* AHAssetGroupCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 70C262FA207A72EF00F65EFD /* AHAssetGroupCell.m */; };
 		70C26300207A7C9100F65EFD /* AHAssetGroupCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 70C262FF207A7C9100F65EFD /* AHAssetGroupCell.xib */; };
@@ -61,8 +61,6 @@
 		68AFF48AE0E9AFCEE83E38DA /* Pods-PictureStudioTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PictureStudioTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PictureStudioTests/Pods-PictureStudioTests.debug.xcconfig"; sourceTree = "<group>"; };
 		708248A0204EC6FC000D60A3 /* LongPictureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LongPictureViewController.m; sourceTree = "<group>"; };
 		708248A1204EC6FC000D60A3 /* LongPictureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LongPictureViewController.h; sourceTree = "<group>"; };
-		708248A4204EC70A000D60A3 /* CombinePicture.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CombinePicture.mm; sourceTree = "<group>"; };
-		708248A5204EC70A000D60A3 /* CombinePicture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CombinePicture.h; sourceTree = "<group>"; };
 		708248A9204ECD4C000D60A3 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = PictureStudio/libjpeg.a; sourceTree = "<group>"; };
 		708248AC204ED48B000D60A3 /* FilePathUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FilePathUtils.h; sourceTree = "<group>"; };
 		708248AD204ED48B000D60A3 /* FilePathUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FilePathUtils.m; sourceTree = "<group>"; };
@@ -96,6 +94,8 @@
 		7082490220790E0E000D60A3 /* UIView+HXExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+HXExtension.h"; sourceTree = "<group>"; };
 		7082490420790F92000D60A3 /* PhotoCollectionReusableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoCollectionReusableView.h; sourceTree = "<group>"; };
 		7082490520790F92000D60A3 /* PhotoCollectionReusableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoCollectionReusableView.m; sourceTree = "<group>"; };
+		708811052099FDE1003A1CF4 /* CombinePictureTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CombinePictureTest.h; path = PictureStudio/Model/CombinePictureTest.h; sourceTree = SOURCE_ROOT; };
+		708811062099FDE1003A1CF4 /* CombinePictureTest.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CombinePictureTest.mm; path = PictureStudio/Model/CombinePictureTest.mm; sourceTree = SOURCE_ROOT; };
 		70C262F7207A72EF00F65EFD /* AHAssetGroupCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AHAssetGroupCell.h; sourceTree = "<group>"; };
 		70C262F8207A72EF00F65EFD /* AHAssetGroupsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AHAssetGroupsView.h; sourceTree = "<group>"; };
 		70C262F9207A72EF00F65EFD /* AHAssetGroupsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AHAssetGroupsView.m; sourceTree = "<group>"; };
@@ -180,8 +180,8 @@
 		708248A3204EC70A000D60A3 /* model */ = {
 			isa = PBXGroup;
 			children = (
-				708248A5204EC70A000D60A3 /* CombinePicture.h */,
-				708248A4204EC70A000D60A3 /* CombinePicture.mm */,
+				708811052099FDE1003A1CF4 /* CombinePictureTest.h */,
+				708811062099FDE1003A1CF4 /* CombinePictureTest.mm */,
 				937F74312084879800F56AFD /* HXPhotoManager.h */,
 				937F74322084879800F56AFD /* HXPhotoManager.m */,
 				708248BC206A9103000D60A3 /* HXPhotoModel.m */,
@@ -529,7 +529,6 @@
 			files = (
 				7082490320790E0E000D60A3 /* UIView+HXExtension.m in Sources */,
 				936FAC2E20200B9A00F80BCF /* ViewController.m in Sources */,
-				708248A6204EC70A000D60A3 /* CombinePicture.mm in Sources */,
 				708248C3206A9153000D60A3 /* HXAlbumModel.m in Sources */,
 				7082490620790F92000D60A3 /* PhotoCollectionReusableView.m in Sources */,
 				708248A2204EC6FC000D60A3 /* LongPictureViewController.m in Sources */,
@@ -550,6 +549,7 @@
 				70C5D18B207926A400FE5B9A /* AssetTitleView.m in Sources */,
 				936FAC3920200B9A00F80BCF /* main.m in Sources */,
 				936FAC2B20200B9A00F80BCF /* AppDelegate.m in Sources */,
+				708811072099FDE1003A1CF4 /* CombinePictureTest.mm in Sources */,
 				708248C4206A9153000D60A3 /* HXPhotoTools.m in Sources */,
 				70C5D1882079256800FE5B9A /* AssetGroupTableViewCell.m in Sources */,
 				708248FD2078BD4C000D60A3 /* UIImageView+HXExtension.m in Sources */,
