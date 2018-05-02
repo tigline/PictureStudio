@@ -426,14 +426,13 @@ ImgCollectionViewCellDelegate
 #pragma mark - <PhotoEditBottomViewDelegate>
 
 - (void)datePhotoBottomViewDidCombineBtn {
-    if (_allArray.count < 2) {
+    if (_manager.selectedPhotoArray.count < 2) {
         
     } else {
-        //无法执行
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [_indicator show:NO];
-//            [_indicator setMessage:@"Combining..."];
-//        });
+        
+        if (_manager.selectedPhotoArray.count > 3) {
+            [self.view showLoadingHUDText:@"Combining..."];
+        }
         
         
         __block NSMutableArray *photoArray = [[NSMutableArray alloc] init];
@@ -454,10 +453,16 @@ ImgCollectionViewCellDelegate
               }];
         }
         
-        [CombinePicture CombinePictures:photoArray complete:^(UIImage *longPicture) {
-            [_indicator hide];
-            [self performSegueWithIdentifier:@"goLongPicture" sender:longPicture];
-        }];
+        __weak typeof(self) weakSelf = self;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [CombinePicture CombinePictures:photoArray complete:^(UIImage *longPicture) {
+                [weakSelf.view handleLoading];
+                [weakSelf performSegueWithIdentifier:@"goLongPicture" sender:longPicture];
+            }];
+        });
+
+        
     }
 }
 - (void)datePhotoBottomViewDidScrollBtn {

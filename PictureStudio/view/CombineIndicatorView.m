@@ -180,7 +180,7 @@
             
         }
         
-        maskView.backgroundColor=[UIColor clearColor];
+        maskView.backgroundColor=[UIColor lightGrayColor];
         
         [self addSubview:maskView];
         
