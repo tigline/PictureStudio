@@ -18,6 +18,7 @@
 #import "UINavigationBar+Color.h"
 #import "CombineIndicatorView.h"
 #import "CombinePictureTest.h"
+#import "SharePictureViewController.h"
 
 @interface ViewController ()<UICollectionViewDataSource,
 UICollectionViewDelegate,
@@ -169,7 +170,7 @@ ImgCollectionViewCellDelegate
             weakSelf.allArray = [NSMutableArray arrayWithArray:allList];
             weakSelf.previewArray = [NSMutableArray arrayWithArray:previewList];
             dispatch_async(dispatch_get_main_queue(), ^{
-                weakSelf.collectionView.frame = CGRectMake(0, 0, SCREEN_W, SCREEN_H - ButtomViewHeight);
+                weakSelf.collectionView.frame = CGRectMake(0, 0, SCREEN_W, SCREEN_H - ButtomViewHeight - 10);
                 weakSelf.groupTitleView.titleButton.text = weakSelf.albumModel.albumName;
                 CGFloat width = [self.groupTitleView updateTitleConstraints:NO];
                 weakSelf.groupTitleView.frame = CGRectMake(0, 0, width, 40);
@@ -429,7 +430,7 @@ ImgCollectionViewCellDelegate
             cell.model.previewPhoto = nil;
         }
         [self.manager beforeSelectedListdeletePhotoModel:cell.model];
-        //cell.model.selectIndexStr = @"";
+        cell.model.selectIndexStr = @"";
         cell.selectMaskLayer.hidden = YES;
         selectBtn.selected = NO;
     }else {
@@ -444,12 +445,17 @@ ImgCollectionViewCellDelegate
         [self.manager beforeSelectedListAddPhotoModel:cell.model];
         cell.selectMaskLayer.hidden = NO;
         selectBtn.selected = YES;
-        //[selectBtn setTitle:cell.model.selectIndexStr forState:UIControlStateSelected];
+        [selectBtn setTitle:cell.model.selectIndexStr forState:UIControlStateSelected];
         CAKeyframeAnimation *anim = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
         anim.duration = 0.25;
         anim.values = @[@(1.2),@(0.8),@(1.1),@(0.9),@(1.0)];
         [selectBtn.layer addAnimation:anim forKey:@""];
     }
+    UIColor *bgColor;
+
+    bgColor = [UIColor colorWithRed:102/255.0 green:153/255.0 blue:1.0 alpha:1.0];
+
+    selectBtn.backgroundColor = selectBtn.selected ? bgColor : nil;
     if (!selectBtn.selected) {
         NSMutableArray *indexPathList = [NSMutableArray array];
         NSInteger index = 0;
@@ -502,7 +508,7 @@ ImgCollectionViewCellDelegate
         dispatch_async(dispatch_get_main_queue(), ^{
             [CombinePictureTest CombinePictures:photoArray complete:^(UIImage *longPicture) {
                 [weakSelf.view handleLoading];
-                [weakSelf performSegueWithIdentifier:@"goLongPicture" sender:longPicture];
+                [weakSelf performSegueWithIdentifier:@"toSharePictureView" sender:longPicture];
             }];
         });
     }
@@ -755,9 +761,9 @@ ImgCollectionViewCellDelegate
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
-    if ([[segue identifier] isEqualToString:@"goLongPicture"]) {
+    if ([[segue identifier] isEqualToString:@"toSharePictureView"]) {
         //UIImage *image = (UIImage *)sender
-        ((LongPictureViewController *)(segue.destinationViewController)).resultImage = (UIImage *)sender;
+        ((SharePictureViewController *)(segue.destinationViewController)).resultImage = (UIImage *)sender;
     }
 }
 

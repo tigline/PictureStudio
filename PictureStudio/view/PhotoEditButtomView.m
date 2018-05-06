@@ -27,24 +27,7 @@
 }
 - (void)drawRect:(CGRect)rect
 {
-    //获得处理的上下文
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    //指定直线样式
-    CGContextSetLineCap(context, kCGLineCapSquare);
-    //直线宽度
-    CGContextSetLineWidth(context, 1.0);
-    //设置颜色
-    CGContextSetRGBStrokeColor(context, 0.314, 0.486, 0.859, 1.0);
-    //开始绘制
-    CGContextBeginPath(context);
-    //画笔移动到点(31,170)
-    CGContextMoveToPoint(context, 138, 50/4);
-    //下一点
-    CGContextAddLineToPoint(context, 138, 50/2);
-    //下一点
-    CGContextAddLineToPoint(context, 159, 50/4);
-    //绘制完成
-    CGContextStrokePath(context);
+
     
     
 }
@@ -124,6 +107,15 @@
     
     self.editBtn.frame = CGRectMake(btnWidth*2, pointY, btnWidth, btnHeight);
     
+    CALayer* segmentingLineFrist = [CALayer layer];
+    segmentingLineFrist.frame = CGRectMake(btnWidth, 13, 0.6, 18);
+    segmentingLineFrist.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
+    [self.bgView.layer addSublayer:segmentingLineFrist];
+    
+    CALayer* segmentingLineSecond = [CALayer layer];
+    segmentingLineSecond.frame = CGRectMake(btnWidth*2, 13, 0.6, 18);
+    segmentingLineSecond.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
+    [self.bgView.layer addSublayer:segmentingLineSecond];
     
 }
 - (UIToolbar *)bgView {

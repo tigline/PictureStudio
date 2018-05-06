@@ -6,7 +6,7 @@ target 'PictureStudio' do
   # use_frameworks!
 
   
-
+  pod 'WechatOpenSDK'
   target 'PictureStudioTests' do
     inherit! :search_paths
     # Pods for testing

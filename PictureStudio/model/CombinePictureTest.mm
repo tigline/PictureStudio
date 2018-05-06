@@ -42,7 +42,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             //路径读取图片暂不使用
             //NSString *path = [images objectAtIndex:i];
             //imageUpCut = imread([path UTF8String]);
-            imageUpCut=imageUpOrigin(cv::Rect(cv::Point(imageUpOrigin.cols/4,128),cv::Point(imageUpOrigin.cols*0.75,imageUpOrigin.rows)));
+            imageUpCut = imageUpOrigin(cv::Rect(cv::Point(imageUpOrigin.cols/4,128),cv::Point(imageUpOrigin.cols*0.75,imageUpOrigin.rows)));
         } else {
             previewMat = resultMat;
             imageUpCut = resultMat(cv::Rect(cv::Point(resultMat.cols/4,resultMat.rows-1344+128),cv::Point(resultMat.cols*0.75,resultMat.rows)));
