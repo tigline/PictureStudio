@@ -68,7 +68,7 @@
         
         label.font=[UIFont fontWithName:@"Arial" size:14];
         
-        label.textAlignment=UITextAlignmentCenter;
+        label.textAlignment=NSTextAlignmentCenter;
         
         label.textColor=[UIColor whiteColor];
         

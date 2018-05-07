@@ -42,12 +42,12 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             //路径读取图片暂不使用
             //NSString *path = [images objectAtIndex:i];
             //imageUpCut = imread([path UTF8String]);
-            imageUpCut=imageUpOrigin(cv::Rect(cv::Point(imageUpOrigin.cols/3,128),cv::Point(imageUpOrigin.cols*0.75,imageUpOrigin.rows)));
+            imageUpCut = imageUpOrigin(cv::Rect(cv::Point(imageUpOrigin.cols/4,128),cv::Point(imageUpOrigin.cols*0.75,imageUpOrigin.rows)));
         } else {
             previewMat = resultMat;
-            imageUpCut = resultMat(cv::Rect(cv::Point(resultMat.cols/3,resultMat.rows-1344+128),cv::Point(resultMat.cols*0.75,resultMat.rows)));
-            
+            imageUpCut = resultMat(cv::Rect(cv::Point(resultMat.cols/4,resultMat.rows-1344+128),cv::Point(resultMat.cols*0.75,resultMat.rows)));
         }
+        
         if (i + 1 < images.count) {
 
             imageDownOrigin = [self cvMatFromUIImage:[images objectAtIndex:i+1]];
@@ -56,7 +56,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             //imageDownOrigin = imread([path UTF8String]);
         }
         
-        imageDownCut = imageDownOrigin(cv::Rect(cv::Point(imageDownOrigin.cols/3,0),cv::Point(imageDownOrigin.cols*0.75,imageDownOrigin.rows)));
+        imageDownCut = imageDownOrigin(cv::Rect(cv::Point(imageDownOrigin.cols/4,0),cv::Point(imageDownOrigin.cols*0.75,imageDownOrigin.rows)));
         
         //灰度图转换
         Mat imageUpGray,imageDownGray;
@@ -68,7 +68,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         //提取特征点
         //OrbFeatureDetector siftDetector(100);
         //SiftFeatureDetector siftDetector(5000);  // 海塞矩阵阈值  #最耗时操作一
-        SurfFeatureDetector siftDetector(10000);
+        SurfFeatureDetector siftDetector(9000);
         //Ptr<FeatureDetector> siftDetector = FeatureDetector::create("SURF");
         //FastFeatureDetector siftDetector(180);
         vector<KeyPoint> keyPoint_Up,keyPoint_Down;
@@ -123,11 +123,11 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             }
         }
 
-//        Mat img_matches;
-//        drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
-//                    matchePoints, img_matches, Scalar::all(-1), Scalar::all(-1),
-//                    vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
-//        UIImage *imageMatchPoints = [self imageWithCVMat:img_matches];
+        Mat img_matches;
+        drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
+                    matchePoints, img_matches, Scalar::all(-1), Scalar::all(-1),
+                    vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+        UIImage *imageMatchPoints = [self imageWithCVMat:img_matches];
         
         sort(matchePoints.begin(),matchePoints.end()); //特征点排序
         //获取排在前N个的最优匹配特征点
@@ -148,7 +148,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             }
         }
         
-        //无X轴匹配点则判定为无重合 直接拼接  该处逻辑需要完善：先用快速法 在用精确法。
+        //无X轴匹配点则判定为无重合 直接拼接  该处逻辑需要完善：先用快速法 在用精确法 或者调整海塞矩阵阈值 也可改变匹配区域。
         if(good_matchesX.size() == 0) {
             resultMat = comMatC(imageUpOrigin, imageDownOrigin, resultMat);
             curUseHeight = imageDownCut.rows;
@@ -180,10 +180,10 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         cout<<"获得匹配特征点，并提取最优配对："<<totaltime_initPicture<<"秒！"<<endl;
 
 
-//        drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
-//                    good_matchesX, img_matches, Scalar::all(-1), Scalar::all(-1),
-//                    vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
-//        UIImage *imageGoodMatchPoints = [self imageWithCVMat:img_matches];
+        drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
+                    good_matchesX, img_matches, Scalar::all(-1), Scalar::all(-1),
+                    vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+        UIImage *imageGoodMatchPoints = [self imageWithCVMat:img_matches];
         
         //获取图像1到图像2的投影映射矩阵，尺寸为3*3
 //        Mat homo=findHomography(imagePoints1,imagePoints2,CV_RANSAC);
@@ -251,7 +251,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
     
 }
 
-Mat comMatC(Mat Matrix1,Mat Matrix2,Mat &MatrixCom)
+Mat comMatC(Mat Matrix1,Mat Matrix2,Mat &MatrixCom)  //需要处理列数不同的状况
 {
     CV_Assert(Matrix1.cols==Matrix2.cols);//列数不相等，出现错误中断
     MatrixCom.create(Matrix1.rows+Matrix2.rows,Matrix1.cols,Matrix1.type());

@@ -55,6 +55,7 @@
                     <connections>
                         <outlet property="aboutMeBtn" destination="1fG-3h-Rap" id="dVP-tL-fPb"/>
                         <segue destination="MBT-LT-jHU" kind="show" identifier="goLongPicture" id="Zx8-CY-HUL"/>
+                        <segue destination="v3X-Pq-viG" kind="show" identifier="toSharePictureView" id="MyQ-kc-yCj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yQH-pw-mgd" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -88,7 +89,22 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wOc-Vn-cFk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1172" y="112.89355322338831"/>
+            <point key="canvasLocation" x="1308" y="-88"/>
+        </scene>
+        <!--Share Picture View Controller-->
+        <scene sceneID="fID-t0-Qdf">
+            <objects>
+                <viewController id="v3X-Pq-viG" customClass="SharePictureViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Tg2-jT-TNY">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="5bZ-He-J4y"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9qO-KA-emO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1308" y="608"/>
         </scene>
     </scenes>
     <resources>

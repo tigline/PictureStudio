@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		3D7505CCECDB7A1EE388FACD /* libPods-PictureStudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D552EC3AE84972F5EBFA1999 /* libPods-PictureStudio.a */; };
+		707DBA7A209EC4BF00F2FAFB /* SharePictureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 707DBA78209EC4BE00F2FAFB /* SharePictureViewController.m */; };
+		707DBA7C209EC52700F2FAFB /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707DBA7B209EC52700F2FAFB /* Photos.framework */; };
+		707DBA7F209ED61100F2FAFB /* PhotoSaveBottomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 707DBA7E209ED61100F2FAFB /* PhotoSaveBottomView.m */; };
+		707DBA88209EDBAC00F2FAFB /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 707DBA86209EDBAC00F2FAFB /* AboutViewController.m */; };
+		707DBA89209EDBAC00F2FAFB /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 707DBA87209EDBAC00F2FAFB /* AboutViewController.xib */; };
 		708248A2204EC6FC000D60A3 /* LongPictureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248A0204EC6FC000D60A3 /* LongPictureViewController.m */; };
 		708248AE204ED48B000D60A3 /* FilePathUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248AD204ED48B000D60A3 /* FilePathUtils.m */; };
 		708248BE206A9103000D60A3 /* HXPhotoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248BC206A9103000D60A3 /* HXPhotoModel.m */; };
@@ -59,6 +64,15 @@
 /* Begin PBXFileReference section */
 		0FBE47B7FBE857DD390CAF1A /* libPods-PictureStudioTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PictureStudioTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		68AFF48AE0E9AFCEE83E38DA /* Pods-PictureStudioTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PictureStudioTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PictureStudioTests/Pods-PictureStudioTests.debug.xcconfig"; sourceTree = "<group>"; };
+		707DBA78209EC4BE00F2FAFB /* SharePictureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SharePictureViewController.m; path = PictureStudio/Controller/SharePictureViewController.m; sourceTree = SOURCE_ROOT; };
+		707DBA79209EC4BE00F2FAFB /* SharePictureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SharePictureViewController.h; path = PictureStudio/Controller/SharePictureViewController.h; sourceTree = SOURCE_ROOT; };
+		707DBA7B209EC52700F2FAFB /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
+		707DBA7D209ED61100F2FAFB /* PhotoSaveBottomView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoSaveBottomView.h; sourceTree = "<group>"; };
+		707DBA7E209ED61100F2FAFB /* PhotoSaveBottomView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoSaveBottomView.m; sourceTree = "<group>"; };
+		707DBA85209EDBAC00F2FAFB /* AboutViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AboutViewController.h; path = PictureStudio/Controller/AboutViewController.h; sourceTree = SOURCE_ROOT; };
+		707DBA86209EDBAC00F2FAFB /* AboutViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AboutViewController.m; path = PictureStudio/Controller/AboutViewController.m; sourceTree = SOURCE_ROOT; };
+		707DBA87209EDBAC00F2FAFB /* AboutViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = AboutViewController.xib; path = PictureStudio/Controller/AboutViewController.xib; sourceTree = SOURCE_ROOT; };
+		707DBA8A209EF19400F2FAFB /* PrefixHeader-PictureStudio.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PrefixHeader-PictureStudio.pch"; sourceTree = "<group>"; };
 		708248A0204EC6FC000D60A3 /* LongPictureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LongPictureViewController.m; sourceTree = "<group>"; };
 		708248A1204EC6FC000D60A3 /* LongPictureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LongPictureViewController.h; sourceTree = "<group>"; };
 		708248A9204ECD4C000D60A3 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = PictureStudio/libjpeg.a; sourceTree = "<group>"; };
@@ -138,6 +152,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				707DBA7C209EC52700F2FAFB /* Photos.framework in Frameworks */,
 				937F743F20849DB200F56AFD /* opencv2.framework in Frameworks */,
 				93539C6E20808EFB00B7D29C /* libjpeg.a in Frameworks */,
 				3D7505CCECDB7A1EE388FACD /* libPods-PictureStudio.a in Frameworks */,
@@ -171,8 +186,13 @@
 			children = (
 				936FAC2C20200B9A00F80BCF /* ViewController.h */,
 				936FAC2D20200B9A00F80BCF /* ViewController.m */,
+				707DBA79209EC4BE00F2FAFB /* SharePictureViewController.h */,
+				707DBA78209EC4BE00F2FAFB /* SharePictureViewController.m */,
 				708248A1204EC6FC000D60A3 /* LongPictureViewController.h */,
 				708248A0204EC6FC000D60A3 /* LongPictureViewController.m */,
+				707DBA85209EDBAC00F2FAFB /* AboutViewController.h */,
+				707DBA86209EDBAC00F2FAFB /* AboutViewController.m */,
+				707DBA87209EDBAC00F2FAFB /* AboutViewController.xib */,
 			);
 			path = controller;
 			sourceTree = "<group>";
@@ -216,6 +236,8 @@
 				708248F62078AFAF000D60A3 /* ImgCollectionViewCell.m */,
 				708248FE2078E510000D60A3 /* PhotoEditButtomView.h */,
 				708248FF2078E510000D60A3 /* PhotoEditButtomView.m */,
+				707DBA7D209ED61100F2FAFB /* PhotoSaveBottomView.h */,
+				707DBA7E209ED61100F2FAFB /* PhotoSaveBottomView.m */,
 				70C5D1832079246100FE5B9A /* AssetGroupsTableView.h */,
 				70C5D1842079246100FE5B9A /* AssetGroupsTableView.m */,
 				70C5D1862079256800FE5B9A /* AssetGroupTableViewCell.h */,
@@ -286,6 +308,7 @@
 				708248F42078AE81000D60A3 /* view */,
 				936FAC2920200B9A00F80BCF /* AppDelegate.h */,
 				936FAC2A20200B9A00F80BCF /* AppDelegate.m */,
+				707DBA8A209EF19400F2FAFB /* PrefixHeader-PictureStudio.pch */,
 				936FAC2F20200B9A00F80BCF /* Main.storyboard */,
 				936FAC3220200B9A00F80BCF /* Assets.xcassets */,
 				936FAC3420200B9A00F80BCF /* LaunchScreen.storyboard */,
@@ -307,6 +330,7 @@
 		F25F94BCEE068E820AFA5EA8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				707DBA7B209EC52700F2FAFB /* Photos.framework */,
 				937F743E20849DB100F56AFD /* opencv2.framework */,
 				708248A9204ECD4C000D60A3 /* libjpeg.a */,
 				D552EC3AE84972F5EBFA1999 /* libPods-PictureStudio.a */,
@@ -408,6 +432,7 @@
 				70C26300207A7C9100F65EFD /* AHAssetGroupCell.xib in Resources */,
 				936FAC3320200B9A00F80BCF /* Assets.xcassets in Resources */,
 				936FAC3120200B9A00F80BCF /* Main.storyboard in Resources */,
+				707DBA89209EDBAC00F2FAFB /* AboutViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -540,17 +565,20 @@
 				708248F72078AFAF000D60A3 /* ImgCollectionViewCell.m in Sources */,
 				708248CD206A94C8000D60A3 /* NSBundle+HXWeiboPhotoPicker.m in Sources */,
 				708248BE206A9103000D60A3 /* HXPhotoModel.m in Sources */,
+				707DBA7A209EC4BF00F2FAFB /* SharePictureViewController.m in Sources */,
 				70D24BBD207FA9CA003430BA /* UINavigationBar+Color.m in Sources */,
 				708248D8206A9884000D60A3 /* UIImage+HXExtension.m in Sources */,
 				937F74332084879800F56AFD /* HXPhotoManager.m in Sources */,
 				708249002078E510000D60A3 /* PhotoEditButtomView.m in Sources */,
 				70C262FC207A72EF00F65EFD /* AHAssetGroupCell.m in Sources */,
+				707DBA7F209ED61100F2FAFB /* PhotoSaveBottomView.m in Sources */,
 				708248D5206A959D000D60A3 /* HXPhotoConfiguration.m in Sources */,
 				70C5D18B207926A400FE5B9A /* AssetTitleView.m in Sources */,
 				936FAC3920200B9A00F80BCF /* main.m in Sources */,
 				936FAC2B20200B9A00F80BCF /* AppDelegate.m in Sources */,
 				708811072099FDE1003A1CF4 /* CombinePictureTest.mm in Sources */,
 				708248C4206A9153000D60A3 /* HXPhotoTools.m in Sources */,
+				707DBA88209EDBAC00F2FAFB /* AboutViewController.m in Sources */,
 				70C5D1882079256800FE5B9A /* AssetGroupTableViewCell.m in Sources */,
 				708248FD2078BD4C000D60A3 /* UIImageView+HXExtension.m in Sources */,
 				70C262FB207A72EF00F65EFD /* AHAssetGroupsView.m in Sources */,
@@ -714,6 +742,8 @@
 					"$(PROJECT_DIR)/PictureStudio",
 					"$(PROJECT_DIR)",
 				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "PictureStudio/PrefixHeader-PictureStudio.pch";
 				INFOPLIST_FILE = PictureStudio/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -744,6 +774,8 @@
 					"$(PROJECT_DIR)/PictureStudio",
 					"$(PROJECT_DIR)",
 				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "PictureStudio/PrefixHeader-PictureStudio.pch";
 				INFOPLIST_FILE = PictureStudio/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

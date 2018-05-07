@@ -48,7 +48,7 @@ return self;
 - (void)setupUI {
     [self.contentView addSubview:self.imageView];
     [self.contentView addSubview:self.maskView];
-
+    self.selectBgColor = [UIColor colorWithRed:102/255.0 green:153/255.0 blue:1.0 alpha:1.0];
     
 }
 - (void)bottomViewPrepareAnimation {
@@ -84,7 +84,7 @@ return self;
     }
     self.selectMaskLayer.hidden = !model.selected;
     self.selectBtn.selected = model.selected;
-    //[self.selectBtn setTitle:model.selectIndexStr forState:UIControlStateSelected];
+    [self.selectBtn setTitle:model.selectIndexStr forState:UIControlStateSelected];
     self.selectBtn.backgroundColor = model.selected ? self.selectBgColor :nil;
 
     
@@ -180,14 +180,13 @@ return self;
     if (!_selectBtn) {
         _selectBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_selectBtn setBackgroundImage:[UIImage imageNamed:@"photo_unselect"] forState:UIControlStateNormal];
-        
-        [_selectBtn setBackgroundImage:[UIImage imageNamed:@"photo_select"] forState:UIControlStateSelected];
+        [_selectBtn setBackgroundImage:[[UIImage alloc] init] forState:UIControlStateSelected];
         [_selectBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
         _selectBtn.titleLabel.font = [UIFont systemFontOfSize:14];
         _selectBtn.titleLabel.adjustsFontSizeToFitWidth = YES;
         [_selectBtn addTarget:self action:@selector(didSelectClick:) forControlEvents:UIControlEventTouchUpInside];
         [_selectBtn setEnlargeEdgeWithTop:0 right:0 bottom:20 left:20];
-        _selectBtn.layer.cornerRadius = 25 / 2;
+        _selectBtn.layer.cornerRadius = 26 / 2;
     }
     return _selectBtn;
 }
