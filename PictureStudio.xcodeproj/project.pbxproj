@@ -13,6 +13,7 @@
 		707DBA7F209ED61100F2FAFB /* PhotoSaveBottomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 707DBA7E209ED61100F2FAFB /* PhotoSaveBottomView.m */; };
 		707DBA88209EDBAC00F2FAFB /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 707DBA86209EDBAC00F2FAFB /* AboutViewController.m */; };
 		707DBA89209EDBAC00F2FAFB /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 707DBA87209EDBAC00F2FAFB /* AboutViewController.xib */; };
+		707DBA8D20A0A14100F2FAFB /* ShareBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 707DBA8C20A0A14100F2FAFB /* ShareBoardView.m */; };
 		708248A2204EC6FC000D60A3 /* LongPictureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248A0204EC6FC000D60A3 /* LongPictureViewController.m */; };
 		708248AE204ED48B000D60A3 /* FilePathUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248AD204ED48B000D60A3 /* FilePathUtils.m */; };
 		708248BE206A9103000D60A3 /* HXPhotoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248BC206A9103000D60A3 /* HXPhotoModel.m */; };
@@ -73,6 +74,8 @@
 		707DBA86209EDBAC00F2FAFB /* AboutViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AboutViewController.m; path = PictureStudio/Controller/AboutViewController.m; sourceTree = SOURCE_ROOT; };
 		707DBA87209EDBAC00F2FAFB /* AboutViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = AboutViewController.xib; path = PictureStudio/Controller/AboutViewController.xib; sourceTree = SOURCE_ROOT; };
 		707DBA8A209EF19400F2FAFB /* PrefixHeader-PictureStudio.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PrefixHeader-PictureStudio.pch"; sourceTree = "<group>"; };
+		707DBA8B20A0A14100F2FAFB /* ShareBoardView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShareBoardView.h; path = PictureStudio/View/ShareBoardView.h; sourceTree = SOURCE_ROOT; };
+		707DBA8C20A0A14100F2FAFB /* ShareBoardView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ShareBoardView.m; path = PictureStudio/View/ShareBoardView.m; sourceTree = SOURCE_ROOT; };
 		708248A0204EC6FC000D60A3 /* LongPictureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LongPictureViewController.m; sourceTree = "<group>"; };
 		708248A1204EC6FC000D60A3 /* LongPictureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LongPictureViewController.h; sourceTree = "<group>"; };
 		708248A9204ECD4C000D60A3 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = PictureStudio/libjpeg.a; sourceTree = "<group>"; };
@@ -248,6 +251,8 @@
 				70C262FA207A72EF00F65EFD /* AHAssetGroupCell.m */,
 				70C262FF207A7C9100F65EFD /* AHAssetGroupCell.xib */,
 				70C262F8207A72EF00F65EFD /* AHAssetGroupsView.h */,
+				707DBA8B20A0A14100F2FAFB /* ShareBoardView.h */,
+				707DBA8C20A0A14100F2FAFB /* ShareBoardView.m */,
 				70C262F9207A72EF00F65EFD /* AHAssetGroupsView.m */,
 				937F74432084A4CB00F56AFD /* CombineIndicatorView.h */,
 				937F74442084A4CB00F56AFD /* CombineIndicatorView.m */,
@@ -534,7 +539,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-PictureStudio/Pods-PictureStudio-resources.sh",
-				"${PODS_ROOT}/TZImagePickerController/TZImagePickerController/TZImagePickerController/TZImagePickerController.bundle",
+				"${PODS_ROOT}/UMCShare/UMShare/UMSocialUI/UMSocialSDKResources.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -553,6 +558,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7082490320790E0E000D60A3 /* UIView+HXExtension.m in Sources */,
+				707DBA8D20A0A14100F2FAFB /* ShareBoardView.m in Sources */,
 				936FAC2E20200B9A00F80BCF /* ViewController.m in Sources */,
 				708248C3206A9153000D60A3 /* HXAlbumModel.m in Sources */,
 				7082490620790F92000D60A3 /* PhotoCollectionReusableView.m in Sources */,
