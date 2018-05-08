@@ -12,13 +12,13 @@
 #import "FilePathUtils.h"
 #import "ImgCollectionViewCell.h"
 #import "PhotoCollectionReusableView.h"
-#import "AssetGroupsTableView.h"
 #import "AssetTitleView.h"
 #import "AHAssetGroupsView.h"
 #import "UINavigationBar+Color.h"
 #import "CombineIndicatorView.h"
 #import "CombinePictureTest.h"
 #import "SharePictureViewController.h"
+#import "AboutViewController.h"
 
 @interface ViewController ()<UICollectionViewDataSource,
 UICollectionViewDelegate,
@@ -53,6 +53,9 @@ ImgCollectionViewCellDelegate
 @property (weak, nonatomic) PhotoCollectionReusableView *footerView;
 @property (assign, nonatomic) __block BOOL canDetectScroll;
 @property (assign, nonatomic) CGFloat lastContentOffset;
+@property (strong, nonatomic) AboutViewController *aboutViewController;
+@property (assign, nonatomic) BOOL shouldReloadAsset;
+@property (assign, nonatomic) BOOL isScreenshotNotification;
 
 @end
 
@@ -71,7 +74,68 @@ ImgCollectionViewCellDelegate
     self.groupTitleView.frame = CGRectMake(0, 0, width, 40);
     [self askForAuthorize];
     _canDetectScroll = NO;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(whenBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(whenResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userDidTakeScreenshot:)
+                                                 name:UIApplicationUserDidTakeScreenshotNotification object:nil];
+    
 }
+
+- (void)whenBecomeActive:(NSNotificationCenter *)notificaton {
+    if (_shouldReloadAsset) {
+        _shouldReloadAsset = NO;
+        if (_albumModel != nil) {
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                __weak typeof(self) weakSelf = self;
+                [self.manager getAllPhotoAndCurrentAlbums:^(HXAlbumModel *currentAlbumModel) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (currentAlbumModel) {
+                            weakSelf.assetGroupView.indexAssetsGroup = currentAlbumModel.index;
+                            [weakSelf getPhotoListByAblumModel:currentAlbumModel];
+                        }
+                    });
+                } albums:^(NSArray *albums) {
+                    weakSelf.albumModelArray = [NSMutableArray arrayWithArray:albums];
+                    
+                } AlbumName:_albumModel.albumName];
+            });
+            
+       
+        }
+    }
+}
+
+- (void)userDidTakeScreenshot:(NSNotificationCenter *)notificaton {
+    
+    _isScreenshotNotification = YES;
+    if (_albumModel != nil) {
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            __weak typeof(self) weakSelf = self;
+            [self.manager getAllPhotoAndCurrentAlbums:^(HXAlbumModel *currentAlbumModel) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (currentAlbumModel) {
+                        weakSelf.assetGroupView.indexAssetsGroup = currentAlbumModel.index;
+                        [weakSelf getPhotoListByAblumModel:currentAlbumModel];
+                    }
+                });
+            } albums:^(NSArray *albums) {
+                weakSelf.albumModelArray = [NSMutableArray arrayWithArray:albums];
+                
+            } AlbumName:_albumModel.albumName];
+        });
+        
+        
+    }
+}
+
+- (void)whenResignActive:(NSNotificationCenter *)notificaton {
+    _shouldReloadAsset = YES;
+}
+
+
 
 - (void)askForAuthorize
 {
@@ -175,8 +239,14 @@ ImgCollectionViewCellDelegate
                 CGFloat width = [self.groupTitleView updateTitleConstraints:NO];
                 weakSelf.groupTitleView.frame = CGRectMake(0, 0, width, 40);
                 [weakSelf.collectionView reloadData];
-
-                [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+                if (_isScreenshotNotification) {
+                    
+                    _isScreenshotNotification = NO;
+                } else {
+                    [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+                    
+                }
+                
                 [weakSelf.view layoutIfNeeded];
                 _canDetectScroll = YES;
             });
@@ -264,9 +334,12 @@ ImgCollectionViewCellDelegate
     self.bottomView.frame = CGRectMake(0, bottomViewY, viewWidth, ButtomViewHeight + bottomMargin);
 }
 
-- (void)aboutMe {
-    
+- (IBAction)aboutMeClicked:(id)sender {
+    _aboutViewController = [[AboutViewController alloc] initWithNibName:@"AboutViewController" bundle:nil];
+    [self.navigationController presentViewController:_aboutViewController animated:YES completion:nil];
 }
+
+
 
 - (NSInteger)dateItem:(HXPhotoModel *)model {
     NSInteger dateItem = model.dateItem;

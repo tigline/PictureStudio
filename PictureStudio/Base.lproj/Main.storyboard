@@ -50,7 +50,11 @@
                         <viewLayoutGuide key="safeArea" id="sCQ-Dc-i6Z"/>
                     </view>
                     <navigationItem key="navigationItem" id="3Me-6t-iga">
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="about" id="1fG-3h-Rap"/>
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="about" id="1fG-3h-Rap">
+                            <connections>
+                                <action selector="aboutMeClicked:" destination="rFg-mA-rbD" id="M2T-6F-0Fj"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="aboutMeBtn" destination="1fG-3h-Rap" id="dVP-tL-fPb"/>
@@ -98,17 +102,99 @@
                     <view key="view" contentMode="scaleToFill" id="Tg2-jT-TNY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1zi-rS-8Vh">
+                                <rect key="frame" x="0.0" y="594" width="375" height="73"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="wuH-ij-2jG">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="73"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OIM-kZ-9AG">
+                                            <rect key="frame" x="125" y="13" width="46" height="46"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="46" id="3vP-VF-eGN"/>
+                                                <constraint firstAttribute="height" constant="46" id="dzE-Gx-WHn"/>
+                                            </constraints>
+                                            <state key="normal" image="share_moments"/>
+                                            <connections>
+                                                <action selector="onShareMomentClicked:" destination="v3X-Pq-viG" eventType="touchUpInside" id="de3-wx-FWp"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pCf-cn-RmT">
+                                            <rect key="frame" x="46" y="13" width="46" height="46"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="46" id="K95-Nu-9Gg"/>
+                                                <constraint firstAttribute="height" constant="46" id="X7N-5B-LcL"/>
+                                            </constraints>
+                                            <state key="normal" image="share_wechat"/>
+                                            <connections>
+                                                <action selector="onShareWechatClicked:" destination="v3X-Pq-viG" eventType="touchUpInside" id="1gA-Mb-rGo"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="go6-05-rAN">
+                                            <rect key="frame" x="283" y="13" width="46" height="46"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="46" id="QW9-Y5-dtg"/>
+                                                <constraint firstAttribute="height" constant="46" id="yxq-hY-WPe"/>
+                                            </constraints>
+                                            <state key="normal" image="share_more"/>
+                                            <connections>
+                                                <action selector="onShareMoreClicked:" destination="v3X-Pq-viG" eventType="touchUpInside" id="NLl-0A-csJ"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ehg-Hk-lxH">
+                                            <rect key="frame" x="204" y="13" width="46" height="46"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="46" id="jry-pU-12g"/>
+                                                <constraint firstAttribute="height" constant="46" id="sub-0f-N1b"/>
+                                            </constraints>
+                                            <state key="normal" image="share_weibo"/>
+                                            <connections>
+                                                <action selector="onShareWeiboClicked:" destination="v3X-Pq-viG" eventType="touchUpInside" id="SbG-yZ-WZ3"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="ehg-Hk-lxH" firstAttribute="leading" secondItem="OIM-kZ-9AG" secondAttribute="trailing" constant="33" id="1aW-aA-yqW"/>
+                                        <constraint firstItem="go6-05-rAN" firstAttribute="centerY" secondItem="ehg-Hk-lxH" secondAttribute="centerY" id="6M8-TT-Zlq"/>
+                                        <constraint firstAttribute="trailing" secondItem="go6-05-rAN" secondAttribute="trailing" constant="46" id="FAE-Lz-tJZ"/>
+                                        <constraint firstItem="OIM-kZ-9AG" firstAttribute="leading" secondItem="pCf-cn-RmT" secondAttribute="trailing" constant="33" id="KN0-Pc-jWe"/>
+                                        <constraint firstItem="pCf-cn-RmT" firstAttribute="leading" secondItem="wuH-ij-2jG" secondAttribute="leading" constant="46" id="RHB-CU-ViL"/>
+                                        <constraint firstItem="go6-05-rAN" firstAttribute="leading" secondItem="ehg-Hk-lxH" secondAttribute="trailing" constant="33" id="RU7-nv-QoW"/>
+                                        <constraint firstItem="OIM-kZ-9AG" firstAttribute="centerY" secondItem="pCf-cn-RmT" secondAttribute="centerY" id="uuz-3n-OHT"/>
+                                        <constraint firstItem="pCf-cn-RmT" firstAttribute="centerY" secondItem="wuH-ij-2jG" secondAttribute="centerY" id="yp8-3y-2wP"/>
+                                        <constraint firstItem="ehg-Hk-lxH" firstAttribute="centerY" secondItem="OIM-kZ-9AG" secondAttribute="centerY" id="zLz-kg-pXc"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="73" id="6sg-7U-XRI"/>
+                                </constraints>
+                                <blurEffect style="light"/>
+                            </visualEffectView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="1zi-rS-8Vh" firstAttribute="bottom" secondItem="5bZ-He-J4y" secondAttribute="bottom" id="2az-vP-jj9"/>
+                            <constraint firstItem="1zi-rS-8Vh" firstAttribute="leading" secondItem="5bZ-He-J4y" secondAttribute="leading" id="7Qi-yd-mdy"/>
+                            <constraint firstItem="1zi-rS-8Vh" firstAttribute="trailing" secondItem="5bZ-He-J4y" secondAttribute="trailing" id="KKP-WE-BoU"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="5bZ-He-J4y"/>
                     </view>
+                    <connections>
+                        <outlet property="shareBoardView" destination="1zi-rS-8Vh" id="U9R-hc-RWl"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9qO-KA-emO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1308" y="608"/>
+            <point key="canvasLocation" x="1308" y="607.64617691154433"/>
         </scene>
     </scenes>
     <resources>
         <image name="about" width="18" height="18"/>
         <image name="no_photos" width="147" height="76"/>
+        <image name="share_moments" width="48" height="48"/>
+        <image name="share_more" width="48" height="48"/>
+        <image name="share_wechat" width="48" height="48"/>
+        <image name="share_weibo" width="48" height="48"/>
     </resources>
 </document>

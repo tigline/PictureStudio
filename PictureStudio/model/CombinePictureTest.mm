@@ -68,9 +68,9 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         //提取特征点
         //OrbFeatureDetector siftDetector(100);
         //SiftFeatureDetector siftDetector(5000);  // 海塞矩阵阈值  #最耗时操作一
-        SurfFeatureDetector siftDetector(9000);
+        //SurfFeatureDetector siftDetector(9000);
         //Ptr<FeatureDetector> siftDetector = FeatureDetector::create("SURF");
-        //FastFeatureDetector siftDetector(180);
+        FastFeatureDetector siftDetector(170);
         vector<KeyPoint> keyPoint_Up,keyPoint_Down;
         siftDetector.detect(imageUpGray,keyPoint_Up);
         siftDetector.detect(imageDownGray,keyPoint_Down);
@@ -84,8 +84,8 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         //SiftDescriptorExtractor siftDescriptor;
         //Ptr<DescriptorExtractor> siftDescriptor = DescriptorExtractor::create("FAST");
         //cv::Ptr<cv::ORB> siftDescriptor = cv::ORB::create("ORB");
-        SurfDescriptorExtractor siftDescriptor;
-        //OrbDescriptorExtractor siftDescriptor;
+        //SurfDescriptorExtractor siftDescriptor;
+        OrbDescriptorExtractor siftDescriptor;
         Mat imageDesc_Up,imageDesc_Down;
         siftDescriptor.compute(imageUpGray,keyPoint_Up,imageDesc_Up);
         siftDescriptor.compute(imageDownGray,keyPoint_Down,imageDesc_Down);
@@ -95,8 +95,8 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         cout<<"特征点描述，为下边的特征点匹配做准备："<<totaltime_initPicture<<"秒！"<<endl;
 
         //获得匹配特征点，并提取最优配对
-        FlannBasedMatcher matchers;
-        //BFMatcher matchers; //强制匹配 用于快速法
+        //FlannBasedMatcher matchers;
+        BFMatcher matchers; //强制匹配 用于快速法
         vector<DMatch> matchePoints;
         vector<DMatch> good_matches;
         //matchers.match(imageDesc_Up,imageDesc_Down,matchePoints);

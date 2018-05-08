@@ -7,16 +7,77 @@
 //
 
 #import "AboutViewController.h"
+#import "WeiboTableViewCell.h"
 
-@interface AboutViewController ()
+
+@interface AboutViewController ()<UITableViewDelegate, UITableViewDataSource>
+
+@property (weak, nonatomic) IBOutlet UIImageView *bgImageView;
+@property (weak, nonatomic) IBOutlet UIView *contantView;
+@property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
+@property (weak, nonatomic) IBOutlet UILabel *appNameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *versionLabel;
+@property (weak, nonatomic) IBOutlet UIButton *quitButton;
+@property (weak, nonatomic) IBOutlet UIView *infoContantView;
+@property (weak, nonatomic) IBOutlet UITableView *teamInfoTableView;
+@property (weak, nonatomic) IBOutlet UIButton *likeBtn;
+@property (weak, nonatomic) IBOutlet UIButton *contactBtn;
+@property (nonatomic, strong) NSMutableDictionary *teamInfoDictionary;
 
 @end
 
+#define AboutCellHeight 56
+static NSString *identifier = @"AboutTableViewCell";
 @implementation AboutViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+
+    UINib *teamInfoNib = [UINib nibWithNibName:@"WeiboTableViewCell" bundle:nil];
+    [self.teamInfoTableView registerNib:teamInfoNib forCellReuseIdentifier:identifier];
+    
+    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"teamWeiboInfo" ofType:@"plist"];
+    _teamInfoDictionary = [[NSMutableDictionary alloc] initWithContentsOfFile:plistPath];
+    _teamInfoTableView.showsHorizontalScrollIndicator = NO;
+    _teamInfoTableView.showsVerticalScrollIndicator = NO;
+    _teamInfoTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _teamInfoTableView.scrollEnabled = NO;
+    
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    _bgImageView.layer.cornerRadius = 10;
+    _bgImageView.layer.masksToBounds = YES;
+    
+    
+    _contantView.layer.cornerRadius = 10;
+    //_contantView.layer.masksToBounds = YES;
+    _contantView.layer.shadowColor = [UIColor colorWithRed:208/255.0 green:217/255.0 blue:237/255.0 alpha:1.0].CGColor;
+    _contantView.layer.shadowOpacity = 0.8f;
+    _contantView.layer.shadowOffset = CGSizeMake(0, 0);
+    
+    _infoContantView.layer.cornerRadius = 10;
+    //_infoContantView.layer.masksToBounds = YES;
+    _infoContantView.layer.shadowColor = [UIColor colorWithRed:208/255.0 green:217/255.0 blue:237/255.0 alpha:1.0].CGColor;
+    _infoContantView.layer.shadowOpacity = 0.8f;
+    _infoContantView.layer.shadowOffset = CGSizeMake(0, 0);
+    
+    _likeBtn.layer.cornerRadius = 10;
+    //_likeBtn.layer.masksToBounds = YES;
+    _likeBtn.layer.shadowColor = [UIColor colorWithRed:208/255.0 green:217/255.0 blue:237/255.0 alpha:1.0].CGColor;
+    _likeBtn.layer.shadowOpacity = 0.8f;
+    _likeBtn.layer.shadowOffset = CGSizeMake(0, 0);
+    
+    _contactBtn.layer.cornerRadius = 10;
+    _contactBtn.layer.shadowColor = [UIColor colorWithRed:208/255.0 green:217/255.0 blue:237/255.0 alpha:1.0].CGColor;
+    _contactBtn.layer.shadowOpacity = 0.8f;
+    _contactBtn.layer.shadowOffset = CGSizeMake(0, 0);
+}
+- (IBAction)quickBtnClicked:(id)sender {
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -33,5 +94,57 @@
     // Pass the selected object to the new view controller.
 }
 */
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return AboutCellHeight;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+
+    WeiboTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    
+    if (cell == nil) {
+        cell= [[[NSBundle  mainBundle]  loadNibNamed:@"WeiboTableViewCell" owner:self options:nil]  lastObject];
+    }
+    NSDictionary *weiboInfo = [_teamInfoDictionary objectForKey:[NSString stringWithFormat:@"%ld", indexPath.row]];
+    cell.titleName.text = [weiboInfo objectForKey:@"title"];
+    cell.weiboName.text = [weiboInfo objectForKey:@"name"];
+    cell.weiboLink = [weiboInfo objectForKey:@"weibo"];
+    //cell.weiboIcon.image = [UIImage imageNamed:@"share_weibo"];
+    
+    //AboutViewTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AboutViewTableViewCell"];
+    
+    
+
+    
+
+    return cell;
+}
+
+- (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 4;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    WeiboTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"sinaweibo://"]]) {
+        NSURL *URL = [NSURL URLWithString:[[NSString stringWithFormat:@"%@", cell.weiboLink] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+        
+        [[UIApplication sharedApplication] openURL:URL];
+        return;
+        
+    }
+    
+
+}
+
+
+
+
 
 @end

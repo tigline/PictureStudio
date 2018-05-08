@@ -6,7 +6,13 @@ target 'PictureStudio' do
   # use_frameworks!
 
   
-  pod 'WechatOpenSDK'
+  # pod 'WechatOpenSDK'
+  pod 'UMCCommon'
+  pod 'UMCSecurityPlugins'
+  pod 'UMCShare/UI'
+  pod 'UMCShare/Social/ReducedWeChat'
+  pod 'UMCShare/Social/ReducedSina'
+  
   target 'PictureStudioTests' do
     inherit! :search_paths
     # Pods for testing

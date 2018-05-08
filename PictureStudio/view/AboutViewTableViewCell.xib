@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="56" id="KGk-i7-Jjw" customClass="AboutViewTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="56"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM" customClass="AboutViewTableViewCell">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="55.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="atx-B7-Rjc">
+                        <rect key="frame" x="20" y="9" width="36" height="36"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="36" id="L5I-uu-qoj"/>
+                            <constraint firstAttribute="height" constant="36" id="oEo-kb-qag"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@weibo" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AAQ-0k-LAw">
+                        <rect key="frame" x="76" y="30.5" width="45" height="14.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <color key="textColor" red="0.18039215689999999" green="0.30196078430000001" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PM" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KH3-NZ-nzH">
+                        <rect key="frame" x="76" y="9" width="21" height="17"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" red="0.1803921568627451" green="0.30196078431372547" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                <constraints>
+                    <constraint firstItem="atx-B7-Rjc" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="02R-Vu-ibO"/>
+                    <constraint firstAttribute="trailing" secondItem="KH3-NZ-nzH" secondAttribute="trailing" constant="223" id="2N2-cx-OXf"/>
+                    <constraint firstItem="AAQ-0k-LAw" firstAttribute="leading" secondItem="KH3-NZ-nzH" secondAttribute="leading" id="84H-nq-nUS"/>
+                    <constraint firstAttribute="trailing" secondItem="AAQ-0k-LAw" secondAttribute="trailing" constant="199" id="Q4n-kk-cpY"/>
+                    <constraint firstItem="KH3-NZ-nzH" firstAttribute="leading" secondItem="atx-B7-Rjc" secondAttribute="trailing" constant="20" id="YU6-rT-5PI"/>
+                    <constraint firstItem="atx-B7-Rjc" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="p3Y-jr-tF7"/>
+                    <constraint firstItem="KH3-NZ-nzH" firstAttribute="top" secondItem="atx-B7-Rjc" secondAttribute="top" id="uI2-cy-5kb"/>
+                    <constraint firstItem="AAQ-0k-LAw" firstAttribute="bottom" secondItem="atx-B7-Rjc" secondAttribute="bottom" id="vGf-XK-v5D"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="titleName" destination="KH3-NZ-nzH" id="Qyv-6c-hDo"/>
+                <outlet property="weiboIcon" destination="atx-B7-Rjc" id="Z9m-mD-M8o"/>
+                <outlet property="weiboName" destination="AAQ-0k-LAw" id="deN-rh-WUR"/>
+            </connections>
+            <point key="canvasLocation" x="34" y="60"/>
+        </tableViewCell>
+    </objects>
+</document>
