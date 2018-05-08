@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>0</key>
+	<dict>
+		<key>image</key>
+		<string>shuke</string>
+		<key>name</key>
+		<string>@Vinni-Wong</string>
+		<key>title</key>
+		<string>PM</string>
+		<key>weibo</key>
+		<string></string>
+	</dict>
+	<key>1</key>
+	<dict>
+		<key>image</key>
+		<string>shuke</string>
+		<key>name</key>
+		<string>品布尔</string>
+		<key>title</key>
+		<string>UI</string>
+		<key>weibo</key>
+		<string></string>
+	</dict>
+	<key>2</key>
+	<dict>
+		<key>image</key>
+		<string>shuke</string>
+		<key>name</key>
+		<string>youTobe兵長</string>
+		<key>title</key>
+		<string>PG</string>
+		<key>weibo</key>
+		<string>sinaweibo://userinfo?uid=2291202212</string>
+	</dict>
+	<key>3</key>
+	<dict>
+		<key>image</key>
+		<string>shuke</string>
+		<key>name</key>
+		<string>付杰</string>
+		<key>title</key>
+		<string>PG</string>
+		<key>weibo</key>
+		<string>sinaweibo://userinfo?uid=2291202212</string>
+	</dict>
+</dict>
+</plist>

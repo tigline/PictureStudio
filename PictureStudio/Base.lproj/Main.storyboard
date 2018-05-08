@@ -50,7 +50,11 @@
                         <viewLayoutGuide key="safeArea" id="sCQ-Dc-i6Z"/>
                     </view>
                     <navigationItem key="navigationItem" id="3Me-6t-iga">
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="about" id="1fG-3h-Rap"/>
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="about" id="1fG-3h-Rap">
+                            <connections>
+                                <action selector="aboutMeClicked:" destination="rFg-mA-rbD" id="M2T-6F-0Fj"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="aboutMeBtn" destination="1fG-3h-Rap" id="dVP-tL-fPb"/>

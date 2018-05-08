@@ -78,7 +78,7 @@
     self.saveBtn.frame = CGRectMake(106, pointY, 165, btnHeight);
     
     
-    self.shareBtn.frame = CGRectMake(self.hx_w - btnHeight - 20, (self.bgView.size.height - btnHeight*0.75)/2, btnHeight*0.75, btnHeight*0.75);
+    self.shareBtn.frame = CGRectMake(self.hx_w - btnHeight - 20, (self.bgView.size.height - btnHeight*0.6)/2, btnHeight*0.6, btnHeight*0.6);
     
     CALayer* segmentingLineFrist = [CALayer layer];
     segmentingLineFrist.frame = CGRectMake(106, 13, 0.6, 18);
@@ -135,10 +135,10 @@
     if (!_shareBtn) {
         _shareBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         //[_shareBtn setTintColor:[UIColor clearColor]];
-        [_shareBtn setImage:[UIImage imageNamed:@"share_more"] forState:UIControlStateNormal];
+        [_shareBtn setImage:[UIImage imageNamed:@"share"] forState:UIControlStateNormal];
 
-
-        _shareBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        _shareBtn.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        //_shareBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
         [_shareBtn addTarget:self action:@selector(didShareClick) forControlEvents:UIControlEventTouchUpInside];
 
     }

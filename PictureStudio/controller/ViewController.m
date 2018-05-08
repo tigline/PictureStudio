@@ -19,6 +19,7 @@
 #import "CombineIndicatorView.h"
 #import "CombinePictureTest.h"
 #import "SharePictureViewController.h"
+#import "AboutViewController.h"
 
 @interface ViewController ()<UICollectionViewDataSource,
 UICollectionViewDelegate,
@@ -53,6 +54,7 @@ ImgCollectionViewCellDelegate
 @property (weak, nonatomic) PhotoCollectionReusableView *footerView;
 @property (assign, nonatomic) __block BOOL canDetectScroll;
 @property (assign, nonatomic) CGFloat lastContentOffset;
+@property (strong, nonatomic) AboutViewController *aboutViewController;
 
 @end
 
@@ -264,9 +266,12 @@ ImgCollectionViewCellDelegate
     self.bottomView.frame = CGRectMake(0, bottomViewY, viewWidth, ButtomViewHeight + bottomMargin);
 }
 
-- (void)aboutMe {
-    
+- (IBAction)aboutMeClicked:(id)sender {
+    _aboutViewController = [[AboutViewController alloc] initWithNibName:@"AboutViewController" bundle:nil];
+    [self.navigationController presentViewController:_aboutViewController animated:YES completion:nil];
 }
+
+
 
 - (NSInteger)dateItem:(HXPhotoModel *)model {
     NSInteger dateItem = model.dateItem;

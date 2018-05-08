@@ -62,10 +62,10 @@ static CGFloat shareAreaViewHeight = 73;//定义分享区域的高度
     [self.navigationController.navigationBar setHidden:NO];
 }
 
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
+//- (BOOL)prefersStatusBarHidden
+//{
+//    return YES;
+//}
 
 - (void)didReceiveMemoryWarning
 {
@@ -88,7 +88,7 @@ static CGFloat shareAreaViewHeight = 73;//定义分享区域的高度
 {
 //    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10*ScreenWidthRatio, kTopMargin + 10*ScreenHeightRatio, 355*ScreenWidthRatio, 517*ScreenHeightRatio)];
     
-    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h)];
+    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h - ButtomViewHeight - kBottomMargin)];
     NSLog(@"%f",ScreenHeightRatio);
     
     [self.view addSubview:self.showImageScrollView];
