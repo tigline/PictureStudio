@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		3D7505CCECDB7A1EE388FACD /* libPods-PictureStudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D552EC3AE84972F5EBFA1999 /* libPods-PictureStudio.a */; };
+		700E324B20A1C779007A23E0 /* teamWeiboInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 700E324A20A1C779007A23E0 /* teamWeiboInfo.plist */; };
+		700E324F20A1C8A0007A23E0 /* AboutViewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 700E324C20A1C89F007A23E0 /* AboutViewTableViewCell.m */; };
+		700E325020A1C8A0007A23E0 /* AboutViewTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 700E324D20A1C8A0007A23E0 /* AboutViewTableViewCell.xib */; };
+		700E325420A1E464007A23E0 /* WeiboTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 700E325220A1E464007A23E0 /* WeiboTableViewCell.xib */; };
+		700E325520A1E464007A23E0 /* WeiboTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 700E325320A1E464007A23E0 /* WeiboTableViewCell.m */; };
 		707DBA7A209EC4BF00F2FAFB /* SharePictureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 707DBA78209EC4BE00F2FAFB /* SharePictureViewController.m */; };
 		707DBA7C209EC52700F2FAFB /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707DBA7B209EC52700F2FAFB /* Photos.framework */; };
 		707DBA7F209ED61100F2FAFB /* PhotoSaveBottomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 707DBA7E209ED61100F2FAFB /* PhotoSaveBottomView.m */; };
@@ -34,8 +39,6 @@
 		70C262FB207A72EF00F65EFD /* AHAssetGroupsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70C262F9207A72EF00F65EFD /* AHAssetGroupsView.m */; };
 		70C262FC207A72EF00F65EFD /* AHAssetGroupCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 70C262FA207A72EF00F65EFD /* AHAssetGroupCell.m */; };
 		70C26300207A7C9100F65EFD /* AHAssetGroupCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 70C262FF207A7C9100F65EFD /* AHAssetGroupCell.xib */; };
-		70C5D1852079246100FE5B9A /* AssetGroupsTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70C5D1842079246100FE5B9A /* AssetGroupsTableView.m */; };
-		70C5D1882079256800FE5B9A /* AssetGroupTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 70C5D1872079256800FE5B9A /* AssetGroupTableViewCell.m */; };
 		70C5D18B207926A400FE5B9A /* AssetTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70C5D18A207926A400FE5B9A /* AssetTitleView.m */; };
 		70D24BBD207FA9CA003430BA /* UINavigationBar+Color.m in Sources */ = {isa = PBXBuildFile; fileRef = 70D24BBC207FA9CA003430BA /* UINavigationBar+Color.m */; };
 		93539C6E20808EFB00B7D29C /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 708248A9204ECD4C000D60A3 /* libjpeg.a */; };
@@ -65,6 +68,13 @@
 /* Begin PBXFileReference section */
 		0FBE47B7FBE857DD390CAF1A /* libPods-PictureStudioTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PictureStudioTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		68AFF48AE0E9AFCEE83E38DA /* Pods-PictureStudioTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PictureStudioTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PictureStudioTests/Pods-PictureStudioTests.debug.xcconfig"; sourceTree = "<group>"; };
+		700E324A20A1C779007A23E0 /* teamWeiboInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = teamWeiboInfo.plist; sourceTree = "<group>"; };
+		700E324C20A1C89F007A23E0 /* AboutViewTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AboutViewTableViewCell.m; path = PictureStudio/View/AboutViewTableViewCell.m; sourceTree = SOURCE_ROOT; };
+		700E324D20A1C8A0007A23E0 /* AboutViewTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = AboutViewTableViewCell.xib; path = ../View/AboutViewTableViewCell.xib; sourceTree = "<group>"; };
+		700E324E20A1C8A0007A23E0 /* AboutViewTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AboutViewTableViewCell.h; path = PictureStudio/View/AboutViewTableViewCell.h; sourceTree = SOURCE_ROOT; };
+		700E325120A1E464007A23E0 /* WeiboTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeiboTableViewCell.h; path = PictureStudio/View/WeiboTableViewCell.h; sourceTree = SOURCE_ROOT; };
+		700E325220A1E464007A23E0 /* WeiboTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = WeiboTableViewCell.xib; path = PictureStudio/View/WeiboTableViewCell.xib; sourceTree = SOURCE_ROOT; };
+		700E325320A1E464007A23E0 /* WeiboTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeiboTableViewCell.m; path = PictureStudio/View/WeiboTableViewCell.m; sourceTree = SOURCE_ROOT; };
 		707DBA78209EC4BE00F2FAFB /* SharePictureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SharePictureViewController.m; path = PictureStudio/Controller/SharePictureViewController.m; sourceTree = SOURCE_ROOT; };
 		707DBA79209EC4BE00F2FAFB /* SharePictureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SharePictureViewController.h; path = PictureStudio/Controller/SharePictureViewController.h; sourceTree = SOURCE_ROOT; };
 		707DBA7B209EC52700F2FAFB /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
@@ -118,10 +128,6 @@
 		70C262F9207A72EF00F65EFD /* AHAssetGroupsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AHAssetGroupsView.m; sourceTree = "<group>"; };
 		70C262FA207A72EF00F65EFD /* AHAssetGroupCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AHAssetGroupCell.m; sourceTree = "<group>"; };
 		70C262FF207A7C9100F65EFD /* AHAssetGroupCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AHAssetGroupCell.xib; sourceTree = "<group>"; };
-		70C5D1832079246100FE5B9A /* AssetGroupsTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AssetGroupsTableView.h; sourceTree = "<group>"; };
-		70C5D1842079246100FE5B9A /* AssetGroupsTableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AssetGroupsTableView.m; sourceTree = "<group>"; };
-		70C5D1862079256800FE5B9A /* AssetGroupTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AssetGroupTableViewCell.h; sourceTree = "<group>"; };
-		70C5D1872079256800FE5B9A /* AssetGroupTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AssetGroupTableViewCell.m; sourceTree = "<group>"; };
 		70C5D189207926A400FE5B9A /* AssetTitleView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AssetTitleView.h; sourceTree = "<group>"; };
 		70C5D18A207926A400FE5B9A /* AssetTitleView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AssetTitleView.m; sourceTree = "<group>"; };
 		70D24BBB207FA9CA003430BA /* UINavigationBar+Color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UINavigationBar+Color.h"; sourceTree = "<group>"; };
@@ -241,21 +247,23 @@
 				708248FF2078E510000D60A3 /* PhotoEditButtomView.m */,
 				707DBA7D209ED61100F2FAFB /* PhotoSaveBottomView.h */,
 				707DBA7E209ED61100F2FAFB /* PhotoSaveBottomView.m */,
-				70C5D1832079246100FE5B9A /* AssetGroupsTableView.h */,
-				70C5D1842079246100FE5B9A /* AssetGroupsTableView.m */,
-				70C5D1862079256800FE5B9A /* AssetGroupTableViewCell.h */,
-				70C5D1872079256800FE5B9A /* AssetGroupTableViewCell.m */,
+				700E324E20A1C8A0007A23E0 /* AboutViewTableViewCell.h */,
+				700E324C20A1C89F007A23E0 /* AboutViewTableViewCell.m */,
+				700E324D20A1C8A0007A23E0 /* AboutViewTableViewCell.xib */,
 				70C5D189207926A400FE5B9A /* AssetTitleView.h */,
 				70C5D18A207926A400FE5B9A /* AssetTitleView.m */,
 				70C262F7207A72EF00F65EFD /* AHAssetGroupCell.h */,
 				70C262FA207A72EF00F65EFD /* AHAssetGroupCell.m */,
 				70C262FF207A7C9100F65EFD /* AHAssetGroupCell.xib */,
 				70C262F8207A72EF00F65EFD /* AHAssetGroupsView.h */,
+				70C262F9207A72EF00F65EFD /* AHAssetGroupsView.m */,
 				707DBA8B20A0A14100F2FAFB /* ShareBoardView.h */,
 				707DBA8C20A0A14100F2FAFB /* ShareBoardView.m */,
-				70C262F9207A72EF00F65EFD /* AHAssetGroupsView.m */,
 				937F74432084A4CB00F56AFD /* CombineIndicatorView.h */,
 				937F74442084A4CB00F56AFD /* CombineIndicatorView.m */,
+				700E325120A1E464007A23E0 /* WeiboTableViewCell.h */,
+				700E325320A1E464007A23E0 /* WeiboTableViewCell.m */,
+				700E325220A1E464007A23E0 /* WeiboTableViewCell.xib */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -317,6 +325,7 @@
 				936FAC2F20200B9A00F80BCF /* Main.storyboard */,
 				936FAC3220200B9A00F80BCF /* Assets.xcassets */,
 				936FAC3420200B9A00F80BCF /* LaunchScreen.storyboard */,
+				700E324A20A1C779007A23E0 /* teamWeiboInfo.plist */,
 				936FAC3720200B9A00F80BCF /* Info.plist */,
 				936FAC3820200B9A00F80BCF /* main.m */,
 			);
@@ -434,9 +443,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				936FAC3620200B9A00F80BCF /* LaunchScreen.storyboard in Resources */,
+				700E325020A1C8A0007A23E0 /* AboutViewTableViewCell.xib in Resources */,
 				70C26300207A7C9100F65EFD /* AHAssetGroupCell.xib in Resources */,
+				700E325420A1E464007A23E0 /* WeiboTableViewCell.xib in Resources */,
 				936FAC3320200B9A00F80BCF /* Assets.xcassets in Resources */,
 				936FAC3120200B9A00F80BCF /* Main.storyboard in Resources */,
+				700E324B20A1C779007A23E0 /* teamWeiboInfo.plist in Resources */,
 				707DBA89209EDBAC00F2FAFB /* AboutViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -559,12 +571,12 @@
 			files = (
 				7082490320790E0E000D60A3 /* UIView+HXExtension.m in Sources */,
 				707DBA8D20A0A14100F2FAFB /* ShareBoardView.m in Sources */,
+				700E324F20A1C8A0007A23E0 /* AboutViewTableViewCell.m in Sources */,
 				936FAC2E20200B9A00F80BCF /* ViewController.m in Sources */,
 				708248C3206A9153000D60A3 /* HXAlbumModel.m in Sources */,
 				7082490620790F92000D60A3 /* PhotoCollectionReusableView.m in Sources */,
 				708248A2204EC6FC000D60A3 /* LongPictureViewController.m in Sources */,
 				937F74452084A4CB00F56AFD /* CombineIndicatorView.m in Sources */,
-				70C5D1852079246100FE5B9A /* AssetGroupsTableView.m in Sources */,
 				708248D0206A94E2000D60A3 /* UIFont+HXExtension.m in Sources */,
 				708248AE204ED48B000D60A3 /* FilePathUtils.m in Sources */,
 				708248FA2078B3D7000D60A3 /* UIButton+Extension.m in Sources */,
@@ -584,8 +596,8 @@
 				936FAC2B20200B9A00F80BCF /* AppDelegate.m in Sources */,
 				708811072099FDE1003A1CF4 /* CombinePictureTest.mm in Sources */,
 				708248C4206A9153000D60A3 /* HXPhotoTools.m in Sources */,
+				700E325520A1E464007A23E0 /* WeiboTableViewCell.m in Sources */,
 				707DBA88209EDBAC00F2FAFB /* AboutViewController.m in Sources */,
-				70C5D1882079256800FE5B9A /* AssetGroupTableViewCell.m in Sources */,
 				708248FD2078BD4C000D60A3 /* UIImageView+HXExtension.m in Sources */,
 				70C262FB207A72EF00F65EFD /* AHAssetGroupsView.m in Sources */,
 				708248C7206A9182000D60A3 /* NSDate+HXExtension.m in Sources */,

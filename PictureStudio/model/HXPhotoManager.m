@@ -163,11 +163,114 @@
         [self.endCameraList addObject:photoModel];
     }
 }
+
+/**
+ 获取所有相册，并返回当前相册
+ 
+ 
+ */
+
+- (void)getAllPhotoAndCurrentAlbums:(void(^)(HXAlbumModel *currentAlbumModel))currentModel albums:(void(^)(NSArray *albums))albums AlbumName:(NSString *)AlbumName {
+    
+    
+    PHFetchOptions *fetchOptions = [[PHFetchOptions alloc]init];
+    PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:fetchOptions];
+    
+    
+    [smartAlbums enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(PHAssetCollection *collection, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (AlbumName) {
+            
+        
+            if ([collection.localizedTitle isEqualToString:AlbumName]) {
+                
+                // 是否按创建时间排序
+                PHFetchOptions *option = [[PHFetchOptions alloc] init];
+                option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+                
+                option.predicate = [NSPredicate predicateWithFormat:@"mediaType == %ld", PHAssetMediaTypeImage];
+                
+                // 获取照片集合
+                PHFetchResult *result = [PHAsset fetchAssetsInAssetCollection:collection options:option];
+                
+                HXAlbumModel *albumModel = [[HXAlbumModel alloc] init];
+                albumModel.count = result.count;
+                albumModel.albumName = collection.localizedTitle;
+                albumModel.result = result;
+                albumModel.index = 0;
+                if (currentModel) {
+                    currentModel(albumModel);
+                }
+                *stop = YES;
+            }
+        }else {
+            // 是否按创建时间排序
+            PHFetchOptions *option = [[PHFetchOptions alloc] init];
+            option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+            
+            option.predicate = [NSPredicate predicateWithFormat:@"mediaType == %ld", PHAssetMediaTypeImage];
+            
+            // 获取照片集合
+            PHFetchResult *result = [PHAsset fetchAssetsInAssetCollection:collection options:option];
+            
+            // 过滤掉空相册
+            if (result.count > 0 && ![[HXPhotoTools transFormPhotoTitle:collection.localizedTitle] isEqualToString:@"最近删除"]) {
+                HXAlbumModel *albumModel = [[HXAlbumModel alloc] init];
+                albumModel.count = result.count;
+                albumModel.albumName = collection.localizedTitle;
+                albumModel.result = result;
+                if ([[HXPhotoTools transFormPhotoTitle:collection.localizedTitle] isEqualToString:@"相机胶卷"] || [[HXPhotoTools transFormPhotoTitle:collection.localizedTitle] isEqualToString:@"所有照片"]) {
+                    [self.albums insertObject:albumModel atIndex:0];
+                }else {
+                    [self.albums addObject:albumModel];
+                }
+            }
+        }
+    }];
+    // 获取用户相册
+
+    PHFetchResult *userAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil];
+    [userAlbums enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(PHAssetCollection *collection, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+
+            // 是否按创建时间排序
+            PHFetchOptions *option = [[PHFetchOptions alloc] init];
+            option.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+            
+            option.predicate = [NSPredicate predicateWithFormat:@"mediaType == %ld", PHAssetMediaTypeImage];
+            
+            // 获取照片集合
+            PHFetchResult *result = [PHAsset fetchAssetsInAssetCollection:collection options:option];
+            
+            // 过滤掉空相册
+            if (result.count > 0) {
+                HXAlbumModel *albumModel = [[HXAlbumModel alloc] init];
+                albumModel.count = result.count;
+                albumModel.albumName = [HXPhotoTools transFormPhotoTitle:collection.localizedTitle];
+                albumModel.result = result;
+                [self.albums addObject:albumModel];
+            }
+        
+        
+    }];
+    for (int i = 0 ; i < self.albums.count; i++) {
+        HXAlbumModel *model = self.albums[i];
+        model.index = i;
+        //        NSPredicate *pred = [NSPredicate predicateWithFormat:@"currentAlbumIndex = %d", i];
+        //        NSArray *newArray = [self.selectedList filteredArrayUsingPredicate:pred];
+        //        model.selectedCount = newArray.count;
+    }
+    if (albums) {
+        albums(self.albums);
+    }
+}
+
 /**
  获取系统所有相册
  
  @param albums 相册集合
  */
+
+
 - (void)getAllPhotoAlbums:(void(^)(HXAlbumModel *firstAlbumModel))firstModel albums:(void(^)(NSArray *albums))albums isFirst:(BOOL)isFirst {
     if (self.albums.count > 0) [self.albums removeAllObjects];
 

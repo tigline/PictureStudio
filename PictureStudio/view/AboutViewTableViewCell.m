@@ -8,23 +8,24 @@
 
 #import "AboutViewTableViewCell.h"
 
+
 @implementation AboutViewTableViewCell
 
-
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        self.accessoryType = UITableViewCellAccessoryNone;
-
-    }
-    return self;
-}
+//
+//- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+//{
+//    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+//    if (self) {
+//        self.accessoryType = UITableViewCellAccessoryNone;
+//
+//    }
+//    return self;
+//}
 
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
-    self.backgroundColor = UIColor.clearColor;
+    //self.backgroundColor = UIColor.clearColor;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

@@ -74,7 +74,7 @@ typedef enum : NSUInteger {
  */
 @property (strong, nonatomic) NSArray<NSString *> *networkPhotoUrls;
 
-
+- (void)getAllPhotoAndCurrentAlbums:(void(^)(HXAlbumModel *currentAlbumModel))currentModel albums:(void(^)(NSArray *albums))albums AlbumName:(NSString *)AlbumName;
 /**
  获取系统所有相册
  

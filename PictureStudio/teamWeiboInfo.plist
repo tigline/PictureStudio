@@ -11,25 +11,25 @@
 		<key>title</key>
 		<string>PM</string>
 		<key>weibo</key>
-		<string></string>
+		<string>sinaweibo://userinfo?uid=1808884742</string>
 	</dict>
 	<key>1</key>
 	<dict>
 		<key>image</key>
 		<string>shuke</string>
 		<key>name</key>
-		<string>品布尔</string>
+		<string>@品布尔</string>
 		<key>title</key>
 		<string>UI</string>
 		<key>weibo</key>
-		<string></string>
+		<string>sinaweibo://userinfo?uid=2046249837</string>
 	</dict>
 	<key>2</key>
 	<dict>
 		<key>image</key>
 		<string>shuke</string>
 		<key>name</key>
-		<string>youTobe兵長</string>
+		<string>@youTobe兵長</string>
 		<key>title</key>
 		<string>PG</string>
 		<key>weibo</key>
@@ -40,7 +40,7 @@
 		<key>image</key>
 		<string>shuke</string>
 		<key>name</key>
-		<string>付杰</string>
+		<string>@付杰</string>
 		<key>title</key>
 		<string>PG</string>
 		<key>weibo</key>
