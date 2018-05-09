@@ -573,6 +573,26 @@ ImgCollectionViewCellDelegate
 }
 - (void)datePhotoBottomViewDidScrollBtn {
     
+    __block NSMutableArray *photoArray = [[NSMutableArray alloc] init];
+    PHCachingImageManager *imageManager = [[PHCachingImageManager alloc] init];
+    for (int i = 0; i < _manager.selectedPhotoArray.count; i++) {
+        HXPhotoModel *model;
+        model = _manager.selectedPhotoArray[i];
+        PHAsset *phAsset = model.asset;
+        PHImageRequestOptions * options=[[PHImageRequestOptions alloc]init];
+        options.resizeMode = PHImageRequestOptionsResizeModeFast;
+        options.synchronous=YES;
+        [imageManager requestImageForAsset:phAsset targetSize:PHImageManagerMaximumSize
+                               contentMode:PHImageContentModeDefault
+                                   options:options
+                             resultHandler:^(UIImage *result, NSDictionary *info)
+         {
+             [photoArray addObject:result];
+         }];
+    }
+    
+    [self performSegueWithIdentifier:@"goLongPicture" sender:photoArray];
+    
 }
 - (void)datePhotoBottomViewDidEditBtn {
     
@@ -825,6 +845,8 @@ ImgCollectionViewCellDelegate
     if ([[segue identifier] isEqualToString:@"toSharePictureView"]) {
         //UIImage *image = (UIImage *)sender
         ((SharePictureViewController *)(segue.destinationViewController)).resultImage = (UIImage *)sender;
+    } else if ([[segue identifier] isEqualToString:@"goLongPicture"]) {
+        ((LongPictureViewController *)(segue.destinationViewController)).imageArray = (NSArray *)sender;
     }
 }
 
