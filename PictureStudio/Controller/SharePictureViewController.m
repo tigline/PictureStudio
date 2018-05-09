@@ -17,15 +17,9 @@
 
 #define URL_APPID @"wx3b864b92dca2bf8a"
 #define URL_SECRET @"e998d19d22428e70c520f36a9c6f0e41"
-static CGFloat shareAreaViewHeight = 73;//定义分享区域的高度
+//static CGFloat shareAreaViewHeight = 73;//定义分享区域的高度
 
-#define SHARE_IMAGE_VIEW_HEIGHT         45     //定义分享图片的直径
-#define SAVE_VIEW_HEIGHT         45     //定义保存区域的高度
-#define SAVE_IMAGE_VIEW_HEIGHT         20    //定义保存图片3个小icon的高度
 
-#define ScreenWidthRatio  ([UIScreen mainScreen].bounds.size.width / 375.0)
-#define ScreenHeightRatio (kDevice_Is_iPhoneX ? (([UIScreen mainScreen].bounds.size.height - kBottomMargin -44)/ (667.0-20)) : ([UIScreen mainScreen].bounds.size.height / 667.0))
-#define AdaptedWidthValue(x)  (ceilf((x) * ScreenWidthRatio))
 @interface SharePictureViewController ()<WXDelegate,PhotoSaveBottomViewDelegate>
 {
     AppDelegate *appdelegate;
@@ -88,7 +82,7 @@ static CGFloat shareAreaViewHeight = 73;//定义分享区域的高度
 {
 //    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10*ScreenWidthRatio, kTopMargin + 10*ScreenHeightRatio, 355*ScreenWidthRatio, 517*ScreenHeightRatio)];
     
-    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10, kTopMargin + 20, self.view.hx_w - 20, self.view.hx_h - ButtomViewHeight - kBottomMargin - 20)];
+    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10, kTopMargin + 10, self.view.hx_w - 20, self.view.hx_h - ButtomViewHeight - kBottomMargin - 10)];
     
     
     NSLog(@"%f",ScreenHeightRatio);
@@ -118,9 +112,9 @@ static CGFloat shareAreaViewHeight = 73;//定义分享区域的高度
     }
     self.showImageScrollView.showsVerticalScrollIndicator = NO;
     self.showImageScrollView.showsHorizontalScrollIndicator = NO;
-    self.showImageScrollView.layer.shadowColor = [UIColor colorWithRed:208/255.0 green:217/255.0 blue:237/255.0 alpha:1.0].CGColor;
+    self.showImageScrollView.layer.shadowColor = [UIColor lightGrayColor].CGColor;
     self.showImageScrollView.layer.shadowOpacity = 0.8f;
-    self.showImageScrollView.layer.shadowOffset = CGSizeMake(0, 5);
+    self.showImageScrollView.layer.shadowOffset = CGSizeMake(0, 0);
 }
 
 
@@ -140,11 +134,12 @@ static CGFloat shareAreaViewHeight = 73;//定义分享区域的高度
     [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:self completion:^(id data, NSError *error) {
         if (error) {
             NSLog(@"************Share fail with error %@*********",error);
+            if ([error.localizedDescription containsString:@"2008"]) {
+                [self showShareError:platformType];
+            }
         }else{
             NSLog(@"response data is %@",data);
-
             [self shareReturnByCode:0];
-            
         }
     }];
 }
@@ -275,6 +270,25 @@ static CGFloat shareAreaViewHeight = 73;//定义分享区域的高度
     [successAlertController addAction:defaultAction];
     [self presentViewController:successAlertController animated:YES completion:nil];
 }
+
+- (void)showShareError:(UMSocialPlatformType)platformType
+{
+    NSString *strTitle = @"未安装该应用";
+    if (platformType == UMSocialPlatformType_WechatSession || platformType == UMSocialPlatformType_WechatTimeLine) {
+        strTitle = @"未安装微信";
+    } else if(platformType == UMSocialPlatformType_Sina) {
+        strTitle = @"未安装微博";
+    }
+    UIAlertController* successAlertController = [UIAlertController alertControllerWithTitle:strTitle
+                                                                                    message:nil
+                                                                             preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                          }];
+    [successAlertController addAction:defaultAction];
+    [self presentViewController:successAlertController animated:YES completion:nil];
+}
+
 -(void)loginSuccessByCode:(NSString *)code
 {}
 

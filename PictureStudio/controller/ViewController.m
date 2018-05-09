@@ -76,42 +76,30 @@ ImgCollectionViewCellDelegate
     _canDetectScroll = NO;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(whenBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(whenResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(userDidTakeScreenshot:)
-                                                 name:UIApplicationUserDidTakeScreenshotNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidTakeScreenshot:)name:UIApplicationUserDidTakeScreenshotNotification object:nil];
     
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
 }
 
 - (void)whenBecomeActive:(NSNotificationCenter *)notificaton {
     if (_shouldReloadAsset) {
         _shouldReloadAsset = NO;
-        if (_albumModel != nil) {
-            
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                __weak typeof(self) weakSelf = self;
-                [self.manager getAllPhotoAndCurrentAlbums:^(HXAlbumModel *currentAlbumModel) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (currentAlbumModel) {
-                            weakSelf.assetGroupView.indexAssetsGroup = currentAlbumModel.index;
-                            [weakSelf getPhotoListByAblumModel:currentAlbumModel];
-                        }
-                    });
-                } albums:^(NSArray *albums) {
-                    weakSelf.albumModelArray = [NSMutableArray arrayWithArray:albums];
-                    
-                } AlbumName:_albumModel.albumName];
-            });
-            
-       
-        }
+        [self refreshCurrentAssets];
     }
 }
 
 - (void)userDidTakeScreenshot:(NSNotificationCenter *)notificaton {
     
     _isScreenshotNotification = YES;
+    [self refreshCurrentAssets];
+}
+
+- (void)refreshCurrentAssets {
     if (_albumModel != nil) {
-        
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             __weak typeof(self) weakSelf = self;
             [self.manager getAllPhotoAndCurrentAlbums:^(HXAlbumModel *currentAlbumModel) {
@@ -123,11 +111,8 @@ ImgCollectionViewCellDelegate
                 });
             } albums:^(NSArray *albums) {
                 weakSelf.albumModelArray = [NSMutableArray arrayWithArray:albums];
-                
             } AlbumName:_albumModel.albumName];
         });
-        
-        
     }
 }
 
@@ -829,6 +814,9 @@ ImgCollectionViewCellDelegate
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    [[NSNotificationCenter defaultCenter] removeObserver:UIApplicationDidBecomeActiveNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:UIApplicationWillResignActiveNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:UIApplicationUserDidTakeScreenshotNotification];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

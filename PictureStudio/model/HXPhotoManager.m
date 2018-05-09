@@ -172,6 +172,7 @@
 
 - (void)getAllPhotoAndCurrentAlbums:(void(^)(HXAlbumModel *currentAlbumModel))currentModel albums:(void(^)(NSArray *albums))albums AlbumName:(NSString *)AlbumName {
     
+    if (self.albums.count > 0) [self.albums removeAllObjects];
     
     PHFetchOptions *fetchOptions = [[PHFetchOptions alloc]init];
     PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:fetchOptions];
@@ -196,7 +197,7 @@
                 albumModel.count = result.count;
                 albumModel.albumName = collection.localizedTitle;
                 albumModel.result = result;
-                albumModel.index = 0;
+                albumModel.index = idx;
                 if (currentModel) {
                     currentModel(albumModel);
                 }

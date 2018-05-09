@@ -138,6 +138,8 @@ static NSString *identifier = @"AboutTableViewCell";
         [[UIApplication sharedApplication] openURL:URL];
         return;
         
+    } else {
+        //用浏览器访问微博
     }
     
 
