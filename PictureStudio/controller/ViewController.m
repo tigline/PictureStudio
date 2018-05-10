@@ -56,6 +56,7 @@ ImgCollectionViewCellDelegate
 @property (strong, nonatomic) AboutViewController *aboutViewController;
 @property (assign, nonatomic) BOOL shouldReloadAsset;
 @property (assign, nonatomic) BOOL isScreenshotNotification;
+@property (assign, nonatomic) BOOL isLaunch;
 
 @end
 
@@ -131,6 +132,8 @@ ImgCollectionViewCellDelegate
                 [self setPhotoManager];
                 [self setupUI];
                 [self getAlbumModelList:YES];
+                _isLaunch = YES;
+                
             });
         }else{
             NSLog(@"Denied or Restricted");
@@ -225,15 +228,19 @@ ImgCollectionViewCellDelegate
                 weakSelf.groupTitleView.frame = CGRectMake(0, 0, width, 40);
                 [weakSelf.collectionView reloadData];
                 if (_isScreenshotNotification) {
-                    
                     _isScreenshotNotification = NO;
                 } else {
                     [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
-                    
                 }
-                
                 [weakSelf.view layoutIfNeeded];
                 _canDetectScroll = YES;
+                
+                if (weakSelf.isLaunch && [weakSelf.manager shouldShowTipView]) {
+                    [weakSelf showTipView];
+                    weakSelf.isLaunch = NO;
+                }
+                
+                
             });
         }];
     });
@@ -513,7 +520,7 @@ ImgCollectionViewCellDelegate
 
     bgColor = [UIColor colorWithRed:102/255.0 green:153/255.0 blue:1.0 alpha:1.0];
 
-    selectBtn.backgroundColor = selectBtn.selected ? bgColor : nil;
+    //selectBtn.backgroundColor = selectBtn.selected ? bgColor : nil;
     if (!selectBtn.selected) {
         NSMutableArray *indexPathList = [NSMutableArray array];
         NSInteger index = 0;
@@ -571,6 +578,22 @@ ImgCollectionViewCellDelegate
         });
     }
 }
+
+- (void)datePhotoBottomViewDidClearBtn {
+    
+    for (HXPhotoModel *model in [self.manager selectedArray]) {
+        if (model.dateCellIsVisible) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[self dateItem:model] inSection:model.dateSection];
+            ImgCollectionViewCell *cell = (ImgCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+            cell.model.selectIndexStr = @"";
+            cell.selectMaskLayer.hidden = YES;
+            cell.selectBtn.selected = NO;
+        }
+    }
+    [self.manager clearSelectedList];
+    self.bottomView.selectCount = [self.manager selectedCount];
+}
+
 - (void)datePhotoBottomViewDidScrollBtn {
     
 }
@@ -817,6 +840,19 @@ ImgCollectionViewCellDelegate
     [[NSNotificationCenter defaultCenter] removeObserver:UIApplicationDidBecomeActiveNotification];
     [[NSNotificationCenter defaultCenter] removeObserver:UIApplicationWillResignActiveNotification];
     [[NSNotificationCenter defaultCenter] removeObserver:UIApplicationUserDidTakeScreenshotNotification];
+}
+
+- (void)showTipView {
+    NSString *strTitle = @"操作提示";
+    NSString *message = @"拼接长截图请选择本机两张及以上截图";
+    UIAlertController* successAlertController = [UIAlertController alertControllerWithTitle:strTitle
+                                                                                    message:message
+                                                                             preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                          }];
+    [successAlertController addAction:defaultAction];
+    [self presentViewController:successAlertController animated:YES completion:nil];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

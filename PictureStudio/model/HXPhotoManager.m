@@ -76,6 +76,18 @@
     }
     return _configuration;
 }
+
+- (BOOL)shouldShowTipView
+{
+    NSUserDefaults *defaults = [[NSUserDefaults alloc]init];
+    if ([[defaults objectForKey:@"isFirstLaunch"] isEqualToString:@"NO"]) {
+        return NO;
+    } else {
+        [defaults setObject:@"NO" forKey:@"isFirstLaunch"];
+        return YES;
+    }
+}
+
 - (void)setLocalImageList:(NSArray *)localImageList {
     _localImageList = localImageList;
     if (![localImageList.firstObject isKindOfClass:[UIImage class]]) {
@@ -564,6 +576,10 @@
 }
 - (NSInteger)selectedPhotoCount {
     return self.selectedPhotos.count;
+}
+
+- (void)deleteItemAtFirst {
+    [self.selectedList removeObjectAtIndex:0];
 }
 
 - (NSArray *)selectedArray {

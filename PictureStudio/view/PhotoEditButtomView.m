@@ -13,6 +13,7 @@
 @property (strong, nonatomic) UIButton *combineBtn;
 @property (strong, nonatomic) UIButton *scrollBtn;
 @property (strong, nonatomic) UIButton *editBtn;
+@property (strong, nonatomic) UIButton *clearBtn;
 @end
 
 @implementation PhotoEditButtomView
@@ -35,9 +36,10 @@
     [self setBackgroundColor:[UIColor clearColor]];
     self.clipsToBounds = YES;
     [self addSubview:self.bgView];
+    [self addSubview:self.clearBtn];
     [self addSubview:self.combineBtn];
-    [self addSubview:self.scrollBtn];
-    [self addSubview:self.editBtn];
+//    [self addSubview:self.scrollBtn];
+//    [self addSubview:self.editBtn];
     
 }
 - (void)setManager:(HXPhotoManager *)manager {
@@ -48,10 +50,17 @@
     [self.scrollBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
     [self.editBtn setTitleColor:self.manager.configuration.themeColor forState:UIControlStateNormal];
     [self.editBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+    [self.clearBtn setTitleColor:self.manager.configuration.themeColor forState:UIControlStateNormal];
+    [self.clearBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
 
 }
 - (void)setSelectCount:(NSInteger)selectCount {
     _selectCount = selectCount;
+    if (selectCount > 0) {
+        self.clearBtn.enabled = YES;
+    } else {
+        self.clearBtn.enabled = NO;
+    }
     
     if(selectCount == 1) {
         self.combineBtn.enabled = NO;
@@ -89,6 +98,11 @@
         [self.delegate datePhotoBottomViewDidScrollBtn];
     }
 }
+- (void)didClearClick {
+    if ([self.delegate respondsToSelector:@selector(datePhotoBottomViewDidClearBtn)]) {
+        [self.delegate datePhotoBottomViewDidClearBtn];
+    }
+}
 
 
 - (void)layoutSubviews {
@@ -96,15 +110,26 @@
     
     self.bgView.frame = self.bounds;
     
+    CGFloat btnWidth = self.bgView.frame.size.width/4;
+    CGFloat pointY = (self.bgView.size.height - btnHeight)/2;
+    
+    
+    self.clearBtn.frame = CGRectMake(0, pointY, btnWidth, btnHeight);
+    
+    self.combineBtn.frame = CGRectMake(btnWidth, pointY, btnWidth*3, btnHeight);
+    
+    CALayer* segmentingLineFrist = [CALayer layer];
+    segmentingLineFrist.frame = CGRectMake(btnWidth, 13, 0.6, 18);
+    segmentingLineFrist.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
+    [self.bgView.layer addSublayer:segmentingLineFrist];
+    
+    
+    /* 完整版本 按钮位置
     CGFloat btnWidth = self.bgView.frame.size.width/3;
     CGFloat pointY = (self.bgView.size.height - btnHeight)/2;
     
     self.combineBtn.frame = CGRectMake(0, pointY, btnWidth, btnHeight);
-    self.combineBtn.backgroundColor = [UIColor clearColor];
-    
     self.scrollBtn.frame = CGRectMake(btnWidth, pointY, btnWidth, btnHeight);
-    
-    
     self.editBtn.frame = CGRectMake(btnWidth*2, pointY, btnWidth, btnHeight);
     
     CALayer* segmentingLineFrist = [CALayer layer];
@@ -116,6 +141,8 @@
     segmentingLineSecond.frame = CGRectMake(btnWidth*2, 13, 0.6, 18);
     segmentingLineSecond.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
     [self.bgView.layer addSublayer:segmentingLineSecond];
+    */
+    
     
 }
 - (UIToolbar *)bgView {
@@ -125,6 +152,26 @@
     }
     return _bgView;
 }
+
+- (UIButton *)clearBtn {
+    if (!_clearBtn) {
+        _clearBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        
+        self.bgView.frame = self.bounds;
+        [_clearBtn setImage:[UIImage imageNamed:@"cancel"] forState:UIControlStateNormal];
+        //_clearBtn.imageView.contentMode = UIViewContentModeCenter;
+        //[_clearBtn setImage:[UIImage imageNamed:@"tab_combine"] forState:UIControlStateDisabled];
+        [_clearBtn setTitle:@"Clear" forState:UIControlStateNormal];
+        _clearBtn.titleLabel.font = [UIFont systemFontOfSize:13];
+        _clearBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 0);
+        _clearBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 0);
+        _clearBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        [_clearBtn addTarget:self action:@selector(didClearClick) forControlEvents:UIControlEventTouchUpInside];
+        _clearBtn.enabled = NO;
+    }
+    return _clearBtn;
+}
+
 - (UIButton *)combineBtn {
     if (!_combineBtn) {
         _combineBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -133,10 +180,10 @@
         [_combineBtn setImage:[UIImage imageNamed:@"tab_combine_active"] forState:UIControlStateNormal];
         [_combineBtn setImage:[UIImage imageNamed:@"tab_combine"] forState:UIControlStateDisabled];
         [_combineBtn setTitle:@"Combine" forState:UIControlStateNormal];
-        _combineBtn.titleLabel.font = [UIFont systemFontOfSize:13];
-        _combineBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 0);
-        _combineBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 30, 0, 0);
-        _combineBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        _combineBtn.titleLabel.font = [UIFont systemFontOfSize:17];
+        _combineBtn.imageEdgeInsets = UIEdgeInsetsMake(0, -20, 0, 0);
+        _combineBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
+        _combineBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_combineBtn addTarget:self action:@selector(didCombineClick) forControlEvents:UIControlEventTouchUpInside];
         _combineBtn.enabled = NO;
     }
