@@ -45,7 +45,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             imageUpCut = imageUpOrigin(cv::Rect(cv::Point(imageUpOrigin.cols/4,128),cv::Point(imageUpOrigin.cols*0.75,imageUpOrigin.rows)));
         } else {
             previewMat = resultMat;
-            imageUpCut = resultMat(cv::Rect(cv::Point(resultMat.cols/4,resultMat.rows-1344+128),cv::Point(resultMat.cols*0.75,resultMat.rows)));
+            imageUpCut = resultMat(cv::Rect(cv::Point(resultMat.cols/4,resultMat.rows-curUseHeight),cv::Point(resultMat.cols*0.75,resultMat.rows)));
         }
         
         if (i + 1 < images.count) {
@@ -68,7 +68,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         //提取特征点
         //OrbFeatureDetector siftDetector(100);
         //SiftFeatureDetector siftDetector(5000);  // 海塞矩阵阈值  #最耗时操作一
-        SurfFeatureDetector siftDetector(9000);
+        SurfFeatureDetector siftDetector(10000);
         //Ptr<FeatureDetector> siftDetector = FeatureDetector::create("SURF");
         //FastFeatureDetector siftDetector(170);
         vector<KeyPoint> keyPoint_Up,keyPoint_Down;
@@ -150,7 +150,12 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         
         //无X轴匹配点则判定为无重合 直接拼接  该处逻辑需要完善：先用快速法 再用精确法 或者调整海塞矩阵阈值 也可改变匹配区域。
         if(good_matchesX.size() == 0) {
-            resultMat = comMatC(imageUpOrigin, imageDownOrigin, resultMat);
+            if (resultMat.data == NULL) {
+                resultMat = comMatC(imageUpOrigin, imageDownOrigin, resultMat);
+            } else {
+                resultMat = comMatC(resultMat, imageDownOrigin, resultMat);
+            }
+            
             curUseHeight = imageDownCut.rows;
             continue;
         }
@@ -219,18 +224,22 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         */
         //不匹配则直接衔接  需要记录是哪两张图片 此功能待完善
         if(basedImagePoint.y > originalLinkPoint.y + 128) {
-            resultMat = comMatC(imageUpOrigin, imageDownOrigin, resultMat);
+            if (resultMat.data == NULL) {
+                resultMat = comMatC(imageUpOrigin, imageDownOrigin, resultMat);
+            } else {
+                resultMat = comMatC(resultMat, imageDownOrigin, resultMat);
+            }
             curUseHeight = imageDownCut.rows;
             continue;
         }
         
-        curUseHeight = originalLinkPoint.y;
+        curUseHeight = imageDownCut.rows - basedImagePoint.y;
         
         Mat imageUpResult;
         if (i < 1) {
             imageUpResult = imageUpOrigin(cv::Rect(cv::Point(0,0), cv::Point(imageUpOrigin.cols, originalLinkPoint.y + 128)));
         } else {
-            imageUpResult = previewMat(cv::Rect(cv::Point(0,0), cv::Point(imageUpOrigin.cols, originalLinkPoint.y + resultMat.rows - 1344 + 128)));
+            imageUpResult = previewMat(cv::Rect(cv::Point(0,0), cv::Point(imageUpOrigin.cols, resultMat.rows - imageUpCut.rows + originalLinkPoint.y)));
         }
         //UIImage *cutImage1 = [self imageWithCVMat:imageUpResult];
         

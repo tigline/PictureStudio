@@ -29,6 +29,7 @@
 @property (assign, nonatomic) BOOL singleSelected;
 @property (strong, nonatomic) UIColor *selectBgColor;
 @property (strong, nonatomic) UIColor *selectedTitleColor;
+@property (strong, nonatomic) UIButton *selectBtn;
 
 - (void)bottomViewPrepareAnimation;
 - (void)bottomViewStartAnimation;

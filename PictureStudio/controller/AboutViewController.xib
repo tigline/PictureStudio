@@ -111,7 +111,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5Ha-eV-AA0">
-                            <rect key="frame" x="311" y="9" width="20" height="20"/>
+                            <rect key="frame" x="317" y="3" width="20" height="20"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="20" id="4UU-kz-hQJ"/>
                                 <constraint firstAttribute="width" constant="20" id="yzR-9X-Emj"/>
@@ -124,12 +124,12 @@
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstAttribute="trailing" secondItem="5Ha-eV-AA0" secondAttribute="trailing" constant="9" id="1lt-7J-nWx"/>
+                        <constraint firstAttribute="trailing" secondItem="5Ha-eV-AA0" secondAttribute="trailing" constant="3" id="1lt-7J-nWx"/>
                         <constraint firstItem="CAq-mD-DOj" firstAttribute="centerX" secondItem="d1A-xQ-qbh" secondAttribute="centerX" id="2q5-xp-cEo"/>
                         <constraint firstAttribute="width" constant="340" id="FA5-93-DBY"/>
                         <constraint firstItem="1eR-un-C9c" firstAttribute="top" secondItem="Gsv-be-c9d" secondAttribute="bottom" constant="1" id="FRN-Lc-KSh"/>
                         <constraint firstAttribute="height" constant="200" id="Lf7-yl-yqZ"/>
-                        <constraint firstItem="5Ha-eV-AA0" firstAttribute="top" secondItem="d1A-xQ-qbh" secondAttribute="top" constant="9" id="R25-7p-ymg"/>
+                        <constraint firstItem="5Ha-eV-AA0" firstAttribute="top" secondItem="d1A-xQ-qbh" secondAttribute="top" constant="3" id="R25-7p-ymg"/>
                         <constraint firstItem="Gsv-be-c9d" firstAttribute="top" secondItem="CAq-mD-DOj" secondAttribute="bottom" constant="14" id="gZp-DN-6py"/>
                         <constraint firstItem="1eR-un-C9c" firstAttribute="centerX" secondItem="d1A-xQ-qbh" secondAttribute="centerX" id="mwL-l3-TOj"/>
                         <constraint firstItem="Gsv-be-c9d" firstAttribute="centerX" secondItem="d1A-xQ-qbh" secondAttribute="centerX" id="vQs-Ak-5zM"/>

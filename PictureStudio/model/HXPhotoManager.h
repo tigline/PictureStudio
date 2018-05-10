@@ -201,7 +201,8 @@ typedef enum : NSUInteger {
  */
 - (void)afterSelectedListAddPhotoModel:(HXPhotoModel *)model;
 
-
+- (BOOL)shouldShowTipView;
+- (void)deleteItemAtFirst;
 
 - (void)selectedListTransformAfter;
 - (void)selectedListTransformBefore;
