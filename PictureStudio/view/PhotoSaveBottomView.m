@@ -17,7 +17,7 @@
 @end
 
 @implementation PhotoSaveBottomView
-#define btnHeight 40
+#define btnHeight 45
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -44,8 +44,6 @@
 
 
 
-
-
 - (void)didBackClick
 {
     if ([self.delegate respondsToSelector:@selector(savePhotoBottomViewDidBackBtn)]) {
@@ -69,8 +67,8 @@
     
     self.bgView.frame = self.bounds;
     
-    CGFloat btnWidth = self.bgView.frame.size.width/3;
-    CGFloat pointY = (self.bgView.size.height - btnHeight)/2;
+    //CGFloat btnWidth = self.bgView.frame.size.width/3;
+    CGFloat pointY = 0;//(self.bgView.size.height - btnHeight)/2;
     
     self.backBtn.frame = CGRectMake(21.4, pointY, btnHeight, btnHeight);
     self.backBtn.backgroundColor = [UIColor clearColor];
@@ -78,15 +76,15 @@
     self.saveBtn.frame = CGRectMake(106, pointY, 165, btnHeight);
     
     
-    self.shareBtn.frame = CGRectMake(self.hx_w - btnHeight - 20, (self.bgView.size.height - btnHeight*0.6)/2, btnHeight*0.6, btnHeight*0.6);
+    self.shareBtn.frame = CGRectMake(self.hx_w - btnHeight - 20, (btnHeight - btnHeight*0.5)/2, btnHeight*0.5, btnHeight*0.5);
     
     CALayer* segmentingLineFrist = [CALayer layer];
-    segmentingLineFrist.frame = CGRectMake(106, 13, 0.6, 18);
+    segmentingLineFrist.frame = CGRectMake(106, 14, 0.6, 18);
     segmentingLineFrist.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
     [self.bgView.layer addSublayer:segmentingLineFrist];
     
     CALayer* segmentingLineSecond = [CALayer layer];
-    segmentingLineSecond.frame = CGRectMake(271, 13, 0.6, 18);
+    segmentingLineSecond.frame = CGRectMake(271, 14, 0.6, 18);
     segmentingLineSecond.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
     [self.bgView.layer addSublayer:segmentingLineSecond];
 }

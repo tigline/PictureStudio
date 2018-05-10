@@ -222,9 +222,15 @@ ImgCollectionViewCellDelegate
             weakSelf.allArray = [NSMutableArray arrayWithArray:allList];
             weakSelf.previewArray = [NSMutableArray arrayWithArray:previewList];
             dispatch_async(dispatch_get_main_queue(), ^{
-                weakSelf.collectionView.frame = CGRectMake(0, 0, SCREEN_W, SCREEN_H - ButtomViewHeight - 10);
+                CGFloat bottomMargin = 0.0;
+                if (kDevice_Is_iPhoneX) {
+                    bottomMargin = weakSelf.bottomView.hx_h;
+                } else {
+                    bottomMargin = ButtomViewHeight;
+                }
+                weakSelf.collectionView.frame = CGRectMake(0, 0, SCREEN_W, SCREEN_H - bottomMargin - 10);
                 weakSelf.groupTitleView.titleButton.text = weakSelf.albumModel.albumName;
-                CGFloat width = [self.groupTitleView updateTitleConstraints:NO];
+                CGFloat width = [weakSelf.groupTitleView updateTitleConstraints:NO];
                 weakSelf.groupTitleView.frame = CGRectMake(0, 0, width, 40);
                 [weakSelf.collectionView reloadData];
                 if (_isScreenshotNotification) {
@@ -368,9 +374,14 @@ ImgCollectionViewCellDelegate
         
     } else if (scrollView.contentOffset.y > _lastContentOffset) {
         //向上
-        
+        CGFloat bottomMargin = 0.0;
+        if (kDevice_Is_iPhoneX) {
+            bottomMargin = self.bottomView.hx_h;
+        } else {
+            bottomMargin = ButtomViewHeight;
+        }
         if (_canDetectScroll && contentOffsetY > contentHeight) {
-            self.collectionView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h - ButtomViewHeight);
+            self.collectionView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h - bottomMargin);
         }
         //[self.navigationController setNavigationBarHidden:YES animated:YES];
 
@@ -382,6 +393,17 @@ ImgCollectionViewCellDelegate
 {
     
 }
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    
+}
+#pragma mark - UITouch Event
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+ 
+}
+
 
 #pragma mark - < UICollectionViewDataSource >
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {

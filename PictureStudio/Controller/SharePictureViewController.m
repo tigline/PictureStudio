@@ -43,11 +43,20 @@
     // Do any additional setup after loading the view.
     [self CustomTitle];//处理标透明化题栏 也可app统一设置
     [self CreateShowImgaeView];//创建图片显示区域
-    [self.view bringSubviewToFront:_shareBoardView];
-    [_shareBoardView setHidden:YES];
+    
     //[self CreateShareView];//创建分享区域
+    [self.view bringSubviewToFront:self.shareBoardView];
     //[self CreateSaveView];//创建保存图片区域
     [self.view addSubview:self.toolBarView];
+
+
+    //[self.view bringSubviewToFront:self.toolBarView];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    [self.shareBoardView setFrame:CGRectMake(0, self.toolBarView.originY, self.shareBoardView.hx_w, self.shareBoardView.hx_h)];
+    [_shareBoardView setHidden:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -82,7 +91,7 @@
 {
 //    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10*ScreenWidthRatio, kTopMargin + 10*ScreenHeightRatio, 355*ScreenWidthRatio, 517*ScreenHeightRatio)];
     
-    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10, kTopMargin + 10, self.view.hx_w - 20, self.view.hx_h - ButtomViewHeight - kBottomMargin - 10)];
+    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10, kTopMargin + 10, self.view.hx_w - 20, self.view.hx_h - ButtomViewHeight - kBottomMargin - 10 - kTopMargin)];
     
     
     NSLog(@"%f",ScreenHeightRatio);
@@ -109,12 +118,15 @@
         UIImageView *imageView = [[UIImageView alloc]initWithFrame:cgpos];
         [imageView setImage:_resultImage];
         [_showImageScrollView addSubview:imageView];
+        UITapGestureRecognizer* imgMsgTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchOnImage:)];
+        [_showImageScrollView addGestureRecognizer:imgMsgTap];
     }
     self.showImageScrollView.showsVerticalScrollIndicator = NO;
     self.showImageScrollView.showsHorizontalScrollIndicator = NO;
     self.showImageScrollView.layer.shadowColor = [UIColor lightGrayColor].CGColor;
     self.showImageScrollView.layer.shadowOpacity = 0.8f;
     self.showImageScrollView.layer.shadowOffset = CGSizeMake(0, 0);
+    _shareScrollView.userInteractionEnabled = YES;
 }
 
 
@@ -182,7 +194,7 @@
     [UIView animateWithDuration:0.3f
                      animations:^{
                          
-                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY - self.toolBarView.hx_h, _shareBoardView.size.width, _shareBoardView.size.height)];
+                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY - _shareBoardView.hx_h, _shareBoardView.size.width, _shareBoardView.size.height)];
                          
                      }completion:^(BOOL finished) {
                          _isShowShareBoardView = YES;
@@ -190,12 +202,30 @@
                      }];
 }
 
+-(void)touchOnImage:(UITapGestureRecognizer*)sender{
+    if (!_shareBoardView.isHidden) {
+        [self hideShareBoard];
+    }
+}
+//点击无效 待解决
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    UITouch *touch = [touches anyObject];
+    CGPoint currentPoint = [touch locationInView:self.shareScrollView];
+    if ([self.shareScrollView.layer containsPoint:currentPoint]) {
+        if (!_shareBoardView.isHidden) {
+            [self hideShareBoard];
+        }
+    }
+    
+}
+
 - (void)hideShareBoard {
     [_shareBoardView setHidden:NO];
     [UIView animateWithDuration:0.3f
                      animations:^{
                          
-                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY + self.toolBarView.hx_h, _shareBoardView.size.width, _shareBoardView.size.height)];
+                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY + _shareBoardView.hx_h, _shareBoardView.size.width, _shareBoardView.size.height)];
                      }completion:^(BOOL finished) {
                          [_shareBoardView setHidden:YES];
                          _isShowShareBoardView = NO;

@@ -14,10 +14,11 @@
 @property (strong, nonatomic) UIButton *scrollBtn;
 @property (strong, nonatomic) UIButton *editBtn;
 @property (strong, nonatomic) UIButton *clearBtn;
+@property (strong, nonatomic) CALayer* segmentingLineFrist;
 @end
 
 @implementation PhotoEditButtomView
-#define btnHeight 40
+#define btnHeight 45
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -58,8 +59,10 @@
     _selectCount = selectCount;
     if (selectCount > 0) {
         self.clearBtn.enabled = YES;
+        [self showClearBtn];
     } else {
         self.clearBtn.enabled = NO;
+        [self hideClearBtn];
     }
     
     if(selectCount == 1) {
@@ -105,23 +108,57 @@
 }
 
 
+- (void)showClearBtn {
+
+    CGFloat btnWidth = self.bgView.frame.size.width/6;
+    CGFloat pointY = 0;//(self.bgView.size.height - btnHeight)/2 - kBottomMargin/2;
+    self.clearBtn.hidden = NO;
+    
+    self.combineBtn.frame = CGRectMake(btnWidth, pointY, btnWidth*5, btnHeight);
+    
+//    _segmentingLineFrist = [CALayer layer];
+//    _segmentingLineFrist.frame = CGRectMake(btnWidth, 14, 0.6, 18);
+    _segmentingLineFrist.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
+    //[self.bgView.layer addSublayer:_segmentingLineFrist];
+}
+- (void)hideClearBtn {
+    
+    self.clearBtn.hidden = YES;
+    CGFloat btnWidth = self.bgView.frame.size.width/2;
+    CGFloat pointY = 0;//(self.bgView.size.height - btnHeight)/2 - kBottomMargin/2;
+    self.combineBtn.frame = CGRectMake(btnWidth/2, pointY, btnWidth, btnHeight);
+    
+//    CALayer* segmentingLineFrist = [CALayer layer];
+//    segmentingLineFrist.frame = CGRectMake(btnWidth, 14, 0.6, 18);
+    _segmentingLineFrist.backgroundColor = [[UIColor clearColor] CGColor];
+//    [self.bgView.layer addSublayer:segmentingLineFrist];
+}
+
 - (void)layoutSubviews {
     [super layoutSubviews];
     
+    if (_selectCount > 0) {
+        return;
+    }
     self.bgView.frame = self.bounds;
+    CGFloat btnWidth = self.bgView.frame.size.width/2;
+    CGFloat pointY = 0;//(self.bgView.size.height - btnHeight)/2 - kBottomMargin/2;
     
-    CGFloat btnWidth = self.bgView.frame.size.width/4;
-    CGFloat pointY = (self.bgView.size.height - btnHeight)/2;
+    self.clearBtn.frame = CGRectMake(0, pointY, btnWidth/3, btnHeight);
+    self.clearBtn.hidden = YES;
+    
+    self.combineBtn.frame = CGRectMake(btnWidth/2, pointY, btnWidth, btnHeight);
+    
+    if (_segmentingLineFrist == nil) {
+        _segmentingLineFrist = [CALayer layer];
+        _segmentingLineFrist.frame = CGRectMake(btnWidth/3, 14, 0.6, 18);
+        _segmentingLineFrist.backgroundColor = [[UIColor clearColor] CGColor];
+        [self.bgView.layer addSublayer:_segmentingLineFrist];
+    }
     
     
-    self.clearBtn.frame = CGRectMake(0, pointY, btnWidth, btnHeight);
     
-    self.combineBtn.frame = CGRectMake(btnWidth, pointY, btnWidth*3, btnHeight);
-    
-    CALayer* segmentingLineFrist = [CALayer layer];
-    segmentingLineFrist.frame = CGRectMake(btnWidth, 13, 0.6, 18);
-    segmentingLineFrist.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
-    [self.bgView.layer addSublayer:segmentingLineFrist];
+
     
     
     /* 完整版本 按钮位置
@@ -163,9 +200,9 @@
         //[_clearBtn setImage:[UIImage imageNamed:@"tab_combine"] forState:UIControlStateDisabled];
         [_clearBtn setTitle:@"Clear" forState:UIControlStateNormal];
         _clearBtn.titleLabel.font = [UIFont systemFontOfSize:13];
-        _clearBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 0);
-        _clearBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 0);
-        _clearBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        _clearBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
+        _clearBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
+        _clearBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_clearBtn addTarget:self action:@selector(didClearClick) forControlEvents:UIControlEventTouchUpInside];
         _clearBtn.enabled = NO;
     }
