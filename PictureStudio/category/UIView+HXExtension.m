@@ -140,6 +140,14 @@
     return self.frame.origin;
 }
 
+- (void)setHx_centerY:(CGFloat)centerY {
+    self.center = CGPointMake(self.center.x, centerY);
+}
+
+- (CGFloat)hx_centerY {
+    return self.center.y;
+}
+
 /**
  获取当前视图的控制器
  

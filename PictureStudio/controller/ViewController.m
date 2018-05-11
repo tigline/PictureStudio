@@ -19,6 +19,7 @@
 #import "CombinePictureTest.h"
 #import "SharePictureViewController.h"
 #import "AboutViewController.h"
+#import "PhotoPreviewController.h"
 
 @interface ViewController ()<UICollectionViewDataSource,
 UICollectionViewDelegate,
@@ -435,6 +436,12 @@ ImgCollectionViewCellDelegate
     HXPhotoModel *model;
     model = self.allArray[indexPath.item];
     
+    PhotoPreviewController *photoPreviewVc = [[PhotoPreviewController alloc] init];
+    photoPreviewVc.currentIndex = indexPath.row;
+    photoPreviewVc.models = self.allArray;
+    photoPreviewVc.manager = _manager;
+    //[self pushPhotoPrevireViewController:photoPreviewVc];
+    [self.navigationController pushViewController:photoPreviewVc animated:YES];
 //    ImgCollectionViewCell *cell = (ImgCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
     
 

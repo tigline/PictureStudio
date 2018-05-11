@@ -41,6 +41,8 @@
 		70C26300207A7C9100F65EFD /* AHAssetGroupCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 70C262FF207A7C9100F65EFD /* AHAssetGroupCell.xib */; };
 		70C5D18B207926A400FE5B9A /* AssetTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70C5D18A207926A400FE5B9A /* AssetTitleView.m */; };
 		70D24BBD207FA9CA003430BA /* UINavigationBar+Color.m in Sources */ = {isa = PBXBuildFile; fileRef = 70D24BBC207FA9CA003430BA /* UINavigationBar+Color.m */; };
+		9338E54F20A577A10059D58E /* PhotoPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9338E54E20A577A10059D58E /* PhotoPreviewController.m */; };
+		9338E55220A57A760059D58E /* PhotoPreviewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9338E55120A57A760059D58E /* PhotoPreviewCell.m */; };
 		93539C6E20808EFB00B7D29C /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 708248A9204ECD4C000D60A3 /* libjpeg.a */; };
 		936FAC2B20200B9A00F80BCF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 936FAC2A20200B9A00F80BCF /* AppDelegate.m */; };
 		936FAC2E20200B9A00F80BCF /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 936FAC2D20200B9A00F80BCF /* ViewController.m */; };
@@ -132,6 +134,10 @@
 		70C5D18A207926A400FE5B9A /* AssetTitleView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AssetTitleView.m; sourceTree = "<group>"; };
 		70D24BBB207FA9CA003430BA /* UINavigationBar+Color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UINavigationBar+Color.h"; sourceTree = "<group>"; };
 		70D24BBC207FA9CA003430BA /* UINavigationBar+Color.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UINavigationBar+Color.m"; sourceTree = "<group>"; };
+		9338E54D20A577A10059D58E /* PhotoPreviewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoPreviewController.h; sourceTree = "<group>"; };
+		9338E54E20A577A10059D58E /* PhotoPreviewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoPreviewController.m; sourceTree = "<group>"; };
+		9338E55020A57A760059D58E /* PhotoPreviewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoPreviewCell.h; sourceTree = "<group>"; };
+		9338E55120A57A760059D58E /* PhotoPreviewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoPreviewCell.m; sourceTree = "<group>"; };
 		936FAC2620200B9A00F80BCF /* PictureStudio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PictureStudio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		936FAC2920200B9A00F80BCF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		936FAC2A20200B9A00F80BCF /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -195,6 +201,8 @@
 			children = (
 				936FAC2C20200B9A00F80BCF /* ViewController.h */,
 				936FAC2D20200B9A00F80BCF /* ViewController.m */,
+				9338E54D20A577A10059D58E /* PhotoPreviewController.h */,
+				9338E54E20A577A10059D58E /* PhotoPreviewController.m */,
 				707DBA79209EC4BE00F2FAFB /* SharePictureViewController.h */,
 				707DBA78209EC4BE00F2FAFB /* SharePictureViewController.m */,
 				708248A1204EC6FC000D60A3 /* LongPictureViewController.h */,
@@ -239,6 +247,8 @@
 		708248F42078AE81000D60A3 /* view */ = {
 			isa = PBXGroup;
 			children = (
+				9338E55020A57A760059D58E /* PhotoPreviewCell.h */,
+				9338E55120A57A760059D58E /* PhotoPreviewCell.m */,
 				7082490420790F92000D60A3 /* PhotoCollectionReusableView.h */,
 				7082490520790F92000D60A3 /* PhotoCollectionReusableView.m */,
 				708248F52078AFAF000D60A3 /* ImgCollectionViewCell.h */,
@@ -582,12 +592,14 @@
 				708248FA2078B3D7000D60A3 /* UIButton+Extension.m in Sources */,
 				708248F72078AFAF000D60A3 /* ImgCollectionViewCell.m in Sources */,
 				708248CD206A94C8000D60A3 /* NSBundle+HXWeiboPhotoPicker.m in Sources */,
+				9338E55220A57A760059D58E /* PhotoPreviewCell.m in Sources */,
 				708248BE206A9103000D60A3 /* HXPhotoModel.m in Sources */,
 				707DBA7A209EC4BF00F2FAFB /* SharePictureViewController.m in Sources */,
 				70D24BBD207FA9CA003430BA /* UINavigationBar+Color.m in Sources */,
 				708248D8206A9884000D60A3 /* UIImage+HXExtension.m in Sources */,
 				937F74332084879800F56AFD /* HXPhotoManager.m in Sources */,
 				708249002078E510000D60A3 /* PhotoEditButtomView.m in Sources */,
+				9338E54F20A577A10059D58E /* PhotoPreviewController.m in Sources */,
 				70C262FC207A72EF00F65EFD /* AHAssetGroupCell.m in Sources */,
 				707DBA7F209ED61100F2FAFB /* PhotoSaveBottomView.m in Sources */,
 				708248D5206A959D000D60A3 /* HXPhotoConfiguration.m in Sources */,

@@ -484,64 +484,7 @@
         
         index++;
     }
-    /*
-    if (self.cameraList.count > 0) {
-        NSInteger index = 0;
-        NSInteger photoIndex = 0;
-        NSInteger videoIndex = 0;
-        for (HXPhotoModel *model in self.cameraList) {
-            if ([self.selectedCameraList containsObject:model]) {
-                model.selected = YES;
-                model.selectedIndex = [self.selectedList indexOfObject:model];
-                model.selectIndexStr = [NSString stringWithFormat:@"%ld",model.selectedIndex + 1];
-            }else {
-                model.selected = NO;
-                model.selectIndexStr = @"";
-                model.selectedIndex = 0;
-            }
-            model.currentAlbumIndex = albumModel.index;
-            if (self.configuration.reverseDate) {
-                [allArray insertObject:model atIndex:cameraIndex + index];
-                [previewArray insertObject:model atIndex:index];
-                if (model.subType == HXPhotoModelMediaSubTypePhoto) {
-                    [photoArray insertObject:model atIndex:photoIndex];
-                    photoIndex++;
-                }else {
-                    [videoArray insertObject:model atIndex:videoIndex];
-                    videoIndex++;
-                }
-            }else {
-                NSInteger count = allArray.count;
-                [allArray insertObject:model atIndex:count - cameraIndex];
-                [previewArray addObject:model];
-                if (model.subType == HXPhotoModelMediaSubTypePhoto) {
-                    [photoArray addObject:model];
-                }else {
-                    [videoArray addObject:model];
-                }
-            }
-            if (self.configuration.showDateSectionHeader) {
-                if (self.configuration.reverseDate) {
-                    model.dateSection = 0;
-                    HXPhotoDateModel *dateModel = dateArray.firstObject;
-                    NSMutableArray *array = [NSMutableArray arrayWithArray:dateModel.photoModelArray];
-                    [array insertObject:model atIndex:cameraIndex + index];
-                    dateModel.photoModelArray = array;
-                }else {
-                    model.dateSection = dateArray.count - 1;
-                    HXPhotoDateModel *dateModel = dateArray.lastObject;
-                    NSMutableArray *array = [NSMutableArray arrayWithArray:dateModel.photoModelArray];
-                    NSInteger count = array.count;
-                    [array insertObject:model atIndex:count - cameraIndex];
-                    dateModel.photoModelArray = array;
-                }
-            }else {
-                model.dateSection = 0;
-            }
-            index++;
-        }
-    }
-    */
+    
     if (complete) {
         complete(allArray,previewArray,photoArray,videoArray,dateArray,firstSelectModel);
     }
