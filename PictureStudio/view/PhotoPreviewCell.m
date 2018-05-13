@@ -9,36 +9,7 @@
 #import "PhotoPreviewCell.h"
 #import "HXPhotoManager.h"
 #import "HXPhotoModel.h"
-
-
-
-@implementation AssetPreviewCell
-
-- (instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-        self.backgroundColor = [UIColor whiteColor];
-        [self configSubviews];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(photoPreviewCollectionViewDidScroll) name:@"photoPreviewCollectionViewDidScroll" object:nil];
-    }
-    return self;
-}
-
-- (void)configSubviews {
-    
-}
-
-#pragma mark - Notification
-
-- (void)photoPreviewCollectionViewDidScroll {
-    
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-@end
+#import <AssetsLibrary/AssetsLibrary.h>
 
 
 @implementation PhotoPreviewCell
@@ -46,7 +17,7 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor blackColor];
         [self configSubviews];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(photoPreviewCollectionViewDidScroll) name:@"photoPreviewCollectionViewDidScroll" object:nil];
     }
@@ -77,6 +48,7 @@
 
 - (void)setModel:(HXPhotoModel *)model {
     _model = model;
+    _previewView.model = model;
     _previewView.asset = model.asset;
 }
 
@@ -117,11 +89,11 @@
         _scrollView.canCancelContentTouches = YES;
         _scrollView.alwaysBounceVertical = NO;
         if (iOS11Later) {
-            if (@available(iOS 11.0, *)) {
+            //if (@available(iOS 11.0, *)) {
                 _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-            } else {
+            //} else {
                 // Fallback on earlier versions
-            }
+            //}
         }
         [self addSubview:_scrollView];
         
@@ -153,7 +125,8 @@
 - (void)setModel:(HXPhotoModel *)model {
     _model = model;
     [_scrollView setZoomScale:1.0 animated:NO];
-
+    _imageView.image = model.thumbPhoto;
+    model.tempImage = nil;
     self.asset = model.asset;
     
 }
@@ -162,9 +135,60 @@
     if (_asset && self.imageRequestID) {
         [[PHImageManager defaultManager] cancelImageRequest:self.imageRequestID];
     }
-    
+    __weak typeof(self) weakSelf = self;
     _asset = asset;
     
+//    [HXPhotoTools getHighQualityFormatPhotoForPHAsset:_model.asset size:CGSizeMake(_model.endImageSize.width * 0.8, _model.endImageSize.height * 0.8) completion:^(UIImage *image, NSDictionary *info) {
+//        //[weakSelf pushAnim:transitionContext image:image model:model fromVC:fromVC toVC:toVC];
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            weakSelf.imageView.image = image;
+//        });
+//    } error:^(NSDictionary *info) {
+//        //[weakSelf pushAnim:transitionContext image:model.thumbPhoto model:model fromVC:fromVC toVC:toVC];
+//    }];
+    
+ 
+    CGFloat fullScreenWidth = SCREEN_W;
+    if (fullScreenWidth > 600) {
+        fullScreenWidth = 600;
+    }
+    if ([asset isKindOfClass:[PHAsset class]]) {
+        CGSize imageSize;
+        if (fullScreenWidth < SCREEN_W && fullScreenWidth < 600) {
+            imageSize =  CGSizeMake((SCREEN_W/3 - 10) * 2, (SCREEN_W/3 - 10) * 2);;
+        } else {
+            PHAsset *phAsset = (PHAsset *)asset;
+            CGFloat aspectRatio = phAsset.pixelWidth / (CGFloat)phAsset.pixelHeight;
+            CGFloat pixelWidth = fullScreenWidth * 2;
+            // 超宽图片
+            if (aspectRatio > 1.8) {
+                pixelWidth = pixelWidth * aspectRatio;
+            }
+            // 超高图片
+            if (aspectRatio < 0.2) {
+                pixelWidth = pixelWidth * 0.5;
+            }
+            CGFloat pixelHeight = pixelWidth / aspectRatio;
+            imageSize = CGSizeMake(pixelWidth, pixelHeight);
+        }
+        
+        __block UIImage *image;
+        // 修复获取图片时出现的瞬间内存过高问题
+
+        PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
+        option.resizeMode = PHImageRequestOptionsResizeModeFast;
+        //option.synchronous=YES;
+        [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:imageSize contentMode:PHImageContentModeAspectFill options:option resultHandler:^(UIImage *result, NSDictionary *info) {
+            if (result) {
+                image = result;
+            }
+            weakSelf.imageView.image = image;
+            
+        }];
+
+    }
+    
+    /*
     PHImageRequestOptions * options=[[PHImageRequestOptions alloc]init];
     options.resizeMode = PHImageRequestOptionsResizeModeFast;
     options.synchronous=YES;
@@ -174,42 +198,17 @@
                                options:options
                          resultHandler:^(UIImage *result, NSDictionary *info)
      {
-         if (![asset isEqual:_asset]) return;
-         self.imageView.image = result;
-         [self resizeSubviews];
+         if (![asset isEqual:weakSelf.asset]) return;
+         weakSelf.imageView.image = result;
+         [weakSelf resizeSubviews];
          
-         if (self.imageProgressUpdateBlock) {
-             self.imageProgressUpdateBlock(1);
+         if (weakSelf.imageProgressUpdateBlock) {
+             weakSelf.imageProgressUpdateBlock(1);
          }
      }];
-    /*
-    self.imageRequestID = [[HXPhotoManager manager] getPhotoWithAsset:asset completion:^(UIImage *photo, NSDictionary *info, BOOL isDegraded) {
-        if (![asset isEqual:_asset]) return;
-        self.imageView.image = photo;
-        [self resizeSubviews];
-
-        if (self.imageProgressUpdateBlock) {
-            self.imageProgressUpdateBlock(1);
-        }
-        if (!isDegraded) {
-            self.imageRequestID = 0;
-        }
-    } progressHandler:^(double progress, NSError *error, BOOL *stop, NSDictionary *info) {
-        if (![asset isEqual:_asset]) return;
-
-
-        progress = progress > 0.02 ? progress : 0.02;
-
-        if (self.imageProgressUpdateBlock && progress < 1) {
-            self.imageProgressUpdateBlock(progress);
-        }
-        
-        if (progress >= 1) {
-           
-            self.imageRequestID = 0;
-        }
-    } networkAccessAllowed:YES];
-     */
+    
+*/
+    
 }
 
 - (void)recoverSubviews {
@@ -242,19 +241,6 @@
 
 }
 
-- (void)setAllowCrop:(BOOL)allowCrop {
-    _allowCrop = allowCrop;
-    _scrollView.maximumZoomScale = allowCrop ? 4.0 : 2.5;
-    
-    if ([self.asset isKindOfClass:[PHAsset class]]) {
-        PHAsset *phAsset = (PHAsset *)self.asset;
-        CGFloat aspectRatio = phAsset.pixelWidth / (CGFloat)phAsset.pixelHeight;
-        // 优化超宽图片的显示
-        if (aspectRatio > 1.5) {
-            self.scrollView.maximumZoomScale *= aspectRatio / 1.5;
-        }
-    }
-}
 
 
 

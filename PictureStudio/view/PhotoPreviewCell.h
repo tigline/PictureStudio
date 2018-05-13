@@ -9,13 +9,7 @@
 #import <UIKit/UIKit.h>
 
 
-@class HXPhotoModel;
-@interface AssetPreviewCell : UICollectionViewCell
-@property (nonatomic, strong) HXPhotoModel *model;
-@property (nonatomic, copy) void (^singleTapGestureBlock)(void);
-- (void)configSubviews;
-- (void)photoPreviewCollectionViewDidScroll;
-@end
+
 
 @class HXPhotoModel,PhotoPreviewView;
 

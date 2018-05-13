@@ -25,14 +25,11 @@
     UIButton *_doneButton;
     UIImageView *_numberImageView;
     UILabel *_numberLabel;
-    UIButton *_originalPhotoButton;
-    UILabel *_originalPhotoLabel;
+
     
     CGFloat _offsetItemCount;
 }
 @property (nonatomic, assign) BOOL isHideNaviBar;
-@property (nonatomic, strong) UIView *cropBgView;
-@property (nonatomic, strong) UIView *cropView;
 
 @property (nonatomic, assign) double progress;
 @property (strong, nonatomic) id alertView;
@@ -51,7 +48,7 @@
     //ViewController *_tzImagePickerVc = (ViewController *)weakSelf.navigationController;
     if (!self.models.count) {
         self.models = [NSMutableArray arrayWithArray:_manager.selectedArray];
-        _assetsTemp = [NSMutableArray arrayWithArray:_manager.selectedArray];
+        //_assetsTemp = [NSMutableArray arrayWithArray:_manager.selectedArray];
     }
     [self configCollectionView];
     [self configCustomNaviBar];
@@ -60,10 +57,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeStatusBarOrientationNotification:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
 }
 
-- (void)setPhotos:(NSMutableArray *)photos {
-    _photos = photos;
-    _photosTemp = [NSArray arrayWithArray:photos];
-}
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -76,10 +69,7 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
-//    ViewController *tzImagePickerVc = (ViewController *)self.navigationController;
-//    if (tzImagePickerVc.needShowStatusBar && iOS7Later) {
-//        [UIApplication sharedApplication].statusBarHidden = NO;
-//    }
+
 
 }
 
@@ -88,7 +78,7 @@
 }
 
 - (void)configCustomNaviBar {
-    ViewController *tzImagePickerVc = (ViewController *)self.navigationController;
+
     
     _naviBar = [[UIView alloc] initWithFrame:CGRectZero];
     _naviBar.backgroundColor = [UIColor colorWithRed:(34/255.0) green:(34/255.0)  blue:(34/255.0) alpha:0.7];
@@ -135,9 +125,8 @@
     _numberLabel.hidden = _manager.selectedCount <= 0;
     _numberLabel.backgroundColor = [UIColor clearColor];
     
-    [_originalPhotoButton addSubview:_originalPhotoLabel];
+
     [_toolBar addSubview:_doneButton];
-    [_toolBar addSubview:_originalPhotoButton];
     [_toolBar addSubview:_numberImageView];
     [_toolBar addSubview:_numberLabel];
     [self.view addSubview:_toolBar];
@@ -228,39 +217,12 @@
 
         for (NSInteger i = 0; i < selectedModels.count; i++) {
             id asset = selectedModels[i];
-            if ([asset isEqual:_assetsTemp[_currentIndex]]) {
+            if ([asset isEqual:_models[_currentIndex]]) {
                 [_manager beforeSelectedListdeletePhotoModel:asset];
                 break;
             }
         }
-//        for (HXPhotoModel *model_item in selectedModels) {
-//            if ([[[HXPhotoManager manager] getAssetIdentifier:model.asset] isEqualToString:[[TZImageManager manager] getAssetIdentifier:model_item.asset]]) {
-//                // 1.6.7版本更新:防止有多个一样的model,一次性被移除了
-//                NSArray *selectedModelsTmp = [NSArray arrayWithArray:_tzImagePickerVc.selectedModels];
-//                for (NSInteger i = 0; i < selectedModelsTmp.count; i++) {
-//                    TZAssetModel *model = selectedModelsTmp[i];
-//                    if ([model isEqual:model_item]) {
-//                        [_tzImagePickerVc.selectedModels removeObjectAtIndex:i];
-//                        break;
-//                    }
-//                }
-//                // [_tzImagePickerVc.selectedModels removeObject:model_item];
-//                if (self.photos) {
-//                    // 1.6.7版本更新:防止有多个一样的asset,一次性被移除了
-//                    NSArray *selectedAssetsTmp = [NSArray arrayWithArray:_tzImagePickerVc.selectedAssets];
-//                    for (NSInteger i = 0; i < selectedAssetsTmp.count; i++) {
-//                        id asset = selectedAssetsTmp[i];
-//                        if ([asset isEqual:_assetsTemp[_currentIndex]]) {
-//                            [_tzImagePickerVc.selectedAssets removeObjectAtIndex:i];
-//                            break;
-//                        }
-//                    }
-//                    // [_tzImagePickerVc.selectedAssets removeObject:_assetsTemp[_currentIndex]];
-//                    [self.photos removeObject:_photosTemp[_currentIndex]];
-//                }
-//                break;
-//            }
-//        }
+
     }
     model.selected = !selectButton.isSelected;
     [self refreshNaviBarAndBottomBarState];
@@ -321,39 +283,13 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     //ViewController *_tzImagePickerVc = (ViewController *)self.navigationController;
-    HXPhotoModel *model = _models[indexPath.row];
-    
-    PhotoPreviewCell *cell;
-    __weak typeof(self) weakSelf = self;
 
-        cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PhotoPreviewCell" forIndexPath:indexPath];
-    if (cell == nil) {
-        cell = [[PhotoPreviewCell alloc]init];
-    }
-        cell.model = model;
-//        PhotoPreviewCell *photoPreviewCell = (PhotoPreviewCell *)cell;
-//        photoPreviewCell.model = model;
-//        __weak typeof(_tzImagePickerVc) weakTzImagePickerVc = _tzImagePickerVc;
-//        __weak typeof(_collectionView) weakCollectionView = _collectionView;
-//        __weak typeof(photoPreviewCell) weakCell = photoPreviewCell;
-//        [photoPreviewCell setImageProgressUpdateBlock:^(double progress) {
-//            __strong typeof(weakSelf) strongSelf = weakSelf;
-//            __strong typeof(weakTzImagePickerVc) strongTzImagePickerVc = weakTzImagePickerVc;
-//            __strong typeof(weakCollectionView) strongCollectionView = weakCollectionView;
-//            __strong typeof(weakCell) strongCell = weakCell;
-//            strongSelf.progress = progress;
-//            if (progress >= 1) {
-//                if (strongSelf.isSelectOriginalPhoto) [strongSelf showPhotoBytes];
-//                if (strongSelf.alertView && [strongCollectionView.visibleCells containsObject:strongCell]) {
-//                    //[strongTzImagePickerVc hideAlertView:strongSelf.alertView];
-//                    strongSelf.alertView = nil;
-//                    [strongSelf doneButtonClick];
-//                }
-//            }
-//        }];
     
-    
-    
+    __weak typeof(self) weakSelf = self;
+    PhotoPreviewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PhotoPreviewCell" forIndexPath:indexPath];
+    HXPhotoModel *model = self.models[indexPath.item];
+    cell.model = model;
+
     [cell setSingleTapGestureBlock:^{
         __strong typeof(weakSelf) strongSelf = weakSelf;
         [strongSelf didTapPreviewCell];
@@ -363,13 +299,13 @@
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    [(PhotoPreviewCell *)cell recoverSubviews];
+    //[(PhotoPreviewCell *)cell recoverSubviews];
     
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
 
-    [(PhotoPreviewCell *)cell recoverSubviews];
+    //[(PhotoPreviewCell *)cell recoverSubviews];
     
 }
 
@@ -387,23 +323,12 @@
     _numberImageView.hidden = (_manager.selectedCount <= 0 || _isHideNaviBar || _isCropImage);
     _numberLabel.hidden = (_manager.selectedCount <= 0 || _isHideNaviBar || _isCropImage);
     
-    _originalPhotoButton.selected = _isSelectOriginalPhoto;
-    _originalPhotoLabel.hidden = !_originalPhotoButton.isSelected;
+
     if (_isSelectOriginalPhoto) [self showPhotoBytes];
-    
-    
-    
+
     _doneButton.hidden = NO;
-    _selectButton.hidden = YES;//!_tzImagePickerVc.showSelectBtn;
-//    // 让宽度/高度小于 最小可选照片尺寸 的图片不能选中
-//    if (![[TZImageManager manager] isPhotoSelectableWithAsset:model.asset]) {
-//        _numberLabel.hidden = YES;
-//        _numberImageView.hidden = YES;
-//        _selectButton.hidden = YES;
-//        _originalPhotoButton.hidden = YES;
-//        _originalPhotoLabel.hidden = YES;
-//        _doneButton.hidden = YES;
-//    }
+    _selectButton.hidden = NO;//!_tzImagePickerVc.showSelectBtn;
+
 }
 
 - (void)showPhotoBytes {

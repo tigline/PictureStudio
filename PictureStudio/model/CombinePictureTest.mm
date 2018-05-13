@@ -32,6 +32,8 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
     Mat resultMat;                          //最终匹配的结果
     float curUseHeight = 0.0;
     
+
+    
     clock_t start_surf = clock();
     //依次拼接图片 （需要完善每张图片模型的信息）
     for (int i = 0; i < images.count-1; i++) {
@@ -42,10 +44,10 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             //路径读取图片暂不使用
             //NSString *path = [images objectAtIndex:i];
             //imageUpCut = imread([path UTF8String]);
-            imageUpCut = imageUpOrigin(cv::Rect(cv::Point(imageUpOrigin.cols/4,128),cv::Point(imageUpOrigin.cols*0.75,imageUpOrigin.rows)));
+            imageUpCut = imageUpOrigin(cv::Rect(cv::Point(128,kNavigationBarHeight*2),cv::Point(imageUpOrigin.cols*0.75,imageUpOrigin.rows)));
         } else {
             previewMat = resultMat;
-            imageUpCut = resultMat(cv::Rect(cv::Point(resultMat.cols/4,resultMat.rows-curUseHeight),cv::Point(resultMat.cols*0.75,resultMat.rows)));
+            imageUpCut = resultMat(cv::Rect(cv::Point(128,resultMat.rows-curUseHeight),cv::Point(resultMat.cols*0.75,resultMat.rows)));
         }
         
         if (i + 1 < images.count) {
@@ -56,116 +58,68 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             //imageDownOrigin = imread([path UTF8String]);
         }
         
-        imageDownCut = imageDownOrigin(cv::Rect(cv::Point(imageDownOrigin.cols/4,0),cv::Point(imageDownOrigin.cols*0.75,imageDownOrigin.rows)));
+        imageDownCut = imageDownOrigin(cv::Rect(cv::Point(128,0),cv::Point(imageDownOrigin.cols*0.75,imageDownOrigin.rows)));
         
         //灰度图转换
         Mat imageUpGray,imageDownGray;
         cvtColor(imageUpCut,imageUpGray,CV_RGB2GRAY);
         cvtColor(imageDownCut,imageDownGray,CV_RGB2GRAY);
         
-
-
-        //提取特征点
-        //OrbFeatureDetector siftDetector(100);
-        //SiftFeatureDetector siftDetector(5000);  // 海塞矩阵阈值  #最耗时操作一
-        SurfFeatureDetector siftDetector(10000);
-        //Ptr<FeatureDetector> siftDetector = FeatureDetector::create("SURF");
-        //FastFeatureDetector siftDetector(170);
-        vector<KeyPoint> keyPoint_Up,keyPoint_Down;
-        siftDetector.detect(imageUpGray,keyPoint_Up);
-        siftDetector.detect(imageDownGray,keyPoint_Down);
         
-        double totaltime_initPicture;
-        clock_t sift_picture = clock();
-        totaltime_initPicture = (double)(sift_picture - start_surf)/CLOCKS_PER_SEC;
-        cout<<"提取特征点："<<totaltime_initPicture<<"秒！"<<endl;
-        
-        //特征点描述，为下边的特征点匹配做准备  #最耗时操作二
-        //SiftDescriptorExtractor siftDescriptor;
-        //Ptr<DescriptorExtractor> siftDescriptor = DescriptorExtractor::create("FAST");
-        //cv::Ptr<cv::ORB> siftDescriptor = cv::ORB::create("ORB");
-        SurfDescriptorExtractor siftDescriptor;
-        //OrbDescriptorExtractor siftDescriptor;
-        Mat imageDesc_Up,imageDesc_Down;
-        siftDescriptor.compute(imageUpGray,keyPoint_Up,imageDesc_Up);
-        siftDescriptor.compute(imageDownGray,keyPoint_Down,imageDesc_Down);
-
-        clock_t siftd_picture = clock();
-        totaltime_initPicture = (double)(siftd_picture - start_surf)/CLOCKS_PER_SEC;
-        cout<<"特征点描述，为下边的特征点匹配做准备："<<totaltime_initPicture<<"秒！"<<endl;
-
-        //获得匹配特征点，并提取最优配对
-        FlannBasedMatcher matchers;
-        //BFMatcher fourceMatchers; //强制匹配 用于快速法
-        vector<DMatch> matchePoints;
+        vector<DMatch> good_matchesX;
         vector<DMatch> good_matches;
-        //matchers.match(imageDesc_Up,imageDesc_Down,matchePoints);
-        matchers.match(imageDesc_Up,imageDesc_Down,matchePoints,Mat());
+        vector<KeyPoint> keyPoint_Up,keyPoint_Down;
+ 
+        //int *keyPoint_Up_p = 0;
+        //keyPoint_Up_p = keyPoint_Up;
+
+        //默认识别
+        good_matchesX = dectectMatchPoints(&keyPoint_Up, &keyPoint_Down, imageUpGray, imageDownGray, NO, 10000, YES);
         
-        double max_dist = 0; double min_dist = 100;
-        //-- Quick calculation of max and min distances between keypoints
-        for( int i = 0; i < imageDesc_Up.rows; i++ )
-        { double dist = matchePoints[i].distance;
-            if( dist < min_dist ) min_dist = dist;
-            if( dist > max_dist ) max_dist = dist;
-        }
-        printf("-- Max dist : %f \n", max_dist );
-        printf("-- Min dist : %f \n", min_dist );
-        //-- Draw only "good" matches (i.e. whose distance is less than 2*min_dist,
-        //-- or a small arbitary value ( 0.02 ) in the event that min_dist is very
-        //-- small)
-        //-- PS.- radiusMatch can also be used here.
-
-        for( int i = 0; i < imageDesc_Up.rows; i++ )
-        {
-            if( matchePoints[i].distance <= max(2*min_dist, 0.02) ) {
-                good_matches.push_back( matchePoints[i]);
-            }
-        }
-
         Mat img_matches;
         drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
-                    matchePoints, img_matches, Scalar::all(-1), Scalar::all(-1),
+                    good_matchesX, img_matches, Scalar::all(-1), Scalar::all(-1),
                     vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
-        UIImage *imageMatchPoints = [self imageWithCVMat:img_matches];
+        UIImage *imageGoodMatchPoints = [self imageWithCVMat:img_matches];
         
-        sort(matchePoints.begin(),matchePoints.end()); //特征点排序
-        //获取排在前N个的最优匹配特征点
-        vector<Point2f> imagePoints1,imagePoints2;
-        long usefullCount; //选取需要的匹配点
-        if (matchePoints.size() < 100) {
-            usefullCount = matchePoints.size();
-        } else {
-            usefullCount = 100;
-        }
-        std::vector< DMatch > good_matchesX;
-        for(int i=0;i<usefullCount;i++)
-        {
-            Point2f tempPoint1 = keyPoint_Up[matchePoints[i].queryIdx].pt;
-            Point2f tempPoint2 = keyPoint_Down[matchePoints[i].trainIdx].pt;
-            if (tempPoint1.x == tempPoint2.x) {
-                good_matchesX.push_back(matchePoints[i]);
-            }
-        }
+        
         
         //无X轴匹配点则判定为无重合 直接拼接  该处逻辑需要完善：先用快速法 再用精确法 或者调整海塞矩阵阈值 也可改变匹配区域。
         if(good_matchesX.size() == 0) {
-            if (resultMat.data == NULL) {
-                resultMat = comMatC(imageUpOrigin, imageDownOrigin, resultMat);
-            } else {
-                resultMat = comMatC(resultMat, imageDownOrigin, resultMat);
+
+            
+            good_matchesX = dectectMatchPoints(&keyPoint_Up, &keyPoint_Down, imageUpGray, imageDownGray, NO, 9000, NO);
+            
+            drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
+                        good_matchesX, img_matches, Scalar::all(-1), Scalar::all(-1),
+                        vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+            UIImage *imageGoodMatchPoints = [self imageWithCVMat:img_matches];
+            if (good_matchesX.size() == 0) {
+                
+                good_matchesX = dectectMatchPoints(&keyPoint_Up, &keyPoint_Down, imageUpGray, imageDownGray, NO, 5000, YES);
+                
+                if (good_matchesX.size() == 0) {
+                    if (resultMat.data == NULL) {
+                        resultMat = comMatC(imageUpOrigin, imageDownOrigin, resultMat);
+                    } else {
+                        resultMat = comMatC(resultMat, imageDownOrigin, resultMat);
+                    }
+                    
+                    curUseHeight = imageDownCut.rows;
+                    continue;
+                }
+                
             }
             
-            curUseHeight = imageDownCut.rows;
-            continue;
+            
         }
         
         //针对 截图不准确造成X轴移位的再做处理
-//        if (good_matchesX.size() == 0) {
-//            resultMat = comMatC(imageUpOrigin, imageDownOrigin, resultMat);
-//            curUseHeight = imageDownCut.rows;
-//            continue;
-//        }
+        if (good_matchesX.size() == 0) {
+            resultMat = comMatC(imageUpOrigin, imageDownOrigin, resultMat);
+            curUseHeight = imageDownCut.rows;
+            continue;
+        }
         
 //        Point2f curPoint0 = keyPoint_Down[good_matches[0].trainIdx].pt;
 //        float minY = curPoint0.y;
@@ -180,15 +134,6 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
 //
 //        }
 
-        clock_t siftd_match = clock();
-        totaltime_initPicture = (double)(siftd_match - start_surf)/CLOCKS_PER_SEC;
-        cout<<"获得匹配特征点，并提取最优配对："<<totaltime_initPicture<<"秒！"<<endl;
-
-
-        drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
-                    good_matchesX, img_matches, Scalar::all(-1), Scalar::all(-1),
-                    vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
-        UIImage *imageGoodMatchPoints = [self imageWithCVMat:img_matches];
         
         //获取图像1到图像2的投影映射矩阵，尺寸为3*3
 //        Mat homo=findHomography(imagePoints1,imagePoints2,CV_RANSAC);
@@ -237,7 +182,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         
         Mat imageUpResult;
         if (i < 1) {
-            imageUpResult = imageUpOrigin(cv::Rect(cv::Point(0,0), cv::Point(imageUpOrigin.cols, originalLinkPoint.y + 128)));
+            imageUpResult = imageUpOrigin(cv::Rect(cv::Point(0,0), cv::Point(imageUpOrigin.cols, originalLinkPoint.y + kNavigationBarHeight*2)));
         } else {
             imageUpResult = previewMat(cv::Rect(cv::Point(0,0), cv::Point(imageUpOrigin.cols, resultMat.rows - imageUpCut.rows + originalLinkPoint.y)));
         }
@@ -255,9 +200,107 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
     clock_t end_surf = clock();
     double totaltime_surf;
     totaltime_surf = (double)(end_surf - start_surf)/CLOCKS_PER_SEC;
-    cout<<"常规程序的运行时间："<<totaltime_surf<<"秒！"<<endl;
+    cout<<"拼接运行时间："<<totaltime_surf<<"秒！"<<endl;
     state(combineImage);
     
+}
+
+vector<DMatch> dectectMatchPoints(vector<KeyPoint> *keyPoint_Up, vector<KeyPoint> *keyPoint_Down, Mat imageUpGray, Mat imageDownGray, bool isFast, int detectValue, bool isGoodX) {
+    
+    clock_t start_surf = clock();
+    double totaltime_initPicture;
+    
+    
+    Mat imageDesc_Up,imageDesc_Down;
+    vector<DMatch> matchePoints;
+    vector<DMatch> good_matches;
+    
+//    clock_t sift_picture = clock();
+//    totaltime_initPicture = (double)(sift_picture - start_surf)/CLOCKS_PER_SEC;
+//    cout<<"提取特征点："<<totaltime_initPicture<<"秒！"<<endl;
+    
+    if (isFast) {
+        FastFeatureDetector detector(detectValue);
+        detector.detect(imageUpGray,*keyPoint_Up);
+        detector.detect(imageDownGray,*keyPoint_Down);
+        
+        OrbDescriptorExtractor descriptor;
+        descriptor.compute(imageUpGray,*keyPoint_Up,imageDesc_Up);
+        descriptor.compute(imageDownGray,*keyPoint_Down,imageDesc_Down);
+        
+        BFMatcher matchers; //强制匹配 用于快速法
+        matchers.match(imageDesc_Up,imageDesc_Down,matchePoints,Mat());
+        
+    } else {
+        //提取特征点 最耗时操作一
+        SurfFeatureDetector detector(detectValue);
+        detector.detect(imageUpGray,*keyPoint_Up);
+        detector.detect(imageDownGray,*keyPoint_Down);
+        
+        //特征点描述，为下边的特征点匹配做准备  #最耗时操作二
+        SurfDescriptorExtractor descriptor;
+        descriptor.compute(imageUpGray,*keyPoint_Up,imageDesc_Up);
+        descriptor.compute(imageDownGray,*keyPoint_Down,imageDesc_Down);
+        
+        //获得匹配特征点，并提取最优配对
+        FlannBasedMatcher matchers;
+        matchers.match(imageDesc_Up,imageDesc_Down,matchePoints,Mat());
+    }
+
+
+    
+    clock_t siftd_picture = clock();
+    totaltime_initPicture = (double)(siftd_picture - start_surf)/CLOCKS_PER_SEC;
+    cout<<"特征点描述，为下边的特征点匹配做准备："<<totaltime_initPicture<<"秒！"<<endl;
+    
+    double max_dist = 0; double min_dist = 100;
+    //-- Quick calculation of max and min distances between keypoints
+    for( int i = 0; i < imageDesc_Up.rows; i++ )
+    { double dist = matchePoints[i].distance;
+        if( dist < min_dist ) min_dist = dist;
+        if( dist > max_dist ) max_dist = dist;
+    }
+    printf("-- Max dist : %f \n", max_dist );
+    printf("-- Min dist : %f \n", min_dist );
+    //-- Draw only "good" matches (i.e. whose distance is less than 2*min_dist,
+    //-- or a small arbitary value ( 0.02 ) in the event that min_dist is very
+    //-- small)
+    //-- PS.- radiusMatch can also be used here.
+    for( int i = 0; i < imageDesc_Up.rows; i++ )
+    {
+        if( matchePoints[i].distance <= max(2*min_dist, 0.02) ) {
+            good_matches.push_back( matchePoints[i]);
+        }
+    }
+    sort(matchePoints.begin(),matchePoints.end()); //特征点排序
+    
+    //获取排在前N个的最优匹配特征点
+    vector<Point2f> imagePoints1,imagePoints2;
+    long usefullCount; //选取需要的匹配点
+    if (matchePoints.size() < 100) {
+        usefullCount = matchePoints.size();
+    } else {
+        usefullCount = 100;
+    }
+    std::vector< DMatch > good_matchesX;
+    for(int i=0;i<usefullCount;i++)
+    {
+        Point2f tempPoint1 = (*keyPoint_Up)[matchePoints[i].queryIdx].pt;
+        Point2f tempPoint2 = (*keyPoint_Down)[matchePoints[i].trainIdx].pt;
+        if (tempPoint1.x == tempPoint2.x) {
+            good_matchesX.push_back(matchePoints[i]);
+        }
+    }
+//    Mat img_matches;
+//    drawMatches(imageUpGray, * keyPoint_Up, imageDownGray, *keyPoint_Down,
+//                matchePoints, img_matches, Scalar::all(-1), Scalar::all(-1),
+//                vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+//    UIImage *imageMatchPoints = [self imageWithCVMat:img_matches];
+    if (isGoodX) {
+        return good_matchesX;
+    }
+    
+    return matchePoints;
 }
 
 Mat comMatC(Mat Matrix1,Mat Matrix2,Mat &MatrixCom)  //需要处理列数不同的状况
