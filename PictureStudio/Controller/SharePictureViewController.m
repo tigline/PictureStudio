@@ -116,16 +116,21 @@
             [_showImageScrollView setContentSize:CGSizeMake(_showImageScrollView.frame.size.width, _resultImage.size.height)];
         }
         UIImageView *imageView = [[UIImageView alloc]initWithFrame:cgpos];
+
+        imageView.layer.shadowColor = [UIColor lightGrayColor].CGColor;
+        imageView.layer.shadowOpacity = 0.8f;
+        imageView.layer.shadowOffset = CGSizeMake(0, 0);
         [imageView setImage:_resultImage];
+        
         [_showImageScrollView addSubview:imageView];
         UITapGestureRecognizer* imgMsgTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchOnImage:)];
         [_showImageScrollView addGestureRecognizer:imgMsgTap];
     }
     self.showImageScrollView.showsVerticalScrollIndicator = NO;
     self.showImageScrollView.showsHorizontalScrollIndicator = NO;
-    self.showImageScrollView.layer.shadowColor = [UIColor lightGrayColor].CGColor;
-    self.showImageScrollView.layer.shadowOpacity = 0.8f;
-    self.showImageScrollView.layer.shadowOffset = CGSizeMake(0, 0);
+//    self.showImageScrollView.layer.shadowColor = [UIColor lightGrayColor].CGColor;
+//    self.showImageScrollView.layer.shadowOpacity = 0.8f;
+//    self.showImageScrollView.layer.shadowOffset = CGSizeMake(0, 0);
     _shareScrollView.userInteractionEnabled = YES;
 }
 
