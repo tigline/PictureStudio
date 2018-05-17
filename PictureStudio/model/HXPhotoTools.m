@@ -776,7 +776,7 @@
 
 + (PHImageRequestID)getHighQualityFormatPhoto:(PHAsset *)asset size:(CGSize)size startRequestIcloud:(void (^)(PHImageRequestID cloudRequestId))startRequestIcloud progressHandler:(void (^)(double progress))progressHandler completion:(void(^)(UIImage *image))completion failed:(void(^)(NSDictionary *info))failed {
     PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
-    option.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+    //option.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     option.resizeMode = PHImageRequestOptionsResizeModeFast;
     option.networkAccessAllowed = NO;
     
