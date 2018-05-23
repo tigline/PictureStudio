@@ -84,6 +84,7 @@ return self;
     }
     self.selectMaskLayer.hidden = !model.selected;
     self.selectBtn.selected = model.selected;
+
     [self.selectBtn setTitle:model.selectIndexStr forState:UIControlStateSelected];
     //self.selectBtn.backgroundColor = model.selected ? self.selectBgColor :nil;
 

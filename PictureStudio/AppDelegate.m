@@ -44,8 +44,8 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     //向微信注册应用。
     //[WXApi registerApp:URL_APPID ];
-    [self configUSharePlatforms];
-    [self confitUShareSettings];
+    //[self configUSharePlatforms];
+    //[self confitUShareSettings];
     return YES;
 }
 
@@ -85,41 +85,41 @@ void uncaughtExceptionHandler(NSException *exception) {
 }
 
 
--(BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options{
-
-    /*! @brief 处理微信通过URL启动App时传递的数据
-     *
-     * 需要在 application:openURL:sourceApplication:annotation:或者application:handleOpenURL中调用。
-     * @param url 微信启动第三方应用时传递过来的URL
-     * @param delegate  WXApiDelegate对象，用来接收微信触发的消息。
-     * @return 成功返回YES，失败返回NO。
-     */
-    //return [WXApi handleOpenURL:url delegate:self];
-    BOOL result = [[UMSocialManager defaultManager]  handleOpenURL:url options:options];
-    if (!result) {
-        // 其他如支付等SDK的回调
-    }
-    return result;
-}
+//-(BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options{
+//
+//    /*! @brief 处理微信通过URL启动App时传递的数据
+//     *
+//     * 需要在 application:openURL:sourceApplication:annotation:或者application:handleOpenURL中调用。
+//     * @param url 微信启动第三方应用时传递过来的URL
+//     * @param delegate  WXApiDelegate对象，用来接收微信触发的消息。
+//     * @return 成功返回YES，失败返回NO。
+//     */
+//    //return [WXApi handleOpenURL:url delegate:self];
+//    BOOL result = [[UMSocialManager defaultManager]  handleOpenURL:url options:options];
+//    if (!result) {
+//        // 其他如支付等SDK的回调
+//    }
+//    return result;
+//}
 //
 //
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
-    //return [WXApi handleOpenURL:url delegate:self];
-    BOOL result = [[UMSocialManager defaultManager] handleOpenURL:url];
-    if (!result) {
-        // 其他如支付等SDK的回调
-    }
-    return result;
-}
+//- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
+//    //return [WXApi handleOpenURL:url delegate:self];
+//    BOOL result = [[UMSocialManager defaultManager] handleOpenURL:url];
+//    if (!result) {
+//        // 其他如支付等SDK的回调
+//    }
+//    return result;
+//}
 //
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(id)annotation{
-    //return [WXApi handleOpenURL:url delegate:self];
-    BOOL result = [[UMSocialManager defaultManager] handleOpenURL:url sourceApplication:sourceApplication annotation:annotation];
-    if (!result) {
-        // 其他如支付等SDK的回调
-    }
-    return result;
-}
+//- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(id)annotation{
+//    //return [WXApi handleOpenURL:url delegate:self];
+//    BOOL result = [[UMSocialManager defaultManager] handleOpenURL:url sourceApplication:sourceApplication annotation:annotation];
+//    if (!result) {
+//        // 其他如支付等SDK的回调
+//    }
+//    return result;
+//}
 
 /*! 微信回调，不管是登录还是分享成功与否，都是走这个方法 @brief 发送一个sendReq后，收到微信的回应
  *

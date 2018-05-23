@@ -26,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PictureStudio/view/PhotoPreviewCell.m"
-            timestampString = "547918844.784181"
+            timestampString = "547997030.26537"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "240"
@@ -42,7 +42,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PictureStudio/view/PhotoPreviewCell.m"
-            timestampString = "547918844.784273"
+            timestampString = "547997030.265445"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "202"
@@ -54,17 +54,49 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PictureStudio/Model/CombinePictureTest.mm"
-            timestampString = "547918844.7846791"
+            timestampString = "548780273.70639"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "88"
-            endingLineNumber = "88"
-            landmarkName = "+CombinePictures:complete:"
-            landmarkType = "7">
+            startingLineNumber = "344"
+            endingLineNumber = "344"
+            landmarkName = "dectectMatchPoints(vector&lt;KeyPoint&gt; *keyPoint_Up, vector&lt;KeyPoint&gt; *keyPoint_Down, Mat imageUpGray, Mat imageDownGray, bool isFast, int detectValue, bool isGoodX)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PictureStudio/Model/CombinePictureTest.mm"
+            timestampString = "548780273.706478"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "347"
+            endingLineNumber = "347"
+            landmarkName = "dectectMatchPoints(vector&lt;KeyPoint&gt; *keyPoint_Up, vector&lt;KeyPoint&gt; *keyPoint_Down, Mat imageUpGray, Mat imageDownGray, bool isFast, int detectValue, bool isGoodX)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PictureStudio/Model/CombinePictureTest.mm"
+            timestampString = "548780273.706539"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "339"
+            endingLineNumber = "339"
+            landmarkName = "dectectMatchPoints(vector&lt;KeyPoint&gt; *keyPoint_Up, vector&lt;KeyPoint&gt; *keyPoint_Down, Mat imageUpGray, Mat imageDownGray, bool isFast, int detectValue, bool isGoodX)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -74,39 +106,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PictureStudio/Model/CombinePictureTest.mm"
-            timestampString = "547918915.861709"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "99"
-            endingLineNumber = "99"
-            landmarkName = "+CombinePictures:complete:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "PictureStudio/Model/CombinePictureTest.mm"
-            timestampString = "547918947.7899801"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "97"
-            endingLineNumber = "97"
-            landmarkName = "+CombinePictures:complete:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "PictureStudio/Model/CombinePictureTest.mm"
-            timestampString = "547918961.58293"
+            timestampString = "548780273.706597"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "91"
@@ -122,12 +122,44 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PictureStudio/Model/CombinePictureTest.mm"
-            timestampString = "547918978.975987"
+            timestampString = "548780273.706652"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "83"
-            endingLineNumber = "83"
+            startingLineNumber = "100"
+            endingLineNumber = "100"
             landmarkName = "+CombinePictures:complete:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PictureStudio/controller/ViewController.m"
+            timestampString = "548780273.706706"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "242"
+            endingLineNumber = "242"
+            landmarkName = "-getPhotoListByAblumModel:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PictureStudio/controller/ViewController.m"
+            timestampString = "548780273.707095"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "126"
+            endingLineNumber = "126"
+            landmarkName = "-didEnterBackground:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -49,15 +49,8 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="sCQ-Dc-i6Z"/>
                     </view>
-                    <navigationItem key="navigationItem" id="3Me-6t-iga">
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="about" id="1fG-3h-Rap">
-                            <connections>
-                                <action selector="aboutMeClicked:" destination="rFg-mA-rbD" id="M2T-6F-0Fj"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="3Me-6t-iga"/>
                     <connections>
-                        <outlet property="aboutMeBtn" destination="1fG-3h-Rap" id="dVP-tL-fPb"/>
                         <segue destination="MBT-LT-jHU" kind="show" identifier="goLongPicture" id="Zx8-CY-HUL"/>
                         <segue destination="v3X-Pq-viG" kind="show" identifier="toSharePictureView" id="MyQ-kc-yCj"/>
                     </connections>
@@ -190,7 +183,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="about" width="18" height="18"/>
         <image name="no_photos" width="147" height="76"/>
         <image name="share_moments" width="48" height="48"/>
         <image name="share_more" width="48" height="48"/>

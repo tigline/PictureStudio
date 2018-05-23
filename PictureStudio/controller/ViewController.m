@@ -48,7 +48,7 @@ ImgCollectionViewCellDelegate
 @property (nonatomic, strong) UIViewController *assetPopoViewController;
 @property (nonatomic, strong) AHAssetGroupsView *assetGroupView;
 @property (nonatomic, assign) NSInteger currentSectionIndex;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *aboutMeBtn;
+@property (strong, nonatomic) UIBarButtonItem *aboutMeBtn;
 @property (weak, nonatomic) UIActivityIndicatorView *combineIndicatorView;
 @property (nonatomic, strong) CombineIndicatorView* indicator;
 @property (weak, nonatomic) PhotoCollectionReusableView *footerView;
@@ -58,6 +58,7 @@ ImgCollectionViewCellDelegate
 @property (assign, nonatomic) BOOL shouldReloadAsset;
 @property (assign, nonatomic) BOOL isScreenshotNotification;
 @property (assign, nonatomic) BOOL isLaunch;
+
 
 @end
 
@@ -70,14 +71,18 @@ ImgCollectionViewCellDelegate
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor whiteColor]];
+    
+    
 
     self.navigationItem.titleView = self.groupTitleView;
     CGFloat width = [self.groupTitleView updateTitleConstraints:YES];
     self.groupTitleView.frame = CGRectMake(0, 0, width, 40);
     [self askForAuthorize];
     _canDetectScroll = NO;
+    
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(whenBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(whenResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidTakeScreenshot:)name:UIApplicationUserDidTakeScreenshotNotification object:nil];
     
 }
@@ -89,7 +94,7 @@ ImgCollectionViewCellDelegate
 
 - (void)whenBecomeActive:(NSNotificationCenter *)notificaton {
     if (_shouldReloadAsset) {
-        _shouldReloadAsset = NO;
+        //_shouldReloadAsset = NO;
         [self refreshCurrentAssets];
     }
 }
@@ -118,7 +123,7 @@ ImgCollectionViewCellDelegate
     }
 }
 
-- (void)whenResignActive:(NSNotificationCenter *)notificaton {
+- (void)didEnterBackground:(NSNotificationCenter *)notificaton {
     _shouldReloadAsset = YES;
 }
 
@@ -149,13 +154,13 @@ ImgCollectionViewCellDelegate
 - (void)buildRestrictedUI
 {
     UIButton *tipBtn  = [UIButton buttonWithType:UIButtonTypeCustom];
-    [tipBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    [tipBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
     tipBtn.titleLabel.font = [UIFont systemFontOfSize:13];
-    tipBtn.titleLabel.numberOfLines = 2;
+    tipBtn.titleLabel.numberOfLines = 3;
     tipBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
-    [tipBtn setTitle:@"相册权限未开启，请在设置中选择当前应用,\n开启相册功能点击去设置" forState:UIControlStateNormal];
-    tipBtn.frame = CGRectMake(0, (SCREEN_H/2.)-25, SCREEN_W, 50);
-    tipBtn.backgroundColor = [UIColor lightGrayColor];
+    [tipBtn setTitle:@"相册权限未开启，请在设置中\n选择当前应用,\n开启相册功能点击去设置" forState:UIControlStateNormal];
+    tipBtn.frame = CGRectMake((SCREEN_W - SCREEN_W/1.5)/2, (SCREEN_H/2)-25, SCREEN_W/1.5, 150);
+    tipBtn.backgroundColor = [UIColor clearColor];
     [self.view addSubview:tipBtn];
     [self.view bringSubviewToFront:tipBtn];
     [tipBtn addTarget:self action:@selector(openAuthorization) forControlEvents:UIControlEventTouchUpInside];
@@ -234,8 +239,9 @@ ImgCollectionViewCellDelegate
                 CGFloat width = [weakSelf.groupTitleView updateTitleConstraints:NO];
                 weakSelf.groupTitleView.frame = CGRectMake(0, 0, width, 40);
                 [weakSelf.collectionView reloadData];
-                if (_isScreenshotNotification) {
+                if (_isScreenshotNotification || _shouldReloadAsset) {
                     _isScreenshotNotification = NO;
+                    _shouldReloadAsset = NO;
                 } else {
                     [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
                 }
@@ -297,12 +303,18 @@ ImgCollectionViewCellDelegate
     };
     
     _assetPopoViewController =  [self popoverViewController];
+    UIButton *aboutButton = [[UIButton alloc] init];
+    [aboutButton setImage:[UIImage imageNamed:@"about"] forState:UIControlStateNormal];
     
-//    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"about"] style:UIBarButtonItemStyleDone target:self action:@selector(aboutMe)];
-    [_aboutMeBtn setBackgroundImage:[UIImage imageNamed:@"about"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-    [_aboutMeBtn setBackgroundImage:[UIImage imageNamed:@"about_pressed"] forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
-
-//    self.navigationItem.rightBarButtonItem = rightBarButton;
+    [aboutButton addTarget:self action:@selector(aboutMe:) forControlEvents:UIControlEventTouchDown];
+    
+    _aboutMeBtn = [[UIBarButtonItem alloc] initWithCustomView:aboutButton];
+    
+//    _aboutMeBtn = [[UIBarButtonItem alloc] initWithImage:[[UIImage alloc]init] style:UIBarButtonItemStyleDone target:self action:@selector(aboutMe:)];
+//    [_aboutMeBtn setBackgroundImage:[UIImage imageNamed:@"about"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+//    [_aboutMeBtn setBackgroundImage:[UIImage imageNamed:@"about_pressed"] forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
+    
+    self.navigationItem.rightBarButtonItem = _aboutMeBtn;
 
     [self.view addSubview:self.collectionView];
     [self.view addSubview:self.bottomView];
@@ -333,9 +345,19 @@ ImgCollectionViewCellDelegate
     self.bottomView.frame = CGRectMake(0, bottomViewY, viewWidth, ButtomViewHeight + bottomMargin);
 }
 
-- (IBAction)aboutMeClicked:(id)sender {
-    _aboutViewController = [[AboutViewController alloc] initWithNibName:@"AboutViewController" bundle:nil];
-    [self.navigationController presentViewController:_aboutViewController animated:YES completion:nil];
+- (void)aboutMe:(id)sender {
+    UIButton *button = (UIButton *)sender;
+    //[button setImage:[UIImage imageNamed:@"about_pressed"] forState:UIControlStateNormal];
+    [UIView animateWithDuration:0.9 animations:^{
+        [button setImage:[UIImage imageNamed:@"about_pressed"] forState:UIControlStateNormal];
+    } completion:^(BOOL finished) {
+        
+        [button setImage:[UIImage imageNamed:@"about"] forState:UIControlStateNormal];
+        _aboutViewController = [[AboutViewController alloc] initWithNibName:@"AboutViewController" bundle:nil];
+        [self.navigationController presentViewController:_aboutViewController animated:YES completion:nil];
+    }];
+    
+    
 }
 
 
@@ -430,20 +452,20 @@ ImgCollectionViewCellDelegate
 
 #pragma mark - < UICollectionViewDelegate >
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.navigationController.topViewController != self) {
-        return;
-    }
-    HXPhotoModel *model;
-    model = self.allArray[indexPath.item];
-    //ImgCollectionViewCell *cell = (ImgCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-    
-    PhotoPreviewController *photoPreviewVc = [[PhotoPreviewController alloc] init];
-    photoPreviewVc.currentIndex = indexPath.row;
-    photoPreviewVc.models = self.allArray;
-    photoPreviewVc.manager = _manager;
-    //[self pushPhotoPrevireViewController:photoPreviewVc];
-    
-    [self.navigationController pushViewController:photoPreviewVc animated:YES];
+//    if (self.navigationController.topViewController != self) {
+//        return;
+//    }
+//    HXPhotoModel *model;
+//    model = self.allArray[indexPath.item];
+//    //ImgCollectionViewCell *cell = (ImgCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+//
+//    PhotoPreviewController *photoPreviewVc = [[PhotoPreviewController alloc] init];
+//    photoPreviewVc.currentIndex = indexPath.row;
+//    photoPreviewVc.models = self.allArray;
+//    photoPreviewVc.manager = _manager;
+//    //[self pushPhotoPrevireViewController:photoPreviewVc];
+//
+//    [self.navigationController pushViewController:photoPreviewVc animated:YES];
 //    ImgCollectionViewCell *cell = (ImgCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
     
 
@@ -516,7 +538,6 @@ ImgCollectionViewCellDelegate
         if (indexPath) {
             [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
         }
-
     }
 }
 - (void)imgCollectionViewCell:(ImgCollectionViewCell *)cell didSelectBtn:(UIButton *)selectBtn {
@@ -542,10 +563,10 @@ ImgCollectionViewCellDelegate
         cell.selectMaskLayer.hidden = NO;
         selectBtn.selected = YES;
         [selectBtn setTitle:cell.model.selectIndexStr forState:UIControlStateSelected];
-        CAKeyframeAnimation *anim = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
-        anim.duration = 0.25;
-        anim.values = @[@(1.2),@(0.8),@(1.1),@(0.9),@(1.0)];
-        [selectBtn.layer addAnimation:anim forKey:@""];
+//        CAKeyframeAnimation *anim = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
+//        anim.duration = 0.25;
+//        anim.values = @[@(1.2),@(0.8),@(1.1),@(0.9),@(1.0)];
+//        [selectBtn.layer addAnimation:anim forKey:@""];
     }
     UIColor *bgColor;
 
@@ -577,6 +598,28 @@ ImgCollectionViewCellDelegate
 #pragma mark - <PhotoEditBottomViewDelegate>
 
 - (void)datePhotoBottomViewDidCombineBtn {
+    
+}
+
+- (void)datePhotoBottomViewDidClearBtn {
+    
+    for (HXPhotoModel *model in [self.manager selectedArray]) {
+        if (model.dateCellIsVisible) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[self dateItem:model] inSection:model.dateSection];
+            
+            ImgCollectionViewCell *cell = (ImgCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+            cell.model.selectIndexStr = @"";
+            cell.selectMaskLayer.hidden = YES;
+            cell.selectBtn.selected = NO;
+            cell.model.selected = NO;
+            
+        }
+    }
+    [self.manager clearSelectedList];
+    self.bottomView.selectCount = [self.manager selectedCount];
+}
+
+- (void)datePhotoBottomViewDidScrollBtn {
     if (_manager.selectedPhotoArray.count < 2) {
         
     } else {
@@ -588,19 +631,19 @@ ImgCollectionViewCellDelegate
         for (int i = 0; i < _manager.selectedPhotoArray.count; i++) {
             HXPhotoModel *model;
             model = _manager.selectedPhotoArray[i];
-             PHAsset *phAsset = model.asset;
-             PHImageRequestOptions * options=[[PHImageRequestOptions alloc]init];
-             options.resizeMode = PHImageRequestOptionsResizeModeFast;
-             options.synchronous=YES;
-             [imageManager requestImageForAsset:phAsset targetSize:PHImageManagerMaximumSize
-                                    contentMode:PHImageContentModeDefault
-                                        options:options
-                                  resultHandler:^(UIImage *result, NSDictionary *info)
-              {
-                  [photoArray addObject:result];
-              }];
+            PHAsset *phAsset = model.asset;
+            PHImageRequestOptions * options=[[PHImageRequestOptions alloc]init];
+            options.resizeMode = PHImageRequestOptionsResizeModeFast;
+            options.synchronous=YES;
+            [imageManager requestImageForAsset:phAsset targetSize:PHImageManagerMaximumSize
+                                   contentMode:PHImageContentModeDefault
+                                       options:options
+                                 resultHandler:^(UIImage *result, NSDictionary *info)
+             {
+                 [photoArray addObject:result];
+             }];
         }
-        __weak typeof(self) weakSelf = self; 
+        __weak typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_main_queue(), ^{
             [CombinePictureTest CombinePictures:photoArray complete:^(UIImage *longPicture) {
                 [weakSelf.view handleLoading];
@@ -608,25 +651,6 @@ ImgCollectionViewCellDelegate
             }];
         });
     }
-}
-
-- (void)datePhotoBottomViewDidClearBtn {
-    
-    for (HXPhotoModel *model in [self.manager selectedArray]) {
-        if (model.dateCellIsVisible) {
-            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[self dateItem:model] inSection:model.dateSection];
-            ImgCollectionViewCell *cell = (ImgCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-            cell.model.selectIndexStr = @"";
-            cell.selectMaskLayer.hidden = YES;
-            cell.selectBtn.selected = NO;
-        }
-    }
-    [self.manager clearSelectedList];
-    self.bottomView.selectCount = [self.manager selectedCount];
-}
-
-- (void)datePhotoBottomViewDidScrollBtn {
-    
 }
 - (void)datePhotoBottomViewDidEditBtn {
     

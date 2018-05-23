@@ -43,6 +43,13 @@ static NSString *identifier = @"AboutTableViewCell";
     _teamInfoTableView.showsVerticalScrollIndicator = NO;
     _teamInfoTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _teamInfoTableView.scrollEnabled = NO;
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+    NSString *app_build = [infoDictionary objectForKey:@"CFBundleVersion"];
+    
+    NSString *versionText = [NSString stringWithFormat:@"V%@ (%@)",app_Version, app_build];
+    _versionLabel.text = versionText;
+    //_appNameLabel.font = [UIFont systemFontOfSize:];
     
 }
 

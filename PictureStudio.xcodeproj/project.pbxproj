@@ -765,8 +765,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN__ARC_BRIDGE_CAST_NONARC = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = BHD34642BX;
+				DEVELOPMENT_TEAM = LW67YFH2F2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/PictureStudio",
@@ -781,12 +782,13 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/PictureStudio",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.aaron.PictureStudio;
+				PRODUCT_BUNDLE_IDENTIFIER = com.libowang.shote;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "PictureStudio/view/PictureStudio-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -797,8 +799,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN__ARC_BRIDGE_CAST_NONARC = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = BHD34642BX;
+				DEVELOPMENT_TEAM = LW67YFH2F2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/PictureStudio",
@@ -813,11 +816,12 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/PictureStudio",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.aaron.PictureStudio;
+				PRODUCT_BUNDLE_IDENTIFIER = com.libowang.shote;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "PictureStudio/view/PictureStudio-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

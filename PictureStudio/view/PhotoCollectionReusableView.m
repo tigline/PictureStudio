@@ -27,7 +27,10 @@
 }
 
 - (void)setPhotoCount:(NSInteger)photoCount {
-    self.titleLb.text = [NSString stringWithFormat:@"%ld 张照片",photoCount];
+    if (photoCount > 0) {
+        self.titleLb.text = [NSString stringWithFormat:@"%ld 张照片",(long)photoCount];
+    }
+    
 }
 - (void)layoutSubviews {
     [super layoutSubviews];
