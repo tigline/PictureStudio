@@ -66,21 +66,21 @@ static NSString *identifier = @"AboutTableViewCell";
     _contantView.layer.shadowOffset = CGSizeMake(0, 0);
     
     _infoContantView.layer.cornerRadius = 10;
-    //_infoContantView.layer.masksToBounds = YES;
-    _infoContantView.layer.shadowColor = [UIColor colorWithRed:208/255.0 green:217/255.0 blue:237/255.0 alpha:1.0].CGColor;
-    _infoContantView.layer.shadowOpacity = 0.8f;
-    _infoContantView.layer.shadowOffset = CGSizeMake(0, 0);
+    _infoContantView.layer.masksToBounds = YES;
+//    _infoContantView.layer.shadowColor = [UIColor colorWithRed:208/255.0 green:217/255.0 blue:237/255.0 alpha:1.0].CGColor;
+//    _infoContantView.layer.shadowOpacity = 0.8f;
+//    _infoContantView.layer.shadowOffset = CGSizeMake(0, 0);
     
     _likeBtn.layer.cornerRadius = 10;
     //_likeBtn.layer.masksToBounds = YES;
     _likeBtn.layer.shadowColor = [UIColor colorWithRed:208/255.0 green:217/255.0 blue:237/255.0 alpha:1.0].CGColor;
     _likeBtn.layer.shadowOpacity = 0.8f;
-    _likeBtn.layer.shadowOffset = CGSizeMake(0, 0);
+    _likeBtn.layer.shadowOffset = CGSizeMake(0, 2);
     
     _contactBtn.layer.cornerRadius = 10;
     _contactBtn.layer.shadowColor = [UIColor colorWithRed:208/255.0 green:217/255.0 blue:237/255.0 alpha:1.0].CGColor;
     _contactBtn.layer.shadowOpacity = 0.8f;
-    _contactBtn.layer.shadowOffset = CGSizeMake(0, 0);
+    _contactBtn.layer.shadowOffset = CGSizeMake(0, 2);
 }
 - (IBAction)quickBtnClicked:(id)sender {
     

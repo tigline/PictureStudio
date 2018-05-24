@@ -39,8 +39,8 @@ void uncaughtExceptionHandler(NSException *exception) {
     //
     //    [self.window makeKeyAndVisible];
     
-    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:0 forBarMetrics:UIBarMetricsDefault];
-    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+//    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:0 forBarMetrics:UIBarMetricsDefault];
+//    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     
     //向微信注册应用。
     //[WXApi registerApp:URL_APPID ];

@@ -416,12 +416,12 @@ ImgCollectionViewCellDelegate
 {
     
 }
-
+#pragma mark - UITouch Event
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     
 }
-#pragma mark - UITouch Event
+
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
  
@@ -656,6 +656,10 @@ ImgCollectionViewCellDelegate
     
 }
 
+- (void)hideAsetTabelView {
+    
+}
+
 #pragma mark - < 懒加载 >
 
 -(UIViewController*)popoverViewController
@@ -713,6 +717,7 @@ ImgCollectionViewCellDelegate
         _collectionView.alwaysBounceVertical = YES;
         [_collectionView registerClass:[ImgCollectionViewCell class] forCellWithReuseIdentifier:@"DateCellId"];
         [_collectionView registerClass:[PhotoCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"sectionFooterId"];
+        
         }
  
         return _collectionView;
@@ -823,12 +828,11 @@ ImgCollectionViewCellDelegate
     [[UIApplication sharedApplication].keyWindow addSubview:self.touchButton];
     
     //self.overlayView.alpha = 0.0f;
-    [UIView animateWithDuration:0.3f
+    [UIView animateWithDuration:0.2f
                      animations:^{
                          //self.assetGroupView.originY = 0;
                          //self.overlayView.alpha = 0.85f;
                          self.groupTitleView.arrowBtn.transform = CGAffineTransformRotate(self.groupTitleView.arrowBtn.transform, M_PI);
-                     }completion:^(BOOL finished) {
                          if(![_assetPopoViewController presentingViewController])
                          {
                              UIPopoverPresentationController* popContentVC = _assetPopoViewController.popoverPresentationController;
@@ -842,6 +846,8 @@ ImgCollectionViewCellDelegate
                              
                              
                          }
+                     }completion:^(BOOL finished) {
+                         
                      }];
 }
 
@@ -849,15 +855,26 @@ ImgCollectionViewCellDelegate
     return UIModalPresentationNone;
 }
 - (BOOL)popoverPresentationControllerShouldDismissPopover:(UIPopoverPresentationController *)popoverPresentationController {
-    return NO;
+    
+    [UIView animateWithDuration:0.3f
+                     animations:^{
+                         
+                         self.groupTitleView.arrowBtn.transform = CGAffineTransformRotate(self.groupTitleView.arrowBtn.transform, -M_PI_2*1.999);
+                     }completion:^(BOOL finished) {
+                         [_touchButton removeFromSuperview];
+                         _touchButton = nil;
+                         
+                     }];
+    return YES;
 }
+
 
 - (void)hideAssetsGroupView
 {
     [UIView animateWithDuration:0.3f
                      animations:^{
 
-                         self.groupTitleView.arrowBtn.transform = CGAffineTransformRotate(self.groupTitleView.arrowBtn.transform, M_PI);
+                         self.groupTitleView.arrowBtn.transform = CGAffineTransformRotate(self.groupTitleView.arrowBtn.transform, -M_PI_2*1.999);
                      }completion:^(BOOL finished) {
                          [_touchButton removeFromSuperview];
                          _touchButton = nil;

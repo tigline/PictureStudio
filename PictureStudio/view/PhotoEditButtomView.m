@@ -62,12 +62,18 @@
 - (void)setSelectCount:(NSInteger)selectCount {
     _selectCount = selectCount;
 
-    if(_manager.isAllScreenShotPhoto && selectCount > 1) {
+    if (selectCount > 0) {
         self.clearBtn.hidden = NO;
+    } else {
+        self.clearBtn.hidden = YES;
+    }
+    
+    if(_manager.isAllScreenShotPhoto && selectCount > 1) {
+        //self.clearBtn.hidden = NO;
         self.scrollBtn.hidden = NO;
         self.selectLabel.hidden = YES;
     } else {
-        self.clearBtn.hidden = YES;
+        //self.clearBtn.hidden = YES;
         self.scrollBtn.hidden = YES;
         self.selectLabel.hidden = NO;
     }

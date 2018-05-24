@@ -88,9 +88,8 @@ return self;
     [self.selectBtn setTitle:model.selectIndexStr forState:UIControlStateSelected];
     //self.selectBtn.backgroundColor = model.selected ? self.selectBgColor :nil;
 
-    
-    
 }
+
 - (void)setSelectBgColor:(UIColor *)selectBgColor {
     _selectBgColor = selectBgColor;
     if ([selectBgColor isEqual:[UIColor whiteColor]] && !self.selectedTitleColor) {
@@ -118,6 +117,16 @@ return self;
     self.selectMaskLayer.frame = self.bounds;
     
 }
+
+
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    CGPoint touchPoint = [[touches anyObject] locationInView:self];
+    if (touchPoint.x > self.hx_w/2 && touchPoint.y > self.hx_h/2) {
+        [self didSelectClick:_selectBtn];
+    }
+    
+}
+
 - (void)dealloc {
     self.model.dateCellIsVisible = NO;
 }

@@ -48,6 +48,8 @@
     [self.view bringSubviewToFront:self.shareBoardView];
     //[self CreateSaveView];//创建保存图片区域
     [self.view addSubview:self.toolBarView];
+    
+    
 
 
     //[self.view bringSubviewToFront:self.toolBarView];
@@ -231,6 +233,7 @@
                      animations:^{
                          
                          [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY + _shareBoardView.hx_h, _shareBoardView.size.width, _shareBoardView.size.height)];
+                         
                      }completion:^(BOOL finished) {
                          [_shareBoardView setHidden:YES];
                          _isShowShareBoardView = NO;
