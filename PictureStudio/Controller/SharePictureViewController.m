@@ -14,6 +14,7 @@
 #import "PhotoSaveBottomView.h"
 #import "UIView+HXExtension.h"
 #import "HXPhotoDefine.h"
+#import "UINavigationController+FDFullscreenPopGesture.h"
 
 #define URL_APPID @"wx3b864b92dca2bf8a"
 #define URL_SECRET @"e998d19d22428e70c520f36a9c6f0e41"
@@ -51,7 +52,7 @@
     //[self CreateSaveView];//创建保存图片区域
     [self.view addSubview:self.toolBarView];
     
-    
+    self.fd_prefersNavigationBarHidden = YES;
 
 
     //[self.view bringSubviewToFront:self.toolBarView];
@@ -59,9 +60,11 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self.navigationController.navigationBar setHidden:YES];
-    //[self.navigationController setNavigationBarHidden:YES animated:YES];
+//    [self.navigationController.navigationBar setHidden:YES];
+//    self.navigationController.interactivePopGestureRecognizer.enabled = YES;
+    
 }
+
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
@@ -69,11 +72,11 @@
     [_shareBoardView setHidden:YES];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    //[self.navigationController setNavigationBarHidden:NO animated:YES];
-    
-}
+//- (void)viewWillDisappear:(BOOL)animated {
+//    [super viewWillDisappear:animated];
+//    [self.navigationController setNavigationBarHidden:NO animated:animated];
+//    
+//}
 
 - (void)viewDidDisappear:(BOOL)animated
 {

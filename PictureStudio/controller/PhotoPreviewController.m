@@ -46,6 +46,7 @@
 
     //__weak typeof(self) weakSelf = self;
     //ViewController *_tzImagePickerVc = (ViewController *)weakSelf.navigationController;
+    
     if (!self.models.count) {
         self.models = [NSMutableArray arrayWithArray:_manager.selectedArray];
         //_assetsTemp = [NSMutableArray arrayWithArray:_manager.selectedArray];

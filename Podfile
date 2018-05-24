@@ -12,6 +12,7 @@ target 'PictureStudio' do
   pod 'UMCShare/UI'
   pod 'UMCShare/Social/ReducedWeChat'
   pod 'UMCShare/Social/ReducedSina'
+  pod 'FDFullscreenPopGesture', '1.1'
   
   target 'PictureStudioTests' do
     inherit! :search_paths

@@ -20,6 +20,7 @@
 #import "SharePictureViewController.h"
 #import "AboutViewController.h"
 #import "PhotoPreviewController.h"
+#import "UINavigationController+FDFullscreenPopGesture.h"
 
 @interface ViewController ()<UICollectionViewDataSource,
 UICollectionViewDelegate,
@@ -72,7 +73,7 @@ ImgCollectionViewCellDelegate
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor whiteColor]];
     
-    
+    self.fd_prefersNavigationBarHidden = NO;
 
     self.navigationItem.titleView = self.groupTitleView;
     CGFloat width = [self.groupTitleView updateTitleConstraints:YES];
@@ -188,8 +189,13 @@ ImgCollectionViewCellDelegate
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self.navigationController.navigationBar setHidden:NO];
+
     
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
 }
 - (void)viewDidAppear:(BOOL)animated
 {
