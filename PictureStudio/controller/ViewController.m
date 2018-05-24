@@ -188,6 +188,7 @@ ImgCollectionViewCellDelegate
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [self.navigationController.navigationBar setHidden:NO];
     
 }
 - (void)viewDidAppear:(BOOL)animated
@@ -278,22 +279,22 @@ ImgCollectionViewCellDelegate
 
 - (void)setupUI {
     
-    [self.navigationController.navigationBar setTintColor:self.manager.configuration.themeColor];
-    if (self.manager.configuration.navBarBackgroudColor) {
-        [self.navigationController.navigationBar setBackgroundColor:nil];
-        [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-        self.navigationController.navigationBar.barTintColor = self.manager.configuration.navBarBackgroudColor;
-    }
-    if (self.manager.configuration.navigationBar) {
-        self.manager.configuration.navigationBar(self.navigationController.navigationBar);
-    }
-    if (self.manager.configuration.navigationTitleSynchColor) {
-        self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName : self.manager.configuration.themeColor};
-    }else {
-        if (self.manager.configuration.navigationTitleColor) {
-            self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName : self.manager.configuration.navigationTitleColor};
-        }
-    }
+//    [self.navigationController.navigationBar setTintColor:self.manager.configuration.themeColor];
+//    if (self.manager.configuration.navBarBackgroudColor) {
+//        [self.navigationController.navigationBar setBackgroundColor:nil];
+//        [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+//        self.navigationController.navigationBar.barTintColor = self.manager.configuration.navBarBackgroudColor;
+//    }
+//    if (self.manager.configuration.navigationBar) {
+//        self.manager.configuration.navigationBar(self.navigationController.navigationBar);
+//    }
+//    if (self.manager.configuration.navigationTitleSynchColor) {
+//        self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName : self.manager.configuration.themeColor};
+//    }else {
+//        if (self.manager.configuration.navigationTitleColor) {
+//            self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName : self.manager.configuration.navigationTitleColor};
+//        }
+//    }
     
     self.currentSectionIndex = 0;
     __weak typeof(self) weakSelf = self;

@@ -46,6 +46,8 @@
     
     //[self CreateShareView];//创建分享区域
     [self.view bringSubviewToFront:self.shareBoardView];
+    
+    
     //[self CreateSaveView];//创建保存图片区域
     [self.view addSubview:self.toolBarView];
     
@@ -55,16 +57,28 @@
     //[self.view bringSubviewToFront:self.toolBarView];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.navigationController.navigationBar setHidden:YES];
+    //[self.navigationController setNavigationBarHidden:YES animated:YES];
+}
+
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     [self.shareBoardView setFrame:CGRectMake(0, self.toolBarView.originY, self.shareBoardView.hx_w, self.shareBoardView.hx_h)];
     [_shareBoardView setHidden:YES];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.navigationController.navigationBar setHidden:NO];
+    //[self.navigationController setNavigationBarHidden:NO animated:YES];
+    
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    //[self.navigationController.navigationBar setHidden:NO];
 }
 
 - (BOOL)prefersStatusBarHidden
@@ -86,7 +100,7 @@
 #pragma mark - init view
 -(void)CustomTitle
 {
-    [self.navigationController.navigationBar setHidden:YES];
+    
 }
 
 - (void)CreateShowImgaeView
@@ -119,9 +133,7 @@
         }
         UIImageView *imageView = [[UIImageView alloc]initWithFrame:cgpos];
 
-        imageView.layer.shadowColor = [UIColor lightGrayColor].CGColor;
-        imageView.layer.shadowOpacity = 0.8f;
-        imageView.layer.shadowOffset = CGSizeMake(0, 0);
+        
         [imageView setImage:_resultImage];
         
         [_showImageScrollView addSubview:imageView];
@@ -130,9 +142,9 @@
     }
     self.showImageScrollView.showsVerticalScrollIndicator = NO;
     self.showImageScrollView.showsHorizontalScrollIndicator = NO;
-//    self.showImageScrollView.layer.shadowColor = [UIColor lightGrayColor].CGColor;
-//    self.showImageScrollView.layer.shadowOpacity = 0.8f;
-//    self.showImageScrollView.layer.shadowOffset = CGSizeMake(0, 0);
+    self.showImageScrollView.layer.shadowColor = [UIColor blueColor].CGColor;
+    self.showImageScrollView.layer.shadowOpacity = 0.8f;
+    self.showImageScrollView.layer.shadowOffset = CGSizeMake(3, 3);
     _shareScrollView.userInteractionEnabled = YES;
 }
 
@@ -281,7 +293,7 @@
     if (!_toolBarView) {
         _toolBarView = [[PhotoSaveBottomView alloc] initWithFrame:CGRectMake(0, self.view.hx_h - ButtomViewHeight - kBottomMargin, self.view.hx_w, ButtomViewHeight + kBottomMargin)];
         _toolBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-
+        
         _toolBarView.delegate = self;
     }
     return _toolBarView;
