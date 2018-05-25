@@ -206,7 +206,9 @@ typedef enum : NSUInteger {
 
 - (void)selectedListTransformAfter;
 - (void)selectedListTransformBefore;
+- (void)setScrollImage:(UIImage *)resultImage;
 
+- (UIImage *)getScrollImage;
 /**
  取消选择
  */

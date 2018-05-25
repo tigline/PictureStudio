@@ -50,6 +50,8 @@ static NSString *identifier = @"AboutTableViewCell";
     NSString *versionText = [NSString stringWithFormat:@"V%@ (%@)",app_Version, app_build];
     _versionLabel.text = versionText;
     //_appNameLabel.font = [UIFont systemFontOfSize:];
+    [self.likeBtn setTitle:LocalString(@"like_us") forState:UIControlStateNormal];
+    [self.contactBtn setTitle:LocalString(@"contact") forState:UIControlStateNormal];
     
 }
 
@@ -85,6 +87,10 @@ static NSString *identifier = @"AboutTableViewCell";
 - (IBAction)quickBtnClicked:(id)sender {
     
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+- (IBAction)likeBtnClicked:(id)sender {
+}
+- (IBAction)contactBtnClicked:(id)sender {
 }
 
 - (void)didReceiveMemoryWarning {

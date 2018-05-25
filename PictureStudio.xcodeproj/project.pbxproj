@@ -54,6 +54,8 @@
 		937F74332084879800F56AFD /* HXPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 937F74322084879800F56AFD /* HXPhotoManager.m */; };
 		937F743F20849DB200F56AFD /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 937F743E20849DB100F56AFD /* opencv2.framework */; };
 		937F74452084A4CB00F56AFD /* CombineIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 937F74442084A4CB00F56AFD /* CombineIndicatorView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		9389461220B7E3DC00BC62DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9389461420B7E3DC00BC62DA /* InfoPlist.strings */; };
+		9389461820B7E4BB00BC62DA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9389461A20B7E4BB00BC62DA /* Localizable.strings */; };
 		CA77FD7BEBFA8FC98070EEF6 /* libPods-PictureStudioTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FBE47B7FBE857DD390CAF1A /* libPods-PictureStudioTests.a */; };
 /* End PBXBuildFile section */
 
@@ -156,6 +158,10 @@
 		937F743E20849DB100F56AFD /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = PictureStudio/opencv2.framework; sourceTree = "<group>"; };
 		937F74432084A4CB00F56AFD /* CombineIndicatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CombineIndicatorView.h; sourceTree = "<group>"; };
 		937F74442084A4CB00F56AFD /* CombineIndicatorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CombineIndicatorView.m; sourceTree = "<group>"; };
+		9389461320B7E3DC00BC62DA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		9389461520B7E42600BC62DA /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		9389461920B7E4BB00BC62DA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		9389461B20B7E4BF00BC62DA /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		AAE5E6A04762F2F9333FC11A /* Pods-PictureStudio.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PictureStudio.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PictureStudio/Pods-PictureStudio.debug.xcconfig"; sourceTree = "<group>"; };
 		C1CA1C5684A7B142E0E5A154 /* Pods-PictureStudioTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PictureStudioTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PictureStudioTests/Pods-PictureStudioTests.release.xcconfig"; sourceTree = "<group>"; };
 		D552EC3AE84972F5EBFA1999 /* libPods-PictureStudio.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PictureStudio.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -338,6 +344,7 @@
 				700E324A20A1C779007A23E0 /* teamWeiboInfo.plist */,
 				936FAC3720200B9A00F80BCF /* Info.plist */,
 				936FAC3820200B9A00F80BCF /* main.m */,
+				9389460F20B7E3A900BC62DA /* Supporting Files */,
 			);
 			path = PictureStudio;
 			sourceTree = "<group>";
@@ -349,6 +356,15 @@
 				936FAC4420200B9A00F80BCF /* Info.plist */,
 			);
 			path = PictureStudioTests;
+			sourceTree = "<group>";
+		};
+		9389460F20B7E3A900BC62DA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				9389461420B7E3DC00BC62DA /* InfoPlist.strings */,
+				9389461A20B7E4BB00BC62DA /* Localizable.strings */,
+			);
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		F25F94BCEE068E820AFA5EA8 /* Frameworks */ = {
@@ -435,6 +451,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 936FAC1D20200B9A00F80BCF;
 			productRefGroup = 936FAC2720200B9A00F80BCF /* Products */;
@@ -457,8 +474,10 @@
 				70C26300207A7C9100F65EFD /* AHAssetGroupCell.xib in Resources */,
 				700E325420A1E464007A23E0 /* WeiboTableViewCell.xib in Resources */,
 				936FAC3320200B9A00F80BCF /* Assets.xcassets in Resources */,
+				9389461820B7E4BB00BC62DA /* Localizable.strings in Resources */,
 				936FAC3120200B9A00F80BCF /* Main.storyboard in Resources */,
 				700E324B20A1C779007A23E0 /* teamWeiboInfo.plist in Resources */,
+				9389461220B7E3DC00BC62DA /* InfoPlist.strings in Resources */,
 				707DBA89209EDBAC00F2FAFB /* AboutViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -565,7 +584,7 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/UMSocialSDKResources.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -651,6 +670,24 @@
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
+		9389461420B7E3DC00BC62DA /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9389461320B7E3DC00BC62DA /* en */,
+				9389461520B7E42600BC62DA /* zh-Hans */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		9389461A20B7E4BB00BC62DA /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9389461920B7E4BB00BC62DA /* en */,
+				9389461B20B7E4BF00BC62DA /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -658,6 +695,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -713,6 +751,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -767,7 +806,7 @@
 				CLANG_WARN__ARC_BRIDGE_CAST_NONARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LW67YFH2F2;
+				DEVELOPMENT_TEAM = 7K8LKXT586;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/PictureStudio",
@@ -782,7 +821,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/PictureStudio",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.libowang.shote;
+				PRODUCT_BUNDLE_IDENTIFIER = com.libowang.shote2018;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "PictureStudio/view/PictureStudio-Bridging-Header.h";
@@ -801,7 +840,7 @@
 				CLANG_WARN__ARC_BRIDGE_CAST_NONARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LW67YFH2F2;
+				DEVELOPMENT_TEAM = 7K8LKXT586;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/PictureStudio",
@@ -816,7 +855,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/PictureStudio",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.libowang.shote;
+				PRODUCT_BUNDLE_IDENTIFIER = com.libowang.shote2018;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "PictureStudio/view/PictureStudio-Bridging-Header.h";

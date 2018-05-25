@@ -1,0 +1,35 @@
+/* 
+  Localizable.strings
+  PictureStudio
+
+  Created by Aaron Hou on 2018/5/25.
+  Copyright © 2018 Aaron Hou. All rights reserved.
+*/
+
+
+"scroll" = "长截图";
+"scroll_ing" = "拼图中";
+"eidt"  = "编辑";
+"combine" = "直接拼图";
+"operate_tips" = "请选择多张截图";
+"save_image" = "保存图片到相册";
+"pm" = "产品";
+"ui" = "设计";
+"pg" = "开放";
+"like_us" = "点赞评分";
+"contact" = "联系我们";
+
+"all_photos" = "所有照片";
+"picture_count" = "张图片";
+
+
+"save_success" = "保存成功";
+"save_failed" = "保存失败";
+"share_success" = "分享成功";
+"share_failed" = "分享失败";
+"no_install_app" = "未安装该应用";
+"no_install_wechat" = "未安装微信";
+"no_install_weibo" = "未安装微博";
+
+"cancel" = "取消";
+"sure" = "确定";

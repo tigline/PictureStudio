@@ -38,6 +38,7 @@
 #define iOS8_2Later ([UIDevice currentDevice].systemVersion.floatValue >= 8.2f)
 #define WEAKSELF(weakSelf)  __weak __typeof(&*self)weakSelf = self;
 
+#define LocalString(name) NSLocalizedString(name,nil)
 #define SCREEN_W [UIScreen mainScreen].bounds.size.width
 #define SCREEN_H [UIScreen mainScreen].bounds.size.height
 

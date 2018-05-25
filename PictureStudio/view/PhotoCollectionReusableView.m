@@ -28,7 +28,7 @@
 
 - (void)setPhotoCount:(NSInteger)photoCount {
     if (photoCount > 0) {
-        self.titleLb.text = [NSString stringWithFormat:@"%ld 张照片",(long)photoCount];
+        self.titleLb.text = [NSString stringWithFormat:@"%ld %@",(long)photoCount, LocalString(@"picture_count")];
     }
     
 }

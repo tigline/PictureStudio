@@ -1,0 +1,36 @@
+/* 
+  Localizable.strings
+  PictureStudio
+
+  Created by Aaron Hou on 2018/5/25.
+  Copyright © 2018 Aaron Hou. All rights reserved.
+*/
+
+
+
+"scroll" = "Scroll";
+"scroll_ing" = "Scrolling";
+"eidt"  = "Edit";
+"combine" = "Combine";
+"operate_tips" = "Select Several Screenshots";
+"save_image" = "Save image to album";
+"pm" = "PM";
+"ui" = "UI";
+"pg" = "PG";
+"like_us" = "Like us";
+"contact" = "Contact";
+
+"all_photos" = "All Photos";
+"picture_count" = "pieces of pictures";
+
+
+"save_success" = "Save success";
+"save_failed" = "Save failed";
+"share_success" = "Share success";
+"share_failed" = "Share failed";
+"no_install_app" = "The application was not installed";
+"no_install_wechat" = "Wechat was not installed";
+"no_install_weibo" = "Weibo was not installed";
+
+"cancel" = "Cancel";
+"sure" = "Sure";

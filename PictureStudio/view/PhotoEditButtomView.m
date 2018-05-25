@@ -187,7 +187,7 @@
 - (UILabel *)selectLabel {
     if (!_selectLabel) {
         _selectLabel = [[UILabel alloc]init];
-        _selectLabel.text = @"请选择多张截图";
+        _selectLabel.text = LocalString(@"operate_tips");
         _selectLabel.textAlignment = NSTextAlignmentCenter;
         _selectLabel.textColor = [UIColor lightGrayColor];
         _selectLabel.font = [UIFont systemFontOfSize:14];
@@ -219,7 +219,7 @@
         self.bgView.frame = self.bounds;
         [_combineBtn setImage:[UIImage imageNamed:@"tab_combine_active"] forState:UIControlStateNormal];
         [_combineBtn setImage:[UIImage imageNamed:@"tab_combine"] forState:UIControlStateDisabled];
-        [_combineBtn setTitle:@"Combine" forState:UIControlStateNormal];
+        [_combineBtn setTitle:LocalString(@"combine") forState:UIControlStateNormal];
         _combineBtn.titleLabel.font = [UIFont systemFontOfSize:17];
         _combineBtn.imageEdgeInsets = UIEdgeInsetsMake(0, -20, 0, 0);
         _combineBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
@@ -235,7 +235,7 @@
         _scrollBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_scrollBtn setImage:[UIImage imageNamed:@"tab_scroll_active"] forState:UIControlStateNormal];
         [_scrollBtn setImage:[UIImage imageNamed:@"tab_scroll"] forState:UIControlStateDisabled];
-        [_scrollBtn setTitle:@"Scroll" forState:UIControlStateNormal];
+        [_scrollBtn setTitle:LocalString(@"scroll") forState:UIControlStateNormal];
         _scrollBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_scrollBtn addTarget:self action:@selector(didScrollClick) forControlEvents:UIControlEventTouchUpInside];
         _scrollBtn.titleLabel.font = [UIFont systemFontOfSize:13];
@@ -252,7 +252,7 @@
         //[_editBtn setTintColor:[UIColor clearColor]];
         [_editBtn setImage:[UIImage imageNamed:@"tab_edit_active"] forState:UIControlStateNormal];
         [_editBtn setImage:[UIImage imageNamed:@"tab_edit"] forState:UIControlStateDisabled];
-        [_editBtn setTitle:@"Edit" forState:UIControlStateNormal];
+        [_editBtn setTitle:LocalString(@"edit") forState:UIControlStateNormal];
         _editBtn.titleLabel.font = [UIFont systemFontOfSize:13];
         _editBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 30, 0, 0);
         _editBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 40, 0, 0);

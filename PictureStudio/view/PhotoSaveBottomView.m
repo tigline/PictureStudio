@@ -116,7 +116,7 @@
         _saveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_saveBtn setImage:[UIImage imageNamed:@"download"] forState:UIControlStateNormal];
 
-        [_saveBtn setTitle:@"Save image to album" forState:UIControlStateNormal];
+        [_saveBtn setTitle:LocalString(@"save_image") forState:UIControlStateNormal];
         [_saveBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
         //_saveBtn.titleLabel.adjustsFontSizeToFitWidth = YES;
         //_saveBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;

@@ -255,10 +255,10 @@ ImgCollectionViewCellDelegate
                 [weakSelf.view layoutIfNeeded];
                 _canDetectScroll = YES;
                 
-                if (weakSelf.isLaunch && [weakSelf.manager shouldShowTipView]) {
-                    [weakSelf showTipView];
-                    weakSelf.isLaunch = NO;
-                }
+//                if (weakSelf.isLaunch && [weakSelf.manager shouldShowTipView]) {
+//                    [weakSelf showTipView];
+//                    weakSelf.isLaunch = NO;
+//                }
                 
                 
             });
@@ -268,18 +268,11 @@ ImgCollectionViewCellDelegate
 
 - (void)setPhotoManager {
     
-    self.manager.configuration.hideOriginalBtn = NO;
-    self.manager.configuration.filtrationICloudAsset = NO;
+
+
     self.manager.configuration.photoMaxNum = 9;
-    self.manager.configuration.videoMaxNum = 1;
     self.manager.configuration.rowCount = 3;
-    self.manager.configuration.downloadICloudAsset = NO;
     self.manager.configuration.saveSystemAblum = YES;
-    self.manager.configuration.showDateSectionHeader = NO;
-    self.manager.configuration.reverseDate = NO;
-    self.manager.configuration.navigationTitleSynchColor = YES;
-    self.manager.configuration.replaceCameraViewController = NO;
-    self.manager.configuration.openCamera = NO;
     [self.manager selectedListTransformBefore];
 }
 
@@ -630,9 +623,9 @@ ImgCollectionViewCellDelegate
     if (_manager.selectedPhotoArray.count < 2) {
         
     } else {
-        if (_manager.selectedPhotoArray.count > 3) {
-            [self.view showLoadingHUDText:@"Combining..."];
-        }
+//        if (_manager.selectedPhotoArray.count > 3) {
+//            [self.view showLoadingHUDText:LocalString(@"scroll_ing")];
+//        }
         __block NSMutableArray *photoArray = [[NSMutableArray alloc] init];
         PHCachingImageManager *imageManager = [[PHCachingImageManager alloc] init];
         for (int i = 0; i < _manager.selectedPhotoArray.count; i++) {
@@ -653,10 +646,23 @@ ImgCollectionViewCellDelegate
         __weak typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_main_queue(), ^{
             [CombinePictureTest CombinePictures:photoArray complete:^(UIImage *longPicture) {
-                [weakSelf.view handleLoading];
-                [weakSelf performSegueWithIdentifier:@"toSharePictureView" sender:longPicture];
+//                [weakSelf.view handleLoading];
+                [weakSelf.manager setScrollImage:longPicture];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollFinish" object:nil];
             }];
         });
+        
+        dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC));
+        dispatch_after(delayTime, dispatch_get_main_queue(), ^{
+            [weakSelf performSegueWithIdentifier:@"toSharePictureView" sender:nil];
+        });
+        
+        
+//        dispatch_after(3, dispatch_get_main_queue(), ^{
+//            [weakSelf performSegueWithIdentifier:@"toSharePictureView" sender:nil];
+//        });
+        
+        
     }
 }
 - (void)datePhotoBottomViewDidEditBtn {
@@ -939,7 +945,7 @@ ImgCollectionViewCellDelegate
     // Pass the selected object to the new view controller.
     if ([[segue identifier] isEqualToString:@"toSharePictureView"]) {
         //UIImage *image = (UIImage *)sender
-        ((SharePictureViewController *)(segue.destinationViewController)).resultImage = (UIImage *)sender;
+        ((SharePictureViewController *)(segue.destinationViewController)).manager = self.manager;
     }
 }
 

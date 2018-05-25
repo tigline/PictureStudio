@@ -37,6 +37,7 @@
 @property (copy, nonatomic) NSString *endPhotosTotalBtyes;
 @property (strong, nonatomic) NSMutableArray *iCloudUploadArray;
 @property (strong, nonatomic) NSMutableArray *albums;
+@property (strong, nonatomic) UIImage *resultImage;
 @end
 
 @implementation HXPhotoManager
@@ -974,6 +975,14 @@
 - (void)dealloc {
     [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
     NSSLog(@"dealloc");
+}
+
+- (void)setScrollImage:(UIImage *)resultImage {
+    _resultImage = resultImage;
+}
+
+- (UIImage *)getScrollImage {
+    return self.resultImage;
 }
 
 - (void)changeAfterCameraArray:(NSArray *)array {

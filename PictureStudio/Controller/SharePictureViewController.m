@@ -43,27 +43,33 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self CustomTitle];//处理标透明化题栏 也可app统一设置
-    [self CreateShowImgaeView];//创建图片显示区域
+    //[self CreateShowImgaeView];//创建图片显示区域
     
-    //[self CreateShareView];//创建分享区域
-    [self.view bringSubviewToFront:self.shareBoardView];
-    
-    
-    //[self CreateSaveView];//创建保存图片区域
-    [self.view addSubview:self.toolBarView];
+    if ([self.manager getScrollImage] != nil) {
+        
+        [self CreateShowImgaeView:[self.manager getScrollImage]];//创建图片显示区域
+        [self.view bringSubviewToFront:self.shareBoardView];
+        //[self CreateSaveView];//创建保存图片区域
+        [self.view addSubview:self.toolBarView];
+    }
     
     self.fd_prefersNavigationBarHidden = YES;
-
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollFinish) name:@"scrollFinish" object:nil];
 
     //[self.view bringSubviewToFront:self.toolBarView];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    if (_manager.selectedCount > 3) {
+        [self.view showLoadingHUDText:LocalString(@"scorll_ing")];
+    }
 //    [self.navigationController.navigationBar setHidden:YES];
 //    self.navigationController.interactivePopGestureRecognizer.enabled = YES;
     
 }
+
+
 
 
 - (void)viewDidLayoutSubviews {
@@ -81,7 +87,19 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
+    [self.manager setScrollImage:nil];
     //[self.navigationController.navigationBar setHidden:NO];
+}
+
+- (void)scrollFinish
+{
+    [self.view handleLoading];
+    [self CreateShowImgaeView:[self.manager getScrollImage]];
+    [self.view bringSubviewToFront:self.shareBoardView];
+    
+    
+    //[self CreateSaveView];//创建保存图片区域
+    [self.view addSubview:self.toolBarView];
 }
 
 - (BOOL)prefersStatusBarHidden
@@ -106,7 +124,7 @@
     
 }
 
-- (void)CreateShowImgaeView
+- (void)CreateShowImgaeView:(UIImage *)_resultImage
 {
 //    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10*ScreenWidthRatio, kTopMargin + 10*ScreenHeightRatio, 355*ScreenWidthRatio, 517*ScreenHeightRatio)];
     
@@ -161,7 +179,7 @@
     UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];
     //如果有缩略图，则设置缩略图
     shareObject.thumbImage = [UIImage imageNamed:@"icon"];
-    [shareObject setShareImage:self.resultImage];
+    [shareObject setShareImage:[self.manager getScrollImage]];
     //分享消息对象设置分享内容对象
     messageObject.shareObject = shareObject;
     //调用分享接口
@@ -193,7 +211,7 @@
 
 - (IBAction)onShareMoreClicked:(id)sender {
     NSLog(@"shareMoreImageOnClick");
-    UIImage *imageToShare = self.resultImage;
+    UIImage *imageToShare = [self.manager getScrollImage];
     NSArray *activityItems = @[imageToShare];
     UIActivityViewController *activityVC = [[UIActivityViewController alloc]initWithActivityItems:activityItems applicationActivities:nil];
     //不出现在活动项目
@@ -264,17 +282,17 @@
     __weak typeof(self) weakSelf = self;
     [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
         //写入图片到相册
-        [PHAssetChangeRequest creationRequestForAssetFromImage:self.resultImage];
+        [PHAssetChangeRequest creationRequestForAssetFromImage:[self.manager getScrollImage]];
     } completionHandler:^(BOOL success, NSError * _Nullable error) {
         NSLog(@"success = %d, error = %@", success, error);
         if (success) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf.view showImageHUDText:@"save success"];
+                [weakSelf.view showImageHUDText:LocalString(@"save_success")];
             });
             
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf.view showImageHUDText:@"save failed"];
+                [weakSelf.view showImageHUDText:LocalString(@"save_failed")];
             });
             
         }
@@ -305,17 +323,17 @@
 #pragma mark delegate 监听微信分享是否成功
 -(void)shareReturnByCode:(int)code
 {
-    NSString *strTitle = @"分享成功";
+    NSString *strTitle = LocalString(@"share_success");
     
     if (code != 0)
     {
-        strTitle = @"分享失败";
+        strTitle = LocalString(@"share_failed");
     }
     UIAlertController* successAlertController = [UIAlertController alertControllerWithTitle:strTitle
                                                                    message:nil
                                                             preferredStyle:UIAlertControllerStyleAlert];
     
-    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:LocalString(@"sure") style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
                                                               //响应事件
                                                               //NSLog(@"action = %@", action);
@@ -326,16 +344,16 @@
 
 - (void)showShareError:(UMSocialPlatformType)platformType
 {
-    NSString *strTitle = @"未安装该应用";
+    NSString *strTitle = LocalString(@"no_install_app");
     if (platformType == UMSocialPlatformType_WechatSession || platformType == UMSocialPlatformType_WechatTimeLine) {
-        strTitle = @"未安装微信";
+        strTitle = LocalString(@"no_install_wechat");
     } else if(platformType == UMSocialPlatformType_Sina) {
-        strTitle = @"未安装微博";
+        strTitle = LocalString(@"no_install_weibo");
     }
     UIAlertController* successAlertController = [UIAlertController alertControllerWithTitle:strTitle
                                                                                     message:nil
                                                                              preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:LocalString(@"sure") style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
                                                           }];
     [successAlertController addAction:defaultAction];
