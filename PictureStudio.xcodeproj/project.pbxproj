@@ -584,7 +584,7 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/UMSocialSDKResources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -806,7 +806,7 @@
 				CLANG_WARN__ARC_BRIDGE_CAST_NONARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 7K8LKXT586;
+				DEVELOPMENT_TEAM = LW67YFH2F2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/PictureStudio",
@@ -821,7 +821,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/PictureStudio",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.libowang.shote2018;
+				PRODUCT_BUNDLE_IDENTIFIER = com.libowang.shote;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "PictureStudio/view/PictureStudio-Bridging-Header.h";
@@ -840,7 +840,7 @@
 				CLANG_WARN__ARC_BRIDGE_CAST_NONARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 7K8LKXT586;
+				DEVELOPMENT_TEAM = LW67YFH2F2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/PictureStudio",
@@ -855,7 +855,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/PictureStudio",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.libowang.shote2018;
+				PRODUCT_BUNDLE_IDENTIFIER = com.libowang.shote;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "PictureStudio/view/PictureStudio-Bridging-Header.h";

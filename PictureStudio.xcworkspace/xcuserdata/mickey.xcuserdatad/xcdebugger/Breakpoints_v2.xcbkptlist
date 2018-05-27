@@ -26,12 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PictureStudio/view/PhotoPreviewCell.m"
-            timestampString = "547997030.26537"
+            timestampString = "549103424.782191"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "240"
             endingLineNumber = "240"
-            landmarkName = "-resizeSubviews"
+            landmarkName = "-setAsset:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -42,7 +42,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PictureStudio/view/PhotoPreviewCell.m"
-            timestampString = "547997030.265445"
+            timestampString = "549103424.782403"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "202"
@@ -58,7 +58,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PictureStudio/Model/CombinePictureTest.mm"
-            timestampString = "548867995.18766"
+            timestampString = "549126824.063579"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "344"
@@ -74,7 +74,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PictureStudio/Model/CombinePictureTest.mm"
-            timestampString = "548867995.187788"
+            timestampString = "549126824.063664"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "347"
@@ -90,7 +90,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PictureStudio/Model/CombinePictureTest.mm"
-            timestampString = "548867995.187862"
+            timestampString = "549126824.063728"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "339"
@@ -102,32 +102,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "PictureStudio/Model/CombinePictureTest.mm"
-            timestampString = "548867995.187923"
+            filePath = "PictureStudio/model/HXPhotoManager.m"
+            timestampString = "549126824.063792"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "91"
-            endingLineNumber = "91"
-            landmarkName = "+CombinePictures:complete:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "PictureStudio/Model/CombinePictureTest.mm"
-            timestampString = "548867995.187981"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "100"
-            endingLineNumber = "100"
-            landmarkName = "+CombinePictures:complete:"
+            startingLineNumber = "538"
+            endingLineNumber = "538"
+            landmarkName = "-isAllScreenShotPhoto"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -138,45 +122,29 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PictureStudio/controller/ViewController.m"
-            timestampString = "548867995.188035"
+            timestampString = "549126824.06384"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "248"
-            endingLineNumber = "248"
-            landmarkName = "-getPhotoListByAblumModel:"
+            startingLineNumber = "228"
+            endingLineNumber = "228"
+            landmarkName = "-viewWillDisappear:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "PictureStudio/controller/ViewController.m"
-            timestampString = "548867995.188094"
+            filePath = "PictureStudio/view/ImgCollectionViewCell.m"
+            timestampString = "549126824.063969"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "127"
-            endingLineNumber = "127"
-            landmarkName = "-didEnterBackground:"
+            startingLineNumber = "69"
+            endingLineNumber = "69"
+            landmarkName = "-setMatchY:"
             landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podfile"
-            timestampString = "548867995.188152"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "13"
-            endingLineNumber = "13"
-            landmarkName = "unknown"
-            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

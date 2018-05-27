@@ -38,6 +38,13 @@
 - (void)showLoadingHUDText:(NSString *)text;
 - (void)handleLoading;
 
+- (void) setOrigin:(float)x :(float)y;
+
+- (void) resetOriginToTopLeft;
+- (void) resetOriginToTopRight;
+
+- (void) resetOriginToBottomLeft;
+
 /* <HXAlbumListViewControllerDelegate> */
 - (void)hx_presentAlbumListViewControllerWithManager:(HXPhotoManager *)manager delegate:(id)delegate;
 

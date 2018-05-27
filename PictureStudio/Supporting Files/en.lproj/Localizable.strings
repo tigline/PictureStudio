@@ -19,6 +19,7 @@
 "pg" = "PG";
 "like_us" = "Like us";
 "contact" = "Contact";
+"load_ablum" = "Loading...";
 
 "all_photos" = "All Photos";
 "picture_count" = "pieces of pictures";

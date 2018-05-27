@@ -63,7 +63,7 @@
     if (!_titleButton) {
         _titleButton = [[UILabel alloc] init];
         _titleButton.text = LocalString(@"all_photos");
-        _titleButton.font = [UIFont systemFontOfSize:20.];
+        _titleButton.font = [UIFont systemFontOfSize:17.];
         _titleButton.textColor = [UIColor blackColor];
         [self addSubview:_titleButton];
     }

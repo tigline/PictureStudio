@@ -190,7 +190,7 @@
         _selectLabel.text = LocalString(@"operate_tips");
         _selectLabel.textAlignment = NSTextAlignmentCenter;
         _selectLabel.textColor = [UIColor lightGrayColor];
-        _selectLabel.font = [UIFont systemFontOfSize:14];
+        _selectLabel.font = [UIFont systemFontOfSize:12];
         
     }
     return _selectLabel;
@@ -202,7 +202,7 @@
         
         self.bgView.frame = self.bounds;
         [_clearBtn setImage:[UIImage imageNamed:@"cancel"] forState:UIControlStateNormal];
-        
+        [_clearBtn.imageView setTintColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2f]];
         //_clearBtn.imageView.contentMode = UIViewContentModeCenter;
         //[_clearBtn setImage:[UIImage imageNamed:@"tab_combine"] forState:UIControlStateDisabled];
         _clearBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
@@ -220,7 +220,7 @@
         [_combineBtn setImage:[UIImage imageNamed:@"tab_combine_active"] forState:UIControlStateNormal];
         [_combineBtn setImage:[UIImage imageNamed:@"tab_combine"] forState:UIControlStateDisabled];
         [_combineBtn setTitle:LocalString(@"combine") forState:UIControlStateNormal];
-        _combineBtn.titleLabel.font = [UIFont systemFontOfSize:17];
+        _combineBtn.titleLabel.font = [UIFont systemFontOfSize:12];
         _combineBtn.imageEdgeInsets = UIEdgeInsetsMake(0, -20, 0, 0);
         _combineBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
         _combineBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
@@ -238,7 +238,7 @@
         [_scrollBtn setTitle:LocalString(@"scroll") forState:UIControlStateNormal];
         _scrollBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_scrollBtn addTarget:self action:@selector(didScrollClick) forControlEvents:UIControlEventTouchUpInside];
-        _scrollBtn.titleLabel.font = [UIFont systemFontOfSize:13];
+        _scrollBtn.titleLabel.font = [UIFont systemFontOfSize:12];
         _scrollBtn.imageEdgeInsets = UIEdgeInsetsMake(0, -10, 0, 0);
         _scrollBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
         //_scrollBtn.enabled = NO;
@@ -253,7 +253,7 @@
         [_editBtn setImage:[UIImage imageNamed:@"tab_edit_active"] forState:UIControlStateNormal];
         [_editBtn setImage:[UIImage imageNamed:@"tab_edit"] forState:UIControlStateDisabled];
         [_editBtn setTitle:LocalString(@"edit") forState:UIControlStateNormal];
-        _editBtn.titleLabel.font = [UIFont systemFontOfSize:13];
+        _editBtn.titleLabel.font = [UIFont systemFontOfSize:12];
         _editBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 30, 0, 0);
         _editBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 40, 0, 0);
         _editBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;

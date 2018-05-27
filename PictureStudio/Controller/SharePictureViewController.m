@@ -32,6 +32,7 @@
 @property (strong, nonatomic) UIScrollView *shareScrollView;
 @property (strong, nonatomic) PhotoSaveBottomView *toolBarView;
 
+
 @property (weak, nonatomic) IBOutlet UIVisualEffectView *shareBoardView;
 
 @end
@@ -43,16 +44,12 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self CustomTitle];//处理标透明化题栏 也可app统一设置
-    //[self CreateShowImgaeView];//创建图片显示区域
     
-    if ([self.manager getScrollImage] != nil) {
-        
-        [self CreateShowImgaeView:[self.manager getScrollImage]];//创建图片显示区域
+    if (_resultImage) {
+        [self CreateShowImgaeView:_resultImage];//创建图片显示区域
         [self.view bringSubviewToFront:self.shareBoardView];
-        //[self CreateSaveView];//创建保存图片区域
-        [self.view addSubview:self.toolBarView];
+        [self.view addSubview:self.toolBarView];//创建保存图片区域
     }
-    
     self.fd_prefersNavigationBarHidden = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollFinish) name:@"scrollFinish" object:nil];
 
@@ -78,16 +75,17 @@
     [_shareBoardView setHidden:YES];
 }
 
-//- (void)viewWillDisappear:(BOOL)animated {
-//    [super viewWillDisappear:animated];
-//    [self.navigationController setNavigationBarHidden:NO animated:animated];
-//    
-//}
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
+    
+}
 
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
     [self.manager setScrollImage:nil];
+
     //[self.navigationController.navigationBar setHidden:NO];
 }
 
@@ -96,9 +94,6 @@
     [self.view handleLoading];
     [self CreateShowImgaeView:[self.manager getScrollImage]];
     [self.view bringSubviewToFront:self.shareBoardView];
-    
-    
-    //[self CreateSaveView];//创建保存图片区域
     [self.view addSubview:self.toolBarView];
 }
 
@@ -198,15 +193,18 @@
 
 
 - (IBAction)onShareWechatClicked:(id)sender {
-    [self shareImageToPlatformType:UMSocialPlatformType_WechatSession];
+    //[self shareImageToPlatformType:UMSocialPlatformType_WechatSession];
+    [self.view showImageHUDText:@"Coming soon"];
 }
 
 - (IBAction)onShareMomentClicked:(id)sender {
-    [self shareImageToPlatformType:UMSocialPlatformType_WechatTimeLine];
+    //[self shareImageToPlatformType:UMSocialPlatformType_WechatTimeLine];
+    [self.view showImageHUDText:@"Coming soon"];
 }
 
 - (IBAction)onShareWeiboClicked:(id)sender {
-    [self shareImageToPlatformType:UMSocialPlatformType_Sina];
+    //[self shareImageToPlatformType:UMSocialPlatformType_Sina];
+    [self.view showImageHUDText:@"Coming soon"];
 }
 
 - (IBAction)onShareMoreClicked:(id)sender {
@@ -282,7 +280,12 @@
     __weak typeof(self) weakSelf = self;
     [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
         //写入图片到相册
-        [PHAssetChangeRequest creationRequestForAssetFromImage:[self.manager getScrollImage]];
+        UIImage *saveImage = _resultImage;
+        if (saveImage == nil) {
+            saveImage = [self.manager getScrollImage];
+        }
+
+        [PHAssetChangeRequest creationRequestForAssetFromImage:saveImage];
     } completionHandler:^(BOOL success, NSError * _Nullable error) {
         NSLog(@"success = %d, error = %@", success, error);
         if (success) {
@@ -323,6 +326,7 @@
 #pragma mark delegate 监听微信分享是否成功
 -(void)shareReturnByCode:(int)code
 {
+    
     NSString *strTitle = LocalString(@"share_success");
     
     if (code != 0)
@@ -340,6 +344,7 @@
                                                           }];
     [successAlertController addAction:defaultAction];
     [self presentViewController:successAlertController animated:YES completion:nil];
+    
 }
 
 - (void)showShareError:(UMSocialPlatformType)platformType

@@ -22,6 +22,7 @@
 #import "PhotoPreviewController.h"
 #import "UINavigationController+FDFullscreenPopGesture.h"
 
+
 @interface ViewController ()<UICollectionViewDataSource,
 UICollectionViewDelegate,
 UIScrollViewDelegate,
@@ -59,7 +60,22 @@ ImgCollectionViewCellDelegate
 @property (assign, nonatomic) BOOL shouldReloadAsset;
 @property (assign, nonatomic) BOOL isScreenshotNotification;
 @property (assign, nonatomic) BOOL isLaunch;
+@property (assign, nonatomic) BOOL shouldShowIndicator;
+@property (strong, nonatomic) NSIndexPath *lastAccessed;
+@property (strong, nonatomic) NSIndexPath *lastAccessed1;
+@property (strong, nonatomic) NSMutableArray *swipeSelectArray;
+@property (strong, nonatomic) NSMutableArray *finalselectArray;
+@property (assign, nonatomic) BOOL swipePositionChangeX;
+@property (assign, nonatomic) BOOL swipePositionChangeY;
+@property (assign, nonatomic) CGFloat preSwipeX;
+@property (assign, nonatomic) CGFloat preSwipeY;
+@property (assign, nonatomic) CGFloat curSwipeYB;
+@property (assign, nonatomic) CGFloat curSwipeYE;
 
+@property (assign, nonatomic) CGFloat moveBeginX;
+@property (assign, nonatomic) CGFloat moveBeginY;
+@property (assign, nonatomic) CGFloat moveEndX;
+@property (assign, nonatomic) CGFloat moveEndY;
 
 @end
 
@@ -71,8 +87,8 @@ ImgCollectionViewCellDelegate
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self.navigationController.navigationBar setColor:nil];
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    
     self.fd_prefersNavigationBarHidden = NO;
 
     self.navigationItem.titleView = self.groupTitleView;
@@ -80,13 +96,27 @@ ImgCollectionViewCellDelegate
     self.groupTitleView.frame = CGRectMake(0, 0, width, 40);
     [self askForAuthorize];
     _canDetectScroll = NO;
+    _swipeSelectArray = [[NSMutableArray alloc] init];
+    _finalselectArray = [[NSMutableArray alloc] init];
     
+    _preSwipeX = 0;
+    _preSwipeY = 0;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(whenBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidTakeScreenshot:)name:UIApplicationUserDidTakeScreenshotNotification object:nil];
     
+    UIPanGestureRecognizer *gestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+    //[self.view addGestureRecognizer:gestureRecognizer];
+    [gestureRecognizer setMinimumNumberOfTouches:1];
+    [gestureRecognizer setMaximumNumberOfTouches:1];
+    
 }
+
+//- (BOOL)prefersStatusBarHidden
+//{
+//    return _showStatusBar;
+//}
 
 - (void)viewDidDisappear:(BOOL)animated
 {
@@ -107,6 +137,7 @@ ImgCollectionViewCellDelegate
 }
 
 - (void)refreshCurrentAssets {
+    _shouldShowIndicator = NO;
     if (_albumModel != nil) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             __weak typeof(self) weakSelf = self;
@@ -138,6 +169,7 @@ ImgCollectionViewCellDelegate
                 _manager = [[HXPhotoManager alloc] init];
                 [self setPhotoManager];
                 [self setupUI];
+                _canDetectScroll = NO;
                 [self getAlbumModelList:YES];
                 _isLaunch = YES;
                 
@@ -189,12 +221,13 @@ ImgCollectionViewCellDelegate
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-
+    //_showStatusBar = YES;
     
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    //_showStatusBar = NO;
 
 }
 - (void)viewDidAppear:(BOOL)animated
@@ -203,10 +236,15 @@ ImgCollectionViewCellDelegate
     
 }
 
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    //_showStatusBar = NO;
+}
 
 
 - (void)getAlbumModelList:(BOOL)isFirst {
-
+    //_shouldShowIndicator = YES;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         __weak typeof(self) weakSelf = self;
         [self.manager getAllPhotoAlbums:^(HXAlbumModel *firstAlbumModel) {
@@ -226,6 +264,9 @@ ImgCollectionViewCellDelegate
 - (void)getPhotoListByAblumModel:(HXAlbumModel *)albumModel {
     __weak typeof(self) weakSelf = self;
     _canDetectScroll = NO;
+    if (_shouldShowIndicator) {
+        [self.view showLoadingHUDText:LocalString(@"load_ablum")];
+    }
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
         weakSelf.albumModel = albumModel;
@@ -241,6 +282,7 @@ ImgCollectionViewCellDelegate
                 } else {
                     bottomMargin = ButtomViewHeight;
                 }
+
                 weakSelf.collectionView.frame = CGRectMake(0, 0, SCREEN_W, SCREEN_H - bottomMargin - 10);
                 weakSelf.groupTitleView.titleButton.text = weakSelf.albumModel.albumName;
                 CGFloat width = [weakSelf.groupTitleView updateTitleConstraints:NO];
@@ -254,7 +296,7 @@ ImgCollectionViewCellDelegate
                 }
                 [weakSelf.view layoutIfNeeded];
                 _canDetectScroll = YES;
-                
+                [weakSelf.view handleLoading];
 //                if (weakSelf.isLaunch && [weakSelf.manager shouldShowTipView]) {
 //                    [weakSelf showTipView];
 //                    weakSelf.isLaunch = NO;
@@ -274,6 +316,7 @@ ImgCollectionViewCellDelegate
     self.manager.configuration.rowCount = 3;
     self.manager.configuration.saveSystemAblum = YES;
     [self.manager selectedListTransformBefore];
+    [self.manager setScreenWidthSize:[[UIScreen mainScreen] currentMode].size.width];
 }
 
 - (void)setupUI {
@@ -419,12 +462,179 @@ ImgCollectionViewCellDelegate
 #pragma mark - UITouch Event
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
+    CGPoint touchPoint = [[touches anyObject] locationInView:self.collectionView];
+    _moveBeginX = touchPoint.x;
+    _moveBeginY = touchPoint.y;
+}
+
+- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+//    CGPoint touchPoint = [[touches anyObject] locationInView:self.collectionView];
+//
+//    for (ImgCollectionViewCell *cell in self.collectionView.visibleCells) {
+//
+//
+//
+//    }
+    
     
 }
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
- 
+    //CGPoint touchPoint = [[touches anyObject] locationInView:self.collectionView];
+}
+
+- (void)handleGesture:(UIPanGestureRecognizer *)gestureRecognizer
+{
+    self.collectionView.scrollEnabled = YES;
+    float pointerX = [gestureRecognizer locationInView:self.collectionView].x;
+    float pointerY = [gestureRecognizer locationInView:self.collectionView].y;
+//    if (pointerX - _preSwipeX < 10) {
+//        _swipePositionChangeX = YES;
+//    } else {
+//        _swipePositionChangeX = NO;
+//    }
+//    _preSwipeX = pointerX;
+//    if (pointerY - _preSwipeY > 0) {
+//        _swipePositionChangeY = NO;
+//    } else {
+//        _swipePositionChangeY = YES;
+//    }
+//    _preSwipeY = pointerY;
+    
+    for (ImgCollectionViewCell *cell in self.collectionView.visibleCells) {
+        
+//        if (!_swipePositionChangeY) {
+//            _curSwipeYB = cell.frame.origin.y;
+//            _curSwipeYE = cell.frame.origin.y + cell.frame.size.height;
+//        }
+        
+        float cellSX = cell.frame.origin.x;
+        float cellEX = cell.frame.origin.x + cell.frame.size.width;
+        float cellSY = cell.frame.origin.y;
+        float cellEY = cell.frame.origin.y + cell.frame.size.height;
+
+        if (pointerX >= cellSX && pointerX <= cellEX && pointerY >= cellSY && pointerY <= cellEY) {
+            
+            NSIndexPath *touchOver = [self.collectionView indexPathForCell:cell];
+            if (_lastAccessed != touchOver) {
+                if (cell.selected) {
+                    //[_manager beforeSelectedListdeletePhotoModel:cell.model];
+                    cell.matchX = NO;
+                    cell.selected = NO;
+                    cell.matchY = NO;
+
+                } else {
+                    //[self.manager beforeSelectedListAddPhotoModel:cell.model];
+                    cell.matchX = YES;
+                    cell.selected = YES;
+                    cell.matchY = YES;
+
+                }
+                //self.bottomView.selectCount = [self.manager selectedCount];
+            }
+            _lastAccessed = touchOver;
+            
+        }
+        
+            
+            
+            
+//            if (_swipePositionChangeX) {
+//                _lastAccessed1 = touchOver;  || (_swipePositionChangeX&&_lastAccessed1 != touchOver)
+//            }
+        
+        
+        /*
+        if (pointerX >= cellSX && pointerX <= cellEX) {
+            
+            if (!cell.matchX) {
+                cell.matchX = YES;
+            }
+        }
+        
+        if (pointerY <= cellEY && pointerY >= cellSY && cell.matchX) {
+            if (![_swipeSelectArray containsObject:cell]) {
+
+                    if (cell.selected) {
+                        cell.matchX = NO;
+                        cell.selected = NO;
+                        cell.matchY = NO;
+                        [_manager beforeSelectedListdeletePhotoModel:cell.model];
+//                        if ([_swipeSelectArray containsObject:cell]) {
+//                            [_swipeSelectArray removeObject:cell];
+//                        }[_swipeSelectArray addObject:cell];
+                    } else {
+                        cell.matchX = YES;
+                        cell.selected = YES;
+                        cell.matchY = YES;
+
+                        [_swipeSelectArray addObject:cell];
+                        
+                    }
+            } else if([_swipeSelectArray containsObject:cell] && _swipePositionChangeY) {
+                
+                if (![_finalselectArray containsObject:cell]) {
+                    if (!cell.selected) {
+                        cell.matchX = NO;
+                        cell.selected = NO;
+                        cell.matchY = NO;
+                        [_manager beforeSelectedListdeletePhotoModel:cell.model];
+                        [_finalselectArray addObject:cell];
+                    } else {
+                        cell.matchX = YES;
+                        cell.selected = YES;
+                        cell.matchY = YES;
+                    }
+                }
+            }
+        }
+         */
+    }
+
+    
+//    if (gestureRecognizer.state == UIGestureRecognizerStateEnded)
+//    {
+//        //lastAccessed = nil;
+//        _swipePositionChangeY = NO;
+//        self.collectionView.scrollEnabled = YES;
+//    }
+    
+    
+}
+
+- (void) selectCellForCollectionView:(ImgCollectionViewCell *)cell
+{
+    [self.manager beforeSelectedListAddPhotoModel:cell.model];
+    NSString *str = [self.manager maximumOfJudgment:cell.model];
+    if (str) {
+        [self.view showImageHUDText:str];
+        return;
+    }
+    if (cell.model.type != HXPhotoModelMediaTypeCameraVideo && cell.model.type != HXPhotoModelMediaTypeCameraPhoto) {
+        cell.model.thumbPhoto = cell.imageView.image;
+    }
+
+    cell.selectMaskLayer.hidden = NO;
+    
+    cell.selectBtn.selected = YES;
+    [cell.selectBtn setTitle:cell.model.selectIndexStr forState:UIControlStateSelected];
+    
+//    [collection selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionNone];
+//    [self collectionView:collection didSelectItemAtIndexPath:indexPath];
+}
+
+//- (void) deselectCellForCollectionView:(UICollectionView *)collection atIndexPath:(NSIndexPath *)indexPath
+- (void) deselectCellForCollectionView:(ImgCollectionViewCell *)cell
+{
+//    [collection deselectItemAtIndexPath:indexPath animated:YES];
+//    [self collectionView:collection didDeselectItemAtIndexPath:indexPath];
+    [self.manager beforeSelectedListdeletePhotoModel:cell.model];
+    
+    cell.model.selectIndexStr = @"";
+    cell.selectMaskLayer.hidden = YES;
+    cell.selectBtn.selected = NO;
+    cell.model.selected = NO;
 }
 
 
@@ -550,6 +760,7 @@ ImgCollectionViewCellDelegate
         cell.model.selectIndexStr = @"";
         cell.selectMaskLayer.hidden = YES;
         selectBtn.selected = NO;
+        //cell.selected = NO;
     }else {
         NSString *str = [self.manager maximumOfJudgment:cell.model];
         if (str) {
@@ -562,17 +773,10 @@ ImgCollectionViewCellDelegate
         [self.manager beforeSelectedListAddPhotoModel:cell.model];
         cell.selectMaskLayer.hidden = NO;
         selectBtn.selected = YES;
+        //cell.selected = YES;
         [selectBtn setTitle:cell.model.selectIndexStr forState:UIControlStateSelected];
-//        CAKeyframeAnimation *anim = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
-//        anim.duration = 0.25;
-//        anim.values = @[@(1.2),@(0.8),@(1.1),@(0.9),@(1.0)];
-//        [selectBtn.layer addAnimation:anim forKey:@""];
     }
-    UIColor *bgColor;
 
-    bgColor = [UIColor colorWithRed:102/255.0 green:153/255.0 blue:1.0 alpha:1.0];
-
-    //selectBtn.backgroundColor = selectBtn.selected ? bgColor : nil;
     if (!selectBtn.selected) {
         NSMutableArray *indexPathList = [NSMutableArray array];
         NSInteger index = 0;
@@ -612,11 +816,13 @@ ImgCollectionViewCellDelegate
             cell.selectMaskLayer.hidden = YES;
             cell.selectBtn.selected = NO;
             cell.model.selected = NO;
+            cell.selected = NO;
             
         }
     }
     [self.manager clearSelectedList];
     self.bottomView.selectCount = [self.manager selectedCount];
+    [_swipeSelectArray removeAllObjects];
 }
 
 - (void)datePhotoBottomViewDidScrollBtn {
@@ -647,22 +853,26 @@ ImgCollectionViewCellDelegate
         dispatch_async(dispatch_get_main_queue(), ^{
             [CombinePictureTest CombinePictures:photoArray complete:^(UIImage *longPicture) {
 //                [weakSelf.view handleLoading];
-                [weakSelf.manager setScrollImage:longPicture];
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollFinish" object:nil];
+                
+                if (weakSelf.manager.selectedCount > 3) {
+                    [weakSelf.manager setScrollImage:longPicture];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollFinish" object:nil];
+                } else {
+                    [self performSegueWithIdentifier:@"toSharePictureView" sender:longPicture];
+                }
             }];
         });
         
-        dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC));
-        dispatch_after(delayTime, dispatch_get_main_queue(), ^{
-            [weakSelf performSegueWithIdentifier:@"toSharePictureView" sender:nil];
-        });
+        if (_manager.selectedCount > 3) {
+            [self performSegueWithIdentifier:@"toSharePictureView" sender:nil];
+        }
         
         
-//        dispatch_after(3, dispatch_get_main_queue(), ^{
+//        dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC));
+//        dispatch_after(delayTime, dispatch_get_main_queue(), ^{
 //            [weakSelf performSegueWithIdentifier:@"toSharePictureView" sender:nil];
 //        });
-        
-        
+
     }
 }
 - (void)datePhotoBottomViewDidEditBtn {
@@ -732,10 +942,25 @@ ImgCollectionViewCellDelegate
         [_collectionView registerClass:[PhotoCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"sectionFooterId"];
         
         }
- 
+//    _collectionView.allowsSelection = _collectionView.allowsMultipleSelection = YES;
+//
+//    // Do any additional setup after loading the view.
+//    ARSwipeToSelectGestureRecognizer *gestureRecognizer = [[ARSwipeToSelectGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture) toggleSelectedHandler:^(NSIndexPath *indexPath) {
+//        if ([[_collectionView indexPathsForSelectedItems] containsObject:indexPath]) {
+//            [_collectionView deselectItemAtIndexPath:indexPath animated:NO];
+//            [_collectionView cellForItemAtIndexPath:indexPath].alpha = 1.0;
+//        } else {
+//            [_collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
+//            [_collectionView cellForItemAtIndexPath:indexPath].alpha = 0.5;
+//        }
+//    }];
+    //[_collectionView addGestureRecognizer:gestureRecognizer];
         return _collectionView;
     }
+
+- (void)handleGesture {
     
+}
 - (UICollectionViewFlowLayout *)flowLayout {
     if (!_flowLayout) {
         _flowLayout = [[UICollectionViewFlowLayout alloc] init];
@@ -809,6 +1034,7 @@ ImgCollectionViewCellDelegate
         return;
     } else {
         //更新标题
+        _shouldShowIndicator = YES;
         self.currentSectionIndex = selectedAlbumModel.index;
         self.groupTitleView.titleButton.text = selectedAlbumModel.albumName;
         CGFloat width = [self.groupTitleView updateTitleConstraints:NO];
@@ -944,8 +1170,9 @@ ImgCollectionViewCellDelegate
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
     if ([[segue identifier] isEqualToString:@"toSharePictureView"]) {
-        //UIImage *image = (UIImage *)sender
+        UIImage *image = (UIImage *)sender;
         ((SharePictureViewController *)(segue.destinationViewController)).manager = self.manager;
+        ((SharePictureViewController *)(segue.destinationViewController)).resultImage = image;
     }
 }
 

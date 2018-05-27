@@ -30,6 +30,8 @@
 @property (strong, nonatomic) UIColor *selectBgColor;
 @property (strong, nonatomic) UIColor *selectedTitleColor;
 @property (strong, nonatomic) UIButton *selectBtn;
+@property (assign, nonatomic) BOOL matchX;
+@property (assign, nonatomic) BOOL matchY;
 
 - (void)bottomViewPrepareAnimation;
 - (void)bottomViewStartAnimation;

@@ -65,6 +65,26 @@ return self;
         [self.selectBtn removeFromSuperview];
     }
 }
+
+- (void)setMatchY:(BOOL)matchY
+{
+    if (matchY) {
+//        self.selectMaskLayer.hidden = !_model.selected;
+//        self.selectBtn.selected = _model.selected;
+//        [self.selectBtn setTitle:_model.selectIndexStr forState:UIControlStateSelected];
+        self.selectBtn.selected = NO;
+        [self.collectionViewCelldelegate imgCollectionViewCell:self didSelectBtn:self.selectBtn];
+    } else {
+        self.selectBtn.selected = YES;
+        [self.collectionViewCelldelegate imgCollectionViewCell:self didSelectBtn:self.selectBtn];
+        
+//        _model.selectIndexStr = @"";
+//        _selectMaskLayer.hidden = YES;
+//        _selectBtn.selected = NO;
+    }
+    
+}
+
 - (void)setModel:(HXPhotoModel *)model {
     _model = model;
     

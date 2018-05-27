@@ -24,16 +24,13 @@
 // 判断iPhone X
 #define kDevice_Is_iPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
 
+
 // 导航栏 + 状态栏 的高度
 #define kNavigationBarHeight (kDevice_Is_iPhoneX ? 88 : 64)
 #define kTopMargin (kDevice_Is_iPhoneX ? 44 : 0)
 #define kBottomMargin (kDevice_Is_iPhoneX ? 34 : 0)
 #define ButtomViewHeight 45
-#define iOS11_Later ([UIDevice currentDevice].systemVersion.floatValue >= 11.0f)
 
-#define iOS9Later ([UIDevice currentDevice].systemVersion.floatValue >= 9.1f)
-
-#define iOS9_Later ([UIDevice currentDevice].systemVersion.floatValue >= 9.0f)
 
 #define iOS8_2Later ([UIDevice currentDevice].systemVersion.floatValue >= 8.2f)
 #define WEAKSELF(weakSelf)  __weak __typeof(&*self)weakSelf = self;

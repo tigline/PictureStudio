@@ -253,6 +253,30 @@
     }
 }
 
+- (void) setOrigin:(float)x :(float)y
+{
+    self.layer.anchorPoint = CGPointMake(x, y);
+}
+
+- (void) resetOriginToTopLeft
+{
+    [self setOrigin:0 :0];
+    [self setCenter:CGPointMake(0, 0)];
+}
+
+- (void) resetOriginToTopRight
+{
+    [self setOrigin:0 :0];
+    [self setCenter:CGPointMake(0, 0)];
+}
+
+- (void) resetOriginToBottomLeft
+{
+    [self setOrigin:self.frame.size.width/2 :self.frame.size.height];
+    [self setCenter:CGPointMake(self.frame.size.width/2, self.frame.size.height)];
+}
+
+
 @end
 
 @interface HXHUD ()

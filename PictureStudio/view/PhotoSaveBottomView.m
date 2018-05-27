@@ -91,8 +91,17 @@
 }
 - (UIToolbar *)bgView {
     if (!_bgView) {
+        
+    //    UIVisualEffectView *effectview;
+    //    if (@available(iOS 10.0, *)) {
+    //        UIBlurEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleRegular];
+    //        effectview = [[UIVisualEffectView alloc] initWithEffect:blur];
+    //    } else {
+    //        UIBlurEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+    //        effectview = [[UIVisualEffectView alloc] initWithEffect:blur];
+    //    }
         _bgView = [[UIToolbar alloc] init];
-        _bgView.barStyle = UIBarStyleDefault;
+
     }
     return _bgView;
 }

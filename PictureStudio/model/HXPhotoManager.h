@@ -209,6 +209,10 @@ typedef enum : NSUInteger {
 - (void)setScrollImage:(UIImage *)resultImage;
 
 - (UIImage *)getScrollImage;
+
+- (void)setScreenWidthSize:(CGFloat)size;
+
+- (CGFloat)getScreenWithSize;
 /**
  取消选择
  */

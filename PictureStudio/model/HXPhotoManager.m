@@ -38,6 +38,7 @@
 @property (strong, nonatomic) NSMutableArray *iCloudUploadArray;
 @property (strong, nonatomic) NSMutableArray *albums;
 @property (strong, nonatomic) UIImage *resultImage;
+@property (assign, nonatomic) CGFloat screenShotWidth;
 @end
 
 @implementation HXPhotoManager
@@ -330,8 +331,6 @@
 }
 /**
  获取所有相册，并返回当前相册
- 
- 
  */
 
 - (void)getAllPhotoAndCurrentAlbums:(void(^)(HXAlbumModel *currentAlbumModel))currentModel albums:(void(^)(NSArray *albums))albums AlbumName:(NSString *)AlbumName {
@@ -533,12 +532,17 @@
     for (int i = 0; i < _selectedList.count; i++) {
         HXPhotoModel *model = [[HXPhotoModel alloc] init];
         model = [_selectedList objectAtIndex:i];
+        if (model.asset.pixelWidth != _screenShotWidth) {
+            return NO;
+        }
         if (!model.isScreenShot) {
             return NO;
         } else {
             isALLScreenShot = model.isScreenShot;
         }
     }
+    
+    
     return isALLScreenShot;
 }
 
@@ -984,6 +988,15 @@
 - (UIImage *)getScrollImage {
     return self.resultImage;
 }
+
+- (void)setScreenWidthSize:(CGFloat)size {
+    _screenShotWidth = size;
+}
+
+- (CGFloat)getScreenWithSize {
+    return self.screenShotWidth;
+}
+
 
 - (void)changeAfterCameraArray:(NSArray *)array {
     self.endCameraList = array.mutableCopy;
