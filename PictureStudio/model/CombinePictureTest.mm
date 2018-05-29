@@ -79,11 +79,11 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         //默认识别
         good_matchesX = dectectMatchPoints(&keyPoint_Up, &keyPoint_Down, imageUpGray, imageDownGray, NO, 12000, YES);
         
-        Mat img_matches;
-        drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
-                    good_matchesX, img_matches, Scalar::all(-1), Scalar::all(-1),
-                    vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
-        UIImage *imageGoodMatchPoints = [self imageWithCVMat:img_matches];
+//        Mat img_matches;
+//        drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
+//                    good_matchesX, img_matches, Scalar::all(-1), Scalar::all(-1),
+//                    vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+//        UIImage *imageGoodMatchPoints = [self imageWithCVMat:img_matches];
         
         
         
@@ -93,10 +93,10 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             
             good_matchesX = dectectMatchPoints(&keyPoint_Up, &keyPoint_Down, imageUpGray, imageDownGray, NO, 9000, NO);
             
-            drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
-                        good_matchesX, img_matches, Scalar::all(-1), Scalar::all(-1),
-                        vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
-            UIImage *imageGoodMatchPoints = [self imageWithCVMat:img_matches];
+//            drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
+//                        good_matchesX, img_matches, Scalar::all(-1), Scalar::all(-1),
+//                        vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+//            UIImage *imageGoodMatchPoints = [self imageWithCVMat:img_matches];
             if (good_matchesX.size() == 0) {
                 
                 good_matchesX = dectectMatchPoints(&keyPoint_Up, &keyPoint_Down, imageUpGray, imageDownGray, YES, 150, NO);

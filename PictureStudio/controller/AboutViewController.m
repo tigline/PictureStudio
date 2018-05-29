@@ -89,8 +89,10 @@ static NSString *identifier = @"AboutTableViewCell";
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 - (IBAction)likeBtnClicked:(id)sender {
+    [self showTips];
 }
 - (IBAction)contactBtnClicked:(id)sender {
+    [self showTips];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -144,21 +146,48 @@ static NSString *identifier = @"AboutTableViewCell";
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     WeiboTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    
+    NSURL *URL = [NSURL URLWithString:[[NSString stringWithFormat:@"%@", cell.weiboLink] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"sinaweibo://"]]) {
-        NSURL *URL = [NSURL URLWithString:[[NSString stringWithFormat:@"%@", cell.weiboLink] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+        
         
         [[UIApplication sharedApplication] openURL:URL];
-        return;
+        //return;
         
     } else {
         //用浏览器访问微博
+        //[[UIApplication sharedApplication] openURL:URL];
+        [self showShareError:nil];
     }
     
 
 }
+- (void)showShareError:(UMSocialPlatformType)platformType
+{
+    NSString *strTitle = LocalString(@"no_install_weibo");
+    
+    UIAlertController* successAlertController = [UIAlertController alertControllerWithTitle:strTitle
+                                                                                    message:nil
+                                                                             preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:LocalString(@"sure") style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                          }];
+    [successAlertController addAction:defaultAction];
+    [self presentViewController:successAlertController animated:YES completion:nil];
+}
 
-
+- (void)showTips
+{
+    //NSString *strTitle = LocalString(@"scroll_error");
+    
+    UIAlertController* successAlertController = [UIAlertController alertControllerWithTitle:nil
+                                                                                    message:@"Coming soon"
+                                                                             preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:LocalString(@"sure") style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                          }];
+    [successAlertController addAction:defaultAction];
+    [self presentViewController:successAlertController animated:YES completion:nil];
+}
 
 
 

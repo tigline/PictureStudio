@@ -535,17 +535,19 @@ ImgCollectionViewCellDelegate
             
             NSIndexPath *touchOver = [self.collectionView indexPathForCell:cell];
             if (_lastAccessed != touchOver) {
-                if (cell.selectBtn.selected) {
-                    //[_manager beforeSelectedListdeletePhotoModel:cell.model];
-                    cell.matchX = NO;
-                    //cell.selected = NO;
-                    cell.matchY = NO;
 
+                if (cell.selected) {
+                    [_manager beforeSelectedListdeletePhotoModel:cell.model];
+                    self.bottomView.selectCount = [self.manager selectedCount];
+                    cell.matchX = NO;
+
+                    cell.matchY = NO;
+                    cell.selected = NO;
+                    
                 } else {
-                    //[self.manager beforeSelectedListAddPhotoModel:cell.model];
-                    cell.matchX = YES;
-                    //cell.selected = YES;
+
                     cell.matchY = YES;
+                    cell.selected = YES;
 
                 }
                 //self.bottomView.selectCount = [self.manager selectedCount];
@@ -672,7 +674,7 @@ ImgCollectionViewCellDelegate
     cell.collectionViewCelldelegate = self;
     
     cell.model = model;
-    cell.singleSelected = self.manager.configuration.singleSelected;
+    //cell.singleSelected = self.manager.configuration.singleSelected;
     return cell;
     
 }
@@ -767,6 +769,7 @@ ImgCollectionViewCellDelegate
         }
     }
 }
+
 - (void)imgCollectionViewCell:(ImgCollectionViewCell *)cell didSelectBtn:(UIButton *)selectBtn {
     if (selectBtn.selected) {
         if (cell.model.type != HXPhotoModelMediaTypeCameraPhoto) {
@@ -961,7 +964,7 @@ ImgCollectionViewCellDelegate
         _collectionView.alwaysBounceVertical = YES;
         [_collectionView registerClass:[ImgCollectionViewCell class] forCellWithReuseIdentifier:@"DateCellId"];
         [_collectionView registerClass:[PhotoCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"sectionFooterId"];
-        
+        //_collectionView.allowsMultipleSelection = YES;
         }
 //    _collectionView.allowsSelection = _collectionView.allowsMultipleSelection = YES;
 //

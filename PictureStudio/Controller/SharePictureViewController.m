@@ -16,8 +16,8 @@
 #import "HXPhotoDefine.h"
 #import "UINavigationController+FDFullscreenPopGesture.h"
 
-#define URL_APPID @"wx3b864b92dca2bf8a"
-#define URL_SECRET @"e998d19d22428e70c520f36a9c6f0e41"
+//#define URL_APPID @"wx3b864b92dca2bf8a"
+//#define URL_SECRET @"e998d19d22428e70c520f36a9c6f0e41"
 //static CGFloat shareAreaViewHeight = 73;//定义分享区域的高度
 
 
@@ -194,22 +194,28 @@
 
 - (IBAction)onShareWechatClicked:(id)sender {
     //[self shareImageToPlatformType:UMSocialPlatformType_WechatSession];
-    [self.view showImageHUDText:@"Coming soon"];
+    [self showTips];
+
 }
 
 - (IBAction)onShareMomentClicked:(id)sender {
     //[self shareImageToPlatformType:UMSocialPlatformType_WechatTimeLine];
-    [self.view showImageHUDText:@"Coming soon"];
+    [self showTips];
+
 }
 
 - (IBAction)onShareWeiboClicked:(id)sender {
     //[self shareImageToPlatformType:UMSocialPlatformType_Sina];
-    [self.view showImageHUDText:@"Coming soon"];
+    [self showTips];
+
 }
 
 - (IBAction)onShareMoreClicked:(id)sender {
     NSLog(@"shareMoreImageOnClick");
-    UIImage *imageToShare = [self.manager getScrollImage];
+    UIImage *imageToShare = _resultImage;
+    if (imageToShare == nil) {
+        imageToShare = [self.manager getScrollImage];
+    }
     NSArray *activityItems = @[imageToShare];
     UIActivityViewController *activityVC = [[UIActivityViewController alloc]initWithActivityItems:activityItems applicationActivities:nil];
     //不出现在活动项目
@@ -371,6 +377,20 @@
     
     UIAlertController* successAlertController = [UIAlertController alertControllerWithTitle:strTitle
                                                                                     message:LocalString(@"scroll_operate_tips")
+                                                                             preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:LocalString(@"sure") style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                          }];
+    [successAlertController addAction:defaultAction];
+    [self presentViewController:successAlertController animated:YES completion:nil];
+}
+
+- (void)showTips
+{
+    //NSString *strTitle = LocalString(@"scroll_error");
+    
+    UIAlertController* successAlertController = [UIAlertController alertControllerWithTitle:nil
+                                                                                    message:@"Coming soon"
                                                                              preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:LocalString(@"sure") style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {

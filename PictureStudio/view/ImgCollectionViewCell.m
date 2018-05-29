@@ -12,7 +12,6 @@
 
 @interface ImgCollectionViewCell ()<ImgCollectionViewCellDelegate>
 
-
 @property (strong, nonatomic) UIImageView *imageView;
 @property (strong, nonatomic) UIView *maskView;
 @property (copy, nonatomic) NSString *localIdentifier;
@@ -20,12 +19,9 @@
 @property (strong, nonatomic) UILabel *stateLb;
 @property (strong, nonatomic) CAGradientLayer *bottomMaskLayer;
 
-
-
 @end
 
 @implementation ImgCollectionViewCell
-
 
 //- (void)awakeFromNib {
 //    [super awakeFromNib];
@@ -59,12 +55,12 @@ return self;
         self.maskView.alpha = 1;
     } completion:nil];
 }
-- (void)setSingleSelected:(BOOL)singleSelected {
-    _singleSelected = singleSelected;
-    if (singleSelected) {
-        [self.selectBtn removeFromSuperview];
-    }
-}
+//- (void)setSingleSelected:(BOOL)singleSelected {
+//    _singleSelected = singleSelected;
+//    if (singleSelected) {
+//        [self.selectBtn removeFromSuperview];
+//    }
+//}
 
 - (void)setMatchY:(BOOL)matchY
 {
@@ -76,13 +72,15 @@ return self;
         [self.collectionViewCelldelegate imgCollectionViewCell:self didSelectBtn:self.selectBtn];
     } else {
         //self.selectBtn.selected = YES;
-        [self.collectionViewCelldelegate imgCollectionViewCell:self didSelectBtn:self.selectBtn];
+
         
-//        _model.selectIndexStr = @"";
-//        _selectMaskLayer.hidden = YES;
-//        _selectBtn.selected = NO;
+        //[self.collectionViewCelldelegate imgCollectionViewCell:self didSelectBtn:self.selectBtn];
+        _model.selectIndexStr = @"";
+        _selectMaskLayer.hidden = YES;
+        _selectBtn.selected = NO;
+        //self.selectCount = [self.manager selectedCount];
+
     }
-    
 }
 
 

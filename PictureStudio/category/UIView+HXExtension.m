@@ -294,7 +294,7 @@
         self.imageName = imageName;
         self.layer.masksToBounds = YES;
         self.layer.cornerRadius = 5;
-        self.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.85];
+        self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.85];
         [self setup];
     }
     return self;
