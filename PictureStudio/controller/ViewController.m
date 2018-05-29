@@ -236,6 +236,8 @@ ImgCollectionViewCellDelegate
     
 }
 
+
+
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
@@ -287,14 +289,29 @@ ImgCollectionViewCellDelegate
                 weakSelf.groupTitleView.titleButton.text = weakSelf.albumModel.albumName;
                 CGFloat width = [weakSelf.groupTitleView updateTitleConstraints:NO];
                 weakSelf.groupTitleView.frame = CGRectMake(0, 0, width, 40);
-                [weakSelf.collectionView reloadData];
-                if (_isScreenshotNotification || _shouldReloadAsset) {
-                    _isScreenshotNotification = NO;
-                    _shouldReloadAsset = NO;
-                } else {
-                    [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
-                }
-                [weakSelf.view layoutIfNeeded];
+                
+//                [CATransaction begin];
+//                [CATransaction setDisableActions:YES];
+                
+                [UIView animateWithDuration:0.5 animations:^{
+                    [weakSelf.collectionView reloadData];
+                    if (_isScreenshotNotification || _shouldReloadAsset) {
+                        _isScreenshotNotification = NO;
+                        _shouldReloadAsset = NO;
+                    } else {
+                        [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+                    }
+                }];
+                
+//                if (_isScreenshotNotification || _shouldReloadAsset) {
+//                    _isScreenshotNotification = NO;
+//                    _shouldReloadAsset = NO;
+//                } else {
+//                    [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+//                }
+//                [weakSelf.view layoutIfNeeded];
+//                [CATransaction commit];
+                
                 _canDetectScroll = YES;
                 [weakSelf.view handleLoading];
 //                if (weakSelf.isLaunch && [weakSelf.manager shouldShowTipView]) {
@@ -518,16 +535,16 @@ ImgCollectionViewCellDelegate
             
             NSIndexPath *touchOver = [self.collectionView indexPathForCell:cell];
             if (_lastAccessed != touchOver) {
-                if (cell.selected) {
+                if (cell.selectBtn.selected) {
                     //[_manager beforeSelectedListdeletePhotoModel:cell.model];
                     cell.matchX = NO;
-                    cell.selected = NO;
+                    //cell.selected = NO;
                     cell.matchY = NO;
 
                 } else {
                     //[self.manager beforeSelectedListAddPhotoModel:cell.model];
                     cell.matchX = YES;
-                    cell.selected = YES;
+                    //cell.selected = YES;
                     cell.matchY = YES;
 
                 }
@@ -761,7 +778,7 @@ ImgCollectionViewCellDelegate
         cell.selectMaskLayer.hidden = YES;
         selectBtn.selected = NO;
         //cell.selected = NO;
-    }else {
+    }else if(cell.model.isScreenShot) {
         NSString *str = [self.manager maximumOfJudgment:cell.model];
         if (str) {
             [self.view showImageHUDText:str];
@@ -775,6 +792,9 @@ ImgCollectionViewCellDelegate
         selectBtn.selected = YES;
         //cell.selected = YES;
         [selectBtn setTitle:cell.model.selectIndexStr forState:UIControlStateSelected];
+    } else {
+        [self.view showImageHUDText:LocalString(@"right_operate_tips")];
+        return;
     }
 
     if (!selectBtn.selected) {
@@ -829,9 +849,6 @@ ImgCollectionViewCellDelegate
     if (_manager.selectedPhotoArray.count < 2) {
         
     } else {
-//        if (_manager.selectedPhotoArray.count > 3) {
-//            [self.view showLoadingHUDText:LocalString(@"scroll_ing")];
-//        }
         __block NSMutableArray *photoArray = [[NSMutableArray alloc] init];
         PHCachingImageManager *imageManager = [[PHCachingImageManager alloc] init];
         for (int i = 0; i < _manager.selectedPhotoArray.count; i++) {
@@ -852,14 +869,14 @@ ImgCollectionViewCellDelegate
         __weak typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_main_queue(), ^{
             [CombinePictureTest CombinePictures:photoArray complete:^(UIImage *longPicture) {
-//                [weakSelf.view handleLoading];
-                
                 if (weakSelf.manager.selectedCount > 3) {
                     [weakSelf.manager setScrollImage:longPicture];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollFinish" object:nil];
                 } else {
                     [self performSegueWithIdentifier:@"toSharePictureView" sender:longPicture];
                 }
+            }success:^(BOOL success) {
+                weakSelf.manager.isScrollSuccess = success;
             }];
         });
         
@@ -877,6 +894,10 @@ ImgCollectionViewCellDelegate
 }
 - (void)datePhotoBottomViewDidEditBtn {
     
+}
+
+- (void)datePhotoBottomSelectNotAllScreenShot {
+    [self.view showImageHUDText:LocalString(@"right_operate_tips")];
 }
 
 - (void)hideAsetTabelView {

@@ -12,6 +12,9 @@
 "eidt"  = "编辑";
 "combine" = "直接拼图";
 "operate_tips" = "请选择多张截图";
+"right_operate_tips" = "请选择截图";
+"scroll_error" = "拼接错误";
+"scroll_operate_tips" = "请选择符合条件的截图";
 "save_image" = "保存图片到相册";
 "pm" = "产品";
 "ui" = "设计";

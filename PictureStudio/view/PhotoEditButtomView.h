@@ -17,6 +17,7 @@
 - (void)datePhotoBottomViewDidScrollBtn;
 - (void)datePhotoBottomViewDidEditBtn;
 - (void)datePhotoBottomViewDidClearBtn;
+- (void)datePhotoBottomSelectNotAllScreenShot;
 @end
 
 @interface PhotoEditButtomView : UIView

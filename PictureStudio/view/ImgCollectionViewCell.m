@@ -72,10 +72,10 @@ return self;
 //        self.selectMaskLayer.hidden = !_model.selected;
 //        self.selectBtn.selected = _model.selected;
 //        [self.selectBtn setTitle:_model.selectIndexStr forState:UIControlStateSelected];
-        self.selectBtn.selected = NO;
+        //self.selectBtn.selected = NO;
         [self.collectionViewCelldelegate imgCollectionViewCell:self didSelectBtn:self.selectBtn];
     } else {
-        self.selectBtn.selected = YES;
+        //self.selectBtn.selected = YES;
         [self.collectionViewCelldelegate imgCollectionViewCell:self didSelectBtn:self.selectBtn];
         
 //        _model.selectIndexStr = @"";
@@ -84,6 +84,8 @@ return self;
     }
     
 }
+
+
 
 - (void)setModel:(HXPhotoModel *)model {
     _model = model;
@@ -129,13 +131,15 @@ return self;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
+//    [CATransaction begin];
+//    [CATransaction setDisableActions:YES];
     self.imageView.frame = self.bounds;
     self.maskView.frame = self.bounds;
     //self.stateLb.frame = CGRectMake(0, self.hx_h - 18, self.hx_w - 4, 18);
     //self.bottomMaskLayer.frame = CGRectMake(0, self.hx_h - 25, self.hx_w, 25);
     self.selectBtn.frame = CGRectMake(self.hx_w - 28, self.hx_w - 28, 25, 25);
     self.selectMaskLayer.frame = self.bounds;
-    
+//    [CATransaction commit];
 }
 
 

@@ -13,6 +13,9 @@
 "eidt"  = "Edit";
 "combine" = "Combine";
 "operate_tips" = "Select Several Screenshots";
+"right_operate_tips" = "Please select Screenshot";
+"scroll_error" = "Scroll error";
+"scroll_operate_tips" = "Please select picture that match croll condition";
 "save_image" = "Save image to album";
 "pm" = "PM";
 "ui" = "UI";

@@ -74,6 +74,8 @@ typedef enum : NSUInteger {
  */
 @property (strong, nonatomic) NSArray<NSString *> *networkPhotoUrls;
 
+@property (assign, nonatomic) BOOL isScrollSuccess;
+
 - (void)getAllPhotoAndCurrentAlbums:(void(^)(HXAlbumModel *currentAlbumModel))currentModel albums:(void(^)(NSArray *albums))albums AlbumName:(NSString *)AlbumName;
 /**
  获取系统所有相册
@@ -222,6 +224,8 @@ typedef enum : NSUInteger {
  清空所有已选数组
  */
 - (void)clearSelectedList;
+
+
 
 /**  cell上添加photoView时所需要用到的方法  */
 - (void)changeAfterCameraArray:(NSArray *)array;

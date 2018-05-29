@@ -11,8 +11,10 @@
 
 @interface CombinePictureTest : NSObject
 typedef void (^CombineCompletely)(UIImage* longPicture); // Connection block
+typedef void (^ScrollSuccess)(BOOL success);
 
 @property (nonatomic, strong) CombineCompletely jointCompletelyBlock;
+@property (nonatomic, strong) ScrollSuccess scrollSuccessBlock;
 
-+(void)CombinePictures:(NSArray *)images complete:(CombineCompletely)state;
++(void)CombinePictures:(NSArray *)images complete:(CombineCompletely)state success:(ScrollSuccess)success;
 @end

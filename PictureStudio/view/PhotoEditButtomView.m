@@ -68,14 +68,21 @@
         self.clearBtn.hidden = YES;
     }
     
-    if(_manager.isAllScreenShotPhoto && selectCount > 1) {
-        //self.clearBtn.hidden = NO;
-        self.scrollBtn.hidden = NO;
-        self.selectLabel.hidden = YES;
+    if(selectCount > 1) {
+        
+        if (_manager.isAllScreenShotPhoto) {
+            
+            self.scrollBtn.hidden = NO;
+            self.selectLabel.hidden = YES;
+        } else {
+            self.scrollBtn.hidden = YES;
+            self.selectLabel.hidden = NO;
+            if ([self.delegate respondsToSelector:@selector(datePhotoBottomSelectNotAllScreenShot)]) {
+                [self.delegate datePhotoBottomSelectNotAllScreenShot];
+            }
+        }
     } else {
-        //self.clearBtn.hidden = YES;
-        self.scrollBtn.hidden = YES;
-        self.selectLabel.hidden = NO;
+        
     }
 }
 

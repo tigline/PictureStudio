@@ -77,39 +77,39 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-
-    
 }
 
-- (void)viewDidDisappear:(BOOL)animated
-{
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (!_manager.isScrollSuccess) {
+        [self showScrollError];
+    }
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [self.manager setScrollImage:nil];
 
     //[self.navigationController.navigationBar setHidden:NO];
 }
 
-- (void)scrollFinish
-{
+- (void)scrollFinish {
     [self.view handleLoading];
     [self CreateShowImgaeView:[self.manager getScrollImage]];
     [self.view bringSubviewToFront:self.shareBoardView];
     [self.view addSubview:self.toolBarView];
 }
 
-- (BOOL)prefersStatusBarHidden
-{
+- (BOOL)prefersStatusBarHidden {
     return YES;
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
--(CGRect)AdaptationCGRectMake:(CGRect)mCGRect;
-{
+-(CGRect)AdaptationCGRectMake:(CGRect)mCGRect; {
     return CGRectMake(mCGRect.origin.x*ScreenWidthRatio,mCGRect.origin.y*ScreenHeightRatio, mCGRect.size.width*ScreenWidthRatio, mCGRect.size.height*ScreenHeightRatio);
 }
 
@@ -357,6 +357,20 @@
     }
     UIAlertController* successAlertController = [UIAlertController alertControllerWithTitle:strTitle
                                                                                     message:nil
+                                                                             preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:LocalString(@"sure") style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                          }];
+    [successAlertController addAction:defaultAction];
+    [self presentViewController:successAlertController animated:YES completion:nil];
+}
+
+- (void)showScrollError
+{
+    NSString *strTitle = LocalString(@"scroll_error");
+    
+    UIAlertController* successAlertController = [UIAlertController alertControllerWithTitle:strTitle
+                                                                                    message:LocalString(@"scroll_operate_tips")
                                                                              preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:LocalString(@"sure") style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {

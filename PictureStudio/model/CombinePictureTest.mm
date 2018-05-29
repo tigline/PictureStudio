@@ -21,9 +21,9 @@ using namespace std;
 //计算原始图像点位在经过矩阵变换后在目标图像上对应位置
 Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri);
 
-+(void)CombinePictures:(NSArray *)images complete:(CombineCompletely)state
++(void)CombinePictures:(NSArray *)images complete:(CombineCompletely)state success:(ScrollSuccess)success
 {
-    
+    BOOL isSuccess = YES;
     Mat imageUpOrigin;                      //上部原始图片
     Mat imageDownOrigin;                    //下部原始图片
     Mat imageUpCut;                         //截取上部图片需要匹配的区域
@@ -109,6 +109,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
                     }
                     
                     curUseHeight = imageDownCut.rows;
+                    isSuccess = NO;
                     continue;
                 }
                 
@@ -121,6 +122,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         if (good_matchesX.size() == 0) {
             resultMat = comMatC(imageUpOrigin, imageDownOrigin, resultMat);
             curUseHeight = imageDownCut.rows;
+            isSuccess = NO;
             continue;
         }
         //寻找最大距离点 对于老司机的截图 有些问题。
@@ -184,6 +186,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
                 resultMat = comMatC(resultMat, imageDownOrigin, resultMat);
             }
             curUseHeight = imageDownCut.rows;
+            isSuccess = NO;
             continue;
             //先寻找匹配点内 符合条件的
 //            vector<DMatch> final_matches;
@@ -255,6 +258,8 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
     double totaltime_surf;
     totaltime_surf = (double)(end_surf - start_surf)/CLOCKS_PER_SEC;
     cout<<"拼接运行时间："<<totaltime_surf<<"秒！"<<endl;
+    
+    success(isSuccess);
     state(combineImage);
     
 }
