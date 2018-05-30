@@ -21,14 +21,15 @@
 #import "AboutViewController.h"
 #import "PhotoPreviewController.h"
 #import "UINavigationController+FDFullscreenPopGesture.h"
+#import "HXPhoto3DTouchViewController.h"
 
 
 @interface ViewController ()<UICollectionViewDataSource,
 UICollectionViewDelegate,
 UIScrollViewDelegate,
 PhotoEditBottomViewDelegate,
-ImgCollectionViewCellDelegate
-
+ImgCollectionViewCellDelegate,
+UIViewControllerPreviewingDelegate
 
 >
 
@@ -674,6 +675,20 @@ ImgCollectionViewCellDelegate
     cell.collectionViewCelldelegate = self;
     
     cell.model = model;
+    
+    
+    if ([self respondsToSelector:@selector(traitCollection)]) {
+        
+        if ([self.traitCollection respondsToSelector:@selector(forceTouchCapability)]) {
+            
+            if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable) {
+                
+                [self registerForPreviewingWithDelegate:(id)self sourceView:cell];
+            }
+        }
+    }
+    
+
     //cell.singleSelected = self.manager.configuration.singleSelected;
     return cell;
     
@@ -681,20 +696,20 @@ ImgCollectionViewCellDelegate
 
 #pragma mark - < UICollectionViewDelegate >
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-//    if (self.navigationController.topViewController != self) {
-//        return;
-//    }
-//    HXPhotoModel *model;
-//    model = self.allArray[indexPath.item];
-//    //ImgCollectionViewCell *cell = (ImgCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-//
-//    PhotoPreviewController *photoPreviewVc = [[PhotoPreviewController alloc] init];
-//    photoPreviewVc.currentIndex = indexPath.row;
-//    photoPreviewVc.models = self.allArray;
-//    photoPreviewVc.manager = _manager;
-//    //[self pushPhotoPrevireViewController:photoPreviewVc];
-//
-//    [self.navigationController pushViewController:photoPreviewVc animated:YES];
+    if (self.navigationController.topViewController != self) {
+        return;
+    }
+    HXPhotoModel *model;
+    model = self.allArray[indexPath.item];
+    //ImgCollectionViewCell *cell = (ImgCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+
+    PhotoPreviewController *photoPreviewVc = [[PhotoPreviewController alloc] init];
+    photoPreviewVc.currentIndex = indexPath.row;
+    photoPreviewVc.models = self.allArray;
+    photoPreviewVc.manager = _manager;
+    //[self pushPhotoPrevireViewController:photoPreviewVc];
+
+    [self.navigationController pushViewController:photoPreviewVc animated:YES];
 //    ImgCollectionViewCell *cell = (ImgCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
     
 
@@ -758,6 +773,63 @@ ImgCollectionViewCellDelegate
         return footerView;
     }
     return nil;
+}
+
+- (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
+    NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:location];
+    if (!indexPath) {
+        return nil;
+    }
+//    if (![[self.collectionView cellForItemAtIndexPath:indexPath] isKindOfClass:[ImgCollectionViewCell class]]) {
+//        return nil;
+//    }
+    ImgCollectionViewCell *cell = (ImgCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+    if (!cell || cell.model.type == HXPhotoModelMediaTypeCamera || cell.model.isICloud) {
+        return nil;
+    }
+    if (cell.model.networkPhotoUrl) {
+        if (cell.model.downloadError) {
+            return nil;
+        }
+        if (!cell.model.downloadComplete) {
+            return nil;
+        }
+    }
+    //设置突出区域
+    previewingContext.sourceRect = [self.collectionView cellForItemAtIndexPath:indexPath].frame;
+    HXPhotoModel *model = cell.model;
+    HXPhoto3DTouchViewController *vc = [[HXPhoto3DTouchViewController alloc] init];
+    vc.model = model;
+    vc.indexPath = indexPath;
+    vc.image = cell.imageView.image;
+    vc.preferredContentSize = model.previewViewSize;
+    return vc;
+}
+- (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
+    HXPhoto3DTouchViewController *vc = (HXPhoto3DTouchViewController *)viewControllerToCommit;
+    ImgCollectionViewCell *cell = (ImgCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:vc.indexPath];
+ 
+
+    PhotoPreviewController *previewVC = [[PhotoPreviewController alloc] init];
+    //previewVC.delegate = self;
+    previewVC.models = self.allArray;
+    previewVC.manager = self.manager;
+    cell.model.tempImage = vc.imageView.image;
+    NSInteger currentIndex = [self.previewArray indexOfObject:cell.model];
+    previewVC.currentIndex = currentIndex;
+    self.navigationController.delegate = previewVC;
+    [self.navigationController pushViewController:previewVC animated:YES];
+    
+//    HXPhotoModel *model;
+//    model = self.allArray[indexPath.item];
+//    PhotoPreviewController *photoPreviewVc = [[PhotoPreviewController alloc] init];
+//    photoPreviewVc.currentIndex = indexPath.row;
+//    photoPreviewVc.models = self.allArray;
+//    photoPreviewVc.manager = _manager;
+    
+    [self.navigationController pushViewController:previewVC animated:YES];
+    
+    
 }
 
 #pragma mark - < ImgCollectionViewCellDelegate >

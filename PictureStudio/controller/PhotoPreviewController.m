@@ -52,17 +52,17 @@
         //_assetsTemp = [NSMutableArray arrayWithArray:_manager.selectedArray];
     }
     [self configCollectionView];
-    [self configCustomNaviBar];
+    //[self configCustomNaviBar];
     [self configBottomToolBar];
-    self.view.clipsToBounds = YES;
+    //self.view.clipsToBounds = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeStatusBarOrientationNotification:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
 }
 
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
-    if (iOS7Later) [UIApplication sharedApplication].statusBarHidden = YES;
+    //[self.navigationController setNavigationBarHidden:YES animated:YES];
+    //if (iOS7Later) [UIApplication sharedApplication].statusBarHidden = YES;
     if (_currentIndex) [_collectionView setContentOffset:CGPointMake((self.view.hx_w + 20) * _currentIndex, 0) animated:NO];
     [self refreshNaviBarAndBottomBarState];
 }
@@ -74,15 +74,15 @@
 
 }
 
-- (BOOL)prefersStatusBarHidden {
-    return YES;
-}
+//- (BOOL)prefersStatusBarHidden {
+//    return YES;
+//}
 
 - (void)configCustomNaviBar {
 
     
     _naviBar = [[UIView alloc] initWithFrame:CGRectZero];
-    _naviBar.backgroundColor = [UIColor colorWithRed:(34/255.0) green:(34/255.0)  blue:(34/255.0) alpha:0.7];
+    _naviBar.backgroundColor = UIColor.whiteColor;
     
     _backButton = [[UIButton alloc] initWithFrame:CGRectZero];
     [_backButton setImage:[UIImage imageNamed:@"navi_back"] forState:UIControlStateNormal];
@@ -102,11 +102,7 @@
 
 - (void)configBottomToolBar {
     _toolBar = [[UIView alloc] initWithFrame:CGRectZero];
-    static CGFloat rgb = 34 / 255.0;
-    _toolBar.backgroundColor = [UIColor colorWithRed:rgb green:rgb blue:rgb alpha:0.7];
-    
-    
-
+    _toolBar.backgroundColor = UIColor.whiteColor;
     
     _doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
     _doneButton.titleLabel.font = [UIFont systemFontOfSize:16];

@@ -18,6 +18,7 @@
 @property (assign, nonatomic) CGSize hx_size;
 @property (assign, nonatomic) CGPoint hx_origin;
 @property (assign, nonatomic) CGFloat hx_centerY;
+@property (assign, nonatomic) CGFloat hx_centerX;
 
 @property (nonatomic, assign) CGSize size;
 @property (nonatomic, assign) CGFloat originX;

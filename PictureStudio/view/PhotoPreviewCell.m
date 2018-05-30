@@ -49,7 +49,6 @@
 - (void)setModel:(HXPhotoModel *)model {
     _model = model;
     _previewView.model = model;
-    _previewView.asset = model.asset;
 }
 
 - (void)recoverSubviews {
@@ -137,32 +136,15 @@
     }
     __weak typeof(self) weakSelf = self;
     _asset = asset;
-    
-//    [HXPhotoTools getHighQualityFormatPhotoForPHAsset:_model.asset size:CGSizeMake(_model.endImageSize.width * 0.8, _model.endImageSize.height * 0.8) completion:^(UIImage *image, NSDictionary *info) {
-//        //[weakSelf pushAnim:transitionContext image:image model:model fromVC:fromVC toVC:toVC];
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            weakSelf.imageView.image = image;
-//        });
-//    } error:^(NSDictionary *info) {
-//        //[weakSelf pushAnim:transitionContext image:model.thumbPhoto model:model fromVC:fromVC toVC:toVC];
-//    }];
-//    self.photoWidth = 828.0;
-//    self.photoPreviewMaxWidth = 600;
-//
-//    CGFloat fullScreenWidth = phAsset.pixelWidth/2;
-//    if (fullScreenWidth > 600) {
-//        fullScreenWidth = 600;
-//    }
     PHAsset *phAsset = (PHAsset *)asset;
     CGFloat screenScale = 2;
     CGFloat fullScreenWidth = phAsset.pixelWidth/2;
-    if (fullScreenWidth > 700) {
+    if (fullScreenWidth > 750) {
         screenScale = 1.5;
     }
-    if (fullScreenWidth > 600) {
-        fullScreenWidth = 600;
-    }
-    
+//    if (fullScreenWidth > 600) {
+//        fullScreenWidth = 600;
+//    }
     if ([asset isKindOfClass:[PHAsset class]]) {
         CGSize imageSize;
         if (fullScreenWidth < SCREEN_W && fullScreenWidth < 600) {
@@ -170,7 +152,7 @@
         } else {
             //PHAsset *phAsset = (PHAsset *)asset;
             CGFloat aspectRatio = phAsset.pixelWidth / (CGFloat)phAsset.pixelHeight;
-            CGFloat pixelWidth = fullScreenWidth * 2 * screenScale;
+            CGFloat pixelWidth = fullScreenWidth * screenScale;
             // 超宽图片
             if (aspectRatio > 1.8) {
                 pixelWidth = pixelWidth * aspectRatio;
@@ -182,26 +164,6 @@
             CGFloat pixelHeight = pixelWidth / aspectRatio;
             imageSize = CGSizeMake(pixelWidth, pixelHeight);
         }
-        
-//        self.imageRequestID = [HXPhotoTools getHighQualityFormatPhoto:asset size:imageSize startRequestIcloud:^(PHImageRequestID cloudRequestId) {
-//
-//
-//        } progressHandler:^(double progress) {
-//
-//        } completion:^(UIImage *image) {
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//
-//
-//                weakSelf.imageView.image = image;
-//            });
-//        } failed:^(NSDictionary *info) {
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//
-//
-//            });
-//        }];
-        //__block UIImage *image;
-        // 修复获取图片时出现的瞬间内存过高问题
 
         PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
         //option.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
@@ -214,32 +176,12 @@
             BOOL downloadFinined = (![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey]);
             if (downloadFinined ) {
                 weakSelf.imageView.image = [self fixOrientation:result];
+                [weakSelf resizeSubviews];
             }
 
         }];
 
     }
-    
-    /*
-    PHImageRequestOptions * options=[[PHImageRequestOptions alloc]init];
-    options.resizeMode = PHImageRequestOptionsResizeModeFast;
-    options.synchronous=YES;
-    PHCachingImageManager *imageManager = [[PHCachingImageManager alloc] init];
-    [imageManager requestImageForAsset:asset targetSize:PHImageManagerMaximumSize
-                           contentMode:PHImageContentModeDefault
-                               options:options
-                         resultHandler:^(UIImage *result, NSDictionary *info)
-     {
-         if (![asset isEqual:weakSelf.asset]) return;
-         weakSelf.imageView.image = result;
-         [weakSelf resizeSubviews];
-         
-         if (weakSelf.imageProgressUpdateBlock) {
-             weakSelf.imageProgressUpdateBlock(1);
-         }
-     }];
-    
-*/
     
 }
 
@@ -251,20 +193,29 @@
 - (void)resizeSubviews {
     _imageContainerView.hx_origin = CGPointZero;
     _imageContainerView.hx_w = self.scrollView.hx_w;
-    
+    CGFloat contantHeight = self.hx_h - kNavigationBarHeight - kBottomMargin - ButtomViewHeight;
     UIImage *image = _imageView.image;
-    if (image.size.height / image.size.width > self.hx_h / self.scrollView.hx_w) {
-        _imageContainerView.hx_h = floor(image.size.height / (image.size.width / self.scrollView.hx_w));
+    if (image.size.height / image.size.width > contantHeight / self.scrollView.hx_w) {
+        _imageContainerView.hx_h = contantHeight;//floor(image.size.height / (image.size.width / self.scrollView.hx_w));
+        _imageContainerView.hx_w = contantHeight/(image.size.height / image.size.width);
+        //_imageContainerView.originX = (self.hx_w - _imageContainerView.hx_w)/2;
+        //_imageContainerView.originY = kNavigationBarHeight;
+        _imageContainerView.hx_centerX = self.hx_w / 2;
+        //_imageContainerView.hx_centerY = contantHeight / 2;
+        _imageContainerView.originY = kNavigationBarHeight;
+        
     } else {
-        CGFloat height = image.size.height / image.size.width * self.scrollView.hx_w;
-        if (height < 1 || isnan(height)) height = self.hx_w;
-        height = floor(height);
-        _imageContainerView.hx_w = height;
+//        CGFloat height = image.size.height / image.size.width * self.scrollView.hx_w;
+//        if (height < 1 || isnan(height)) height = self.hx_w;
+//        height = floor(height);
+//        _imageContainerView.hx_h = height;
+//        _imageContainerView.hx_centerY = self.hx_h / 2;
+        _imageContainerView.hx_h = self.hx_w * (image.size.height / image.size.width);
         _imageContainerView.hx_centerY = self.hx_h / 2;
     }
-    if (_imageContainerView.hx_h > self.hx_h && _imageContainerView.hx_h - self.hx_h <= 1) {
-        _imageContainerView.hx_h = self.hx_h;
-    }
+//    if (_imageContainerView.hx_h > self.hx_h && _imageContainerView.hx_h - self.hx_h <= 1) {
+//        _imageContainerView.hx_h = self.hx_h;
+//    }
     CGFloat contentSizeH = MAX(_imageContainerView.hx_h, self.hx_h);
     _scrollView.contentSize = CGSizeMake(self.scrollView.hx_w, contentSizeH);
     [_scrollView scrollRectToVisible:self.bounds animated:NO];
@@ -379,9 +330,9 @@
 }
 
 - (void)singleTap:(UITapGestureRecognizer *)tap {
-    if (self.singleTapGestureBlock) {
-        self.singleTapGestureBlock();
-    }
+//    if (self.singleTapGestureBlock) {
+//        self.singleTapGestureBlock();
+//    }
 }
 
 #pragma mark - UIScrollViewDelegate

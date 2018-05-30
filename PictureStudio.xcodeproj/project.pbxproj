@@ -13,6 +13,7 @@
 		700E325020A1C8A0007A23E0 /* AboutViewTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 700E324D20A1C8A0007A23E0 /* AboutViewTableViewCell.xib */; };
 		700E325420A1E464007A23E0 /* WeiboTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 700E325220A1E464007A23E0 /* WeiboTableViewCell.xib */; };
 		700E325520A1E464007A23E0 /* WeiboTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 700E325320A1E464007A23E0 /* WeiboTableViewCell.m */; };
+		7060808220BEF56A0045F49E /* HXPhoto3DTouchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7060808020BEF56A0045F49E /* HXPhoto3DTouchViewController.m */; };
 		707DBA7A209EC4BF00F2FAFB /* SharePictureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 707DBA78209EC4BE00F2FAFB /* SharePictureViewController.m */; };
 		707DBA7C209EC52700F2FAFB /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707DBA7B209EC52700F2FAFB /* Photos.framework */; };
 		707DBA7F209ED61100F2FAFB /* PhotoSaveBottomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 707DBA7E209ED61100F2FAFB /* PhotoSaveBottomView.m */; };
@@ -79,6 +80,8 @@
 		700E325120A1E464007A23E0 /* WeiboTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeiboTableViewCell.h; path = PictureStudio/View/WeiboTableViewCell.h; sourceTree = SOURCE_ROOT; };
 		700E325220A1E464007A23E0 /* WeiboTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = WeiboTableViewCell.xib; path = PictureStudio/View/WeiboTableViewCell.xib; sourceTree = SOURCE_ROOT; };
 		700E325320A1E464007A23E0 /* WeiboTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeiboTableViewCell.m; path = PictureStudio/View/WeiboTableViewCell.m; sourceTree = SOURCE_ROOT; };
+		7060808020BEF56A0045F49E /* HXPhoto3DTouchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HXPhoto3DTouchViewController.m; path = PictureStudio/Controller/HXPhoto3DTouchViewController.m; sourceTree = SOURCE_ROOT; };
+		7060808120BEF56A0045F49E /* HXPhoto3DTouchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HXPhoto3DTouchViewController.h; path = PictureStudio/Controller/HXPhoto3DTouchViewController.h; sourceTree = SOURCE_ROOT; };
 		707DBA78209EC4BE00F2FAFB /* SharePictureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SharePictureViewController.m; path = PictureStudio/Controller/SharePictureViewController.m; sourceTree = SOURCE_ROOT; };
 		707DBA79209EC4BE00F2FAFB /* SharePictureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SharePictureViewController.h; path = PictureStudio/Controller/SharePictureViewController.h; sourceTree = SOURCE_ROOT; };
 		707DBA7B209EC52700F2FAFB /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
@@ -216,6 +219,8 @@
 				707DBA85209EDBAC00F2FAFB /* AboutViewController.h */,
 				707DBA86209EDBAC00F2FAFB /* AboutViewController.m */,
 				707DBA87209EDBAC00F2FAFB /* AboutViewController.xib */,
+				7060808120BEF56A0045F49E /* HXPhoto3DTouchViewController.h */,
+				7060808020BEF56A0045F49E /* HXPhoto3DTouchViewController.m */,
 			);
 			path = controller;
 			sourceTree = "<group>";
@@ -629,6 +634,7 @@
 				708248C4206A9153000D60A3 /* HXPhotoTools.m in Sources */,
 				700E325520A1E464007A23E0 /* WeiboTableViewCell.m in Sources */,
 				707DBA88209EDBAC00F2FAFB /* AboutViewController.m in Sources */,
+				7060808220BEF56A0045F49E /* HXPhoto3DTouchViewController.m in Sources */,
 				708248FD2078BD4C000D60A3 /* UIImageView+HXExtension.m in Sources */,
 				70C262FB207A72EF00F65EFD /* AHAssetGroupsView.m in Sources */,
 				708248C7206A9182000D60A3 /* NSDate+HXExtension.m in Sources */,
