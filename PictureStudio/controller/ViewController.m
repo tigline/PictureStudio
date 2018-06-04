@@ -22,6 +22,7 @@
 #import "PhotoPreviewController.h"
 #import "UINavigationController+FDFullscreenPopGesture.h"
 #import "HXPhoto3DTouchViewController.h"
+#import "ASPopover.h"
 
 
 @interface ViewController ()<UICollectionViewDataSource,
@@ -77,6 +78,8 @@ UIViewControllerPreviewingDelegate
 @property (assign, nonatomic) CGFloat moveBeginY;
 @property (assign, nonatomic) CGFloat moveEndX;
 @property (assign, nonatomic) CGFloat moveEndY;
+
+@property (nonatomic, strong) ASPopover *itemPopover;
 
 @end
 
@@ -991,6 +994,8 @@ UIViewControllerPreviewingDelegate
     popoverVC.view.backgroundColor = [[UIColor whiteColor]colorWithAlphaComponent:0.5f];
     
     
+    
+    
     return popoverVC;
 }
 
@@ -1168,27 +1173,49 @@ UIViewControllerPreviewingDelegate
                          //self.assetGroupView.originY = 0;
                          //self.overlayView.alpha = 0.85f;
                          self.groupTitleView.arrowBtn.transform = CGAffineTransformRotate(self.groupTitleView.arrowBtn.transform, M_PI);
-                         if(![_assetPopoViewController presentingViewController])
-                         {
-                             UIPopoverPresentationController* popContentVC = _assetPopoViewController.popoverPresentationController;
-                             popContentVC.backgroundColor = _assetPopoViewController.view.backgroundColor;
-                             popContentVC.delegate = (id)self;
-                             popContentVC.sourceView = self.touchButton;
-                             popContentVC.sourceRect = self.touchButton.bounds;
-                             popContentVC.permittedArrowDirections = UIPopoverArrowDirectionAny;
-                             
-                             [self presentViewController:_assetPopoViewController animated:YES completion:nil];
-                             
-                             
-                         }
+//                         if(![_assetPopoViewController presentingViewController])
+//                         {
+//                             UIPopoverPresentationController* popContentVC = _assetPopoViewController.popoverPresentationController;
+//                             popContentVC.backgroundColor = _assetPopoViewController.view.backgroundColor;
+//                             popContentVC.delegate = (id)self;
+//                             popContentVC.sourceView = self.touchButton;
+//                             popContentVC.sourceRect = self.touchButton.bounds;
+//
+//                             popContentVC.permittedArrowDirections = UIPopoverArrowDirectionAny;
+//
+//                             [self presentViewController:_assetPopoViewController animated:YES completion:nil];
+//                         }
+                         [self.itemPopover show:self.assetGroupView fromView:self.touchButton];
+                         
                      }completion:^(BOOL finished) {
                          
                      }];
 }
 
+- (ASPopover *)itemPopover {
+    if (!_itemPopover) {
+        ASPopoverOption *option = [[ASPopoverOption alloc] init];
+        option.autoAjustDirection = NO;
+        option.arrowSize = CGSizeMake(10, 6);
+        option.blackOverlayColor = [UIColor clearColor];
+        option.sideEdge = 15;
+        option.dismissOnBlackOverlayTap = YES;
+        option.popoverColor = [[UIColor blackColor] colorWithAlphaComponent:0.7];
+        option.autoAjustDirection = YES;
+        option.animationIn = 0.4;
+        option.springDamping = 0.5;
+        option.initialSpringVelocity = 1;
+        //option.overlayBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+
+        _itemPopover = [[ASPopover alloc] initWithOption:option];
+    }
+    return _itemPopover;
+}
+
 - (UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller {
     return UIModalPresentationNone;
 }
+
 - (BOOL)popoverPresentationControllerShouldDismissPopover:(UIPopoverPresentationController *)popoverPresentationController {
     
     [UIView animateWithDuration:0.3f
@@ -1216,7 +1243,6 @@ UIViewControllerPreviewingDelegate
                          [self dismissViewControllerAnimated:_assetPopoViewController completion:nil];
 
                      }];
-    
 }
 
 -(NSString *)getMessageID

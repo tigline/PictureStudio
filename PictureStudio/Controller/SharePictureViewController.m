@@ -47,7 +47,7 @@
     
     if (_resultImage) {
         [self CreateShowImgaeView:_resultImage];//创建图片显示区域
-        [self.view bringSubviewToFront:self.shareBoardView];
+        //[self.view bringSubviewToFront:self.shareBoardView];
         [self.view addSubview:self.toolBarView];//创建保存图片区域
     }
     self.fd_prefersNavigationBarHidden = YES;
@@ -71,7 +71,7 @@
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    [self.shareBoardView setFrame:CGRectMake(0, self.toolBarView.originY, self.shareBoardView.hx_w, self.shareBoardView.hx_h)];
+    //[self.shareBoardView setFrame:CGRectMake(0, self.toolBarView.originY, self.shareBoardView.hx_w, self.shareBoardView.hx_h)];
     [_shareBoardView setHidden:YES];
 }
 
@@ -310,11 +310,31 @@
 
 - (void)savePhotoBottomViewDidShareBtn {
 
-    if (_isShowShareBoardView) {
-        [self hideShareBoard];
-    } else {
-        [self showShareBoard];
+//    if (_isShowShareBoardView) {
+//        [self hideShareBoard];
+//    } else {
+//        [self showShareBoard];
+//    }
+    NSLog(@"shareMoreImageOnClick");
+    UIImage *imageToShare = _resultImage;
+    if (imageToShare == nil) {
+        imageToShare = [self.manager getScrollImage];
     }
+    NSArray *activityItems = @[imageToShare];
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc]initWithActivityItems:activityItems applicationActivities:nil];
+    //不出现在活动项目
+    activityVC.excludedActivityTypes = @[UIActivityTypePrint, UIActivityTypeCopyToPasteboard,UIActivityTypeAssignToContact,UIActivityTypeSaveToCameraRoll];
+    [self presentViewController:activityVC animated:YES completion:nil];
+    // 分享之后的回调
+    activityVC.completionWithItemsHandler = ^(UIActivityType  _Nullable activityType, BOOL completed, NSArray * _Nullable returnedItems, NSError * _Nullable activityError) {
+        if (completed) {
+            NSLog(@"completed");
+            //分享 成功
+        } else  {
+            NSLog(@"cancled");
+            //分享 取消
+        }
+    };
     
 }
 

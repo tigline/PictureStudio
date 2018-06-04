@@ -8,9 +8,11 @@
 
 #import "AboutViewController.h"
 #import "WeiboTableViewCell.h"
+#import <MessageUI/MessageUI.h>
+#import <MessageUI/MFMailComposeViewController.h>
 
 
-@interface AboutViewController ()<UITableViewDelegate, UITableViewDataSource>
+@interface AboutViewController ()<UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *bgImageView;
 @property (weak, nonatomic) IBOutlet UIView *contantView;
@@ -75,12 +77,12 @@ static NSString *identifier = @"AboutTableViewCell";
     
     _likeBtn.layer.cornerRadius = 10;
     //_likeBtn.layer.masksToBounds = YES;
-    _likeBtn.layer.shadowColor = [UIColor colorWithRed:208/255.0 green:217/255.0 blue:237/255.0 alpha:1.0].CGColor;
+    _likeBtn.layer.shadowColor = [UIColor colorWithRed:60/255.0 green:95/255.0 blue:166/255.0 alpha:0.05].CGColor;
     _likeBtn.layer.shadowOpacity = 0.8f;
     _likeBtn.layer.shadowOffset = CGSizeMake(0, 2);
     
     _contactBtn.layer.cornerRadius = 10;
-    _contactBtn.layer.shadowColor = [UIColor colorWithRed:208/255.0 green:217/255.0 blue:237/255.0 alpha:1.0].CGColor;
+    _contactBtn.layer.shadowColor = [UIColor colorWithRed:60/255.0 green:95/255.0 blue:166/255.0 alpha:0.05].CGColor;
     _contactBtn.layer.shadowOpacity = 0.8f;
     _contactBtn.layer.shadowOffset = CGSizeMake(0, 2);
 }
@@ -89,10 +91,61 @@ static NSString *identifier = @"AboutTableViewCell";
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 - (IBAction)likeBtnClicked:(id)sender {
-    [self showTips];
+    [self showTips:@"Only when it release in App store"];
 }
 - (IBAction)contactBtnClicked:(id)sender {
-    [self showTips];
+    //[self showTips];
+    if([MFMailComposeViewController canSendMail]) {
+        
+        MFMailComposeViewController* picker = [[MFMailComposeViewController alloc] init];
+        picker.mailComposeDelegate=self;
+        picker.navigationBar.tintColor= [UIColor blackColor];
+        [picker setToRecipients:[NSArray arrayWithObject:@"projectgame@163.com"]];
+    
+        [picker setSubject:@"aini"];
+        
+        [picker setMessageBody:@"Hello"isHTML:NO];
+        
+        [self presentViewController:picker animated:YES completion:nil];
+    }
+}
+
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error{
+    
+    
+    
+    switch(result) {
+            
+        case MFMailComposeResultSent:
+            
+            NSLog(@"发送成功") ;
+            [self showTips:@"Sended"];
+            break;
+        case MFMailComposeResultCancelled:
+            
+            NSLog(@"取消") ;
+            //[self showTips:@"Sended"];
+            break;
+            
+        case MFMailComposeResultSaved:
+            NSLog(@"保存") ;
+            
+            break;
+            
+        case MFMailComposeResultFailed:
+            [self showTips:@"Failed"];
+            NSLog(@"发送失败") ;
+            
+            break;
+            
+        default:
+            
+            break;
+            
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -127,6 +180,8 @@ static NSString *identifier = @"AboutTableViewCell";
     cell.titleName.text = [weiboInfo objectForKey:@"title"];
     cell.weiboName.text = [weiboInfo objectForKey:@"name"];
     cell.weiboLink = [weiboInfo objectForKey:@"weibo"];
+    cell.selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
+    cell.selectedBackgroundView.backgroundColor = [UIColor colorWithRed:60/255.0 green:95/255.0 blue:166/255.0 alpha:1.0];
     //cell.weiboIcon.image = [UIImage imageNamed:@"share_weibo"];
     
     //AboutViewTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AboutViewTableViewCell"];
@@ -156,12 +211,12 @@ static NSString *identifier = @"AboutTableViewCell";
     } else {
         //用浏览器访问微博
         //[[UIApplication sharedApplication] openURL:URL];
-        [self showShareError:nil];
+        [self showShareError];
     }
     
 
 }
-- (void)showShareError:(UMSocialPlatformType)platformType
+- (void)showShareError
 {
     NSString *strTitle = LocalString(@"no_install_weibo");
     
@@ -175,12 +230,12 @@ static NSString *identifier = @"AboutTableViewCell";
     [self presentViewController:successAlertController animated:YES completion:nil];
 }
 
-- (void)showTips
+- (void)showTips:(NSString *)message
 {
     //NSString *strTitle = LocalString(@"scroll_error");
     
     UIAlertController* successAlertController = [UIAlertController alertControllerWithTitle:nil
-                                                                                    message:@"Coming soon"
+                                                                                    message:message
                                                                              preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:LocalString(@"sure") style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {

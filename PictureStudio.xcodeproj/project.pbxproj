@@ -14,6 +14,7 @@
 		700E325420A1E464007A23E0 /* WeiboTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 700E325220A1E464007A23E0 /* WeiboTableViewCell.xib */; };
 		700E325520A1E464007A23E0 /* WeiboTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 700E325320A1E464007A23E0 /* WeiboTableViewCell.m */; };
 		7060808220BEF56A0045F49E /* HXPhoto3DTouchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7060808020BEF56A0045F49E /* HXPhoto3DTouchViewController.m */; };
+		7060808420C58A2C0045F49E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7060808320C58A2C0045F49E /* MessageUI.framework */; };
 		707DBA7A209EC4BF00F2FAFB /* SharePictureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 707DBA78209EC4BE00F2FAFB /* SharePictureViewController.m */; };
 		707DBA7C209EC52700F2FAFB /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707DBA7B209EC52700F2FAFB /* Photos.framework */; };
 		707DBA7F209ED61100F2FAFB /* PhotoSaveBottomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 707DBA7E209ED61100F2FAFB /* PhotoSaveBottomView.m */; };
@@ -82,6 +83,7 @@
 		700E325320A1E464007A23E0 /* WeiboTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeiboTableViewCell.m; path = PictureStudio/View/WeiboTableViewCell.m; sourceTree = SOURCE_ROOT; };
 		7060808020BEF56A0045F49E /* HXPhoto3DTouchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HXPhoto3DTouchViewController.m; path = PictureStudio/Controller/HXPhoto3DTouchViewController.m; sourceTree = SOURCE_ROOT; };
 		7060808120BEF56A0045F49E /* HXPhoto3DTouchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HXPhoto3DTouchViewController.h; path = PictureStudio/Controller/HXPhoto3DTouchViewController.h; sourceTree = SOURCE_ROOT; };
+		7060808320C58A2C0045F49E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		707DBA78209EC4BE00F2FAFB /* SharePictureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SharePictureViewController.m; path = PictureStudio/Controller/SharePictureViewController.m; sourceTree = SOURCE_ROOT; };
 		707DBA79209EC4BE00F2FAFB /* SharePictureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SharePictureViewController.h; path = PictureStudio/Controller/SharePictureViewController.h; sourceTree = SOURCE_ROOT; };
 		707DBA7B209EC52700F2FAFB /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
@@ -176,6 +178,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7060808420C58A2C0045F49E /* MessageUI.framework in Frameworks */,
 				707DBA7C209EC52700F2FAFB /* Photos.framework in Frameworks */,
 				937F743F20849DB200F56AFD /* opencv2.framework in Frameworks */,
 				93539C6E20808EFB00B7D29C /* libjpeg.a in Frameworks */,
@@ -375,6 +378,7 @@
 		F25F94BCEE068E820AFA5EA8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7060808320C58A2C0045F49E /* MessageUI.framework */,
 				707DBA7B209EC52700F2FAFB /* Photos.framework */,
 				937F743E20849DB100F56AFD /* opencv2.framework */,
 				708248A9204ECD4C000D60A3 /* libjpeg.a */,
