@@ -25,10 +25,13 @@
 @property (weak, nonatomic) IBOutlet UIButton *likeBtn;
 @property (weak, nonatomic) IBOutlet UIButton *contactBtn;
 @property (nonatomic, strong) NSMutableDictionary *teamInfoDictionary;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *InfoViewHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *versionViewHeight;
+
 
 @end
 
-#define AboutCellHeight 56
+#define AboutCellHeight 56 * ScreenHeightRatio
 static NSString *identifier = @"AboutTableViewCell";
 @implementation AboutViewController
 
@@ -38,7 +41,7 @@ static NSString *identifier = @"AboutTableViewCell";
 
     UINib *teamInfoNib = [UINib nibWithNibName:@"WeiboTableViewCell" bundle:nil];
     [self.teamInfoTableView registerNib:teamInfoNib forCellReuseIdentifier:identifier];
-    
+
     NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"teamWeiboInfo" ofType:@"plist"];
     _teamInfoDictionary = [[NSMutableDictionary alloc] initWithContentsOfFile:plistPath];
     _teamInfoTableView.showsHorizontalScrollIndicator = NO;
@@ -55,10 +58,19 @@ static NSString *identifier = @"AboutTableViewCell";
     [self.likeBtn setTitle:LocalString(@"like_us") forState:UIControlStateNormal];
     [self.contactBtn setTitle:LocalString(@"contact") forState:UIControlStateNormal];
     
+    
+    
 }
+
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
+    
+    if (kDevice_Is_iPhoneX || kDevice_Is_iPhone55 || kDevice_Is_iPhone47) {
+    } else {
+        _versionViewHeight.constant = self.view.frame.size.height * 0.299;
+        _InfoViewHeight.constant = self.view.frame.size.height * 0.589;
+    }
     _bgImageView.layer.cornerRadius = 10;
     _bgImageView.layer.masksToBounds = YES;
     
@@ -85,6 +97,8 @@ static NSString *identifier = @"AboutTableViewCell";
     _contactBtn.layer.shadowColor = [UIColor colorWithRed:60/255.0 green:95/255.0 blue:166/255.0 alpha:0.05].CGColor;
     _contactBtn.layer.shadowOpacity = 0.8f;
     _contactBtn.layer.shadowOffset = CGSizeMake(0, 2);
+    
+
 }
 - (IBAction)quickBtnClicked:(id)sender {
     

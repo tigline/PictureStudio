@@ -8,8 +8,21 @@
 
 #import <UIKit/UIKit.h>
 
+@class PhotoPreviewController,HXPhotoModel;
+
+@protocol PhotoPreviewControllerDelegate <NSObject>
+@optional
+- (void)datePhotoPreviewControllerDidSelect:(PhotoPreviewController *)previewController model:(HXPhotoModel *)model;
+- (void)datePhotoPreviewControllerDidDone:(PhotoPreviewController *)previewController;
+- (void)datePhotoPreviewDidEditClick:(PhotoPreviewController *)previewController;
+- (void)datePhotoPreviewSingleSelectedClick:(PhotoPreviewController *)previewController model:(HXPhotoModel *)model;
+
+- (void)datePhotoPreviewSelectLaterDidEditClick:(PhotoPreviewController *)previewController beforeModel:(HXPhotoModel *)beforeModel afterModel:(HXPhotoModel *)afterModel;
+@end
+
 @class HXPhotoManager;
 @interface PhotoPreviewController : UIViewController
+@property (weak, nonatomic) id<PhotoPreviewControllerDelegate> delegate;
 @property (nonatomic, strong) NSMutableArray *models;                  ///< All photo models / 所有图片模型数组
 @property (nonatomic, strong) NSMutableArray *photos;                  ///< All photos  / 所有图片数组
 @property (nonatomic, assign) NSInteger currentIndex;           ///< Index of the photo user click / 用户点击的图片的索引

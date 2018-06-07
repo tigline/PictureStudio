@@ -30,7 +30,9 @@ UICollectionViewDelegate,
 UIScrollViewDelegate,
 PhotoEditBottomViewDelegate,
 ImgCollectionViewCellDelegate,
-UIViewControllerPreviewingDelegate
+UIViewControllerPreviewingDelegate,
+UICollectionViewDelegateFlowLayout,
+PhotoPreviewControllerDelegate
 
 >
 
@@ -342,22 +344,6 @@ UIViewControllerPreviewingDelegate
 
 - (void)setupUI {
     
-//    [self.navigationController.navigationBar setTintColor:self.manager.configuration.themeColor];
-//    if (self.manager.configuration.navBarBackgroudColor) {
-//        [self.navigationController.navigationBar setBackgroundColor:nil];
-//        [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-//        self.navigationController.navigationBar.barTintColor = self.manager.configuration.navBarBackgroudColor;
-//    }
-//    if (self.manager.configuration.navigationBar) {
-//        self.manager.configuration.navigationBar(self.navigationController.navigationBar);
-//    }
-//    if (self.manager.configuration.navigationTitleSynchColor) {
-//        self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName : self.manager.configuration.themeColor};
-//    }else {
-//        if (self.manager.configuration.navigationTitleColor) {
-//            self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName : self.manager.configuration.navigationTitleColor};
-//        }
-//    }
     
     self.currentSectionIndex = 0;
     __weak typeof(self) weakSelf = self;
@@ -710,6 +696,7 @@ UIViewControllerPreviewingDelegate
     photoPreviewVc.currentIndex = indexPath.row;
     photoPreviewVc.models = self.allArray;
     photoPreviewVc.manager = _manager;
+    photoPreviewVc.delegate = self;
     //[self pushPhotoPrevireViewController:photoPreviewVc];
 
     [self.navigationController pushViewController:photoPreviewVc animated:YES];
@@ -783,21 +770,14 @@ UIViewControllerPreviewingDelegate
     if (!indexPath) {
         return nil;
     }
-//    if (![[self.collectionView cellForItemAtIndexPath:indexPath] isKindOfClass:[ImgCollectionViewCell class]]) {
-//        return nil;
-//    }
-    ImgCollectionViewCell *cell = (ImgCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-    if (!cell || cell.model.type == HXPhotoModelMediaTypeCamera || cell.model.isICloud) {
+    if (![[self.collectionView cellForItemAtIndexPath:indexPath] isKindOfClass:[ImgCollectionViewCell class]]) {
         return nil;
     }
-    if (cell.model.networkPhotoUrl) {
-        if (cell.model.downloadError) {
-            return nil;
-        }
-        if (!cell.model.downloadComplete) {
-            return nil;
-        }
+    ImgCollectionViewCell *cell = (ImgCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+    if (!cell) {
+        return nil;
     }
+
     //设置突出区域
     previewingContext.sourceRect = [self.collectionView cellForItemAtIndexPath:indexPath].frame;
     HXPhotoModel *model = cell.model;
@@ -814,7 +794,7 @@ UIViewControllerPreviewingDelegate
  
 
     PhotoPreviewController *previewVC = [[PhotoPreviewController alloc] init];
-    //previewVC.delegate = self;
+    previewVC.delegate = self;
     previewVC.models = self.allArray;
     previewVC.manager = self.manager;
     cell.model.tempImage = vc.imageView.image;
@@ -830,7 +810,7 @@ UIViewControllerPreviewingDelegate
 //    photoPreviewVc.models = self.allArray;
 //    photoPreviewVc.manager = _manager;
     
-    [self.navigationController pushViewController:previewVC animated:YES];
+
     
     
 }
@@ -895,6 +875,31 @@ UIViewControllerPreviewingDelegate
     self.bottomView.selectCount = [self.manager selectedCount];
     if ([self.delegate respondsToSelector:@selector(datePhotoViewControllerDidChangeSelect:selected:)]) {
         [self.delegate datePhotoViewControllerDidChangeSelect:cell.model selected:selectBtn.selected];
+    }
+}
+
+- (void)datePhotoPreviewControllerDidSelect:(PhotoPreviewController *)previewController model:(HXPhotoModel *)model {
+    NSMutableArray *indexPathList = [NSMutableArray array];
+    if (model.currentAlbumIndex == self.albumModel.index) {
+        [indexPathList addObject:[NSIndexPath indexPathForItem:[self dateItem:model] inSection:model.dateSection]];
+    }
+    if (!model.selected) {
+        NSInteger index = 0;
+        for (HXPhotoModel *subModel in [self.manager selectedArray]) {
+            subModel.selectIndexStr = [NSString stringWithFormat:@"%ld",index + 1];
+            if (subModel.currentAlbumIndex == self.albumModel.index && subModel.dateCellIsVisible) {
+                NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[self dateItem:subModel] inSection:subModel.dateSection];
+                [indexPathList addObject:indexPath];
+            }
+            index++;
+        }
+    }
+    if (indexPathList.count > 0) {
+        [self.collectionView reloadItemsAtIndexPaths:indexPathList];
+    }
+    self.bottomView.selectCount = [self.manager selectedCount];
+    if ([self.delegate respondsToSelector:@selector(datePhotoViewControllerDidChangeSelect:selected:)]) {
+        [self.delegate datePhotoViewControllerDidChangeSelect:model selected:model.selected];
     }
 }
 #pragma mark - <PhotoEditBottomViewDelegate>
@@ -1003,7 +1008,7 @@ UIViewControllerPreviewingDelegate
 - (AHAssetGroupsView *)assetGroupView
 {
     if (_assetGroupView == nil) {
-        _assetGroupView = [[AHAssetGroupsView alloc] initWithFrame:CGRectMake(0, 0, 280, 280)];
+        _assetGroupView = [[AHAssetGroupsView alloc] initWithFrame:CGRectMake(0, 0, 280*ScreenWidthRatio, 280*ScreenHeightRatio)];
         //_assetGroupView.backgroundColor = [[UIColor whiteColor]colorWithAlphaComponent:0.5f];
         //_assetGroupView = [[ALiAssetGroupsView alloc] init];
         //_assetGroupView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
@@ -1042,7 +1047,16 @@ UIViewControllerPreviewingDelegate
         [_collectionView registerClass:[ImgCollectionViewCell class] forCellWithReuseIdentifier:@"DateCellId"];
         [_collectionView registerClass:[PhotoCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"sectionFooterId"];
         //_collectionView.allowsMultipleSelection = YES;
+        if ([self respondsToSelector:@selector(traitCollection)]) {
+            if ([self.traitCollection respondsToSelector:@selector(forceTouchCapability)]) {
+                if (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable) {
+                    self.previewingContext = [self registerForPreviewingWithDelegate:self sourceView:_collectionView];
+                }
+            }
         }
+        }
+    
+    
 //    _collectionView.allowsSelection = _collectionView.allowsMultipleSelection = YES;
 //
 //    // Do any additional setup after loading the view.
@@ -1086,7 +1100,7 @@ UIViewControllerPreviewingDelegate
 - (UIButton *)touchButton{
     if (!_touchButton) {
         _touchButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _touchButton.frame = CGRectMake(0, 0, self.view.size.width, 64);
+        _touchButton.frame = CGRectMake(0, 0, self.view.size.width, kNavigationBarHeight+10*ScreenHeightRatio);
         [_touchButton setBackgroundColor:[UIColor clearColor]];
         [_touchButton addTarget:self action:@selector(assetsGroupsDidDeselected) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -1173,19 +1187,18 @@ UIViewControllerPreviewingDelegate
                          //self.assetGroupView.originY = 0;
                          //self.overlayView.alpha = 0.85f;
                          self.groupTitleView.arrowBtn.transform = CGAffineTransformRotate(self.groupTitleView.arrowBtn.transform, M_PI);
-//                         if(![_assetPopoViewController presentingViewController])
-//                         {
-//                             UIPopoverPresentationController* popContentVC = _assetPopoViewController.popoverPresentationController;
-//                             popContentVC.backgroundColor = _assetPopoViewController.view.backgroundColor;
-//                             popContentVC.delegate = (id)self;
-//                             popContentVC.sourceView = self.touchButton;
-//                             popContentVC.sourceRect = self.touchButton.bounds;
-//
-//                             popContentVC.permittedArrowDirections = UIPopoverArrowDirectionAny;
-//
-//                             [self presentViewController:_assetPopoViewController animated:YES completion:nil];
-//                         }
-                         [self.itemPopover show:self.assetGroupView fromView:self.touchButton];
+                         if(![_assetPopoViewController presentingViewController])
+                         {
+                             UIPopoverPresentationController* popContentVC = _assetPopoViewController.popoverPresentationController;
+                             popContentVC.backgroundColor = _assetPopoViewController.view.backgroundColor;
+                             popContentVC.delegate = (id)self;
+                             popContentVC.sourceView = self.touchButton;
+                             popContentVC.sourceRect = self.touchButton.bounds;
+                             popContentVC.permittedArrowDirections = UIPopoverArrowDirectionAny;
+
+                             [self presentViewController:_assetPopoViewController animated:YES completion:nil];
+                         }
+                         //[self.itemPopover show:self.assetGroupView fromView:self.touchButton];
                          
                      }completion:^(BOOL finished) {
                          
@@ -1195,12 +1208,13 @@ UIViewControllerPreviewingDelegate
 - (ASPopover *)itemPopover {
     if (!_itemPopover) {
         ASPopoverOption *option = [[ASPopoverOption alloc] init];
+        option.offset = 20;
         option.autoAjustDirection = NO;
         option.arrowSize = CGSizeMake(10, 6);
         option.blackOverlayColor = [UIColor clearColor];
         option.sideEdge = 15;
         option.dismissOnBlackOverlayTap = YES;
-        option.popoverColor = [[UIColor blackColor] colorWithAlphaComponent:0.7];
+        option.popoverColor = [UIColor whiteColor];
         option.autoAjustDirection = YES;
         option.animationIn = 0.4;
         option.springDamping = 0.5;

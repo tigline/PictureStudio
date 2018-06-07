@@ -13,7 +13,7 @@
 
 @class ViewController;
 
-@protocol HXDatePhotoViewControllerDelegate <NSObject>
+@protocol DatePhotoViewControllerDelegate <NSObject>
 @optional
 
 /**
@@ -44,7 +44,7 @@
 @end
 
 @interface ViewController : UIViewController
-@property (weak, nonatomic) id<HXDatePhotoViewControllerDelegate> delegate;
+@property (weak, nonatomic) id<DatePhotoViewControllerDelegate> delegate;
 @property (strong, nonatomic) HXPhotoManager *manager;
 @property (strong, nonatomic) PhotoEditButtomView *bottomView;
 @property (strong, nonatomic) HXAlbumModel *albumModel;

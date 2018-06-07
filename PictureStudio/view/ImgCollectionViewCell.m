@@ -145,6 +145,8 @@ return self;
     CGPoint touchPoint = [[touches anyObject] locationInView:self];
     if (touchPoint.x > self.hx_w/2 && touchPoint.y > self.hx_h/2) {
         [self didSelectClick:_selectBtn];
+    } else {
+        [self.superview touchesEnded:touches withEvent:event];
     }
     
 }

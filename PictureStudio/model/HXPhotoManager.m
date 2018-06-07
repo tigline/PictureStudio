@@ -649,7 +649,7 @@
 - (NSString *)maximumOfJudgment:(HXPhotoModel *)model {
     if ([self beforeSelectCountIsMaximum]) {
         // 已经达到最大选择数 [NSString stringWithFormat:@"最多只能选择%ld个",manager.maxNum]
-        return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"最多只能选择%ld个"],self.configuration.maxNum];
+        return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"最多只能选择%ld张图片"],self.configuration.maxNum];
     }
     if (self.type == HXPhotoManagerSelectedTypePhotoAndVideo) {
         if ((model.type == HXPhotoModelMediaTypePhoto || model.type == HXPhotoModelMediaTypePhotoGif) || (model.type == HXPhotoModelMediaTypeCameraPhoto || model.type == HXPhotoModelMediaTypeLivePhoto)) {

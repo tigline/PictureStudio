@@ -17,7 +17,7 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor blackColor];
+        self.backgroundColor = [UIColor whiteColor];
         [self configSubviews];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(photoPreviewCollectionViewDidScroll) name:@"photoPreviewCollectionViewDidScroll" object:nil];
     }
@@ -87,13 +87,13 @@
         _scrollView.delaysContentTouches = NO;
         _scrollView.canCancelContentTouches = YES;
         _scrollView.alwaysBounceVertical = NO;
-        if (iOS11Later) {
-            //if (@available(iOS 11.0, *)) {
-                _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-            //} else {
-                // Fallback on earlier versions
-            //}
+
+        if (@available(iOS 11.0, *)) {
+            _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        } else {
+            
         }
+        
         [self addSubview:_scrollView];
         
         _imageContainerView = [[UIView alloc] init];
@@ -147,9 +147,9 @@
 //    }
     if ([asset isKindOfClass:[PHAsset class]]) {
         CGSize imageSize;
-        if (fullScreenWidth < SCREEN_W && fullScreenWidth < 600) {
-            imageSize =  CGSizeMake(((SCREEN_W-41)/3) * screenScale, ((SCREEN_W-41)/3) * screenScale);;
-        } else {
+//        if (fullScreenWidth < SCREEN_W && fullScreenWidth < 600) {
+//            imageSize =  CGSizeMake(((SCREEN_W-41)/3) * screenScale, ((SCREEN_W-41)/3) * screenScale);;
+//        } else {
             //PHAsset *phAsset = (PHAsset *)asset;
             CGFloat aspectRatio = phAsset.pixelWidth / (CGFloat)phAsset.pixelHeight;
             CGFloat pixelWidth = fullScreenWidth * screenScale;
@@ -163,7 +163,7 @@
             }
             CGFloat pixelHeight = pixelWidth / aspectRatio;
             imageSize = CGSizeMake(pixelWidth, pixelHeight);
-        }
+        //}
 
         PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
         //option.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
@@ -193,16 +193,20 @@
 - (void)resizeSubviews {
     _imageContainerView.hx_origin = CGPointZero;
     _imageContainerView.hx_w = self.scrollView.hx_w;
-    CGFloat contantHeight = self.hx_h - kNavigationBarHeight - kBottomMargin - ButtomViewHeight;
+    CGFloat contantHeight = self.hx_h;// - kNavigationBarHeight - kBottomMargin - ButtomViewHeight;
+    if (contantHeight < 0) {
+        contantHeight = self.hx_h;
+    }
     UIImage *image = _imageView.image;
     if (image.size.height / image.size.width > contantHeight / self.scrollView.hx_w) {
         _imageContainerView.hx_h = contantHeight;//floor(image.size.height / (image.size.width / self.scrollView.hx_w));
         _imageContainerView.hx_w = contantHeight/(image.size.height / image.size.width);
         //_imageContainerView.originX = (self.hx_w - _imageContainerView.hx_w)/2;
         //_imageContainerView.originY = kNavigationBarHeight;
-        _imageContainerView.hx_centerX = self.hx_w / 2;
+        _imageContainerView.hx_centerX = _scrollView.contentSize.width * 0.5;
+        //self.imageContainerView.center = CGPointMake(_scrollView.contentSize.width * 0.5, _scrollView.contentSize.height * 0.5);
         //_imageContainerView.hx_centerY = contantHeight / 2;
-        _imageContainerView.originY = kNavigationBarHeight;
+        _imageContainerView.originY = 0;
         
     } else {
 //        CGFloat height = image.size.height / image.size.width * self.scrollView.hx_w;
@@ -219,6 +223,7 @@
     CGFloat contentSizeH = MAX(_imageContainerView.hx_h, self.hx_h);
     _scrollView.contentSize = CGSizeMake(self.scrollView.hx_w, contentSizeH);
     [_scrollView scrollRectToVisible:self.bounds animated:NO];
+
     _scrollView.alwaysBounceVertical = _imageContainerView.hx_h <= self.hx_h ? NO : YES;
     _imageView.frame = _imageContainerView.bounds;
 

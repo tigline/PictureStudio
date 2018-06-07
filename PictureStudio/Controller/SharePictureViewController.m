@@ -47,7 +47,7 @@
     
     if (_resultImage) {
         [self CreateShowImgaeView:_resultImage];//创建图片显示区域
-        //[self.view bringSubviewToFront:self.shareBoardView];
+        [self.view bringSubviewToFront:self.shareBoardView];
         [self.view addSubview:self.toolBarView];//创建保存图片区域
     }
     self.fd_prefersNavigationBarHidden = YES;
@@ -193,20 +193,17 @@
 
 
 - (IBAction)onShareWechatClicked:(id)sender {
-    //[self shareImageToPlatformType:UMSocialPlatformType_WechatSession];
-    [self showTips];
+    [self shareImageToPlatformType:UMSocialPlatformType_WechatSession];
 
 }
 
 - (IBAction)onShareMomentClicked:(id)sender {
-    //[self shareImageToPlatformType:UMSocialPlatformType_WechatTimeLine];
-    [self showTips];
+    [self shareImageToPlatformType:UMSocialPlatformType_WechatTimeLine];
 
 }
 
 - (IBAction)onShareWeiboClicked:(id)sender {
-    //[self shareImageToPlatformType:UMSocialPlatformType_Sina];
-    [self showTips];
+    [self shareImageToPlatformType:UMSocialPlatformType_Sina];
 
 }
 
@@ -238,7 +235,7 @@
     [UIView animateWithDuration:0.3f
                      animations:^{
                          
-                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY - _shareBoardView.hx_h, _shareBoardView.size.width, _shareBoardView.size.height)];
+                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY - _toolBarView.hx_h, _shareBoardView.size.width, _shareBoardView.size.height)];
                          
                      }completion:^(BOOL finished) {
                          _isShowShareBoardView = YES;
@@ -269,7 +266,7 @@
     [UIView animateWithDuration:0.3f
                      animations:^{
                          
-                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY + _shareBoardView.hx_h, _shareBoardView.size.width, _shareBoardView.size.height)];
+                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY + _toolBarView.hx_h, _shareBoardView.size.width, _shareBoardView.size.height)];
                          
                      }completion:^(BOOL finished) {
                          [_shareBoardView setHidden:YES];
@@ -310,31 +307,11 @@
 
 - (void)savePhotoBottomViewDidShareBtn {
 
-//    if (_isShowShareBoardView) {
-//        [self hideShareBoard];
-//    } else {
-//        [self showShareBoard];
-//    }
-    NSLog(@"shareMoreImageOnClick");
-    UIImage *imageToShare = _resultImage;
-    if (imageToShare == nil) {
-        imageToShare = [self.manager getScrollImage];
+    if (_isShowShareBoardView) {
+        [self hideShareBoard];
+    } else {
+        [self showShareBoard];
     }
-    NSArray *activityItems = @[imageToShare];
-    UIActivityViewController *activityVC = [[UIActivityViewController alloc]initWithActivityItems:activityItems applicationActivities:nil];
-    //不出现在活动项目
-    activityVC.excludedActivityTypes = @[UIActivityTypePrint, UIActivityTypeCopyToPasteboard,UIActivityTypeAssignToContact,UIActivityTypeSaveToCameraRoll];
-    [self presentViewController:activityVC animated:YES completion:nil];
-    // 分享之后的回调
-    activityVC.completionWithItemsHandler = ^(UIActivityType  _Nullable activityType, BOOL completed, NSArray * _Nullable returnedItems, NSError * _Nullable activityError) {
-        if (completed) {
-            NSLog(@"completed");
-            //分享 成功
-        } else  {
-            NSLog(@"cancled");
-            //分享 取消
-        }
-    };
     
 }
 
