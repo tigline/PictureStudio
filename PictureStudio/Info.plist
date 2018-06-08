@@ -22,10 +22,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>PictureStudio</string>
+			<string>Shote</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>wx3b864b92dca2bf8a</string>
+				<string>wxe1f34216d2552447</string>
 			</array>
 		</dict>
 	</array>
@@ -40,6 +40,11 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>To Use your camera</string>
 	<key>NSPhotoLibraryUsageDescription</key>

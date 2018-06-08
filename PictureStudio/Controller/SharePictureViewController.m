@@ -174,7 +174,11 @@
     UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];
     //如果有缩略图，则设置缩略图
     shareObject.thumbImage = [UIImage imageNamed:@"icon"];
-    [shareObject setShareImage:[self.manager getScrollImage]];
+    UIImage *saveImage = _resultImage;
+    if (saveImage == nil) {
+        saveImage = [self.manager getScrollImage];
+    }
+    [shareObject setShareImage:saveImage];
     //分享消息对象设置分享内容对象
     messageObject.shareObject = shareObject;
     //调用分享接口
