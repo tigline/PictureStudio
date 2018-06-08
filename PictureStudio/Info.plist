@@ -22,10 +22,20 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>Shote</string>
+			<string>WeChat</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>wxe1f34216d2552447</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>Weibo</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>wb2207598112</string>
 			</array>
 		</dict>
 	</array>
@@ -37,6 +47,9 @@
 		<string>weixin</string>
 		<string>sinaweibohd</string>
 		<string>sinaweibo</string>
+		<string>sinaweibosso</string>
+		<string>weibosdk</string>
+		<string>weibosdk2.5</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

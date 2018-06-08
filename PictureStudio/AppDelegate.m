@@ -12,9 +12,12 @@
 
 
 
+#define UMeng_AppKey @"5b17ea27f29d9868c800002d"
+
 #define WX_APP_KEY @"wxe1f34216d2552447"
 #define WX_APP_SECRET @"a188a22d52c6e7791a0a3a53617aae9a"
-#define UMeng_AppKey @"5b17ea27f29d9868c800002d"
+#define WB_APP_KEY @"2207598112"
+#define WB_APP_SECRET @"b3fa8253665ef403f6fb4dce96a67a48"
 
 void uncaughtExceptionHandler(NSException *exception) {
     NSSLog(@"CRASH: %@", exception);
@@ -58,7 +61,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     /* 设置微信的appKey和appSecret */
     [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatSession appKey:WX_APP_KEY appSecret:WX_APP_SECRET redirectURL:nil];
     /* 设置微博的appKey和appSecret */
-    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_Sina appKey:@"3921700954"  appSecret:@"04b48b094faeb16683c32669824ebdad" redirectURL:@"https://sns.whalecloud.com/sina2/callback"];
+    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_Sina appKey:WB_APP_KEY  appSecret:WB_APP_SECRET redirectURL:@"https://sns.whalecloud.com/sina2/callback"];
 
 }
 
