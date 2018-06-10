@@ -75,6 +75,7 @@ typedef enum : NSUInteger {
 @property (strong, nonatomic) NSArray<NSString *> *networkPhotoUrls;
 
 @property (assign, nonatomic) BOOL isScrollSuccess;
+@property (assign, nonatomic) BOOL isCombineVertical;
 
 - (void)getAllPhotoAndCurrentAlbums:(void(^)(HXAlbumModel *currentAlbumModel))currentModel albums:(void(^)(NSArray *albums))albums AlbumName:(NSString *)AlbumName;
 /**
@@ -209,6 +210,8 @@ typedef enum : NSUInteger {
 - (void)selectedListTransformAfter;
 - (void)selectedListTransformBefore;
 - (void)setScrollImage:(UIImage *)resultImage;
+
+- (void)combinePhotosWithDirection:(BOOL)isVertical resultImage:(void(^)(UIImage *combineImage))resultImage;
 
 - (UIImage *)getScrollImage;
 

@@ -46,7 +46,6 @@
     [super viewDidLoad];
     //[self.navigationController.navigationBar setColor:nil];
     //__weak typeof(self) weakSelf = self;
-    //ViewController *_tzImagePickerVc = (ViewController *)weakSelf.navigationController;
     
     if (!self.models.count) {
         self.models = [NSMutableArray arrayWithArray:_manager.selectedArray];
@@ -104,7 +103,7 @@
 
 - (void)configBottomToolBar {
     _toolBar = [[UIView alloc] initWithFrame:CGRectZero];
-    _toolBar.backgroundColor = UIColor.lightGrayColor;
+    _toolBar.backgroundColor = [UIColor colorWithRed:249/255.0 green:249/255.0 blue:249/255.0 alpha:1.0];
     
     _selectButton = [[UIButton alloc] initWithFrame:CGRectZero];
     [_selectButton setImage:[UIImage imageNamed:@"photo_unselect"] forState:UIControlStateNormal];

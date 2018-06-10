@@ -93,7 +93,7 @@ PhotoPreviewControllerDelegate
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.navigationController.navigationBar setColor:nil];
+    [self.navigationController.navigationBar setColor:[UIColor whiteColor]];
     [self.view setBackgroundColor:[UIColor whiteColor]];
     self.fd_prefersNavigationBarHidden = NO;
 
@@ -427,6 +427,8 @@ PhotoPreviewControllerDelegate
     
     return dateItem;
 }
+
+#pragma mark -scrollView delegate
 
 
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -836,7 +838,7 @@ PhotoPreviewControllerDelegate
         cell.selectMaskLayer.hidden = YES;
         selectBtn.selected = NO;
         //cell.selected = NO;
-    }else if(cell.model.isScreenShot) {
+    }else {
         NSString *str = [self.manager maximumOfJudgment:cell.model];
         if (str) {
             [self.view showImageHUDText:str];
@@ -850,10 +852,11 @@ PhotoPreviewControllerDelegate
         selectBtn.selected = YES;
         //cell.selected = YES;
         [selectBtn setTitle:cell.model.selectIndexStr forState:UIControlStateSelected];
-    } else {
-        [self.view showImageHUDText:LocalString(@"right_operate_tips")];
-        return;
     }
+//    else {
+//        [self.view showImageHUDText:LocalString(@"right_operate_tips")];
+//        return;
+//    }
 
     if (!selectBtn.selected) {
         NSMutableArray *indexPathList = [NSMutableArray array];
@@ -905,6 +908,9 @@ PhotoPreviewControllerDelegate
 #pragma mark - <PhotoEditBottomViewDelegate>
 
 - (void)datePhotoBottomViewDidCombineBtn {
+    
+    self.manager.isCombineVertical = YES;
+    [self performSegueWithIdentifier:@"toLongPictureView" sender:nil];
     
 }
 
@@ -978,6 +984,10 @@ PhotoPreviewControllerDelegate
 - (void)datePhotoBottomViewDidEditBtn {
     
 }
+- (void)datePhotoBottomViewDidcombineBtnH {
+    self.manager.isCombineVertical = NO;
+    [self performSegueWithIdentifier:@"toLongPictureView" sender:nil];
+}
 
 - (void)datePhotoBottomSelectNotAllScreenShot {
     [self.view showImageHUDText:LocalString(@"right_operate_tips")];
@@ -993,13 +1003,21 @@ PhotoPreviewControllerDelegate
 {
     //创建弹窗所在的view controller
     UIViewController* popoverVC = [[UIViewController alloc] init];
+    
     popoverVC.modalPresentationStyle = UIModalPresentationPopover;
-    popoverVC.preferredContentSize = CGSizeMake(280, 280);
+    popoverVC.preferredContentSize = CGSizeMake(280*ScreenWidthRatio, 280*ScreenHeightRatio);
+//    UIToolbar *view = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 280*ScreenWidthRatio, 280*ScreenWidthRatio)];
+//    [popoverVC setView:view];
+    UIView *blackV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 280*ScreenWidthRatio, 280*ScreenHeightRatio)];
+    blackV.backgroundColor = [UIColor colorWithRed:122/255.0 green:123/255.0 blue:234/255.0 alpha:0.7];
+    //[popoverVC.view addSubview:blackV];
+    
+
     [popoverVC setView:self.assetGroupView];
-    popoverVC.view.backgroundColor = [[UIColor whiteColor]colorWithAlphaComponent:0.5f];
+    //popoverVC.view.backgroundColor = [UIColor colorWithRed:249/255.0 green:249/255.0 blue:239/255.0 alpha:1.0];
     
-    
-    
+    //
+    //[popoverVC.view setBackgroundColor:[[UIColor whiteColor]colorWithAlphaComponent:1]];
     
     return popoverVC;
 }
@@ -1009,7 +1027,7 @@ PhotoPreviewControllerDelegate
 {
     if (_assetGroupView == nil) {
         _assetGroupView = [[AHAssetGroupsView alloc] initWithFrame:CGRectMake(0, 0, 280*ScreenWidthRatio, 280*ScreenHeightRatio)];
-        //_assetGroupView.backgroundColor = [[UIColor whiteColor]colorWithAlphaComponent:0.5f];
+        _assetGroupView.backgroundColor = [UIColor colorWithRed:231/255.0 green:231/255.0 blue:231/255.0 alpha:1.0];
         //_assetGroupView = [[ALiAssetGroupsView alloc] init];
         //_assetGroupView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         [_assetGroupView.touchButton addTarget:self action:@selector(hideAssetsGroupView) forControlEvents:UIControlEventTouchUpInside];
@@ -1190,11 +1208,12 @@ PhotoPreviewControllerDelegate
                          if(![_assetPopoViewController presentingViewController])
                          {
                              UIPopoverPresentationController* popContentVC = _assetPopoViewController.popoverPresentationController;
-                             popContentVC.backgroundColor = _assetPopoViewController.view.backgroundColor;
+                             popContentVC.backgroundColor = [UIColor colorWithRed:231/255.0 green:231/255.0 blue:231/255.0 alpha:1.0];
                              popContentVC.delegate = (id)self;
                              popContentVC.sourceView = self.touchButton;
                              popContentVC.sourceRect = self.touchButton.bounds;
                              popContentVC.permittedArrowDirections = UIPopoverArrowDirectionAny;
+                             
 
                              [self presentViewController:_assetPopoViewController animated:YES completion:nil];
                          }
@@ -1309,7 +1328,12 @@ PhotoPreviewControllerDelegate
         UIImage *image = (UIImage *)sender;
         ((SharePictureViewController *)(segue.destinationViewController)).manager = self.manager;
         ((SharePictureViewController *)(segue.destinationViewController)).resultImage = image;
+    } else if ([[segue identifier] isEqualToString:@"toLongPictureView"]) {
+        UIImage *image = (UIImage *)sender;
+        ((LongPictureViewController *)(segue.destinationViewController)).manager = self.manager;
+
     }
+    
 }
 
 

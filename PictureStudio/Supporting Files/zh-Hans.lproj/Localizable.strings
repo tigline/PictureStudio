@@ -11,11 +11,14 @@
 "scroll_ing" = "拼图中";
 "eidt"  = "编辑";
 "combine" = "直接拼图";
+"combine_h" = "横向拼接";
+"combine_v" = "竖向拼接";
 "operate_tips" = "请选择多张截图";
 "right_operate_tips" = "请选择截图";
 "scroll_error" = "拼接错误";
 "scroll_operate_tips" = "请选择符合条件的截图";
-"save_image" = "保存图片到相册";
+"save_image" = "保存到相册";
+"open_ablum" = "打开相册";
 "pm" = "产品";
 "ui" = "设计";
 "pg" = "开放";
@@ -27,7 +30,7 @@
 "picture_count" = "张图片";
 
 
-"save_success" = "保存成功";
+"save_success" = "图片已保存";
 "save_failed" = "保存失败";
 "share_success" = "分享成功";
 "share_failed" = "分享失败";

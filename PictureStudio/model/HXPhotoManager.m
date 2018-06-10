@@ -542,8 +542,165 @@
         }
     }
     
-    
     return isALLScreenShot;
+}
+
+- (void)combinePhotosWithDirection:(BOOL)isVertical resultImage:(void(^)(UIImage *combineImage))combineImage {
+    
+    CGFloat combineValueSize;
+
+    NSArray *imagesArray = [self getSelectImages];
+    if (isVertical) {
+        combineValueSize = [self getSelectPhotosMinWidth:imagesArray];
+        if (combineValueSize > 800) {
+            combineValueSize = 800;
+        }
+        UIImage *masterImage = [imagesArray objectAtIndex:0];
+        for (int i = 1; i < imagesArray.count; i ++) {
+
+            UIImage *slaveImage = [imagesArray objectAtIndex:i];
+            CGSize size;
+            size.width = combineValueSize;
+            CGFloat masterHeight;
+            if (masterImage.size.width > combineValueSize) {
+                masterHeight = (combineValueSize/masterImage.size.width) * masterImage.size.height;
+            } else {
+                masterHeight = masterImage.size.height;
+            }
+            CGFloat slaveHeight = (combineValueSize/slaveImage.size.width) * slaveImage.size.height;
+            size.height = masterHeight + slaveHeight;
+
+            UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
+            //Draw masterImage
+            [masterImage drawInRect:CGRectMake(0, 0, combineValueSize, masterHeight)];
+            //Draw slaveImage
+            
+            [slaveImage drawInRect:CGRectMake(0, masterHeight, combineValueSize, slaveHeight)];
+            UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+            masterImage = nil;
+            masterImage = resultImage;
+            UIGraphicsEndImageContext();
+        }
+        combineImage(masterImage);
+        
+        
+    } else {
+        combineValueSize = [self getSelectPhotosMinHeight:imagesArray];
+        if (combineValueSize > 1600) {
+            combineValueSize = 1600;
+        }
+        UIImage *masterImage = [imagesArray objectAtIndex:0];
+        for (int i = 1; i < imagesArray.count; i ++) {
+            
+            UIImage *slaveImage = [imagesArray objectAtIndex:i];
+            CGSize size;
+            CGFloat masterWidth;
+            if (masterImage.size.width > combineValueSize) {
+                masterWidth = (combineValueSize/masterImage.size.height) * masterImage.size.width;
+            } else {
+                masterWidth = masterImage.size.width;
+            }
+            CGFloat slaveWidth = (combineValueSize/slaveImage.size.height) * slaveImage.size.width;
+            size.width = masterWidth + slaveWidth;
+            size.height = combineValueSize;
+            
+            UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
+            //Draw masterImage
+            [masterImage drawInRect:CGRectMake(0, 0, masterWidth, combineValueSize)];
+            //Draw slaveImage
+            [slaveImage drawInRect:CGRectMake(masterWidth, 0, slaveWidth, combineValueSize)];
+            UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+            masterImage = nil;
+            masterImage = resultImage;
+            UIGraphicsEndImageContext();
+        }
+        combineImage(masterImage);
+        
+    }
+
+
+}
+
+- (NSArray *)getSelectImages {
+
+    __block NSMutableArray *photoArray = [[NSMutableArray alloc] init];
+    PHCachingImageManager *imageManager = [[PHCachingImageManager alloc] init];
+    for (int i = 0; i < _selectedList.count; i++) {
+        HXPhotoModel *model;
+        model = [_selectedList objectAtIndex:i];
+        PHAsset *phAsset = model.asset;
+        PHImageRequestOptions * options=[[PHImageRequestOptions alloc]init];
+        options.resizeMode = PHImageRequestOptionsResizeModeFast;
+        options.synchronous=YES;
+        
+        CGFloat screenScale = 2;
+        CGFloat fullScreenWidth = phAsset.pixelWidth/2;
+        if (fullScreenWidth > 400*ScreenWidthRatio) {
+            fullScreenWidth = 400*ScreenWidthRatio;
+        }
+        //    if (fullScreenWidth > 600) {
+        //        fullScreenWidth = 600;
+        //    }
+
+            CGSize imageSize;
+            //        if (fullScreenWidth < SCREEN_W && fullScreenWidth < 600) {
+            //            imageSize =  CGSizeMake(((SCREEN_W-41)/3) * screenScale, ((SCREEN_W-41)/3) * screenScale);;
+            //        } else {
+            //PHAsset *phAsset = (PHAsset *)asset;
+            CGFloat aspectRatio = phAsset.pixelWidth / (CGFloat)phAsset.pixelHeight;
+            CGFloat pixelWidth = fullScreenWidth * screenScale;
+            // 超宽图片
+            if (aspectRatio > 1.8) {
+                pixelWidth = pixelWidth * aspectRatio;
+            }
+            // 超高图片
+            if (aspectRatio < 0.2) {
+                pixelWidth = pixelWidth * 0.5;
+            }
+            CGFloat pixelHeight = pixelWidth / aspectRatio;
+            imageSize = CGSizeMake(pixelWidth, pixelHeight);
+        
+        
+            [imageManager requestImageForAsset:phAsset targetSize:imageSize
+                                   contentMode:PHImageContentModeDefault
+                                       options:options
+                                 resultHandler:^(UIImage *result, NSDictionary *info)
+             {
+                 [photoArray addObject:result];
+             }];
+        
+    }
+    return photoArray;
+}
+
+
+- (CGFloat)getSelectPhotosMinWidth:(NSArray *)imageArray {
+    
+
+    UIImage *image = [imageArray objectAtIndex:0];
+    CGFloat minWidth = image.size.width;
+    for (int i = 1; i <imageArray.count; i++) {
+
+        UIImage *image = [imageArray objectAtIndex:0];
+        if (image.size.width < minWidth) {
+            minWidth = image.size.width;
+        }
+    }
+    return minWidth;
+}
+
+- (CGFloat)getSelectPhotosMinHeight:(NSArray *)imageArray {
+    
+    UIImage *image = [imageArray objectAtIndex:0];
+    CGFloat minHeight = image.size.height;
+    for (int i = 1; i <imageArray.count; i++) {
+
+        UIImage *image = [imageArray objectAtIndex:0];
+        if (image.size.height < minHeight) {
+            minHeight = image.size.height;
+        }
+    }
+    return minHeight;
 }
 
 /**

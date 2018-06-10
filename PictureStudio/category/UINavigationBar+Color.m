@@ -11,7 +11,7 @@
 @implementation UINavigationBar (Color)
 
 - (void)setColor:(UIColor *)color {
-    UIToolbar *view = [[UIToolbar alloc] initWithFrame:CGRectMake(0, -20, self.bounds.size.width, 64)];
+    UIToolbar *view = [[UIToolbar alloc] initWithFrame:CGRectMake(0, -20, self.bounds.size.width, kNavigationBarHeight)];
 //    view.backgroundColor = color;
 //    UIVisualEffectView *effectview;
 //    if (@available(iOS 10.0, *)) {
@@ -21,7 +21,7 @@
 //        UIBlurEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
 //        effectview = [[UIVisualEffectView alloc] initWithEffect:blur];
 //    }
-    
+    [view setBackgroundColor:color];
     [self setValue:view forKey:@"backgroundView"];
 }
 

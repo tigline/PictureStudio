@@ -10,9 +10,12 @@
 #import "WeiboTableViewCell.h"
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMailComposeViewController.h>
+#import <StoreKit/StoreKit.h>
+#import "UIView+HXExtension.h"
 
-
-@interface AboutViewController ()<UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate>
+@interface AboutViewController ()<UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate,
+SKStoreProductViewControllerDelegate
+>
 
 @property (weak, nonatomic) IBOutlet UIImageView *bgImageView;
 @property (weak, nonatomic) IBOutlet UIView *contantView;
@@ -27,6 +30,8 @@
 @property (nonatomic, strong) NSMutableDictionary *teamInfoDictionary;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *InfoViewHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *versionViewHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *iconMaginTop;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *iconSpaceToAppNameLabel;
 
 
 @end
@@ -52,12 +57,13 @@ static NSString *identifier = @"AboutTableViewCell";
     NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
     NSString *app_build = [infoDictionary objectForKey:@"CFBundleVersion"];
     
-    NSString *versionText = [NSString stringWithFormat:@"V%@ (%@)",app_Version, app_build];
+    NSString *versionText = [NSString stringWithFormat:@"v%@ (%@)",app_Version, app_build];
     _versionLabel.text = versionText;
     //_appNameLabel.font = [UIFont systemFontOfSize:];
     [self.likeBtn setTitle:LocalString(@"like_us") forState:UIControlStateNormal];
+    [self.likeBtn setTitleColor:[UIColor colorWithRed:177/255.0 green:191/255.0 blue:219/255.0 alpha:1.0] forState:UIControlStateNormal];
     [self.contactBtn setTitle:LocalString(@"contact") forState:UIControlStateNormal];
-    
+    [self.contactBtn setTitleColor:[UIColor colorWithRed:177/255.0 green:191/255.0 blue:219/255.0 alpha:1.0] forState:UIControlStateNormal];
     
     
 }
@@ -66,34 +72,45 @@ static NSString *identifier = @"AboutTableViewCell";
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     
+    _iconMaginTop.constant = 37*ScreenHeightRatio;
+    _iconSpaceToAppNameLabel.constant = 12*ScreenHeightRatio;
+    
     if (kDevice_Is_iPhoneX || kDevice_Is_iPhone55 || kDevice_Is_iPhone47) {
     } else {
         _versionViewHeight.constant = self.view.frame.size.height * 0.299;
         _InfoViewHeight.constant = self.view.frame.size.height * 0.589;
     }
-    _bgImageView.layer.cornerRadius = 10;
-    _bgImageView.layer.masksToBounds = YES;
     
     
-    _contantView.layer.cornerRadius = 10;
+    [_bgImageView setImage:[UIImage imageNamed:@"Rectangle_bg"]];
+    _bgImageView.contentMode = UIViewContentModeCenter;
+    //_bgImageView.clipsToBounds = YES;
+    //_bgImageView.frame = CGRectMake(0, -30*ScreenHeightRatio, _contantView.hx_w, _contantView.hx_h);
+//    _bgImageView.layer.cornerRadius = 12;
+//    _bgImageView.layer.masksToBounds = YES;
+//    _bgImageView.backgroundColor = UIColor.clearColor;
+    
+    _contantView.layer.cornerRadius = 12;
+    _contantView.backgroundColor = UIColor.clearColor;
+    _contantView.frame = CGRectMake(_contantView.originX, _contantView.originY + 10*ScreenHeightRatio, _contantView.hx_w, _contantView.hx_h);
     //_contantView.layer.masksToBounds = YES;
-    _contantView.layer.shadowColor = [UIColor colorWithRed:208/255.0 green:217/255.0 blue:237/255.0 alpha:1.0].CGColor;
-    _contantView.layer.shadowOpacity = 0.8f;
-    _contantView.layer.shadowOffset = CGSizeMake(0, 0);
+//    _contantView.layer.shadowColor = [UIColor colorWithRed:208/255.0 green:217/255.0 blue:237/255.0 alpha:1.0].CGColor;
+//    _contantView.layer.shadowOpacity = 0.8f;
+//    _contantView.layer.shadowOffset = CGSizeMake(0, 0);
     
-    _infoContantView.layer.cornerRadius = 10;
+    _infoContantView.layer.cornerRadius = 12;
     _infoContantView.layer.masksToBounds = YES;
 //    _infoContantView.layer.shadowColor = [UIColor colorWithRed:208/255.0 green:217/255.0 blue:237/255.0 alpha:1.0].CGColor;
 //    _infoContantView.layer.shadowOpacity = 0.8f;
 //    _infoContantView.layer.shadowOffset = CGSizeMake(0, 0);
     
-    _likeBtn.layer.cornerRadius = 10;
+    _likeBtn.layer.cornerRadius = 12;
     //_likeBtn.layer.masksToBounds = YES;
     _likeBtn.layer.shadowColor = [UIColor colorWithRed:60/255.0 green:95/255.0 blue:166/255.0 alpha:0.05].CGColor;
     _likeBtn.layer.shadowOpacity = 0.8f;
     _likeBtn.layer.shadowOffset = CGSizeMake(0, 2);
     
-    _contactBtn.layer.cornerRadius = 10;
+    _contactBtn.layer.cornerRadius = 12;
     _contactBtn.layer.shadowColor = [UIColor colorWithRed:60/255.0 green:95/255.0 blue:166/255.0 alpha:0.05].CGColor;
     _contactBtn.layer.shadowOpacity = 0.8f;
     _contactBtn.layer.shadowOffset = CGSizeMake(0, 2);
@@ -105,7 +122,26 @@ static NSString *identifier = @"AboutTableViewCell";
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 - (IBAction)likeBtnClicked:(id)sender {
-    [self showTips:@"Only when it release in App store"];
+    NSString *evaluateString = [NSString stringWithFormat:@"http://itunes.apple.com/app/id1387454155"];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:evaluateString]];
+//    NSString *appId = @"1387454155";
+//
+//    SKStoreProductViewController *storeVC = [[SKStoreProductViewController alloc] init];
+//    storeVC.delegate = self;
+//    NSDictionary *dict = [NSDictionary dictionaryWithObject:appId forKey:SKStoreProductParameterITunesItemIdentifier];
+//    __weak typeof(self) weakSelf = self;
+//    [self.view showLoadingHUDText:@"跳转中"];
+//    [storeVC loadProductWithParameters:dict completionBlock:^(BOOL result, NSError * _Nullable error) {
+//        if (error) {
+//            NSLog(@"错误信息：%@",error.userInfo);
+//        }
+//        else
+//        {
+//            [weakSelf.view handleLoading];
+//            // 弹出模态视图
+//            [weakSelf presentViewController:storeVC animated:YES completion:nil];
+//        }
+//    }];
 }
 - (IBAction)contactBtnClicked:(id)sender {
     //[self showTips];
@@ -114,9 +150,10 @@ static NSString *identifier = @"AboutTableViewCell";
         MFMailComposeViewController* picker = [[MFMailComposeViewController alloc] init];
         picker.mailComposeDelegate=self;
         picker.navigationBar.tintColor= [UIColor blackColor];
-        [picker setToRecipients:[NSArray arrayWithObject:@"projectgame@163.com"]];
-    
-        [picker setSubject:@"aini"];
+        [picker setToRecipients:[NSArray arrayWithObject:@"25890825wlb@gmail.com"]];
+        NSArray *ccRecipient = [NSArray arrayWithObject:@"projectgame@163.com"];
+        [picker setCcRecipients:ccRecipient];
+        [picker setSubject:@"意见反馈"];
         
         [picker setMessageBody:@"Hello"isHTML:NO];
         
@@ -167,6 +204,11 @@ static NSString *identifier = @"AboutTableViewCell";
     // Dispose of any resources that can be recreated.
 }
 
+- (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController{
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+}
 /*
 #pragma mark - Navigation
 
@@ -195,7 +237,7 @@ static NSString *identifier = @"AboutTableViewCell";
     cell.weiboName.text = [weiboInfo objectForKey:@"name"];
     cell.weiboLink = [weiboInfo objectForKey:@"weibo"];
     cell.selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
-    cell.selectedBackgroundView.backgroundColor = [UIColor colorWithRed:60/255.0 green:95/255.0 blue:166/255.0 alpha:1.0];
+    cell.selectedBackgroundView.backgroundColor = [UIColor colorWithRed:238/255.0 green:241/255.0 blue:247/255.0 alpha:1.0];
     //cell.weiboIcon.image = [UIImage imageNamed:@"share_weibo"];
     
     //AboutViewTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AboutViewTableViewCell"];

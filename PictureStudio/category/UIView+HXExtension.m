@@ -302,7 +302,14 @@
         self.imageName = imageName;
         self.layer.masksToBounds = YES;
         self.layer.cornerRadius = 5;
-        self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.85];
+        if ([text isEqualToString:LocalString(@"scroll_ing")]) {
+            self.backgroundColor = [UIColor colorWithRed:220/255.0 green:220/255.0 blue:220/255.0 alpha:1];
+        } else {
+            self.backgroundColor = [UIColor colorWithRed:189/255.0 green:221/255.0 blue:255/255.0 alpha:1];//[[UIColor blackColor] colorWithAlphaComponent:0.85];
+//            self.layer.borderWidth = 1;
+//            self.layer.borderColor = [UIColor colorWithRed:68/255.0 green:159/255.0 blue:255/255.0 alpha:1].CGColor;
+        }
+        
         [self setup];
     }
     return self;

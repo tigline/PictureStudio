@@ -42,6 +42,11 @@ return self;
 }
 
 - (void)setupUI {
+    self.layer.borderWidth = 1*ScreenWidthRatio;
+    self.layer.borderColor = [[UIColor blackColor] colorWithAlphaComponent:0.1].CGColor;
+//    self.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5].CGColor;;
+//    self.layer.shadowOpacity = 0.8f;
+//    self.layer.shadowOffset = CGSizeMake(0, 0);
     [self.contentView addSubview:self.imageView];
     [self.contentView addSubview:self.maskView];
     //self.selectBgColor = [UIColor colorWithRed:102/255.0 green:153/255.0 blue:1.0 alpha:1.0];
@@ -143,7 +148,7 @@ return self;
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     CGPoint touchPoint = [[touches anyObject] locationInView:self];
-    if (touchPoint.x > self.hx_w/2 && touchPoint.y > self.hx_h/2) {
+    if (touchPoint.x > self.hx_w/3 && touchPoint.y > self.hx_h/3) {
         [self didSelectClick:_selectBtn];
     } else {
         [self.superview touchesEnded:touches withEvent:event];

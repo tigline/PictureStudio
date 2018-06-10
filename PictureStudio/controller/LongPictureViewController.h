@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "HXPhotoManager.h"
+#import "SharePictureViewController.h"
 @interface LongPictureViewController : UIViewController
 @property (nonatomic,strong) UIImage *resultImage;
+@property (nonatomic,strong) HXPhotoManager * manager;
 @end

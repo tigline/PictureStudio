@@ -12,11 +12,14 @@
 "scroll_ing" = "Scrolling";
 "eidt"  = "Edit";
 "combine" = "Combine";
+"combine_h" = "Horizontal";
+"combine_v" = "Vertical";
 "operate_tips" = "Select Several Screenshots";
 "right_operate_tips" = "Please select Screenshot";
 "scroll_error" = "Scroll error";
 "scroll_operate_tips" = "Please select picture that match croll condition";
-"save_image" = "Save image to album";
+"save_image" = "Save image to ablum";
+"open_ablum" = "Open Ablum";
 "pm" = "PM";
 "ui" = "UI";
 "pg" = "PG";

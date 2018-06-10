@@ -13,13 +13,15 @@
 @property (strong, nonatomic) UIButton *combineBtn;
 @property (strong, nonatomic) UIButton *scrollBtn;
 @property (strong, nonatomic) UIButton *editBtn;
+@property (strong, nonatomic) UIButton *combineBtnH;
 @property (strong, nonatomic) UIButton *clearBtn;
 @property (strong, nonatomic) UILabel  *selectLabel;
 @property (strong, nonatomic) CALayer* segmentingLineFrist;
+@property (strong, nonatomic) CALayer* segmentingLineSecond;
 @end
 
 @implementation PhotoEditButtomView
-#define btnHeight 45
+#define btnHeight 45*ScreenHeightRatio
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -42,7 +44,7 @@
     [self addSubview:self.clearBtn];
     [self addSubview:self.combineBtn];
     [self addSubview:self.scrollBtn];
-//    [self addSubview:self.editBtn];
+    [self addSubview:self.combineBtnH];
     
 }
 - (void)setManager:(HXPhotoManager *)manager {
@@ -55,6 +57,8 @@
     [self.scrollBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
     [self.editBtn setTitleColor:themeColor forState:UIControlStateNormal];
     [self.editBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+    [self.combineBtnH setTitleColor:themeColor forState:UIControlStateNormal];
+    [self.combineBtnH setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
     //[self.clearBtn setTitleColor:self.manager.configuration.themeColor forState:UIControlStateNormal];
     [self.clearBtn setTintColor:[UIColor grayColor]];
 
@@ -74,15 +78,19 @@
             
             self.scrollBtn.hidden = NO;
             self.selectLabel.hidden = YES;
+            [self hideCombineButtons];
         } else {
             self.scrollBtn.hidden = YES;
-            self.selectLabel.hidden = NO;
-            if ([self.delegate respondsToSelector:@selector(datePhotoBottomSelectNotAllScreenShot)]) {
-                [self.delegate datePhotoBottomSelectNotAllScreenShot];
-            }
+            self.selectLabel.hidden = YES;
+//            if ([self.delegate respondsToSelector:@selector(datePhotoBottomSelectNotAllScreenShot)]) {
+//                [self.delegate datePhotoBottomSelectNotAllScreenShot];
+//            }
+            [self showCombineButtons];
         }
     } else {
-        
+        self.scrollBtn.hidden = YES;
+        self.selectLabel.hidden = NO;
+        [self hideCombineButtons];
     }
 }
 
@@ -109,6 +117,26 @@
     }
 }
 
+- (void)didcombineBtnHClick {
+    if ([self.delegate respondsToSelector:@selector(datePhotoBottomViewDidcombineBtnH)]) {
+        [self.delegate datePhotoBottomViewDidcombineBtnH];
+    }
+}
+
+- (void)showCombineButtons {
+    _combineBtn.hidden = NO;
+    _combineBtnH.hidden = NO;
+    self.segmentingLineFrist.hidden = NO;
+    self.segmentingLineSecond.hidden = NO;
+    
+}
+
+- (void)hideCombineButtons {
+    self.combineBtn.hidden = YES;
+    _combineBtnH.hidden = YES;
+    self.segmentingLineFrist.hidden = YES;
+    self.segmentingLineSecond.hidden = YES;
+}
 
 - (void)showClearBtn {
 
@@ -120,7 +148,7 @@
     
 //    _segmentingLineFrist = [CALayer layer];
 //    _segmentingLineFrist.frame = CGRectMake(btnWidth, 14, 0.6, 18);
-    _segmentingLineFrist.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
+    
     //[self.bgView.layer addSublayer:_segmentingLineFrist];
 }
 - (void)hideClearBtn {
@@ -145,9 +173,9 @@
     
     
     self.bgView.frame = self.bounds;
-    CGFloat btnWidth = self.bgView.frame.size.width/6;
+    CGFloat btnWidth = self.bgView.hx_w/6;
     CGFloat pointY = 0;//(self.bgView.size.height - btnHeight)/2 - kBottomMargin/2;
-    
+    CGFloat combineBtnW = (self.bgView.hx_w - btnWidth)/2;
     
     self.selectLabel.frame = CGRectMake(btnWidth*1.5, pointY, btnWidth*3, btnHeight);
     
@@ -158,9 +186,23 @@
     self.scrollBtn.hidden = YES;
     
     
+    self.combineBtn.frame = CGRectMake(btnWidth, pointY, combineBtnW, btnHeight);
+    self.combineBtn.hidden = YES;
     
-
+    self.combineBtnH.frame = CGRectMake(btnWidth+combineBtnW, pointY, combineBtnW, btnHeight);
+    self.combineBtnH.hidden = YES;
     
+    _segmentingLineFrist = [CALayer layer];
+    _segmentingLineFrist.frame = CGRectMake(btnWidth, 13, 0.6, 18);
+    _segmentingLineFrist.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
+    [self.bgView.layer addSublayer:_segmentingLineFrist];
+    _segmentingLineFrist.hidden = YES;
+    
+    _segmentingLineSecond = [CALayer layer];
+    _segmentingLineSecond.frame = CGRectMake(btnWidth+combineBtnW, 13, 0.6, 18);
+    _segmentingLineSecond.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
+    [self.bgView.layer addSublayer:_segmentingLineSecond];
+    _segmentingLineSecond.hidden = YES;
     
     /* 完整版本 按钮位置
     CGFloat btnWidth = self.bgView.frame.size.width/3;
@@ -208,10 +250,8 @@
         _clearBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         
         self.bgView.frame = self.bounds;
-        [_clearBtn setImage:[UIImage imageNamed:@"cancel"] forState:UIControlStateNormal];
-        [_clearBtn.imageView setTintColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2f]];
-        //_clearBtn.imageView.contentMode = UIViewContentModeCenter;
-        //[_clearBtn setImage:[UIImage imageNamed:@"tab_combine"] forState:UIControlStateDisabled];
+        UIImage *image = [UIImage imageNamed:@"cancel-1"];
+        [_clearBtn setImage:image forState:UIControlStateNormal];
         _clearBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_clearBtn addTarget:self action:@selector(didClearClick) forControlEvents:UIControlEventTouchUpInside];
         //_clearBtn.enabled = NO;
@@ -226,13 +266,12 @@
         self.bgView.frame = self.bounds;
         [_combineBtn setImage:[UIImage imageNamed:@"tab_combine_active"] forState:UIControlStateNormal];
         [_combineBtn setImage:[UIImage imageNamed:@"tab_combine"] forState:UIControlStateDisabled];
-        [_combineBtn setTitle:LocalString(@"combine") forState:UIControlStateNormal];
+        [_combineBtn setTitle:LocalString(@"combine_v") forState:UIControlStateNormal];
         _combineBtn.titleLabel.font = [UIFont systemFontOfSize:12];
         _combineBtn.imageEdgeInsets = UIEdgeInsetsMake(0, -20, 0, 0);
         _combineBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
         _combineBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_combineBtn addTarget:self action:@selector(didCombineClick) forControlEvents:UIControlEventTouchUpInside];
-        _combineBtn.enabled = NO;
     }
     return _combineBtn;
 }
@@ -268,6 +307,22 @@
         _editBtn.enabled = NO;
     }
     return _editBtn;
+}
+- (UIButton *)combineBtnH {
+    if (!_combineBtnH) {
+        _combineBtnH = [UIButton buttonWithType:UIButtonTypeCustom];
+        //[_editBtn setTintColor:[UIColor clearColor]];
+        [_combineBtnH setImage:[UIImage imageNamed:@"tab_combine_active"] forState:UIControlStateNormal];
+        [_combineBtnH setImage:[UIImage imageNamed:@"tab_combine"] forState:UIControlStateDisabled];
+        [_combineBtnH setTitle:LocalString(@"combine_h") forState:UIControlStateNormal];
+        _combineBtnH.titleLabel.font = [UIFont systemFontOfSize:12];
+        _combineBtnH.imageEdgeInsets = UIEdgeInsetsMake(0, 30, 0, 0);
+        _combineBtnH.titleEdgeInsets = UIEdgeInsetsMake(0, 40, 0, 0);
+        _combineBtnH.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        [_combineBtnH addTarget:self action:@selector(didcombineBtnHClick) forControlEvents:UIControlEventTouchUpInside];
+
+    }
+    return _combineBtnH;
 }
 
 @end
