@@ -8,6 +8,8 @@
 
 #import "HXPhotoManager.h"
 #import <mach/mach_time.h>
+#import <AssetsLibrary/ALAsset.h>
+#import <AssetsLibrary/ALAssetRepresentation.h>
 
 
 @interface HXPhotoManager ()<PHPhotoLibraryChangeObserver>
@@ -35,6 +37,8 @@
 @property (copy, nonatomic) NSString *endPhotosTotalBtyes;
 @property (strong, nonatomic) NSMutableArray *iCloudUploadArray;
 @property (strong, nonatomic) NSMutableArray *albums;
+@property (strong, nonatomic) UIImage *resultImage;
+@property (assign, nonatomic) CGFloat screenShotWidth;
 @end
 
 @implementation HXPhotoManager
@@ -176,10 +180,157 @@
     }
 }
 
+- (int32_t)getPhotoWithAsset:(id)asset completion:(void (^)(UIImage *photo,NSDictionary *info,BOOL isDegraded))completion progressHandler:(void (^)(double progress, NSError *error, BOOL *stop, NSDictionary *info))progressHandler networkAccessAllowed:(BOOL)networkAccessAllowed {
+    CGFloat fullScreenWidth = SCREEN_W;
+    if (fullScreenWidth > 600) {
+        fullScreenWidth = 600;
+    }
+    return [self getPhotoWithAsset:asset photoWidth:fullScreenWidth completion:completion progressHandler:progressHandler networkAccessAllowed:networkAccessAllowed];
+}
+
+- (int32_t)getPhotoWithAsset:(id)asset photoWidth:(CGFloat)photoWidth completion:(void (^)(UIImage *photo,NSDictionary *info,BOOL isDegraded))completion progressHandler:(void (^)(double progress, NSError *error, BOOL *stop, NSDictionary *info))progressHandler networkAccessAllowed:(BOOL)networkAccessAllowed {
+    
+    if ([asset isKindOfClass:[PHAsset class]]) {
+        CGSize imageSize;
+        if (photoWidth < SCREEN_W && photoWidth < 600) {
+            imageSize =  CGSizeMake((SCREEN_W/3 - 10) * 2, (SCREEN_W/3 - 10) * 2);;
+        } else {
+            PHAsset *phAsset = (PHAsset *)asset;
+            CGFloat aspectRatio = phAsset.pixelWidth / (CGFloat)phAsset.pixelHeight;
+            CGFloat pixelWidth = photoWidth * 2 * 1.5;
+            // 超宽图片
+            if (aspectRatio > 1.8) {
+                pixelWidth = pixelWidth * aspectRatio;
+            }
+            // 超高图片
+            if (aspectRatio < 0.2) {
+                pixelWidth = pixelWidth * 0.5;
+            }
+            CGFloat pixelHeight = pixelWidth / aspectRatio;
+            imageSize = CGSizeMake(pixelWidth, pixelHeight);
+        }
+        
+        __block UIImage *image;
+        // 修复获取图片时出现的瞬间内存过高问题
+        // 下面两行代码，来自hsjcom，他的github是：https://github.com/hsjcom 表示感谢
+        PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
+        option.resizeMode = PHImageRequestOptionsResizeModeFast;
+        int32_t imageRequestID = [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:imageSize contentMode:PHImageContentModeAspectFill options:option resultHandler:^(UIImage *result, NSDictionary *info) {
+            if (result) {
+                image = result;
+            }
+            BOOL downloadFinined = (![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey]);
+            if (downloadFinined && result) {
+                result = [self fixOrientation:result];
+                if (completion) completion(result,info,[[info objectForKey:PHImageResultIsDegradedKey] boolValue]);
+            }
+            
+        }];
+        return imageRequestID;
+    } else if ([asset isKindOfClass:[ALAsset class]]) {
+        ALAsset *alAsset = (ALAsset *)asset;
+        dispatch_async(dispatch_get_global_queue(0,0), ^{
+            CGImageRef thumbnailImageRef = alAsset.thumbnail;
+            UIImage *thumbnailImage = [UIImage imageWithCGImage:thumbnailImageRef scale:2.0 orientation:UIImageOrientationUp];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (completion) completion(thumbnailImage,nil,YES);
+                
+                if (photoWidth == SCREEN_W || photoWidth == 600) {
+                    dispatch_async(dispatch_get_global_queue(0,0), ^{
+                        ALAssetRepresentation *assetRep = [alAsset defaultRepresentation];
+                        CGImageRef fullScrennImageRef = [assetRep fullScreenImage];
+                        UIImage *fullScrennImage = [UIImage imageWithCGImage:fullScrennImageRef scale:2.0 orientation:UIImageOrientationUp];
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            if (completion) completion(fullScrennImage,nil,NO);
+                        });
+                    });
+                }
+            });
+        });
+    }
+    return 0;
+}
+
+- (UIImage *)fixOrientation:(UIImage *)aImage {
+    //if (!self.shouldFixOrientation) return aImage;
+    
+    // No-op if the orientation is already correct
+    if (aImage.imageOrientation == UIImageOrientationUp)
+        return aImage;
+    
+    // We need to calculate the proper transformation to make the image upright.
+    // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationDown:
+        case UIImageOrientationDownMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.width, aImage.size.height);
+            transform = CGAffineTransformRotate(transform, M_PI);
+            break;
+            
+        case UIImageOrientationLeft:
+        case UIImageOrientationLeftMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);
+            transform = CGAffineTransformRotate(transform, M_PI_2);
+            break;
+            
+        case UIImageOrientationRight:
+        case UIImageOrientationRightMirrored:
+            transform = CGAffineTransformTranslate(transform, 0, aImage.size.height);
+            transform = CGAffineTransformRotate(transform, -M_PI_2);
+            break;
+        default:
+            break;
+    }
+    
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationUpMirrored:
+        case UIImageOrientationDownMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.width, 0);
+            transform = CGAffineTransformScale(transform, -1, 1);
+            break;
+            
+        case UIImageOrientationLeftMirrored:
+        case UIImageOrientationRightMirrored:
+            transform = CGAffineTransformTranslate(transform, aImage.size.height, 0);
+            transform = CGAffineTransformScale(transform, -1, 1);
+            break;
+        default:
+            break;
+    }
+    
+    // Now we draw the underlying CGImage into a new context, applying the transform
+    // calculated above.
+    CGContextRef ctx = CGBitmapContextCreate(NULL, aImage.size.width, aImage.size.height,
+                                             CGImageGetBitsPerComponent(aImage.CGImage), 0,
+                                             CGImageGetColorSpace(aImage.CGImage),
+                                             CGImageGetBitmapInfo(aImage.CGImage));
+    CGContextConcatCTM(ctx, transform);
+    switch (aImage.imageOrientation) {
+        case UIImageOrientationLeft:
+        case UIImageOrientationLeftMirrored:
+        case UIImageOrientationRight:
+        case UIImageOrientationRightMirrored:
+            // Grr...
+            CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.height,aImage.size.width), aImage.CGImage);
+            break;
+            
+        default:
+            CGContextDrawImage(ctx, CGRectMake(0,0,aImage.size.width,aImage.size.height), aImage.CGImage);
+            break;
+    }
+    
+    // And now we just create a new UIImage from the drawing context
+    CGImageRef cgimg = CGBitmapContextCreateImage(ctx);
+    UIImage *img = [UIImage imageWithCGImage:cgimg];
+    CGContextRelease(ctx);
+    CGImageRelease(cgimg);
+    return img;
+}
 /**
  获取所有相册，并返回当前相册
- 
- 
  */
 
 - (void)getAllPhotoAndCurrentAlbums:(void(^)(HXAlbumModel *currentAlbumModel))currentModel albums:(void(^)(NSArray *albums))albums AlbumName:(NSString *)AlbumName {
@@ -381,13 +532,175 @@
     for (int i = 0; i < _selectedList.count; i++) {
         HXPhotoModel *model = [[HXPhotoModel alloc] init];
         model = [_selectedList objectAtIndex:i];
+        if (model.asset.pixelWidth != _screenShotWidth) {
+            return NO;
+        }
         if (!model.isScreenShot) {
             return NO;
         } else {
             isALLScreenShot = model.isScreenShot;
         }
     }
+    
     return isALLScreenShot;
+}
+
+- (void)combinePhotosWithDirection:(BOOL)isVertical resultImage:(void(^)(UIImage *combineImage))combineImage {
+    
+    CGFloat combineValueSize;
+
+    NSArray *imagesArray = [self getSelectImages];
+    if (isVertical) {
+        combineValueSize = [self getSelectPhotosMinWidth:imagesArray];
+        if (combineValueSize > 800) {
+            combineValueSize = 800;
+        }
+        UIImage *masterImage = [imagesArray objectAtIndex:0];
+        for (int i = 1; i < imagesArray.count; i ++) {
+
+            UIImage *slaveImage = [imagesArray objectAtIndex:i];
+            CGSize size;
+            size.width = combineValueSize;
+            CGFloat masterHeight;
+            if (masterImage.size.width > combineValueSize) {
+                masterHeight = (combineValueSize/masterImage.size.width) * masterImage.size.height;
+            } else {
+                masterHeight = masterImage.size.height;
+            }
+            CGFloat slaveHeight = (combineValueSize/slaveImage.size.width) * slaveImage.size.height;
+            size.height = masterHeight + slaveHeight;
+
+            UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
+            //Draw masterImage
+            [masterImage drawInRect:CGRectMake(0, 0, combineValueSize, masterHeight)];
+            //Draw slaveImage
+            
+            [slaveImage drawInRect:CGRectMake(0, masterHeight, combineValueSize, slaveHeight)];
+            UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+            masterImage = nil;
+            masterImage = resultImage;
+            UIGraphicsEndImageContext();
+        }
+        combineImage(masterImage);
+        
+        
+    } else {
+        combineValueSize = [self getSelectPhotosMinHeight:imagesArray];
+        if (combineValueSize > 1600) {
+            combineValueSize = 1600;
+        }
+        UIImage *masterImage = [imagesArray objectAtIndex:0];
+        for (int i = 1; i < imagesArray.count; i ++) {
+            
+            UIImage *slaveImage = [imagesArray objectAtIndex:i];
+            CGSize size;
+            CGFloat masterWidth;
+            if (masterImage.size.height > combineValueSize) {
+                masterWidth = (combineValueSize/masterImage.size.height) * masterImage.size.width;
+            } else {
+                masterWidth = masterImage.size.width;
+            }
+            CGFloat slaveWidth = (combineValueSize/slaveImage.size.height) * slaveImage.size.width;
+            size.width = masterWidth + slaveWidth;
+            size.height = combineValueSize;
+            
+            UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
+            //Draw masterImage
+            [masterImage drawInRect:CGRectMake(0, 0, masterWidth, combineValueSize)];
+            //Draw slaveImage
+            [slaveImage drawInRect:CGRectMake(masterWidth, 0, slaveWidth, combineValueSize)];
+            UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+            masterImage = nil;
+            masterImage = resultImage;
+            UIGraphicsEndImageContext();
+        }
+        combineImage(masterImage);
+        
+    }
+
+
+}
+
+- (NSArray *)getSelectImages {
+
+    __block NSMutableArray *photoArray = [[NSMutableArray alloc] init];
+    PHCachingImageManager *imageManager = [[PHCachingImageManager alloc] init];
+    for (int i = 0; i < _selectedList.count; i++) {
+        HXPhotoModel *model;
+        model = [_selectedList objectAtIndex:i];
+        PHAsset *phAsset = model.asset;
+        PHImageRequestOptions * options=[[PHImageRequestOptions alloc]init];
+        options.resizeMode = PHImageRequestOptionsResizeModeFast;
+        options.synchronous=YES;
+        
+        CGFloat screenScale = 2;
+        CGFloat fullScreenWidth = phAsset.pixelWidth/2;
+        if (fullScreenWidth > 400*ScreenWidthRatio) {
+            fullScreenWidth = 400*ScreenWidthRatio;
+        }
+        //    if (fullScreenWidth > 600) {
+        //        fullScreenWidth = 600;
+        //    }
+        
+        CGSize imageSize;
+        //        if (fullScreenWidth < SCREEN_W && fullScreenWidth < 600) {
+        //            imageSize =  CGSizeMake(((SCREEN_W-41)/3) * screenScale, ((SCREEN_W-41)/3) * screenScale);;
+        //        } else {
+        //PHAsset *phAsset = (PHAsset *)asset;
+        CGFloat aspectRatio = phAsset.pixelWidth / (CGFloat)phAsset.pixelHeight;
+        CGFloat pixelWidth = fullScreenWidth * screenScale;
+        // 超宽图片
+        if (aspectRatio > 1.8) {
+            pixelWidth = pixelWidth * aspectRatio;
+        }
+        // 超高图片
+        if (aspectRatio < 0.2) {
+            pixelWidth = pixelWidth * 0.5;
+        }
+        CGFloat pixelHeight = pixelWidth / aspectRatio;
+        imageSize = CGSizeMake(pixelWidth, pixelHeight);
+    
+    
+        [imageManager requestImageForAsset:phAsset targetSize:imageSize
+                               contentMode:PHImageContentModeDefault
+                                   options:options
+                             resultHandler:^(UIImage *result, NSDictionary *info)
+         {
+             [photoArray addObject:result];
+         }];
+        
+    }
+    return photoArray;
+}
+
+
+- (CGFloat)getSelectPhotosMinWidth:(NSArray *)imageArray {
+    
+
+    UIImage *image = [imageArray objectAtIndex:0];
+    CGFloat minWidth = image.size.width;
+    for (int i = 1; i <imageArray.count; i++) {
+
+        UIImage *image = [imageArray objectAtIndex:0];
+        if (image.size.width < minWidth) {
+            minWidth = image.size.width;
+        }
+    }
+    return minWidth;
+}
+
+- (CGFloat)getSelectPhotosMinHeight:(NSArray *)imageArray {
+    
+    UIImage *image = [imageArray objectAtIndex:0];
+    CGFloat minHeight = image.size.height;
+    for (int i = 1; i <imageArray.count; i++) {
+
+        UIImage *image = [imageArray objectAtIndex:i];
+        if (image.size.height < minHeight) {
+            minHeight = image.size.height;
+        }
+    }
+    return minHeight;
 }
 
 /**
@@ -484,64 +797,7 @@
         
         index++;
     }
-    /*
-    if (self.cameraList.count > 0) {
-        NSInteger index = 0;
-        NSInteger photoIndex = 0;
-        NSInteger videoIndex = 0;
-        for (HXPhotoModel *model in self.cameraList) {
-            if ([self.selectedCameraList containsObject:model]) {
-                model.selected = YES;
-                model.selectedIndex = [self.selectedList indexOfObject:model];
-                model.selectIndexStr = [NSString stringWithFormat:@"%ld",model.selectedIndex + 1];
-            }else {
-                model.selected = NO;
-                model.selectIndexStr = @"";
-                model.selectedIndex = 0;
-            }
-            model.currentAlbumIndex = albumModel.index;
-            if (self.configuration.reverseDate) {
-                [allArray insertObject:model atIndex:cameraIndex + index];
-                [previewArray insertObject:model atIndex:index];
-                if (model.subType == HXPhotoModelMediaSubTypePhoto) {
-                    [photoArray insertObject:model atIndex:photoIndex];
-                    photoIndex++;
-                }else {
-                    [videoArray insertObject:model atIndex:videoIndex];
-                    videoIndex++;
-                }
-            }else {
-                NSInteger count = allArray.count;
-                [allArray insertObject:model atIndex:count - cameraIndex];
-                [previewArray addObject:model];
-                if (model.subType == HXPhotoModelMediaSubTypePhoto) {
-                    [photoArray addObject:model];
-                }else {
-                    [videoArray addObject:model];
-                }
-            }
-            if (self.configuration.showDateSectionHeader) {
-                if (self.configuration.reverseDate) {
-                    model.dateSection = 0;
-                    HXPhotoDateModel *dateModel = dateArray.firstObject;
-                    NSMutableArray *array = [NSMutableArray arrayWithArray:dateModel.photoModelArray];
-                    [array insertObject:model atIndex:cameraIndex + index];
-                    dateModel.photoModelArray = array;
-                }else {
-                    model.dateSection = dateArray.count - 1;
-                    HXPhotoDateModel *dateModel = dateArray.lastObject;
-                    NSMutableArray *array = [NSMutableArray arrayWithArray:dateModel.photoModelArray];
-                    NSInteger count = array.count;
-                    [array insertObject:model atIndex:count - cameraIndex];
-                    dateModel.photoModelArray = array;
-                }
-            }else {
-                model.dateSection = 0;
-            }
-            index++;
-        }
-    }
-    */
+    
     if (complete) {
         complete(allArray,previewArray,photoArray,videoArray,dateArray,firstSelectModel);
     }
@@ -550,7 +806,7 @@
 - (NSString *)maximumOfJudgment:(HXPhotoModel *)model {
     if ([self beforeSelectCountIsMaximum]) {
         // 已经达到最大选择数 [NSString stringWithFormat:@"最多只能选择%ld个",manager.maxNum]
-        return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"最多只能选择%ld个"],self.configuration.maxNum];
+        return [NSString stringWithFormat:[NSBundle hx_localizedStringForKey:@"最多只能选择%ld张图片"],self.configuration.maxNum];
     }
     if (self.type == HXPhotoManagerSelectedTypePhotoAndVideo) {
         if ((model.type == HXPhotoModelMediaTypePhoto || model.type == HXPhotoModelMediaTypePhotoGif) || (model.type == HXPhotoModelMediaTypeCameraPhoto || model.type == HXPhotoModelMediaTypeLivePhoto)) {
@@ -881,6 +1137,23 @@
     [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
     NSSLog(@"dealloc");
 }
+
+- (void)setScrollImage:(UIImage *)resultImage {
+    _resultImage = resultImage;
+}
+
+- (UIImage *)getScrollImage {
+    return self.resultImage;
+}
+
+- (void)setScreenWidthSize:(CGFloat)size {
+    _screenShotWidth = size;
+}
+
+- (CGFloat)getScreenWithSize {
+    return self.screenShotWidth;
+}
+
 
 - (void)changeAfterCameraArray:(NSArray *)array {
     self.endCameraList = array.mutableCopy;

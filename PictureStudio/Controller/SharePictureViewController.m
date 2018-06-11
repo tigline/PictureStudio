@@ -9,18 +9,18 @@
 #import "SharePictureViewController.h"
 #import <Photos/Photos.h>
 #import "HXPhotoDefine.h"
-//#import "WXApi.h"
 #import "AppDelegate.h"
 #import "PhotoSaveBottomView.h"
 #import "UIView+HXExtension.h"
 #import "HXPhotoDefine.h"
+#import "UINavigationController+FDFullscreenPopGesture.h"
 
-#define URL_APPID @"wx3b864b92dca2bf8a"
-#define URL_SECRET @"e998d19d22428e70c520f36a9c6f0e41"
+//#define URL_APPID @"wx3b864b92dca2bf8a"
+//#define URL_SECRET @"e998d19d22428e70c520f36a9c6f0e41"
 //static CGFloat shareAreaViewHeight = 73;//定义分享区域的高度
 
 
-@interface SharePictureViewController ()<WXDelegate,PhotoSaveBottomViewDelegate>
+@interface SharePictureViewController ()<WXDelegate,PhotoSaveBottomViewDelegate,UIScrollViewDelegate>
 {
     AppDelegate *appdelegate;
 }
@@ -30,6 +30,10 @@
 @property (strong, nonatomic) UIScrollView *showImageScrollView;
 @property (strong, nonatomic) UIScrollView *shareScrollView;
 @property (strong, nonatomic) PhotoSaveBottomView *toolBarView;
+@property (assign, nonatomic) CGFloat lastContentOffset;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *shareBoardHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *shareBtnWidth;
+
 
 @property (weak, nonatomic) IBOutlet UIVisualEffectView *shareBoardView;
 
@@ -42,49 +46,92 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self CustomTitle];//处理标透明化题栏 也可app统一设置
-    [self CreateShowImgaeView];//创建图片显示区域
-    [self.view bringSubviewToFront:_shareBoardView];
+    _shareBoardHeight.constant = 73*ScreenHeightRatio;
+    _shareBtnWidth.constant = 46*ScreenWidthRatio;
+    if (_resultImage) {
+        [self CreateShowImgaeView:_resultImage];//创建图片显示区域
+        [self.view bringSubviewToFront:self.shareBoardView];
+        [self.view addSubview:self.toolBarView];//创建保存图片区域
+    }
+    self.fd_prefersNavigationBarHidden = YES;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollFinish) name:@"scrollFinish" object:nil];
+
+    //[self.view bringSubviewToFront:self.toolBarView];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    if (_manager.selectedCount > 3) {
+        [self.view showLoadingHUDText:LocalString(@"scroll_ing")];
+    }
+//    [self.navigationController.navigationBar setHidden:YES];
+//    self.navigationController.interactivePopGestureRecognizer.enabled = YES;
+    
+}
+
+
+
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    //[self.shareBoardView setFrame:CGRectMake(0, self.toolBarView.originY, self.shareBoardView.hx_w, self.shareBoardView.hx_h)];
     [_shareBoardView setHidden:YES];
-    //[self CreateShareView];//创建分享区域
-    //[self CreateSaveView];//创建保存图片区域
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (!_manager.isScrollSuccess) {
+        [self showScrollError];
+    }
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [self.manager setScrollImage:nil];
+
+    //[self.navigationController.navigationBar setHidden:NO];
+}
+
+- (void)scrollFinish {
+    [self.view handleLoading];
+    [self CreateShowImgaeView:[self.manager getScrollImage]];
+    [self.view bringSubviewToFront:self.shareBoardView];
     [self.view addSubview:self.toolBarView];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    [self.navigationController.navigationBar setHidden:NO];
-}
-
-- (BOOL)prefersStatusBarHidden
-{
+- (BOOL)prefersStatusBarHidden {
+    if (kDevice_Is_iPhoneX) {
+        return NO;
+    }
     return YES;
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
--(CGRect)AdaptationCGRectMake:(CGRect)mCGRect;
-{
+-(CGRect)AdaptationCGRectMake:(CGRect)mCGRect; {
     return CGRectMake(mCGRect.origin.x*ScreenWidthRatio,mCGRect.origin.y*ScreenHeightRatio, mCGRect.size.width*ScreenWidthRatio, mCGRect.size.height*ScreenHeightRatio);
 }
 
 #pragma mark - init view
 -(void)CustomTitle
 {
-    [self.navigationController.navigationBar setHidden:YES];
+    
 }
 
-- (void)CreateShowImgaeView
+- (void)CreateShowImgaeView:(UIImage *)_resultImage
 {
 //    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10*ScreenWidthRatio, kTopMargin + 10*ScreenHeightRatio, 355*ScreenWidthRatio, 517*ScreenHeightRatio)];
     
-    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10, kTopMargin + 10, self.view.hx_w - 20, self.view.hx_h - ButtomViewHeight - kBottomMargin - 10)];
+    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h - kBottomMargin - kTopMargin)];
     
-    
+    self.showImageScrollView.delegate = self;
     NSLog(@"%f",ScreenHeightRatio);
     
     [self.view addSubview:self.showImageScrollView];
@@ -93,28 +140,34 @@
     
     if (_resultImage != nil ){
         CGRect cgpos;
-        if (_resultImage.size.width > _showImageScrollView.frame.size.width) {
-            cgpos.origin.x = 0;
-            cgpos.origin.y = 0;
-            cgpos.size.width = _showImageScrollView.frame.size.width;
-            cgpos.size.height = _resultImage.size.height * (_showImageScrollView.frame.size.width/_resultImage.size.width);
-            [_showImageScrollView setContentSize:CGSizeMake(_showImageScrollView.frame.size.width, cgpos.size.height)];
+        if (_resultImage.size.width > _showImageScrollView.frame.size.width - 20) {
+            cgpos.origin.x = 10;
+            cgpos.origin.y = 10;
+            cgpos.size.width = _showImageScrollView.frame.size.width - 20;
+            cgpos.size.height = _resultImage.size.height * (cgpos.size.width/_resultImage.size.width);
+            [_showImageScrollView setContentSize:CGSizeMake(_showImageScrollView.frame.size.width, cgpos.size.height+20)];
         }else {
-            cgpos.origin.x =(_showImageScrollView.frame.size.width - _resultImage.size.width)/2;
-            cgpos.origin.y = 0;
+            cgpos.origin.x =(_showImageScrollView.frame.size.width - 20 - _resultImage.size.width)/2;
+            cgpos.origin.y = 10;
             cgpos.size.width = _resultImage.size.width;
             cgpos.size.height = _resultImage.size.height;
-            [_showImageScrollView setContentSize:CGSizeMake(_showImageScrollView.frame.size.width, _resultImage.size.height)];
+            [_showImageScrollView setContentSize:CGSizeMake(_showImageScrollView.frame.size.width, cgpos.size.height + 20)];
         }
         UIImageView *imageView = [[UIImageView alloc]initWithFrame:cgpos];
+
+        
         [imageView setImage:_resultImage];
+        
         [_showImageScrollView addSubview:imageView];
+        imageView.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.7].CGColor;;
+        imageView.layer.shadowOpacity = 0.8f;
+        imageView.layer.shadowOffset = CGSizeMake(0, 0);
+        UITapGestureRecognizer* imgMsgTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchOnImage:)];
+        [_showImageScrollView addGestureRecognizer:imgMsgTap];
     }
     self.showImageScrollView.showsVerticalScrollIndicator = NO;
     self.showImageScrollView.showsHorizontalScrollIndicator = NO;
-    self.showImageScrollView.layer.shadowColor = [UIColor lightGrayColor].CGColor;
-    self.showImageScrollView.layer.shadowOpacity = 0.8f;
-    self.showImageScrollView.layer.shadowOffset = CGSizeMake(0, 0);
+    _shareScrollView.userInteractionEnabled = YES;
 }
 
 
@@ -127,7 +180,11 @@
     UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];
     //如果有缩略图，则设置缩略图
     shareObject.thumbImage = [UIImage imageNamed:@"icon"];
-    [shareObject setShareImage:self.resultImage];
+    UIImage *saveImage = _resultImage;
+    if (saveImage == nil) {
+        saveImage = [self.manager getScrollImage];
+    }
+    [shareObject setShareImage:saveImage];
     //分享消息对象设置分享内容对象
     messageObject.shareObject = shareObject;
     //调用分享接口
@@ -147,19 +204,25 @@
 
 - (IBAction)onShareWechatClicked:(id)sender {
     [self shareImageToPlatformType:UMSocialPlatformType_WechatSession];
+
 }
 
 - (IBAction)onShareMomentClicked:(id)sender {
     [self shareImageToPlatformType:UMSocialPlatformType_WechatTimeLine];
+
 }
 
 - (IBAction)onShareWeiboClicked:(id)sender {
     [self shareImageToPlatformType:UMSocialPlatformType_Sina];
+
 }
 
 - (IBAction)onShareMoreClicked:(id)sender {
     NSLog(@"shareMoreImageOnClick");
-    UIImage *imageToShare = self.resultImage;
+    UIImage *imageToShare = _resultImage;
+    if (imageToShare == nil) {
+        imageToShare = [self.manager getScrollImage];
+    }
     NSArray *activityItems = @[imageToShare];
     UIActivityViewController *activityVC = [[UIActivityViewController alloc]initWithActivityItems:activityItems applicationActivities:nil];
     //不出现在活动项目
@@ -182,7 +245,7 @@
     [UIView animateWithDuration:0.3f
                      animations:^{
                          
-                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY - self.toolBarView.hx_h, _shareBoardView.size.width, _shareBoardView.size.height)];
+                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY - _toolBarView.hx_h + kBottomMargin, _shareBoardView.size.width, _shareBoardView.size.height)];
                          
                      }completion:^(BOOL finished) {
                          _isShowShareBoardView = YES;
@@ -190,12 +253,31 @@
                      }];
 }
 
+-(void)touchOnImage:(UITapGestureRecognizer*)sender{
+    if (!_shareBoardView.isHidden) {
+        [self hideShareBoard];
+    }
+}
+//点击无效 待解决
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    UITouch *touch = [touches anyObject];
+    CGPoint currentPoint = [touch locationInView:self.shareScrollView];
+    if ([self.shareScrollView.layer containsPoint:currentPoint]) {
+        if (!_shareBoardView.isHidden) {
+            [self hideShareBoard];
+        }
+    }
+    
+}
+
 - (void)hideShareBoard {
     [_shareBoardView setHidden:NO];
     [UIView animateWithDuration:0.3f
                      animations:^{
                          
-                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY + self.toolBarView.hx_h, _shareBoardView.size.width, _shareBoardView.size.height)];
+                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY + _toolBarView.hx_h - kBottomMargin, _shareBoardView.size.width, _shareBoardView.size.height)];
+                         
                      }completion:^(BOOL finished) {
                          [_shareBoardView setHidden:YES];
                          _isShowShareBoardView = NO;
@@ -207,25 +289,44 @@
 - (void)savePhotoBottomViewDidBackBtn {
     [self.navigationController popViewControllerAnimated:YES];
 }
-- (void)savePhotoBottomViewDidSaveBtn {
-    __weak typeof(self) weakSelf = self;
-    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
-        //写入图片到相册
-        [PHAssetChangeRequest creationRequestForAssetFromImage:self.resultImage];
-    } completionHandler:^(BOOL success, NSError * _Nullable error) {
-        NSLog(@"success = %d, error = %@", success, error);
-        if (success) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf.view showImageHUDText:@"save success"];
-            });
-            
+- (void)savePhotoBottomViewDidSaveBtn:(UIButton *)button {
+    
+    if([button.titleLabel.text isEqualToString:LocalString(@"open_ablum")]) {
+        NSURL *url = [NSURL URLWithString:@"photos-redirect://"];
+        
+        if (@available(iOS 10.0, *)) {
+            [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
         } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf.view showImageHUDText:@"save failed"];
-            });
-            
+            [[UIApplication sharedApplication] openURL:url];
         }
-    }];
+    } else {
+        
+        __weak typeof(self) weakSelf = self;
+        [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+            //写入图片到相册
+            UIImage *saveImage = _resultImage;
+            if (saveImage == nil) {
+                saveImage = [self.manager getScrollImage];
+            }
+
+            [PHAssetChangeRequest creationRequestForAssetFromImage:saveImage];
+        } completionHandler:^(BOOL success, NSError * _Nullable error) {
+            NSLog(@"success = %d, error = %@", success, error);
+            if (success) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.view showImageHUDText:LocalString(@"save_success")];
+                    [button setTitle:LocalString(@"open_ablum") forState:UIControlStateNormal];
+                });
+                
+            } else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    //[weakSelf.view showImageHUDText:LocalString(@"save_failed")];
+                    [button setTitle:LocalString(@"save_failed") forState:UIControlStateNormal];
+                });
+                
+            }
+        }];
+    }
 }
 
 - (void)savePhotoBottomViewDidShareBtn {
@@ -243,46 +344,117 @@
     if (!_toolBarView) {
         _toolBarView = [[PhotoSaveBottomView alloc] initWithFrame:CGRectMake(0, self.view.hx_h - ButtomViewHeight - kBottomMargin, self.view.hx_w, ButtomViewHeight + kBottomMargin)];
         _toolBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-
+        
         _toolBarView.delegate = self;
     }
     return _toolBarView;
 }
 
+#pragma mark scrollView delegate
+
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    _lastContentOffset = scrollView.contentOffset.y;
+}
+
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    CGFloat contentHeight = scrollView.contentSize.height - self.view.hx_h;
+    CGFloat contentOffsetY = scrollView.contentOffset.y;
+    if (contentOffsetY < kTopMargin && contentOffsetY > -kTopMargin) {
+        self.showImageScrollView.frame = CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h);
+    } else if (contentOffsetY < contentHeight && contentOffsetY > kTopMargin) {
+        //向下
+        //if (_canDetectScroll) {
+        
+
+        self.showImageScrollView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h);
+        
+        //}
+        //[self.navigationController setNavigationBarHidden:NO animated:YES];
+        
+    } else if (scrollView.contentOffset.y > contentHeight) {
+        
+
+        //向上
+        CGFloat bottomMargin = 0.0;
+        if (kDevice_Is_iPhoneX) {
+            bottomMargin = self.toolBarView.hx_h;
+        } else {
+            bottomMargin = ButtomViewHeight;
+        }
+        if (contentOffsetY > contentHeight && contentOffsetY < contentHeight+bottomMargin) {
+            self.showImageScrollView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h - bottomMargin);
+        }
+        //[self.navigationController setNavigationBarHidden:YES animated:YES];
+        
+    }
+}
+
 #pragma mark delegate 监听微信分享是否成功
 -(void)shareReturnByCode:(int)code
 {
-    NSString *strTitle = @"分享成功";
+    
+    NSString *strTitle = LocalString(@"share_success");
     
     if (code != 0)
     {
-        strTitle = @"分享失败";
+        strTitle = LocalString(@"share_failed");
     }
     UIAlertController* successAlertController = [UIAlertController alertControllerWithTitle:strTitle
                                                                    message:nil
                                                             preferredStyle:UIAlertControllerStyleAlert];
     
-    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:LocalString(@"sure") style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
                                                               //响应事件
                                                               //NSLog(@"action = %@", action);
                                                           }];
     [successAlertController addAction:defaultAction];
     [self presentViewController:successAlertController animated:YES completion:nil];
+    
 }
 
 - (void)showShareError:(UMSocialPlatformType)platformType
 {
-    NSString *strTitle = @"未安装该应用";
+    NSString *strTitle = LocalString(@"no_install_app");
     if (platformType == UMSocialPlatformType_WechatSession || platformType == UMSocialPlatformType_WechatTimeLine) {
-        strTitle = @"未安装微信";
+        strTitle = LocalString(@"no_install_wechat");
     } else if(platformType == UMSocialPlatformType_Sina) {
-        strTitle = @"未安装微博";
+        strTitle = LocalString(@"no_install_weibo");
     }
     UIAlertController* successAlertController = [UIAlertController alertControllerWithTitle:strTitle
                                                                                     message:nil
                                                                              preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:LocalString(@"sure") style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                          }];
+    [successAlertController addAction:defaultAction];
+    [self presentViewController:successAlertController animated:YES completion:nil];
+}
+
+- (void)showScrollError
+{
+    NSString *strTitle = LocalString(@"scroll_error");
+    
+    UIAlertController* successAlertController = [UIAlertController alertControllerWithTitle:strTitle
+                                                                                    message:LocalString(@"scroll_operate_tips")
+                                                                             preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:LocalString(@"sure") style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                          }];
+    [successAlertController addAction:defaultAction];
+    [self presentViewController:successAlertController animated:YES completion:nil];
+}
+
+- (void)showTips
+{
+    //NSString *strTitle = LocalString(@"scroll_error");
+    
+    UIAlertController* successAlertController = [UIAlertController alertControllerWithTitle:nil
+                                                                                    message:@"Coming soon"
+                                                                             preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:LocalString(@"sure") style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
                                                           }];
     [successAlertController addAction:defaultAction];

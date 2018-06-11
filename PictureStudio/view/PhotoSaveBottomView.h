@@ -11,7 +11,7 @@
 @protocol PhotoSaveBottomViewDelegate <NSObject>
 @optional
 - (void)savePhotoBottomViewDidBackBtn;
-- (void)savePhotoBottomViewDidSaveBtn;
+- (void)savePhotoBottomViewDidSaveBtn:(UIButton *)button;
 - (void)savePhotoBottomViewDidShareBtn;
 @end
 

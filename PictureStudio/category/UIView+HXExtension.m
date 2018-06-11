@@ -140,6 +140,22 @@
     return self.frame.origin;
 }
 
+- (void)setHx_centerY:(CGFloat)centerY {
+    self.center = CGPointMake(self.center.x, centerY);
+}
+
+- (CGFloat)hx_centerY {
+    return self.center.y;
+}
+
+- (void)setHx_centerX:(CGFloat)centerX {
+    self.center = CGPointMake(centerX, self.center.y);
+}
+
+- (CGFloat)hx_centerX {
+    return self.center.x;
+}
+
 /**
  获取当前视图的控制器
  
@@ -176,19 +192,19 @@
 }
 */
 - (void)showImageHUDText:(NSString *)text {
-    CGFloat hudW = [HXPhotoTools getTextWidth:text height:15 fontSize:14];
+    CGFloat hudW = [HXPhotoTools getTextWidth:text height:15 fontSize:18];
     if (hudW > self.frame.size.width - 60) {
         hudW = self.frame.size.width - 60;
     }
-    CGFloat hudH = [HXPhotoTools getTextHeight:text width:hudW fontSize:14];
+    //CGFloat hudH = [HXPhotoTools getTextHeight:text width:hudW fontSize:18];
     if (hudW < 100) {
         hudW = 100;
     }
-    HXHUD *hud = [[HXHUD alloc] initWithFrame:CGRectMake(0, 0, hudW + 20, 110 + hudH - 15) imageName:@"alert_failed_icon" text:text];
+    HXHUD *hud = [[HXHUD alloc] initWithFrame:CGRectMake(0, 0, hudW + 20, 42*ScreenHeightRatio) imageName:nil text:text];
     hud.alpha = 0;
     hud.tag = 1008611;
     [self addSubview:hud];
-    hud.center = CGPointMake(self.frame.size.width / 2, self.frame.size.height / 2);
+    hud.center = CGPointMake(self.frame.size.width / 2, self.frame.size.height*0.85);
     [UIView animateWithDuration:0.25 animations:^{
         hud.alpha = 1;
     }];
@@ -245,6 +261,30 @@
     }
 }
 
+- (void) setOrigin:(float)x :(float)y
+{
+    self.layer.anchorPoint = CGPointMake(x, y);
+}
+
+- (void) resetOriginToTopLeft
+{
+    [self setOrigin:0 :0];
+    [self setCenter:CGPointMake(0, 0)];
+}
+
+- (void) resetOriginToTopRight
+{
+    [self setOrigin:0 :0];
+    [self setCenter:CGPointMake(0, 0)];
+}
+
+- (void) resetOriginToBottomLeft
+{
+    [self setOrigin:self.frame.size.width/2 :self.frame.size.height];
+    [self setCenter:CGPointMake(self.frame.size.width/2, self.frame.size.height)];
+}
+
+
 @end
 
 @interface HXHUD ()
@@ -261,35 +301,65 @@
         self.text = text;
         self.imageName = imageName;
         self.layer.masksToBounds = YES;
-        self.layer.cornerRadius = 5;
-        self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.85];
+        
+        if ([text isEqualToString:LocalString(@"scroll_ing")]) {
+            self.layer.cornerRadius = 5;
+            self.backgroundColor = [UIColor colorWithRed:220/255.0 green:220/255.0 blue:220/255.0 alpha:1];
+        } else {
+            self.layer.cornerRadius = 8;
+            self.backgroundColor = [UIColor colorWithRed:189/255.0 green:221/255.0 blue:255/255.0 alpha:1];
+            self.layer.borderWidth = 1;
+            self.layer.borderColor = [UIColor colorWithRed:68/255.0 green:159/255.0 blue:255/255.0 alpha:1].CGColor;
+        }
+        
         [self setup];
     }
     return self;
 }
 
 - (void)setup {
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:[HXPhotoTools hx_imageNamed:self.imageName]];
-    [self addSubview:imageView];
-    CGFloat imgW = imageView.image.size.width;
-    CGFloat imgH = imageView.image.size.height;
-    CGFloat imgCenterX = self.frame.size.width / 2;
-    imageView.frame = CGRectMake(0, 20, imgW, imgH);
-    imageView.center = CGPointMake(imgCenterX, imageView.center.y);
-    self.imageView = imageView;
     
-    UILabel *label = [[UILabel alloc] init];
-    label.text = self.text;
-    label.textColor = [UIColor whiteColor];
-    label.textAlignment = NSTextAlignmentCenter;
-    label.font = [UIFont systemFontOfSize:14];
-    label.numberOfLines = 0;
-    [self addSubview:label];
-    CGFloat labelX = 10;
-    CGFloat labelY = CGRectGetMaxY(imageView.frame) + 10;
-    CGFloat labelW = self.frame.size.width - 20;
-    CGFloat labelH = [HXPhotoTools getTextHeight:self.text width:labelW fontSize:14];
-    label.frame = CGRectMake(labelX, labelY, labelW, labelH);
+
+    if(self.imageName != nil) {
+
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:[HXPhotoTools hx_imageNamed:self.imageName]];
+        [self addSubview:imageView];
+        CGFloat imgW = imageView.image.size.width;
+        CGFloat imgH = imageView.image.size.height;
+        CGFloat imgCenterX = self.frame.size.width / 2;
+        imageView.frame = CGRectMake(0, 20, imgW, imgH);
+        imageView.center = CGPointMake(imgCenterX, imageView.center.y);
+        self.imageView = imageView;
+        
+        UILabel *label = [[UILabel alloc] init];
+        label.text = self.text;
+        label.textColor = [UIColor whiteColor];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.font = [UIFont systemFontOfSize:14];
+        label.numberOfLines = 0;
+        [self addSubview:label];
+        CGFloat labelX = 10;
+        CGFloat labelY = CGRectGetMaxY(imageView.frame) + 10;
+        CGFloat labelW = self.frame.size.width - 20;
+        CGFloat labelH = [HXPhotoTools getTextHeight:self.text width:labelW fontSize:14];
+        label.frame = CGRectMake(labelX, labelY, labelW, labelH);
+        
+    } else {
+        UILabel *label = [[UILabel alloc] init];
+        label.text = self.text;
+        label.textColor = [UIColor colorWithRed:68/255.0 green:159/255.0 blue:255/255.0 alpha:1];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.font = [UIFont systemFontOfSize:14];
+        label.numberOfLines = 0;
+        [self addSubview:label];
+        CGFloat labelX = 10;
+        CGFloat labelW = self.frame.size.width - 20;
+        CGFloat labelH = [HXPhotoTools getTextHeight:self.text width:labelW fontSize:18];
+        CGFloat labelY = (self.hx_h - labelH)/2;
+        label.frame = CGRectMake(labelX, labelY, labelW, labelH);
+    }
+
+    
 }
 
 - (void)showloading {

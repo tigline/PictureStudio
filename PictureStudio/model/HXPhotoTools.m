@@ -468,7 +468,7 @@
     [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
         if (status != PHAuthorizationStatusAuthorized) return;
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (!iOS9_Later) {
+            if (!iOS9Later) {
                 if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum([videoURL path])) {
                     //保存相册核心代码
                     UISaveVideoAtPathToSavedPhotosAlbum([videoURL path], nil, nil, nil);
@@ -514,7 +514,7 @@
     [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
         if (status != PHAuthorizationStatusAuthorized) return;
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (!iOS9_Later) {
+            if (!iOS9Later) {
                 UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil);
                 return;
             }
@@ -776,7 +776,7 @@
 
 + (PHImageRequestID)getHighQualityFormatPhoto:(PHAsset *)asset size:(CGSize)size startRequestIcloud:(void (^)(PHImageRequestID cloudRequestId))startRequestIcloud progressHandler:(void (^)(double progress))progressHandler completion:(void(^)(UIImage *image))completion failed:(void(^)(NSDictionary *info))failed {
     PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
-    option.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+    //option.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     option.resizeMode = PHImageRequestOptionsResizeModeFast;
     option.networkAccessAllowed = NO;
     

@@ -12,9 +12,12 @@
 
 
 
-//微信开发者ID
-#define URL_APPID @"wx3b864b92dca2bf8a"
-#define UMeng_AppKey @"5af056188f4a9d1da00000f7"
+#define UMeng_AppKey @"5b17ea27f29d9868c800002d"
+
+#define WX_APP_KEY @"wxe1f34216d2552447"
+#define WX_APP_SECRET @"a188a22d52c6e7791a0a3a53617aae9a"
+#define WB_APP_KEY @"2207598112"
+#define WB_APP_SECRET @"b3fa8253665ef403f6fb4dce96a67a48"
 
 void uncaughtExceptionHandler(NSException *exception) {
     NSSLog(@"CRASH: %@", exception);
@@ -31,16 +34,6 @@ void uncaughtExceptionHandler(NSException *exception) {
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
-    //    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    //
-    //    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:[[ViewController alloc] init]];
-    //
-    //    self.window.rootViewController = nav;
-    //
-    //    [self.window makeKeyAndVisible];
-    
-    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:0 forBarMetrics:UIBarMetricsDefault];
-    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     
     //向微信注册应用。
     //[WXApi registerApp:URL_APPID ];
@@ -54,10 +47,6 @@ void uncaughtExceptionHandler(NSException *exception) {
     [UMConfigure initWithAppkey:UMeng_AppKey channel:@"App Store"];
     [UMConfigure setLogEnabled:YES];
     /*
-     * 打开图片水印
-     */
-    //[UMSocialGlobal shareInstance].isUsingWaterMark = YES;
-    /*
      * 关闭强制验证https，可允许http图片分享，但需要在info.plist设置安全域名
      <key>NSAppTransportSecurity</key>
      <dict>
@@ -70,22 +59,14 @@ void uncaughtExceptionHandler(NSException *exception) {
 - (void)configUSharePlatforms
 {
     /* 设置微信的appKey和appSecret */
-    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatSession appKey:@"wx3b864b92dca2bf8a" appSecret:@"3baf1193c85774b3fd9d18447d76cab0" redirectURL:@"http://mobile.umeng.com/social"];
-    /*
-     * 移除相应平台的分享，如微信收藏
-     */
-    //[[UMSocialManager defaultManager] removePlatformProviderWithPlatformTypes:@[@(UMSocialPlatformType_WechatFavorite)]];
-    /* 设置分享到QQ互联的appID
-     * U-Share SDK为了兼容大部分平台命名，统一用appKey和appSecret进行参数设置，而QQ平台仅需将appID作为U-Share的appKey参数传进即可。
-     */
-    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_QQ appKey:@"1105821097"/*设置QQ平台的appID*/  appSecret:nil redirectURL:@"http://mobile.umeng.com/social"];
-    /* 设置新浪的appKey和appSecret */
-    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_Sina appKey:@"3921700954"  appSecret:@"04b48b094faeb16683c32669824ebdad" redirectURL:@"https://sns.whalecloud.com/sina2/callback"];
+    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatSession appKey:WX_APP_KEY appSecret:WX_APP_SECRET redirectURL:nil];
+    /* 设置微博的appKey和appSecret */
+    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_Sina appKey:WB_APP_KEY  appSecret:WB_APP_SECRET redirectURL:@"https://sns.whalecloud.com/sina2/callback"];
 
 }
 
 
--(BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options{
+-(BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options {
 
     /*! @brief 处理微信通过URL启动App时传递的数据
      *
@@ -101,9 +82,9 @@ void uncaughtExceptionHandler(NSException *exception) {
     }
     return result;
 }
-//
-//
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
+
+
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
     //return [WXApi handleOpenURL:url delegate:self];
     BOOL result = [[UMSocialManager defaultManager] handleOpenURL:url];
     if (!result) {
@@ -111,8 +92,8 @@ void uncaughtExceptionHandler(NSException *exception) {
     }
     return result;
 }
-//
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(id)annotation{
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(nullable NSString *)sourceApplication annotation:(id)annotation {
     //return [WXApi handleOpenURL:url delegate:self];
     BOOL result = [[UMSocialManager defaultManager] handleOpenURL:url sourceApplication:sourceApplication annotation:annotation];
     if (!result) {

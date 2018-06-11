@@ -44,7 +44,7 @@
 		<key>title</key>
 		<string>PG</string>
 		<key>weibo</key>
-		<string>sinaweibo://userinfo?uid=2291202212</string>
+		<string>sinaweibo://userinfo?uid=</string>
 	</dict>
 </dict>
 </plist>

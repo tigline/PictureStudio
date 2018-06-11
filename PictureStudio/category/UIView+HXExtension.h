@@ -17,6 +17,8 @@
 @property (assign, nonatomic) CGFloat hx_h;
 @property (assign, nonatomic) CGSize hx_size;
 @property (assign, nonatomic) CGPoint hx_origin;
+@property (assign, nonatomic) CGFloat hx_centerY;
+@property (assign, nonatomic) CGFloat hx_centerX;
 
 @property (nonatomic, assign) CGSize size;
 @property (nonatomic, assign) CGFloat originX;
@@ -36,6 +38,13 @@
 - (void)showImageHUDText:(NSString *)text;
 - (void)showLoadingHUDText:(NSString *)text;
 - (void)handleLoading;
+
+- (void) setOrigin:(float)x :(float)y;
+
+- (void) resetOriginToTopLeft;
+- (void) resetOriginToTopRight;
+
+- (void) resetOriginToBottomLeft;
 
 /* <HXAlbumListViewControllerDelegate> */
 - (void)hx_presentAlbumListViewControllerWithManager:(HXPhotoManager *)manager delegate:(id)delegate;

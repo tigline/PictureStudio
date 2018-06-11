@@ -30,22 +30,22 @@
 {
     [self.titleButton sizeToFit];
     
-    CGFloat width = CGRectGetWidth(self.titleButton.frame)/2 + 2 + CGRectGetWidth(self.arrowBtn.frame) + 15;
+    CGFloat width = CGRectGetWidth(self.titleButton.frame)/2 + 2 + CGRectGetWidth(self.arrowBtn.frame) + 15*ScreenWidthRatio;
 
     self.size = CGSizeMake(width * 2, self.frame.size.height);
     if (isFirst) {
-        self.titleButton.center = CGPointMake(self.frame.size.width / 2, self.frame.size.height / 2 + 20);
+        self.titleButton.center = CGPointMake(self.frame.size.width / 2, self.frame.size.height / 2 + 20*ScreenHeightRatio);
     } else {
         self.titleButton.center = CGPointMake(self.frame.size.width / 2, self.frame.size.height / 2);
     }
 
-    self.arrowBtn.originX = self.titleButton.rightTop.x + 10;
+    self.arrowBtn.originX = self.titleButton.rightTop.x + 10*ScreenWidthRatio;
 
     self.arrowBtn.center = CGPointMake(self.arrowBtn.center.x, self.titleButton.center.y);
 
     //self.arrowBtn.transform = CGAffineTransformRotate(self.arrowBtn.transform, M_PI);
 
-    return CGRectGetMaxX(self.arrowBtn.frame) + 10;
+    return CGRectGetMaxX(self.arrowBtn.frame) + 10*ScreenWidthRatio;
 
 }
 
@@ -62,8 +62,8 @@
 - (UILabel *)titleButton{
     if (!_titleButton) {
         _titleButton = [[UILabel alloc] init];
-        _titleButton.text = @"All Photos";
-        _titleButton.font = [UIFont systemFontOfSize:20.];
+        _titleButton.text = LocalString(@"all_photos");
+        _titleButton.font = [UIFont systemFontOfSize:17.];
         _titleButton.textColor = [UIColor blackColor];
         [self addSubview:_titleButton];
     }

@@ -12,7 +12,6 @@
 
 @interface ImgCollectionViewCell ()<ImgCollectionViewCellDelegate>
 
-
 @property (strong, nonatomic) UIImageView *imageView;
 @property (strong, nonatomic) UIView *maskView;
 @property (copy, nonatomic) NSString *localIdentifier;
@@ -20,12 +19,9 @@
 @property (strong, nonatomic) UILabel *stateLb;
 @property (strong, nonatomic) CAGradientLayer *bottomMaskLayer;
 
-
-
 @end
 
 @implementation ImgCollectionViewCell
-
 
 //- (void)awakeFromNib {
 //    [super awakeFromNib];
@@ -46,6 +42,11 @@ return self;
 }
 
 - (void)setupUI {
+    self.layer.borderWidth = 1*ScreenWidthRatio;
+    self.layer.borderColor = [[UIColor blackColor] colorWithAlphaComponent:0.1].CGColor;
+//    self.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5].CGColor;;
+//    self.layer.shadowOpacity = 0.8f;
+//    self.layer.shadowOffset = CGSizeMake(0, 0);
     [self.contentView addSubview:self.imageView];
     [self.contentView addSubview:self.maskView];
     //self.selectBgColor = [UIColor colorWithRed:102/255.0 green:153/255.0 blue:1.0 alpha:1.0];
@@ -59,12 +60,36 @@ return self;
         self.maskView.alpha = 1;
     } completion:nil];
 }
-- (void)setSingleSelected:(BOOL)singleSelected {
-    _singleSelected = singleSelected;
-    if (singleSelected) {
-        [self.selectBtn removeFromSuperview];
+//- (void)setSingleSelected:(BOOL)singleSelected {
+//    _singleSelected = singleSelected;
+//    if (singleSelected) {
+//        [self.selectBtn removeFromSuperview];
+//    }
+//}
+
+- (void)setMatchY:(BOOL)matchY
+{
+    if (matchY) {
+//        self.selectMaskLayer.hidden = !_model.selected;
+//        self.selectBtn.selected = _model.selected;
+//        [self.selectBtn setTitle:_model.selectIndexStr forState:UIControlStateSelected];
+        //self.selectBtn.selected = NO;
+        [self.collectionViewCelldelegate imgCollectionViewCell:self didSelectBtn:self.selectBtn];
+    } else {
+        //self.selectBtn.selected = YES;
+
+        
+        //[self.collectionViewCelldelegate imgCollectionViewCell:self didSelectBtn:self.selectBtn];
+        _model.selectIndexStr = @"";
+        _selectMaskLayer.hidden = YES;
+        _selectBtn.selected = NO;
+        //self.selectCount = [self.manager selectedCount];
+
     }
 }
+
+
+
 - (void)setModel:(HXPhotoModel *)model {
     _model = model;
     
@@ -84,12 +109,12 @@ return self;
     }
     self.selectMaskLayer.hidden = !model.selected;
     self.selectBtn.selected = model.selected;
+
     [self.selectBtn setTitle:model.selectIndexStr forState:UIControlStateSelected];
     //self.selectBtn.backgroundColor = model.selected ? self.selectBgColor :nil;
 
-    
-    
 }
+
 - (void)setSelectBgColor:(UIColor *)selectBgColor {
     _selectBgColor = selectBgColor;
     if ([selectBgColor isEqual:[UIColor whiteColor]] && !self.selectedTitleColor) {
@@ -109,14 +134,28 @@ return self;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
+//    [CATransaction begin];
+//    [CATransaction setDisableActions:YES];
     self.imageView.frame = self.bounds;
     self.maskView.frame = self.bounds;
     //self.stateLb.frame = CGRectMake(0, self.hx_h - 18, self.hx_w - 4, 18);
     //self.bottomMaskLayer.frame = CGRectMake(0, self.hx_h - 25, self.hx_w, 25);
     self.selectBtn.frame = CGRectMake(self.hx_w - 28, self.hx_w - 28, 25, 25);
     self.selectMaskLayer.frame = self.bounds;
+//    [CATransaction commit];
+}
+
+
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    CGPoint touchPoint = [[touches anyObject] locationInView:self];
+    if (touchPoint.x > self.hx_w/3 && touchPoint.y > self.hx_h/3) {
+        [self didSelectClick:_selectBtn];
+    } else {
+        [self.superview touchesEnded:touches withEvent:event];
+    }
     
 }
+
 - (void)dealloc {
     self.model.dateCellIsVisible = NO;
 }

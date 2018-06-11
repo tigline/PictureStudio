@@ -74,6 +74,9 @@ typedef enum : NSUInteger {
  */
 @property (strong, nonatomic) NSArray<NSString *> *networkPhotoUrls;
 
+@property (assign, nonatomic) BOOL isScrollSuccess;
+@property (assign, nonatomic) BOOL isCombineVertical;
+
 - (void)getAllPhotoAndCurrentAlbums:(void(^)(HXAlbumModel *currentAlbumModel))currentModel albums:(void(^)(NSArray *albums))albums AlbumName:(NSString *)AlbumName;
 /**
  获取系统所有相册
@@ -90,7 +93,7 @@ typedef enum : NSUInteger {
  */
 - (void)getPhotoListWithAlbumModel:(HXAlbumModel *)albumModel complete:(void (^)(NSArray *allList , NSArray *previewList,NSArray *photoList ,NSArray *videoList ,NSArray *dateList , HXPhotoModel *firstSelectModel))complete;
 
-
+- (int32_t)getPhotoWithAsset:(id)asset completion:(void (^)(UIImage *photo,NSDictionary *info,BOOL isDegraded))completion progressHandler:(void (^)(double progress, NSError *error, BOOL *stop, NSDictionary *info))progressHandler networkAccessAllowed:(BOOL)networkAccessAllowed;
 
 /**
  判断最大值
@@ -206,7 +209,15 @@ typedef enum : NSUInteger {
 
 - (void)selectedListTransformAfter;
 - (void)selectedListTransformBefore;
+- (void)setScrollImage:(UIImage *)resultImage;
 
+- (void)combinePhotosWithDirection:(BOOL)isVertical resultImage:(void(^)(UIImage *combineImage))resultImage;
+
+- (UIImage *)getScrollImage;
+
+- (void)setScreenWidthSize:(CGFloat)size;
+
+- (CGFloat)getScreenWithSize;
 /**
  取消选择
  */
@@ -216,6 +227,8 @@ typedef enum : NSUInteger {
  清空所有已选数组
  */
 - (void)clearSelectedList;
+
+
 
 /**  cell上添加photoView时所需要用到的方法  */
 - (void)changeAfterCameraArray:(NSArray *)array;
