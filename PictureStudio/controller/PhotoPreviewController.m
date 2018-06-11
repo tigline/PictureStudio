@@ -195,7 +195,7 @@
             }
         }
         
-    } else if(model.isScreenShot) {
+    } else {
         // 1. select:check if over the maxImagesCount / 选择照片,检查是否超过了最大个数的限制
         NSString *str = [self.manager maximumOfJudgment:model];
         if (str) {
@@ -210,10 +210,11 @@
             
         }
 
-    } else {
-        [self.view showImageHUDText:LocalString(@"right_operate_tips")];
-        return;
     }
+//    else {
+//        [self.view showImageHUDText:LocalString(@"right_operate_tips")];
+//        return;
+//    }
     
     
     model.selected = !selectButton.isSelected;

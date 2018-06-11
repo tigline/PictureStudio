@@ -273,7 +273,7 @@ PhotoPreviewControllerDelegate
     __weak typeof(self) weakSelf = self;
     _canDetectScroll = NO;
     if (_shouldShowIndicator) {
-        [self.view showLoadingHUDText:LocalString(@"load_ablum")];
+        //[self.view showLoadingHUDText:LocalString(@"load_ablum")];
     }
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
@@ -319,7 +319,7 @@ PhotoPreviewControllerDelegate
 //                [CATransaction commit];
                 
                 _canDetectScroll = YES;
-                [weakSelf.view handleLoading];
+                //[weakSelf.view handleLoading];
 //                if (weakSelf.isLaunch && [weakSelf.manager shouldShowTipView]) {
 //                    [weakSelf showTipView];
 //                    weakSelf.isLaunch = NO;

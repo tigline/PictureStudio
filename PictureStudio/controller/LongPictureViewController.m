@@ -36,6 +36,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.fd_prefersNavigationBarHidden = YES;
+    
     _longPictureView.bouncesZoom = YES;
     _longPictureView.maximumZoomScale = 2.5;
     _longPictureView.minimumZoomScale = 1.0;
@@ -107,17 +108,23 @@
             cgpos.size.height = combineImage.size.height;
             [_longPictureView setContentSize:CGSizeMake(_longPictureView.frame.size.width, cgpos.size.height + 20)];
         }
-
+        
         
     } else {
         
         
-        if (combineImage.size.height/2 > _longPictureView.frame.size.height - 20) {
+        if (combineImage.size.height > _longPictureView.frame.size.height - 20) {
             cgpos.origin.x = 10;
             cgpos.origin.y = 10;
-            cgpos.size.width =  combineImage.size.width * (_longPictureView.frame.size.height-20/combineImage.size.height);
-            cgpos.size.height = _longPictureView.frame.size.height-20;
-            [_longPictureView setContentSize:CGSizeMake(cgpos.size.width, _longPictureView.frame.size.height)];
+            cgpos.size.width =  (combineImage.size.width) * ((_longPictureView.frame.size.height-10-ButtomViewHeight)/combineImage.size.height);
+            cgpos.size.height = _longPictureView.frame.size.height - 10 - ButtomViewHeight;
+            if(cgpos.size.width < _longPictureView.frame.size.width - 20) {
+                cgpos.origin.x = (_longPictureView.frame.size.width - cgpos.size.width)/2;
+                [_longPictureView setContentSize:CGSizeMake(_longPictureView.frame.size.width, _longPictureView.frame.size.height)];
+            } else {
+                [_longPictureView setContentSize:CGSizeMake(cgpos.size.width + 20, _longPictureView.frame.size.height)];
+            }
+            
         }else {
             cgpos.origin.x = 10;
             cgpos.origin.y = (_longPictureView.frame.size.height - combineImage.size.height/2)/2;
@@ -125,6 +132,7 @@
             cgpos.size.height = combineImage.size.height/2;
             [_longPictureView setContentSize:CGSizeMake(cgpos.size.width + 20,  _longPictureView.frame.size.height)];
         }
+        [_longPictureView setFrame:CGRectMake(0, (_longPictureView.hx_h - _longPictureView.contentSize.height)/2, _longPictureView.hx_w, _longPictureView.contentSize.height)];
         
     }
         _imageView = [[UIImageView alloc]initWithFrame:cgpos];
@@ -336,41 +344,44 @@
 }
 - (void)savePhotoBottomViewDidSaveBtn:(UIButton *)button {
     
-//    NSURL *url = [NSURL URLWithString:@"weixin://"];
-//
-//    //先判断是否能打开该url
-//    if ([[UIApplication sharedApplication] canOpenURL:url]) {
-//        //打开url
-//        [[UIApplication sharedApplication] openURL:url];
-//    }else {
-//
-//    }
     
-    //__weak typeof(self) weakSelf = self;
-    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
-        //写入图片到相册
-        UIImage *saveImage = _resultImage;
-        if (saveImage == nil) {
-            saveImage = [self.manager getScrollImage];
-        }
+    if([button.titleLabel.text isEqualToString:LocalString(@"open_ablum")]) {
+        NSURL *url = [NSURL URLWithString:@"photos-redirect://"];
         
-        [PHAssetChangeRequest creationRequestForAssetFromImage:saveImage];
-    } completionHandler:^(BOOL success, NSError * _Nullable error) {
-        NSLog(@"success = %d, error = %@", success, error);
-        if (success) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                //[weakSelf.view showImageHUDText:LocalString(@"save_success")];
-                [button setTitle:LocalString(@"save_success") forState:UIControlStateNormal];
-            });
-            
+        if (@available(iOS 10.0, *)) {
+            [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
         } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                //[weakSelf.view showImageHUDText:LocalString(@"save_failed")];
-                [button setTitle:LocalString(@"save_failed") forState:UIControlStateNormal];
-            });
-            
+            [[UIApplication sharedApplication] openURL:url];
         }
-    }];
+    } else {
+        __weak typeof(self) weakSelf = self;
+        [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+            //写入图片到相册
+            UIImage *saveImage = _resultImage;
+            if (saveImage == nil) {
+                saveImage = [self.manager getScrollImage];
+            }
+            
+            [PHAssetChangeRequest creationRequestForAssetFromImage:saveImage];
+        } completionHandler:^(BOOL success, NSError * _Nullable error) {
+            NSLog(@"success = %d, error = %@", success, error);
+            if (success) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.view showImageHUDText:LocalString(@"save_success")];
+                    [button setTitle:LocalString(@"open_ablum") forState:UIControlStateNormal];
+                });
+                
+            } else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    //[weakSelf.view showImageHUDText:LocalString(@"save_failed")];
+                    [button setTitle:LocalString(@"save_failed") forState:UIControlStateNormal];
+                });
+                
+            }
+        }];
+        
+    }
+    
 }
 
 - (void)savePhotoBottomViewDidShareBtn {

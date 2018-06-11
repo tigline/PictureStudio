@@ -287,31 +287,43 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 - (void)savePhotoBottomViewDidSaveBtn:(UIButton *)button {
-    //__weak typeof(self) weakSelf = self;
-    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
-        //写入图片到相册
-        UIImage *saveImage = _resultImage;
-        if (saveImage == nil) {
-            saveImage = [self.manager getScrollImage];
-        }
-
-        [PHAssetChangeRequest creationRequestForAssetFromImage:saveImage];
-    } completionHandler:^(BOOL success, NSError * _Nullable error) {
-        NSLog(@"success = %d, error = %@", success, error);
-        if (success) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                //[weakSelf.view showImageHUDText:LocalString(@"save_success")];
-                [button setTitle:LocalString(@"save_success") forState:UIControlStateNormal];
-            });
-            
+    
+    if([button.titleLabel.text isEqualToString:LocalString(@"open_ablum")]) {
+        NSURL *url = [NSURL URLWithString:@"photos-redirect://"];
+        
+        if (@available(iOS 10.0, *)) {
+            [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
         } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                //[weakSelf.view showImageHUDText:LocalString(@"save_failed")];
-                [button setTitle:LocalString(@"save_failed") forState:UIControlStateNormal];
-            });
-            
+            [[UIApplication sharedApplication] openURL:url];
         }
-    }];
+    } else {
+        
+        __weak typeof(self) weakSelf = self;
+        [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+            //写入图片到相册
+            UIImage *saveImage = _resultImage;
+            if (saveImage == nil) {
+                saveImage = [self.manager getScrollImage];
+            }
+
+            [PHAssetChangeRequest creationRequestForAssetFromImage:saveImage];
+        } completionHandler:^(BOOL success, NSError * _Nullable error) {
+            NSLog(@"success = %d, error = %@", success, error);
+            if (success) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.view showImageHUDText:LocalString(@"save_success")];
+                    [button setTitle:LocalString(@"open_ablum") forState:UIControlStateNormal];
+                });
+                
+            } else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    //[weakSelf.view showImageHUDText:LocalString(@"save_failed")];
+                    [button setTitle:LocalString(@"save_failed") forState:UIControlStateNormal];
+                });
+                
+            }
+        }];
+    }
 }
 
 - (void)savePhotoBottomViewDidShareBtn {

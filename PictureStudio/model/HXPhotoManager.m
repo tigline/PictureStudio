@@ -595,7 +595,7 @@
             UIImage *slaveImage = [imagesArray objectAtIndex:i];
             CGSize size;
             CGFloat masterWidth;
-            if (masterImage.size.width > combineValueSize) {
+            if (masterImage.size.height > combineValueSize) {
                 masterWidth = (combineValueSize/masterImage.size.height) * masterImage.size.width;
             } else {
                 masterWidth = masterImage.size.width;
@@ -641,33 +641,33 @@
         //    if (fullScreenWidth > 600) {
         //        fullScreenWidth = 600;
         //    }
-
-            CGSize imageSize;
-            //        if (fullScreenWidth < SCREEN_W && fullScreenWidth < 600) {
-            //            imageSize =  CGSizeMake(((SCREEN_W-41)/3) * screenScale, ((SCREEN_W-41)/3) * screenScale);;
-            //        } else {
-            //PHAsset *phAsset = (PHAsset *)asset;
-            CGFloat aspectRatio = phAsset.pixelWidth / (CGFloat)phAsset.pixelHeight;
-            CGFloat pixelWidth = fullScreenWidth * screenScale;
-            // 超宽图片
-            if (aspectRatio > 1.8) {
-                pixelWidth = pixelWidth * aspectRatio;
-            }
-            // 超高图片
-            if (aspectRatio < 0.2) {
-                pixelWidth = pixelWidth * 0.5;
-            }
-            CGFloat pixelHeight = pixelWidth / aspectRatio;
-            imageSize = CGSizeMake(pixelWidth, pixelHeight);
         
-        
-            [imageManager requestImageForAsset:phAsset targetSize:imageSize
-                                   contentMode:PHImageContentModeDefault
-                                       options:options
-                                 resultHandler:^(UIImage *result, NSDictionary *info)
-             {
-                 [photoArray addObject:result];
-             }];
+        CGSize imageSize;
+        //        if (fullScreenWidth < SCREEN_W && fullScreenWidth < 600) {
+        //            imageSize =  CGSizeMake(((SCREEN_W-41)/3) * screenScale, ((SCREEN_W-41)/3) * screenScale);;
+        //        } else {
+        //PHAsset *phAsset = (PHAsset *)asset;
+        CGFloat aspectRatio = phAsset.pixelWidth / (CGFloat)phAsset.pixelHeight;
+        CGFloat pixelWidth = fullScreenWidth * screenScale;
+        // 超宽图片
+        if (aspectRatio > 1.8) {
+            pixelWidth = pixelWidth * aspectRatio;
+        }
+        // 超高图片
+        if (aspectRatio < 0.2) {
+            pixelWidth = pixelWidth * 0.5;
+        }
+        CGFloat pixelHeight = pixelWidth / aspectRatio;
+        imageSize = CGSizeMake(pixelWidth, pixelHeight);
+    
+    
+        [imageManager requestImageForAsset:phAsset targetSize:imageSize
+                               contentMode:PHImageContentModeDefault
+                                   options:options
+                             resultHandler:^(UIImage *result, NSDictionary *info)
+         {
+             [photoArray addObject:result];
+         }];
         
     }
     return photoArray;
@@ -695,7 +695,7 @@
     CGFloat minHeight = image.size.height;
     for (int i = 1; i <imageArray.count; i++) {
 
-        UIImage *image = [imageArray objectAtIndex:0];
+        UIImage *image = [imageArray objectAtIndex:i];
         if (image.size.height < minHeight) {
             minHeight = image.size.height;
         }
