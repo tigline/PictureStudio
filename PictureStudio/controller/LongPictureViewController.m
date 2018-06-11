@@ -16,7 +16,7 @@
 #import "UINavigationController+FDFullscreenPopGesture.h"
 
 @interface LongPictureViewController () <UIScrollViewDelegate,PhotoSaveBottomViewDelegate>
-@property (weak, nonatomic) IBOutlet UIScrollView *longPictureView;
+@property (strong, nonatomic)  UIScrollView *longPictureView;
 @property (strong, nonatomic) UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UIVisualEffectView *shareBoardView;
 @property (strong, nonatomic) PhotoSaveBottomView *toolBarView;
@@ -24,10 +24,13 @@
 @property (assign, nonatomic) BOOL canOpenWeibo;
 @property (assign, nonatomic) BOOL isShowShareBoardView;
 @property (assign, nonatomic) CGFloat lastContentOffset;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *scorllMaginRight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *scorllMaginLeft;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *scrollMaginTop;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *scrollMaginBottom;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *shareBoardHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *shareBtnWidth;
+
+
+
+
 @end
 
 @implementation LongPictureViewController
@@ -36,27 +39,28 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.fd_prefersNavigationBarHidden = YES;
-    
+    _longPictureView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h - kBottomMargin - kTopMargin)];
+    [self.view addSubview:_longPictureView];
     _longPictureView.bouncesZoom = YES;
-    _longPictureView.maximumZoomScale = 2.5;
-    _longPictureView.minimumZoomScale = 1.0;
-    _longPictureView.multipleTouchEnabled = YES;
+//    _longPictureView.maximumZoomScale = 2.5;
+//    _longPictureView.minimumZoomScale = 1.0;
+//    _longPictureView.multipleTouchEnabled = YES;
     _longPictureView.delegate = self;
-    _longPictureView.scrollsToTop = NO;
+//    _longPictureView.scrollsToTop = NO;
     _longPictureView.showsHorizontalScrollIndicator = NO;
     _longPictureView.showsVerticalScrollIndicator = NO;
-    _longPictureView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    _longPictureView.delaysContentTouches = NO;
-    _longPictureView.canCancelContentTouches = YES;
-    _longPictureView.alwaysBounceVertical = NO;
+//    _longPictureView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+//    _longPictureView.delaysContentTouches = NO;
+//    _longPictureView.canCancelContentTouches = YES;
+//    _longPictureView.alwaysBounceVertical = NO;
 //    UITapGestureRecognizer *tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTap:)];
 //    [self.view addGestureRecognizer:tap1];
 //    UITapGestureRecognizer *tap2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
 //    tap2.numberOfTapsRequired = 2;
 //    [tap1 requireGestureRecognizerToFail:tap2];
 //    [self.view addGestureRecognizer:tap2];
-
-    
+    _shareBoardHeight.constant = 73*ScreenHeightRatio;
+    _shareBtnWidth.constant = 46*ScreenWidthRatio;
     if (@available(iOS 11.0, *)) {
         _longPictureView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     } else {
@@ -65,7 +69,6 @@
     [self.view bringSubviewToFront:self.shareBoardView];
     [_shareBoardView setHidden:YES];
     [self.view addSubview:self.toolBarView];//创建保存图片区域
-    _scrollMaginTop.constant = kDevice_Is_iPhoneX ? kTopMargin:0;
     
 
     
@@ -111,28 +114,27 @@
         
         
     } else {
-        
-        
-        if (combineImage.size.height > _longPictureView.frame.size.height - 20) {
+
+        CGFloat longPictureViewHeight = _longPictureView.frame.size.height - 20 - ButtomViewHeight;
+        if (combineImage.size.height > longPictureViewHeight) {
             cgpos.origin.x = 10;
             cgpos.origin.y = 10;
-            cgpos.size.width =  (combineImage.size.width) * ((_longPictureView.frame.size.height-10-ButtomViewHeight)/combineImage.size.height);
-            cgpos.size.height = _longPictureView.frame.size.height - 10 - ButtomViewHeight;
+            cgpos.size.width =  (combineImage.size.width) * ((longPictureViewHeight)/combineImage.size.height);
+            cgpos.size.height = longPictureViewHeight;
             if(cgpos.size.width < _longPictureView.frame.size.width - 20) {
                 cgpos.origin.x = (_longPictureView.frame.size.width - cgpos.size.width)/2;
-                [_longPictureView setContentSize:CGSizeMake(_longPictureView.frame.size.width, _longPictureView.frame.size.height)];
+                [_longPictureView setContentSize:CGSizeMake(_longPictureView.frame.size.width, longPictureViewHeight)];
             } else {
-                [_longPictureView setContentSize:CGSizeMake(cgpos.size.width + 20, _longPictureView.frame.size.height)];
+                [_longPictureView setContentSize:CGSizeMake(cgpos.size.width + 20, longPictureViewHeight)];
             }
             
         }else {
             cgpos.origin.x = 10;
-            cgpos.origin.y = (_longPictureView.frame.size.height - combineImage.size.height/2)/2;
-            cgpos.size.width = combineImage.size.width/2 - 20;
+            cgpos.origin.y = (longPictureViewHeight - (combineImage.size.height-20)/2)/2;
+            cgpos.size.width = combineImage.size.width/2;
             cgpos.size.height = combineImage.size.height/2;
-            [_longPictureView setContentSize:CGSizeMake(cgpos.size.width + 20,  _longPictureView.frame.size.height)];
+            [_longPictureView setContentSize:CGSizeMake(cgpos.size.width + 20,  (longPictureViewHeight + 20)/2)];
         }
-        [_longPictureView setFrame:CGRectMake(0, (_longPictureView.hx_h - _longPictureView.contentSize.height)/2, _longPictureView.hx_w, _longPictureView.contentSize.height)];
         
     }
         _imageView = [[UIImageView alloc]initWithFrame:cgpos];

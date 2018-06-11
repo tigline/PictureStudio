@@ -31,6 +31,8 @@
 @property (strong, nonatomic) UIScrollView *shareScrollView;
 @property (strong, nonatomic) PhotoSaveBottomView *toolBarView;
 @property (assign, nonatomic) CGFloat lastContentOffset;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *shareBoardHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *shareBtnWidth;
 
 
 @property (weak, nonatomic) IBOutlet UIVisualEffectView *shareBoardView;
@@ -44,7 +46,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self CustomTitle];//处理标透明化题栏 也可app统一设置
-    
+    _shareBoardHeight.constant = 73*ScreenHeightRatio;
+    _shareBtnWidth.constant = 46*ScreenWidthRatio;
     if (_resultImage) {
         [self CreateShowImgaeView:_resultImage];//创建图片显示区域
         [self.view bringSubviewToFront:self.shareBoardView];

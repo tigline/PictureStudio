@@ -84,13 +84,10 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
 //                    good_matchesX, img_matches, Scalar::all(-1), Scalar::all(-1),
 //                    vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
 //        UIImage *imageGoodMatchPoints = [self imageWithCVMat:img_matches];
-        
-        
-        
+
         //无X轴匹配点则判定为无重合 直接拼接  该处逻辑需要完善：先用快速法 再用精确法 或者调整海塞矩阵阈值 也可改变匹配区域。
         if(good_matchesX.size() <= 5) {
 
-            
             good_matchesX = dectectMatchPoints(&keyPoint_Up, &keyPoint_Down, imageUpGray, imageDownGray, NO, 9000, NO);
             
 //            drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,

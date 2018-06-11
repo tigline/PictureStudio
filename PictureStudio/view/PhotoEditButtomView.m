@@ -18,6 +18,8 @@
 @property (strong, nonatomic) UILabel  *selectLabel;
 @property (strong, nonatomic) CALayer* segmentingLineFrist;
 @property (strong, nonatomic) CALayer* segmentingLineSecond;
+@property (strong, nonatomic) CALayer* segmentingLineThird;
+@property (strong, nonatomic) CALayer* segmentingLineFourth;
 @end
 
 @implementation PhotoEditButtomView
@@ -75,22 +77,13 @@
     if(selectCount > 1) {
         
         if (_manager.isAllScreenShotPhoto) {
-            
-            self.scrollBtn.hidden = NO;
-            self.selectLabel.hidden = YES;
-            [self hideCombineButtons];
+            [self showAllButtons];
         } else {
-            self.scrollBtn.hidden = YES;
-            self.selectLabel.hidden = YES;
-//            if ([self.delegate respondsToSelector:@selector(datePhotoBottomSelectNotAllScreenShot)]) {
-//                [self.delegate datePhotoBottomSelectNotAllScreenShot];
-//            }
             [self showCombineButtons];
         }
+        
     } else {
-        self.scrollBtn.hidden = YES;
-        self.selectLabel.hidden = NO;
-        [self hideCombineButtons];
+        [self hideAllButtons];
     }
 }
 
@@ -124,18 +117,54 @@
 }
 
 - (void)showCombineButtons {
+    
+    _selectLabel.hidden = YES;
+    _scrollBtn.hidden = YES;
     _combineBtn.hidden = NO;
     _combineBtnH.hidden = NO;
     self.segmentingLineFrist.hidden = NO;
     self.segmentingLineSecond.hidden = NO;
+    _segmentingLineThird.hidden = YES;
+    _segmentingLineFourth.hidden = YES;
     
+    CGFloat btnWidth = self.bgView.hx_w/7;
+    CGFloat pointY = 0;
+    CGFloat combineBtnW = (self.bgView.hx_w - btnWidth)/2;
+
+    self.combineBtn.frame = CGRectMake(btnWidth, pointY, combineBtnW, btnHeight);
+
+    self.combineBtnH.frame = CGRectMake(btnWidth+combineBtnW, pointY, combineBtnW, btnHeight);
+
 }
 
-- (void)hideCombineButtons {
-    self.combineBtn.hidden = YES;
-    _combineBtnH.hidden = YES;
-    self.segmentingLineFrist.hidden = YES;
+- (void)showAllButtons {
+    _selectLabel.hidden = YES;
+    _scrollBtn.hidden = NO;
+    _combineBtn.hidden = NO;
+    _combineBtnH.hidden = NO;
+    self.segmentingLineFrist.hidden = NO;
     self.segmentingLineSecond.hidden = YES;
+    _segmentingLineThird.hidden = NO;
+    _segmentingLineFourth.hidden = NO;
+    
+    CGFloat btnWidth = self.bgView.hx_w/7;
+    CGFloat pointY = 0;
+    CGFloat combineBtnW = (self.bgView.hx_w - btnWidth)/3;
+
+    self.combineBtn.frame = CGRectMake(btnWidth+combineBtnW, pointY, combineBtnW, btnHeight);
+    
+    self.combineBtnH.frame = CGRectMake(btnWidth+combineBtnW*2, pointY, combineBtnW, btnHeight);
+}
+
+- (void)hideAllButtons {
+    _selectLabel.hidden = NO;
+    _scrollBtn.hidden = YES;
+    _combineBtn.hidden = YES;
+    _combineBtnH.hidden = YES;
+    _segmentingLineFrist.hidden = YES;
+    _segmentingLineSecond.hidden = YES;
+    _segmentingLineThird.hidden = YES;
+    _segmentingLineFourth.hidden = YES;
 }
 
 - (void)showClearBtn {
@@ -146,23 +175,9 @@
     
     self.combineBtn.frame = CGRectMake(btnWidth, pointY, btnWidth*5, btnHeight);
     
-//    _segmentingLineFrist = [CALayer layer];
-//    _segmentingLineFrist.frame = CGRectMake(btnWidth, 14, 0.6, 18);
-    
-    //[self.bgView.layer addSublayer:_segmentingLineFrist];
+
 }
-- (void)hideClearBtn {
-    
-    self.clearBtn.hidden = YES;
-    CGFloat btnWidth = self.bgView.frame.size.width/2;
-    CGFloat pointY = 0;//(self.bgView.size.height - btnHeight)/2 - kBottomMargin/2;
-    self.combineBtn.frame = CGRectMake(btnWidth/2, pointY, btnWidth, btnHeight);
-    
-//    CALayer* segmentingLineFrist = [CALayer layer];
-//    segmentingLineFrist.frame = CGRectMake(btnWidth, 14, 0.6, 18);
-    _segmentingLineFrist.backgroundColor = [[UIColor clearColor] CGColor];
-//    [self.bgView.layer addSublayer:segmentingLineFrist];
-}
+
 
 - (void)layoutSubviews {
     [super layoutSubviews];
@@ -173,24 +188,17 @@
     
     
     self.bgView.frame = self.bounds;
-    CGFloat btnWidth = self.bgView.hx_w/6;
+    CGFloat btnWidth = self.bgView.hx_w/7;
     CGFloat pointY = 0;//(self.bgView.size.height - btnHeight)/2 - kBottomMargin/2;
-    CGFloat combineBtnW = (self.bgView.hx_w - btnWidth)/2;
-    
-    self.selectLabel.frame = CGRectMake(btnWidth*1.5, pointY, btnWidth*3, btnHeight);
+    CGFloat combineBtnWAll = (self.bgView.hx_w - btnWidth)/3;
+    CGFloat combineBtnWTwo = (self.bgView.hx_w - btnWidth)/2;
+    self.selectLabel.frame = CGRectMake(btnWidth, pointY, SCREEN_W - btnWidth*2, btnHeight);
     
     self.clearBtn.frame = CGRectMake(0, pointY, btnWidth, btnHeight);
     self.clearBtn.hidden = YES;
     
-    self.scrollBtn.frame = CGRectMake(btnWidth*1.5, pointY, btnWidth*3, btnHeight);
+    self.scrollBtn.frame = CGRectMake(btnWidth, pointY, combineBtnWAll, btnHeight);
     self.scrollBtn.hidden = YES;
-    
-    
-    self.combineBtn.frame = CGRectMake(btnWidth, pointY, combineBtnW, btnHeight);
-    self.combineBtn.hidden = YES;
-    
-    self.combineBtnH.frame = CGRectMake(btnWidth+combineBtnW, pointY, combineBtnW, btnHeight);
-    self.combineBtnH.hidden = YES;
     
     _segmentingLineFrist = [CALayer layer];
     _segmentingLineFrist.frame = CGRectMake(btnWidth, 13, 0.6, 18);
@@ -199,10 +207,28 @@
     _segmentingLineFrist.hidden = YES;
     
     _segmentingLineSecond = [CALayer layer];
-    _segmentingLineSecond.frame = CGRectMake(btnWidth+combineBtnW, 13, 0.6, 18);
+    _segmentingLineSecond.frame = CGRectMake(btnWidth+combineBtnWTwo, 13, 0.6, 18);
     _segmentingLineSecond.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
     [self.bgView.layer addSublayer:_segmentingLineSecond];
     _segmentingLineSecond.hidden = YES;
+    
+    _segmentingLineThird = [CALayer layer];
+    _segmentingLineThird.frame = CGRectMake(btnWidth+combineBtnWAll, 13, 0.6, 18);
+    _segmentingLineThird.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
+    [self.bgView.layer addSublayer:_segmentingLineThird];
+    _segmentingLineThird.hidden = YES;
+    
+    _segmentingLineThird = [CALayer layer];
+    _segmentingLineThird.frame = CGRectMake(btnWidth+combineBtnWAll, 13, 0.6, 18);
+    _segmentingLineThird.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
+    [self.bgView.layer addSublayer:_segmentingLineThird];
+    _segmentingLineThird.hidden = YES;
+    
+    _segmentingLineFourth = [CALayer layer];
+    _segmentingLineFourth.frame = CGRectMake(btnWidth+combineBtnWAll*2, 13, 0.6, 18);
+    _segmentingLineFourth.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
+    [self.bgView.layer addSublayer:_segmentingLineFourth];
+    _segmentingLineFourth.hidden = YES;
     
     /* 完整版本 按钮位置
     CGFloat btnWidth = self.bgView.frame.size.width/3;
@@ -268,8 +294,8 @@
         [_combineBtn setImage:[UIImage imageNamed:@"tab_combine"] forState:UIControlStateDisabled];
         [_combineBtn setTitle:LocalString(@"combine_v") forState:UIControlStateNormal];
         _combineBtn.titleLabel.font = [UIFont systemFontOfSize:12];
-        _combineBtn.imageEdgeInsets = UIEdgeInsetsMake(0, -20, 0, 0);
-        _combineBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
+        _combineBtn.imageEdgeInsets = UIEdgeInsetsMake(0, -10*ScreenWidthRatio, 0, 0);
+        _combineBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 10*ScreenWidthRatio, 0, 0);
         _combineBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_combineBtn addTarget:self action:@selector(didCombineClick) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -285,8 +311,8 @@
         _scrollBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_scrollBtn addTarget:self action:@selector(didScrollClick) forControlEvents:UIControlEventTouchUpInside];
         _scrollBtn.titleLabel.font = [UIFont systemFontOfSize:12];
-        _scrollBtn.imageEdgeInsets = UIEdgeInsetsMake(0, -10, 0, 0);
-        _scrollBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
+        _scrollBtn.imageEdgeInsets = UIEdgeInsetsMake(0, -10*ScreenWidthRatio, 0, 0);
+        _scrollBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 10*ScreenWidthRatio, 0, 0);
         //_scrollBtn.enabled = NO;
 
     }
@@ -300,8 +326,8 @@
         [_editBtn setImage:[UIImage imageNamed:@"tab_edit"] forState:UIControlStateDisabled];
         [_editBtn setTitle:LocalString(@"edit") forState:UIControlStateNormal];
         _editBtn.titleLabel.font = [UIFont systemFontOfSize:12];
-        _editBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 30, 0, 0);
-        _editBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 40, 0, 0);
+        _editBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 30*ScreenWidthRatio, 0, 0);
+        _editBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 40*ScreenWidthRatio, 0, 0);
         _editBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_editBtn addTarget:self action:@selector(didEditClick) forControlEvents:UIControlEventTouchUpInside];
         _editBtn.enabled = NO;
@@ -316,9 +342,9 @@
         [_combineBtnH setImage:[UIImage imageNamed:@"tab_combine"] forState:UIControlStateDisabled];
         [_combineBtnH setTitle:LocalString(@"combine_h") forState:UIControlStateNormal];
         _combineBtnH.titleLabel.font = [UIFont systemFontOfSize:12];
-        _combineBtnH.imageEdgeInsets = UIEdgeInsetsMake(0, 30, 0, 0);
-        _combineBtnH.titleEdgeInsets = UIEdgeInsetsMake(0, 40, 0, 0);
-        _combineBtnH.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        _combineBtnH.imageEdgeInsets = UIEdgeInsetsMake(0, -10*ScreenWidthRatio, 0, 0);
+        _combineBtnH.titleEdgeInsets = UIEdgeInsetsMake(0, 10*ScreenWidthRatio, 0, 0);
+        _combineBtnH.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_combineBtnH addTarget:self action:@selector(didcombineBtnHClick) forControlEvents:UIControlEventTouchUpInside];
 
     }
