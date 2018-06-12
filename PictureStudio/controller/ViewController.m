@@ -935,14 +935,14 @@ PhotoPreviewControllerDelegate
 }
 
 - (void)datePhotoBottomViewDidScrollBtn {
-    if (_manager.selectedPhotoArray.count < 2) {
+    if (_manager.selectedArray.count < 2) {
         
     } else {
         __block NSMutableArray *photoArray = [[NSMutableArray alloc] init];
         PHCachingImageManager *imageManager = [[PHCachingImageManager alloc] init];
-        for (int i = 0; i < _manager.selectedPhotoArray.count; i++) {
+        for (int i = 0; i < _manager.selectedArray.count; i++) {
             HXPhotoModel *model;
-            model = _manager.selectedPhotoArray[i];
+            model = _manager.selectedArray[i];
             PHAsset *phAsset = model.asset;
             PHImageRequestOptions * options=[[PHImageRequestOptions alloc]init];
             options.resizeMode = PHImageRequestOptionsResizeModeFast;

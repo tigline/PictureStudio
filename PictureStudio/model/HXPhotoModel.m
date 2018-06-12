@@ -147,16 +147,31 @@
         CGFloat w;
         CGFloat h;
         
-        if (imgWidth > width) {
-            h = width / self.imageSize.width * imgHeight;
-            w = width;
-        }else {
-            w = width;
-            h = width / imgWidth * imgHeight;
+        if (imgHeight > imgWidth) {
+ 
+            if (imgWidth > width) {
+                h = width / self.imageSize.width * imgHeight;
+                w = width;
+            }else {
+                w = imgWidth;
+                h = imgHeight;
+            }
+
+        } else {
+            if (imgHeight > height) {
+                h = height;
+                w = height / self.imageSize.height * imgWidth;
+            }else {
+                w = imgWidth;
+                h = imgHeight;
+                
+            }
         }
-        if (h > height + 20) {
-            h = height;
-        }
+        
+        
+//        if (h > height + 20) {
+//            h = height;
+//        }
         _previewViewSize = CGSizeMake(w, h);
     }
     return _previewViewSize;

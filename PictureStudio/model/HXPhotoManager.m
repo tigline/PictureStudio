@@ -632,34 +632,6 @@
         PHImageRequestOptions * options=[[PHImageRequestOptions alloc]init];
         options.resizeMode = PHImageRequestOptionsResizeModeFast;
         options.synchronous=YES;
-        
-//        CGFloat screenScale = 2;
-//        CGFloat fullScreenWidth = phAsset.pixelWidth/2;
-//        if (fullScreenWidth > 400*ScreenWidthRatio) {
-//            fullScreenWidth = 400*ScreenWidthRatio;
-//        }
-//        //    if (fullScreenWidth > 600) {
-//        //        fullScreenWidth = 600;
-//        //    }
-//
-//        CGSize imageSize;
-//        //        if (fullScreenWidth < SCREEN_W && fullScreenWidth < 600) {
-//        //            imageSize =  CGSizeMake(((SCREEN_W-41)/3) * screenScale, ((SCREEN_W-41)/3) * screenScale);;
-//        //        } else {
-//        //PHAsset *phAsset = (PHAsset *)asset;
-//        CGFloat aspectRatio = phAsset.pixelWidth / (CGFloat)phAsset.pixelHeight;
-//        CGFloat pixelWidth = fullScreenWidth * screenScale;
-//        // 超宽图片
-//        if (aspectRatio > 1.8) {
-//            pixelWidth = pixelWidth * aspectRatio;
-//        }
-//        // 超高图片
-//        if (aspectRatio < 0.2) {
-//            pixelWidth = pixelWidth * 0.5;
-//        }
-//        CGFloat pixelHeight = pixelWidth / aspectRatio;
-//        imageSize = CGSizeMake(pixelWidth, pixelHeight);
-    
     
         [imageManager requestImageForAsset:phAsset targetSize:PHImageManagerMaximumSize
                                contentMode:PHImageContentModeDefault

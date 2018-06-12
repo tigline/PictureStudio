@@ -33,6 +33,7 @@
 @property (assign, nonatomic) CGFloat lastContentOffset;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *shareBoardHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *shareBtnWidth;
+@property (strong, nonatomic) UIImageView *imageContantView;
 
 
 @property (weak, nonatomic) IBOutlet UIVisualEffectView *shareBoardView;
@@ -46,6 +47,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self CustomTitle];//处理标透明化题栏 也可app统一设置
+    [self createScrollView];
     _shareBoardHeight.constant = 73*ScreenHeightRatio;
     _shareBtnWidth.constant = 46*ScreenWidthRatio;
     if (_resultImage) {
@@ -125,11 +127,33 @@
     
 }
 
+- (void)createScrollView {
+    _showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h - kBottomMargin - kTopMargin)];
+    _showImageScrollView.bouncesZoom = YES;
+    _showImageScrollView.maximumZoomScale = 2.5;
+    _showImageScrollView.minimumZoomScale = 1.0;
+    _showImageScrollView.multipleTouchEnabled = YES;
+    _showImageScrollView.delegate = self;
+    _showImageScrollView.scrollsToTop = NO;
+    _showImageScrollView.showsHorizontalScrollIndicator = NO;
+    _showImageScrollView.showsVerticalScrollIndicator = NO;
+    _showImageScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _showImageScrollView.delaysContentTouches = NO;
+    _showImageScrollView.canCancelContentTouches = YES;
+    _showImageScrollView.alwaysBounceVertical = NO;
+    UITapGestureRecognizer *tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTap:)];
+    [self.view addGestureRecognizer:tap1];
+    UITapGestureRecognizer *tap2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
+    tap2.numberOfTapsRequired = 2;
+    [tap1 requireGestureRecognizerToFail:tap2];
+    [self.view addGestureRecognizer:tap2];
+}
+
 - (void)CreateShowImgaeView:(UIImage *)_resultImage
 {
 //    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10*ScreenWidthRatio, kTopMargin + 10*ScreenHeightRatio, 355*ScreenWidthRatio, 517*ScreenHeightRatio)];
     
-    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h - kBottomMargin - kTopMargin)];
+    
     
     self.showImageScrollView.delegate = self;
     NSLog(@"%f",ScreenHeightRatio);
@@ -153,15 +177,15 @@
             cgpos.size.height = _resultImage.size.height;
             [_showImageScrollView setContentSize:CGSizeMake(_showImageScrollView.frame.size.width, cgpos.size.height + 20)];
         }
-        UIImageView *imageView = [[UIImageView alloc]initWithFrame:cgpos];
+        _imageContantView = [[UIImageView alloc]initWithFrame:cgpos];
 
         
-        [imageView setImage:_resultImage];
+        [_imageContantView setImage:_resultImage];
         
-        [_showImageScrollView addSubview:imageView];
-        imageView.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.7].CGColor;;
-        imageView.layer.shadowOpacity = 0.8f;
-        imageView.layer.shadowOffset = CGSizeMake(0, 0);
+        [_showImageScrollView addSubview:_imageContantView];
+        _imageContantView.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.7].CGColor;;
+        _imageContantView.layer.shadowOpacity = 0.8f;
+        _imageContantView.layer.shadowOffset = CGSizeMake(0, 0);
         UITapGestureRecognizer* imgMsgTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchOnImage:)];
         [_showImageScrollView addGestureRecognizer:imgMsgTap];
     }
@@ -463,6 +487,52 @@
 
 -(void)loginSuccessByCode:(NSString *)code
 {}
+
+- (void)doubleTap:(UITapGestureRecognizer *)tap {
+    if (_shareScrollView.zoomScale > 1.0) {
+        _shareScrollView.contentInset = UIEdgeInsetsZero;
+        [_shareScrollView setZoomScale:1.0 animated:YES];
+        
+    } else {
+        CGPoint touchPoint = [tap locationInView:_imageContantView];
+        CGFloat newZoomScale = _shareScrollView.maximumZoomScale;
+        CGFloat xsize = self.view.frame.size.width / newZoomScale;
+        CGFloat ysize = self.view.frame.size.height / newZoomScale;
+        [_shareScrollView zoomToRect:CGRectMake(touchPoint.x - xsize/2, touchPoint.y - ysize/2, xsize, ysize) animated:YES];
+    }
+}
+
+- (void)singleTap:(UITapGestureRecognizer *)tap {
+    //    if (self.singleTapGestureBlock) {
+    //        self.singleTapGestureBlock();
+    //    }
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+    return _imageContantView;
+}
+
+- (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(UIView *)view {
+    scrollView.contentInset = UIEdgeInsetsZero;
+}
+
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
+    [self refreshImageContainerViewCenter];
+}
+
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
+    //[self refreshScrollViewContentSize];
+}
+
+#pragma mark - Private
+
+- (void)refreshImageContainerViewCenter {
+    CGFloat offsetX = (_shareScrollView.hx_w > _shareScrollView.contentSize.width) ? ((_shareScrollView.hx_w - _shareScrollView.contentSize.width) * 0.5) : 0.0;
+    CGFloat offsetY = (_shareScrollView.hx_h > _shareScrollView.contentSize.height) ? ((_shareScrollView.hx_h - _shareScrollView.contentSize.height) * 0.5) : 0.0;
+    self.imageContantView.center = CGPointMake(_shareScrollView.contentSize.width * 0.5 + offsetX, _shareScrollView.contentSize.height * 0.5 + offsetY);
+}
 
 /*
 #pragma mark - Navigation
