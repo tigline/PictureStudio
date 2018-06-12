@@ -69,19 +69,21 @@
     [self.view bringSubviewToFront:self.shareBoardView];
     [_shareBoardView setHidden:YES];
     [self.view addSubview:self.toolBarView];//创建保存图片区域
+    CGFloat scrollViewSizeValue;
+    if (_manager.isCombineVertical) {
+        scrollViewSizeValue = [_manager getSelectPhotosMinWidth];
+    } else {
+        scrollViewSizeValue = [_manager getSelectPhotosMinHeight];
+    }
     
+    [self resetImageView:scrollViewSizeValue];
+    
+//    [self.manager combinePhotosWithDirection:_manager.isCombineVertical resultImage:^(UIImage *combineImage) {
+//        _resultImage = combineImage;
+//        [self resetImageView:combineImage];
+//
+//    }];
 
-    
-    
-    
-    [self.manager combinePhotosWithDirection:_manager.isCombineVertical resultImage:^(UIImage *combineImage) {
-        _resultImage = combineImage;
-        [self resetImageView:combineImage];
-        
-    }];
-    
-
-    
 }
 
 - (void)viewDidLayoutSubviews {
@@ -91,59 +93,80 @@
 //    }
 }
 
-- (void)resetImageView:(UIImage *)combineImage
+
+
+- (void)resetImageView:(CGFloat)scrollViewSizeValue
 {
+
     BOOL isCombineVertical = _manager.isCombineVertical;
     CGRect cgpos;
-    if (combineImage != nil && isCombineVertical) {
+    if (isCombineVertical) {
 
-
-        if (combineImage.size.width > _longPictureView.frame.size.width - 20) {
-            cgpos.origin.x = 10;
-            cgpos.origin.y = 10;
-            cgpos.size.width = _longPictureView.frame.size.width - 20;
-            cgpos.size.height = combineImage.size.height * (cgpos.size.width/combineImage.size.width);
-            [_longPictureView setContentSize:CGSizeMake(_longPictureView.frame.size.width, cgpos.size.height+20)];
-        }else {
-            cgpos.origin.x =(_longPictureView.frame.size.width - 20 - combineImage.size.width)/2;
-            cgpos.origin.y = 10;
-            cgpos.size.width = combineImage.size.width;
-            cgpos.size.height = combineImage.size.height;
-            [_longPictureView setContentSize:CGSizeMake(_longPictureView.frame.size.width, cgpos.size.height + 20)];
+        
+        for (int i = 0; i < _manager.selectedArray.count; i++) {
+            HXPhotoModel *mode = [_manager.selectedArray objectAtIndex:i];
+            UIImage *image = mode.previewPhoto;
+            UIImageView *imageView = [[UIImageView alloc]initWithImage:image];
+            CGFloat contentOffset;
+            if(i == 0){
+                contentOffset = _longPictureView.contentSize.height + 10;
+            } else {
+                contentOffset = _longPictureView.contentSize.height;
+            }
+            
+            if (scrollViewSizeValue > _longPictureView.frame.size.width - 20) {
+                cgpos.origin.x = 10;
+                cgpos.origin.y = contentOffset;
+                cgpos.size.width = _longPictureView.frame.size.width - 20;
+                cgpos.size.height = imageView.size.height * (cgpos.size.width/scrollViewSizeValue);
+            }else {
+                cgpos.origin.x =(_longPictureView.frame.size.width - 20 - scrollViewSizeValue)/2;
+                cgpos.origin.y = contentOffset;
+                cgpos.size.width = scrollViewSizeValue;
+                cgpos.size.height = scrollViewSizeValue;
+            }
+            [_longPictureView setContentSize:CGSizeMake(_longPictureView.frame.size.width, contentOffset + cgpos.size.height)];
+            imageView.frame = cgpos;
+            [_longPictureView addSubview:imageView];
+            imageView.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.7].CGColor;;
+            imageView.layer.shadowOpacity = 0.8f;
+            imageView.layer.shadowOffset = CGSizeMake(0, 0);
         }
+        
+        [_longPictureView setContentSize:CGSizeMake(_longPictureView.contentSize.width, _longPictureView.contentSize.height + 10)];
         
         
     } else {
 
-        CGFloat longPictureViewHeight = _longPictureView.frame.size.height - 20 - ButtomViewHeight;
-        if (combineImage.size.height > longPictureViewHeight) {
-            cgpos.origin.x = 10;
-            cgpos.origin.y = 10;
-            cgpos.size.width =  (combineImage.size.width) * ((longPictureViewHeight)/combineImage.size.height);
-            cgpos.size.height = longPictureViewHeight;
-            if(cgpos.size.width < _longPictureView.frame.size.width - 20) {
-                cgpos.origin.x = (_longPictureView.frame.size.width - cgpos.size.width)/2;
-                [_longPictureView setContentSize:CGSizeMake(_longPictureView.frame.size.width, longPictureViewHeight)];
-            } else {
-                [_longPictureView setContentSize:CGSizeMake(cgpos.size.width + 20, longPictureViewHeight)];
-            }
-            
-        }else {
-            cgpos.origin.x = 10;
-            cgpos.origin.y = (longPictureViewHeight - (combineImage.size.height-20)/2)/2;
-            cgpos.size.width = combineImage.size.width/2;
-            cgpos.size.height = combineImage.size.height/2;
-            [_longPictureView setContentSize:CGSizeMake(cgpos.size.width + 20,  (longPictureViewHeight + 20)/2)];
-        }
+//        CGFloat longPictureViewHeight = _longPictureView.frame.size.height - 20 - ButtomViewHeight;
+//        if (combineImage.size.height > longPictureViewHeight) {
+//            cgpos.origin.x = 10;
+//            cgpos.origin.y = 10;
+//            cgpos.size.width =  (combineImage.size.width) * ((longPictureViewHeight)/combineImage.size.height);
+//            cgpos.size.height = longPictureViewHeight;
+//            if(cgpos.size.width < _longPictureView.frame.size.width - 20) {
+//                cgpos.origin.x = (_longPictureView.frame.size.width - cgpos.size.width)/2;
+//                [_longPictureView setContentSize:CGSizeMake(_longPictureView.frame.size.width, longPictureViewHeight)];
+//            } else {
+//                [_longPictureView setContentSize:CGSizeMake(cgpos.size.width + 20, longPictureViewHeight)];
+//            }
+//
+//        }else {
+//            cgpos.origin.x = 10;
+//            cgpos.origin.y = (longPictureViewHeight - (combineImage.size.height-20)/2)/2;
+//            cgpos.size.width = combineImage.size.width/2;
+//            cgpos.size.height = combineImage.size.height/2;
+//            [_longPictureView setContentSize:CGSizeMake(cgpos.size.width + 20,  (longPictureViewHeight + 20)/2)];
+//        }
         
     }
-        _imageView = [[UIImageView alloc]initWithFrame:cgpos];
-        [_imageView setImage:combineImage];
-        [_longPictureView addSubview:_imageView];
+//        _imageView = [[UIImageView alloc]initWithFrame:cgpos];
+//        [_imageView setImage:combineImage];
+//        [_longPictureView addSubview:_imageView];
         [_longPictureView setUserInteractionEnabled:YES];
-        _imageView.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.7].CGColor;;
-        _imageView.layer.shadowOpacity = 0.8f;
-        _imageView.layer.shadowOffset = CGSizeMake(0, 0);
+//        _imageView.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.7].CGColor;;
+//        _imageView.layer.shadowOpacity = 0.8f;
+//        _imageView.layer.shadowOffset = CGSizeMake(0, 0);
         UITapGestureRecognizer* imgMsgTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchOnImage:)];
         [_longPictureView addGestureRecognizer:imgMsgTap];
     
@@ -356,31 +379,42 @@
             [[UIApplication sharedApplication] openURL:url];
         }
     } else {
-        __weak typeof(self) weakSelf = self;
-        [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
-            //写入图片到相册
-            UIImage *saveImage = _resultImage;
-            if (saveImage == nil) {
-                saveImage = [self.manager getScrollImage];
-            }
-            
-            [PHAssetChangeRequest creationRequestForAssetFromImage:saveImage];
-        } completionHandler:^(BOOL success, NSError * _Nullable error) {
-            NSLog(@"success = %d, error = %@", success, error);
-            if (success) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [weakSelf.view showImageHUDText:LocalString(@"save_success")];
-                    [button setTitle:LocalString(@"open_ablum") forState:UIControlStateNormal];
-                });
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.view showLoadingHUDText:LocalString(@"scroll_ing")];
+        });
+        
+        [self.manager combinePhotosWithDirection:_manager.isCombineVertical resultImage:^(UIImage *combineImage) {
+            __weak typeof(self) weakSelf = self;
+            [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+                //写入图片到相册
+//                UIImage *saveImage = _resultImage;
+//                if (saveImage == nil) {
+//                    saveImage = [self.manager getScrollImage];
+//                }
                 
-            } else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    //[weakSelf.view showImageHUDText:LocalString(@"save_failed")];
-                    [button setTitle:LocalString(@"save_failed") forState:UIControlStateNormal];
-                });
+                [PHAssetChangeRequest creationRequestForAssetFromImage:combineImage];
+            } completionHandler:^(BOOL success, NSError * _Nullable error) {
+                NSLog(@"success = %d, error = %@", success, error);
                 
-            }
+                if (success) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [weakSelf.view handleLoading];
+                        [weakSelf.view showImageHUDText:LocalString(@"save_success")];
+                        [button setTitle:LocalString(@"open_ablum") forState:UIControlStateNormal];
+                    });
+                    
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [weakSelf.view handleLoading];
+                        //[weakSelf.view showImageHUDText:LocalString(@"save_failed")];
+                        [button setTitle:LocalString(@"save_failed") forState:UIControlStateNormal];
+                    });
+                    
+                }
+            }];
         }];
+        
         
     }
     
@@ -418,7 +452,7 @@
     if (_longPictureView.zoomScale > 1.0) {
         _longPictureView.contentInset = UIEdgeInsetsZero;
         [_longPictureView setZoomScale:1.0 animated:YES];
-        [self resetImageView:_resultImage];
+
     } else {
         CGPoint touchPoint = [tap locationInView:self.imageView];
         CGFloat newZoomScale = _longPictureView.maximumZoomScale;

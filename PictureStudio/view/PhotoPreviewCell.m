@@ -146,24 +146,24 @@
 //        fullScreenWidth = 600;
 //    }
     if ([asset isKindOfClass:[PHAsset class]]) {
-        CGSize imageSize;
-//        if (fullScreenWidth < SCREEN_W && fullScreenWidth < 600) {
-//            imageSize =  CGSizeMake(((SCREEN_W-41)/3) * screenScale, ((SCREEN_W-41)/3) * screenScale);;
-//        } else {
-            //PHAsset *phAsset = (PHAsset *)asset;
-            CGFloat aspectRatio = phAsset.pixelWidth / (CGFloat)phAsset.pixelHeight;
-            CGFloat pixelWidth = fullScreenWidth * screenScale;
-            // 超宽图片
-            if (aspectRatio > 1.8) {
-                pixelWidth = pixelWidth * aspectRatio;
-            }
-            // 超高图片
-            if (aspectRatio < 0.2) {
-                pixelWidth = pixelWidth * 0.5;
-            }
-            CGFloat pixelHeight = pixelWidth / aspectRatio;
-            imageSize = CGSizeMake(pixelWidth, pixelHeight);
-        //}
+//        CGSize imageSize;
+////        if (fullScreenWidth < SCREEN_W && fullScreenWidth < 600) {
+////            imageSize =  CGSizeMake(((SCREEN_W-41)/3) * screenScale, ((SCREEN_W-41)/3) * screenScale);;
+////        } else {
+//            //PHAsset *phAsset = (PHAsset *)asset;
+//            CGFloat aspectRatio = phAsset.pixelWidth / (CGFloat)phAsset.pixelHeight;
+//            CGFloat pixelWidth = fullScreenWidth * screenScale;
+//            // 超宽图片
+//            if (aspectRatio > 1.8) {
+//                pixelWidth = pixelWidth * aspectRatio;
+//            }
+//            // 超高图片
+//            if (aspectRatio < 0.2) {
+//                pixelWidth = pixelWidth * 0.5;
+//            }
+//            CGFloat pixelHeight = pixelWidth / aspectRatio;
+//            imageSize = CGSizeMake(pixelWidth, pixelHeight);
+//        //}
 
         PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
         //option.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
@@ -171,7 +171,7 @@
         option.networkAccessAllowed = NO;
         option.deliveryMode = PHImageRequestOptionsDeliveryModeOpportunistic;
 //        option.synchronous = YES;
-        [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:imageSize contentMode:PHImageContentModeAspectFill options:option resultHandler:^(UIImage *result, NSDictionary *info) {
+        [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(self.model.previewViewSize.width * 1.5, self.model.previewViewSize.height * 1.5) contentMode:PHImageContentModeAspectFill options:option resultHandler:^(UIImage *result, NSDictionary *info) {
 
             BOOL downloadFinined = (![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey]);
             if (downloadFinined ) {

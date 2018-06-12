@@ -551,10 +551,10 @@
 
     NSArray *imagesArray = [self getSelectImages];
     if (isVertical) {
-        combineValueSize = [self getSelectPhotosMinWidth:imagesArray];
-        if (combineValueSize > 800) {
-            combineValueSize = 800;
-        }
+        combineValueSize = [self getSelectPhotosMinWidth];
+//        if (combineValueSize > 800) {
+//            combineValueSize = 800;
+//        }
         UIImage *masterImage = [imagesArray objectAtIndex:0];
         for (int i = 1; i < imagesArray.count; i ++) {
 
@@ -585,10 +585,10 @@
         
         
     } else {
-        combineValueSize = [self getSelectPhotosMinHeight:imagesArray];
-        if (combineValueSize > 1600) {
-            combineValueSize = 1600;
-        }
+        combineValueSize = [self getSelectPhotosMinHeight];
+//        if (combineValueSize > 1600) {
+//            combineValueSize = 1600;
+//        }
         UIImage *masterImage = [imagesArray objectAtIndex:0];
         for (int i = 1; i < imagesArray.count; i ++) {
             
@@ -633,35 +633,35 @@
         options.resizeMode = PHImageRequestOptionsResizeModeFast;
         options.synchronous=YES;
         
-        CGFloat screenScale = 2;
-        CGFloat fullScreenWidth = phAsset.pixelWidth/2;
-        if (fullScreenWidth > 400*ScreenWidthRatio) {
-            fullScreenWidth = 400*ScreenWidthRatio;
-        }
-        //    if (fullScreenWidth > 600) {
-        //        fullScreenWidth = 600;
-        //    }
-        
-        CGSize imageSize;
-        //        if (fullScreenWidth < SCREEN_W && fullScreenWidth < 600) {
-        //            imageSize =  CGSizeMake(((SCREEN_W-41)/3) * screenScale, ((SCREEN_W-41)/3) * screenScale);;
-        //        } else {
-        //PHAsset *phAsset = (PHAsset *)asset;
-        CGFloat aspectRatio = phAsset.pixelWidth / (CGFloat)phAsset.pixelHeight;
-        CGFloat pixelWidth = fullScreenWidth * screenScale;
-        // 超宽图片
-        if (aspectRatio > 1.8) {
-            pixelWidth = pixelWidth * aspectRatio;
-        }
-        // 超高图片
-        if (aspectRatio < 0.2) {
-            pixelWidth = pixelWidth * 0.5;
-        }
-        CGFloat pixelHeight = pixelWidth / aspectRatio;
-        imageSize = CGSizeMake(pixelWidth, pixelHeight);
+//        CGFloat screenScale = 2;
+//        CGFloat fullScreenWidth = phAsset.pixelWidth/2;
+//        if (fullScreenWidth > 400*ScreenWidthRatio) {
+//            fullScreenWidth = 400*ScreenWidthRatio;
+//        }
+//        //    if (fullScreenWidth > 600) {
+//        //        fullScreenWidth = 600;
+//        //    }
+//
+//        CGSize imageSize;
+//        //        if (fullScreenWidth < SCREEN_W && fullScreenWidth < 600) {
+//        //            imageSize =  CGSizeMake(((SCREEN_W-41)/3) * screenScale, ((SCREEN_W-41)/3) * screenScale);;
+//        //        } else {
+//        //PHAsset *phAsset = (PHAsset *)asset;
+//        CGFloat aspectRatio = phAsset.pixelWidth / (CGFloat)phAsset.pixelHeight;
+//        CGFloat pixelWidth = fullScreenWidth * screenScale;
+//        // 超宽图片
+//        if (aspectRatio > 1.8) {
+//            pixelWidth = pixelWidth * aspectRatio;
+//        }
+//        // 超高图片
+//        if (aspectRatio < 0.2) {
+//            pixelWidth = pixelWidth * 0.5;
+//        }
+//        CGFloat pixelHeight = pixelWidth / aspectRatio;
+//        imageSize = CGSizeMake(pixelWidth, pixelHeight);
     
     
-        [imageManager requestImageForAsset:phAsset targetSize:imageSize
+        [imageManager requestImageForAsset:phAsset targetSize:PHImageManagerMaximumSize
                                contentMode:PHImageContentModeDefault
                                    options:options
                              resultHandler:^(UIImage *result, NSDictionary *info)
@@ -674,14 +674,14 @@
 }
 
 
-- (CGFloat)getSelectPhotosMinWidth:(NSArray *)imageArray {
+- (CGFloat)getSelectPhotosMinWidth {
     
-
-    UIImage *image = [imageArray objectAtIndex:0];
+    HXPhotoModel *mode = [self.selectedList objectAtIndex:0];
+    UIImage *image =  mode.previewPhoto;
     CGFloat minWidth = image.size.width;
-    for (int i = 1; i <imageArray.count; i++) {
-
-        UIImage *image = [imageArray objectAtIndex:0];
+    for (int i = 1; i <_selectedList.count; i++) {
+        HXPhotoModel *mode = [self.selectedList objectAtIndex:i];
+        UIImage *image =  mode.previewPhoto;
         if (image.size.width < minWidth) {
             minWidth = image.size.width;
         }
@@ -689,13 +689,14 @@
     return minWidth;
 }
 
-- (CGFloat)getSelectPhotosMinHeight:(NSArray *)imageArray {
+- (CGFloat)getSelectPhotosMinHeight {
     
-    UIImage *image = [imageArray objectAtIndex:0];
+    HXPhotoModel *mode = [self.selectedList objectAtIndex:0];
+    UIImage *image =  mode.previewPhoto;
     CGFloat minHeight = image.size.height;
-    for (int i = 1; i <imageArray.count; i++) {
-
-        UIImage *image = [imageArray objectAtIndex:i];
+    for (int i = 1; i <_selectedList.count; i++) {
+        HXPhotoModel *mode = [self.selectedList objectAtIndex:i];
+        UIImage *image =  mode.previewPhoto;
         if (image.size.height < minHeight) {
             minHeight = image.size.height;
         }
@@ -726,7 +727,7 @@
 
     __block HXPhotoModel *firstSelectModel;
     //__block BOOL already = NO;
-    NSMutableArray *selectList = [NSMutableArray arrayWithArray:self.selectedList];\
+    NSMutableArray *selectList = [NSMutableArray arrayWithArray:self.selectedList];
     
     NSInteger index = 0;
     for (PHAsset *asset in albumModel.result) {
@@ -867,31 +868,25 @@
 - (void)beforeSelectedListdeletePhotoModel:(HXPhotoModel *)model {
     model.selected = NO;
     model.selectIndexStr = @"";
-    if (model.subType == HXPhotoModelMediaSubTypePhoto) {
-        [self.selectedPhotos removeObject:model];
-        if (model.type == HXPhotoModelMediaTypeCameraPhoto) {
-            // 为相机拍的照片时
-            [self.selectedCameraPhotos removeObject:model];
-            [self.selectedCameraList removeObject:model];
-        }else {
-            model.thumbPhoto = nil;
-            model.previewPhoto = nil;
-        }
-    }
+    model.previewPhoto = nil;
     [self.selectedList removeObject:model];
 }
 - (void)beforeSelectedListAddPhotoModel:(HXPhotoModel *)model {
-    if (model.subType == HXPhotoModelMediaSubTypePhoto) {
-        [self.selectedPhotos addObject:model];
-        if (model.type == HXPhotoModelMediaTypeCameraPhoto) {
-            // 为相机拍的照片时
-            [self.selectedCameraPhotos addObject:model];
-            [self.selectedCameraList addObject:model];
-        }
-    }
+
     [self.selectedList addObject:model];
     model.selected = YES;
     model.selectIndexStr = [NSString stringWithFormat:@"%ld",[self.selectedList indexOfObject:model] + 1];
+    
+//    __weak typeof(self) weakSelf = self;
+//    __block HXPhotoModel *bModel = model;
+    [HXPhotoTools getPhotoForPHAsset:model.asset size:CGSizeMake(model.previewViewSize.width * 1.5, model.previewViewSize.height * 1.5) completion:^(UIImage *image, NSDictionary *info) {
+        model.previewPhoto = image;
+
+    }];
+//    model.selected = YES;
+//    model.selectIndexStr = [NSString stringWithFormat:@"%ld",[weakSelf.selectedList indexOfObject:bModel] + 1];
+    
+    
 }
 - (void)beforeSelectedListAddEditPhotoModel:(HXPhotoModel *)model {
     [self beforeSelectedListAddPhotoModel:model];

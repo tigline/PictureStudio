@@ -211,6 +211,10 @@ typedef enum : NSUInteger {
 - (void)selectedListTransformBefore;
 - (void)setScrollImage:(UIImage *)resultImage;
 
+- (CGFloat)getSelectPhotosMinWidth;
+
+- (CGFloat)getSelectPhotosMinHeight;
+
 - (void)combinePhotosWithDirection:(BOOL)isVertical resultImage:(void(^)(UIImage *combineImage))resultImage;
 
 - (UIImage *)getScrollImage;
