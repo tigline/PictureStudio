@@ -14,6 +14,7 @@
 		700E325420A1E464007A23E0 /* WeiboTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 700E325220A1E464007A23E0 /* WeiboTableViewCell.xib */; };
 		700E325520A1E464007A23E0 /* WeiboTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 700E325320A1E464007A23E0 /* WeiboTableViewCell.m */; };
 		702C5FBC20CACEEE00AA8CA5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 702C5FBB20CACEEE00AA8CA5 /* StoreKit.framework */; };
+		702C5FC020D15DF100AA8CA5 /* XDProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 702C5FBF20D15DF000AA8CA5 /* XDProgressView.m */; };
 		7060808220BEF56A0045F49E /* HXPhoto3DTouchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7060808020BEF56A0045F49E /* HXPhoto3DTouchViewController.m */; };
 		7060808420C58A2C0045F49E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7060808320C58A2C0045F49E /* MessageUI.framework */; };
 		707DBA7A209EC4BF00F2FAFB /* SharePictureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 707DBA78209EC4BE00F2FAFB /* SharePictureViewController.m */; };
@@ -83,6 +84,8 @@
 		700E325220A1E464007A23E0 /* WeiboTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = WeiboTableViewCell.xib; path = PictureStudio/View/WeiboTableViewCell.xib; sourceTree = SOURCE_ROOT; };
 		700E325320A1E464007A23E0 /* WeiboTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeiboTableViewCell.m; path = PictureStudio/View/WeiboTableViewCell.m; sourceTree = SOURCE_ROOT; };
 		702C5FBB20CACEEE00AA8CA5 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		702C5FBE20D15DF000AA8CA5 /* XDProgressView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XDProgressView.h; sourceTree = "<group>"; };
+		702C5FBF20D15DF000AA8CA5 /* XDProgressView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XDProgressView.m; sourceTree = "<group>"; };
 		7060808020BEF56A0045F49E /* HXPhoto3DTouchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HXPhoto3DTouchViewController.m; path = PictureStudio/Controller/HXPhoto3DTouchViewController.m; sourceTree = SOURCE_ROOT; };
 		7060808120BEF56A0045F49E /* HXPhoto3DTouchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HXPhoto3DTouchViewController.h; path = PictureStudio/Controller/HXPhoto3DTouchViewController.h; sourceTree = SOURCE_ROOT; };
 		7060808320C58A2C0045F49E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -264,6 +267,8 @@
 		708248F42078AE81000D60A3 /* view */ = {
 			isa = PBXGroup;
 			children = (
+				702C5FBE20D15DF000AA8CA5 /* XDProgressView.h */,
+				702C5FBF20D15DF000AA8CA5 /* XDProgressView.m */,
 				9338E55020A57A760059D58E /* PhotoPreviewCell.h */,
 				9338E55120A57A760059D58E /* PhotoPreviewCell.m */,
 				7082490420790F92000D60A3 /* PhotoCollectionReusableView.h */,
@@ -638,6 +643,7 @@
 				70C5D18B207926A400FE5B9A /* AssetTitleView.m in Sources */,
 				936FAC3920200B9A00F80BCF /* main.m in Sources */,
 				936FAC2B20200B9A00F80BCF /* AppDelegate.m in Sources */,
+				702C5FC020D15DF100AA8CA5 /* XDProgressView.m in Sources */,
 				708811072099FDE1003A1CF4 /* CombinePictureTest.mm in Sources */,
 				708248C4206A9153000D60A3 /* HXPhotoTools.m in Sources */,
 				700E325520A1E464007A23E0 /* WeiboTableViewCell.m in Sources */,

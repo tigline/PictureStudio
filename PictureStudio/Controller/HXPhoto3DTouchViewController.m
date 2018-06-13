@@ -47,7 +47,7 @@
         return;
     }
     __weak typeof(self) weakSelf = self;
-    self.requestId = [HXPhotoTools getHighQualityFormatPhoto:self.model.asset size:CGSizeMake(self.model.previewViewSize.width * 1.5, self.model.previewViewSize.height * 1.5) startRequestIcloud:^(PHImageRequestID cloudRequestId) {
+    self.requestId = [HXPhotoTools getHighQualityFormatPhoto:self.model.asset size:CGSizeMake(self.model.previewViewSize.width*1.5, self.model.previewViewSize.height*1.5) startRequestIcloud:^(PHImageRequestID cloudRequestId) {
         dispatch_async(dispatch_get_main_queue(), ^{
             weakSelf.requestId = cloudRequestId;
            

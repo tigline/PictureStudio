@@ -216,6 +216,8 @@
     
 }
 
+
+
 - (BOOL)prefersStatusBarHidden {
     if (kDevice_Is_iPhoneX) {
         return NO;
@@ -362,6 +364,8 @@
                      }];
 }
 
+
+
 #pragma mark scrollView delegate
 
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -413,7 +417,6 @@
 }
 - (void)savePhotoBottomViewDidSaveBtn:(UIButton *)button {
     
-    
     if([button.titleLabel.text isEqualToString:LocalString(@"open_ablum")]) {
         NSURL *url = [NSURL URLWithString:@"photos-redirect://"];
         
@@ -423,46 +426,53 @@
             [[UIApplication sharedApplication] openURL:url];
         }
     } else {
+        //dispatch_async(dispatch_get_main_queue(), ^{
+            [self.toolBarView setProgressLength:_manager.selectedArray.count];
+            [self.toolBarView setSaveBtnsHiddenValue:YES];
+            [self.toolBarView setSaveLabelHidden:NO];
+        //});
         
+        
+        __weak typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.view showLoadingHUDText:LocalString(@"scroll_ing")];
-        });
-        
-        [self.manager combinePhotosWithDirection:_manager.isCombineVertical resultImage:^(UIImage *combineImage) {
-            __weak typeof(self) weakSelf = self;
-            [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
-                //写入图片到相册
-//                UIImage *saveImage = _resultImage;
-//                if (saveImage == nil) {
-//                    saveImage = [self.manager getScrollImage];
-//                }
+            [self.manager combinePhotosWithDirection:_manager.isCombineVertical resultImage:^(UIImage *combineImage) {
                 
-                [PHAssetChangeRequest creationRequestForAssetFromImage:combineImage];
-            } completionHandler:^(BOOL success, NSError * _Nullable error) {
-                NSLog(@"success = %d, error = %@", success, error);
-                
-                if (success) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [weakSelf.view handleLoading];
-                        [weakSelf.view showImageHUDText:LocalString(@"save_success")];
-                        [button setTitle:LocalString(@"open_ablum") forState:UIControlStateNormal];
-                    });
+                [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+                    [PHAssetChangeRequest creationRequestForAssetFromImage:combineImage];
+                } completionHandler:^(BOOL success, NSError * _Nullable error) {
+                    NSLog(@"success = %d, error = %@", success, error);
                     
-                } else {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [weakSelf.view handleLoading];
-                        //[weakSelf.view showImageHUDText:LocalString(@"save_failed")];
-                        [button setTitle:LocalString(@"save_failed") forState:UIControlStateNormal];
-                    });
-                    
-                }
+                    if (success) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [weakSelf.toolBarView setSaveBtnsHiddenValue:NO];
+                            [weakSelf.toolBarView setSaveLabelHidden:YES];
+                            [weakSelf.view showImageHUDText:LocalString(@"save_success")];
+                            [button setTitle:LocalString(@"open_ablum") forState:UIControlStateNormal];
+                        });
+                        
+                    } else {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [weakSelf.view handleLoading];
+                            //[weakSelf.view showImageHUDText:LocalString(@"save_failed")];
+                            [button setTitle:LocalString(@"save_failed") forState:UIControlStateNormal];
+                        });
+                        
+                    }
+                }];
+            } completeIndex:^(NSInteger index) {
+                //dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf.toolBarView setProgressViewValue:index + 1];
+                //});
             }];
-        }];
-        
+            
+        });
+            
         
     }
-    
+                       
 }
+
+
 
 - (void)savePhotoBottomViewDidShareBtn {
     

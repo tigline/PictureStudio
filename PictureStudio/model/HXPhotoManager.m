@@ -545,7 +545,7 @@
     return isALLScreenShot;
 }
 
-- (void)combinePhotosWithDirection:(BOOL)isVertical resultImage:(void(^)(UIImage *combineImage))combineImage {
+- (void)combinePhotosWithDirection:(BOOL)isVertical resultImage:(void(^)(UIImage *combineImage))combineImage completeIndex:(void(^)(NSInteger index))completeIndex {
     
     CGFloat combineValueSize;
 
@@ -580,6 +580,8 @@
             masterImage = nil;
             masterImage = resultImage;
             UIGraphicsEndImageContext();
+            completeIndex(i);
+            
         }
         combineImage(masterImage);
         
@@ -613,6 +615,7 @@
             masterImage = nil;
             masterImage = resultImage;
             UIGraphicsEndImageContext();
+            completeIndex(i);
         }
         combineImage(masterImage);
         
@@ -715,13 +718,13 @@
                 HXPhotoModel *model = newArray.firstObject;
                 [selectList removeObject:model];
                 photoModel.selected = YES;
-                if ((model.type == HXPhotoModelMediaTypePhoto || model.type == HXPhotoModelMediaTypeCameraPhoto)) {
-                    if (model.type == HXPhotoModelMediaTypeCameraPhoto) {
-                        [self.selectedCameraPhotos replaceObjectAtIndex:[self.selectedCameraPhotos indexOfObject:model] withObject:photoModel];
-                    }else {
-                        [self.selectedPhotos replaceObjectAtIndex:[self.selectedPhotos indexOfObject:model] withObject:photoModel];
-                    }
-                }
+//                if ((model.type == HXPhotoModelMediaTypePhoto || model.type == HXPhotoModelMediaTypeCameraPhoto)) {
+//                    if (model.type == HXPhotoModelMediaTypeCameraPhoto) {
+//                        [self.selectedCameraPhotos replaceObjectAtIndex:[self.selectedCameraPhotos indexOfObject:model] withObject:photoModel];
+//                    }else {
+//                        [self.selectedPhotos replaceObjectAtIndex:[self.selectedPhotos indexOfObject:model] withObject:photoModel];
+//                    }
+//                }
                 [self.selectedList replaceObjectAtIndex:[self.selectedList indexOfObject:model] withObject:photoModel];
                 photoModel.thumbPhoto = model.thumbPhoto;
                 photoModel.previewPhoto = model.previewPhoto;
@@ -851,7 +854,7 @@
     
 //    __weak typeof(self) weakSelf = self;
 //    __block HXPhotoModel *bModel = model;
-    [HXPhotoTools getPhotoForPHAsset:model.asset size:CGSizeMake(model.previewViewSize.width * 1.5, model.previewViewSize.height * 1.5) completion:^(UIImage *image, NSDictionary *info) {
+    [HXPhotoTools getPhotoForPHAsset:model.asset size:CGSizeMake(model.previewViewSize.width*1.5, model.previewViewSize.height*1.5) completion:^(UIImage *image, NSDictionary *info) {
         model.previewPhoto = image;
 
     }];

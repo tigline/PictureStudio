@@ -215,7 +215,7 @@ typedef enum : NSUInteger {
 
 - (CGFloat)getSelectPhotosMinHeight;
 
-- (void)combinePhotosWithDirection:(BOOL)isVertical resultImage:(void(^)(UIImage *combineImage))resultImage;
+- (void)combinePhotosWithDirection:(BOOL)isVertical resultImage:(void(^)(UIImage *combineImage))resultImage completeIndex:(void(^)(NSInteger index))completeIndex;
 
 - (UIImage *)getScrollImage;
 

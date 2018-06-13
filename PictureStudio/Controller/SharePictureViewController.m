@@ -195,9 +195,9 @@
         
         [_containImageView addSubview:imageView];
 
-        imageView.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.7].CGColor;;
-        imageView.layer.shadowOpacity = 0.8f;
-        imageView.layer.shadowOffset = CGSizeMake(0, 0);
+//        imageView.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.7].CGColor;;
+//        imageView.layer.shadowOpacity = 0.8f;
+//        imageView.layer.shadowOffset = CGSizeMake(0, 0);
         UITapGestureRecognizer* imgMsgTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchOnImage:)];
         [_showImageScrollView addGestureRecognizer:imgMsgTap];
     }
