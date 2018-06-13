@@ -40,6 +40,22 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.fd_prefersNavigationBarHidden = YES;
+    [self createScrollView];
+    [self.view bringSubviewToFront:self.shareBoardView];
+    [_shareBoardView setHidden:YES];
+    [self.view addSubview:self.toolBarView];//创建保存图片区域
+    
+
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+//    if (!_manager.isCombineVertical) {
+//        _scrollMaginBottom.constant = kBottomMargin + ButtomViewHeight;
+//    }
+}
+
+- (void)createScrollView {
     _longPictureView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h - kBottomMargin - kTopMargin)];
     [self.view addSubview:_longPictureView];
     _longPictureView.bouncesZoom = YES;
@@ -54,11 +70,11 @@
     _longPictureView.delaysContentTouches = NO;
     _longPictureView.canCancelContentTouches = YES;
     _longPictureView.alwaysBounceVertical = NO;
-    
+    [_longPictureView setUserInteractionEnabled:YES];
     _imageContainerView = [[UIView alloc] init];
     _imageContainerView.clipsToBounds = YES;
     
-    _imageContainerView.contentMode = UIViewContentModeScaleAspectFill;
+    _imageContainerView.contentMode = UIViewContentModeScaleAspectFit;
     [_longPictureView addSubview:_imageContainerView];
     
     UITapGestureRecognizer *tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTap:)];
@@ -74,9 +90,7 @@
     } else {
         
     }
-    [self.view bringSubviewToFront:self.shareBoardView];
-    [_shareBoardView setHidden:YES];
-    [self.view addSubview:self.toolBarView];//创建保存图片区域
+    
     CGFloat scrollViewSizeValue;
     if (_manager.isCombineVertical) {
         scrollViewSizeValue = [_manager getSelectPhotosMinWidth]/[UIScreen mainScreen].scale;
@@ -85,23 +99,7 @@
     }
     
     [self resetImageView:scrollViewSizeValue];
-    
-//    [self.manager combinePhotosWithDirection:_manager.isCombineVertical resultImage:^(UIImage *combineImage) {
-//        _resultImage = combineImage;
-//        [self resetImageView:combineImage];
-//
-//    }];
-
 }
-
-- (void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
-//    if (!_manager.isCombineVertical) {
-//        _scrollMaginBottom.constant = kBottomMargin + ButtomViewHeight;
-//    }
-}
-
-
 
 - (void)resetImageView:(CGFloat)scrollViewSizeValue
 {
@@ -114,37 +112,41 @@
             UIImage *image = mode.previewPhoto;
             UIImageView *imageView = [[UIImageView alloc]initWithImage:image];
             CGFloat contentViewOffset;
- 
+            if(i == 0) {
+                contentViewOffset = _imageContainerView.hx_h + 10;
+            } else {
                 contentViewOffset = _imageContainerView.hx_h;
-            
-            
-            if (scrollViewSizeValue > _longPictureView.frame.size.width) {
-                cgpos.origin.x = 0;
+            }
+            if (scrollViewSizeValue > _longPictureView.frame.size.width - 20) {
+                cgpos.origin.x = 10;
                 cgpos.origin.y = contentViewOffset;
-                cgpos.size.width = _longPictureView.frame.size.width;
+                cgpos.size.width = _longPictureView.frame.size.width - 20;
                 cgpos.size.height = imageView.size.height * (cgpos.size.width/imageView.size.width);
             }else {
-                cgpos.origin.x = 0;
+                cgpos.origin.x = 10;
                 cgpos.origin.y = contentViewOffset;
-                cgpos.size.width = _longPictureView.frame.size.width;
-                cgpos.size.height = imageView.size.height * ((_longPictureView.frame.size.width)/image.size.width);
+                cgpos.size.width = _longPictureView.frame.size.width - 20;
+                cgpos.size.height = imageView.size.height * (cgpos.size.width/image.size.width);
             }
-            
-            _imageContainerView.size = CGSizeMake(cgpos.size.width, contentViewOffset + cgpos.size.height);
-            
+            CGFloat lastOffset;
+            if (i == _manager.selectedArray.count - 1) {
+                lastOffset = cgpos.size.height + 10;
+            } else {
+                lastOffset = cgpos.size.height;
+            }
+            _imageContainerView.size = CGSizeMake(cgpos.size.width + 20, contentViewOffset + lastOffset);
             imageView.frame = cgpos;
             [_imageContainerView addSubview:imageView];
             
         }
 
-        [_longPictureView setContentSize:CGSizeMake(_longPictureView.frame.size.width, _imageContainerView.hx_h)];
         if (_imageContainerView.hx_h < _longPictureView.hx_h - ButtomViewHeight) {
             CGFloat offsetY = (_longPictureView.hx_h - ButtomViewHeight - _imageContainerView.hx_h)/2;
-            _imageContainerView.frame = CGRectMake(10, 10 + offsetY, _imageContainerView.hx_w - 20, _imageContainerView.hx_h - 20);
+            _imageContainerView.frame = CGRectMake(0, offsetY, _imageContainerView.hx_w, _imageContainerView.hx_h);
         } else {
-            _imageContainerView.frame = CGRectMake(10, 10, _imageContainerView.hx_w - 20, _imageContainerView.hx_h - 20);
+            _imageContainerView.frame = CGRectMake(0, 0, _imageContainerView.hx_w, _imageContainerView.hx_h);
         }
-
+        [_longPictureView setContentSize:CGSizeMake(_longPictureView.frame.size.width, _imageContainerView.hx_h)];
         
     } else {
         
@@ -154,60 +156,63 @@
             UIImage *image = mode.previewPhoto;
             UIImageView *imageView = [[UIImageView alloc]initWithImage:image];
             CGFloat contentViewOffset;
-    
-            contentViewOffset = _imageContainerView.hx_w;
+            if(i == 0) {
+                contentViewOffset = _imageContainerView.hx_w + 10;
+            } else {
+                contentViewOffset = _imageContainerView.hx_w;
+            }
+            
 
-            CGFloat longPictureViewHeight = _longPictureView.frame.size.height - ButtomViewHeight;
+            CGFloat longPictureViewHeight = _longPictureView.frame.size.height- 20 - ButtomViewHeight;
             if (scrollViewSizeValue > longPictureViewHeight) {
                 cgpos.origin.x = contentViewOffset;
-                cgpos.origin.y = 0;
+                cgpos.origin.y = 10;
                 cgpos.size.width =  (imageView.size.width) * (longPictureViewHeight/imageView.size.height);
                 cgpos.size.height = longPictureViewHeight;
                 
-
             }else {
                 cgpos.origin.x = contentViewOffset;
-                cgpos.origin.y = (longPictureViewHeight - scrollViewSizeValue)/2;
+                cgpos.origin.y = 10;
                 cgpos.size.width = (imageView.size.width) * (scrollViewSizeValue/imageView.size.height);
                 cgpos.size.height = scrollViewSizeValue;
             }
-            _imageContainerView.size = CGSizeMake(contentViewOffset + cgpos.size.width, cgpos.size.height);
+            
+            
+            
+            CGFloat lastOffset;
+            if (i == _manager.selectedArray.count - 1) {
+                lastOffset = cgpos.size.width + 10;
+            } else {
+                lastOffset = cgpos.size.width;
+            }
+            _imageContainerView.size = CGSizeMake(_imageContainerView.hx_w + lastOffset, cgpos.size.height + 20);
+            
             imageView.frame = cgpos;
             [_imageContainerView addSubview:imageView];
 
         }
-        [_longPictureView setContentSize:CGSizeMake(_imageContainerView.hx_w, _longPictureView.frame.size.height - ButtomViewHeight)];
-        
         CGRect cgPos;
-        
         if (_imageContainerView.hx_w < _longPictureView.hx_w) {
-            CGFloat offsetX = (_longPictureView.hx_w - _imageContainerView.hx_w)/2;
-            cgPos.origin.x = 10 + offsetX;
-            cgPos.size.width = _imageContainerView.hx_w - 20;
+            
+            cgPos.origin.x = (_longPictureView.hx_w - _imageContainerView.hx_w)/2;
+            cgPos.size.width = _imageContainerView.hx_w;
         } else {
-            cgPos.origin.x = 10;
-            cgPos.size.width = _imageContainerView.hx_w - 20;
+            cgPos.origin.x = 0;
+            cgPos.size.width = _imageContainerView.hx_w;
         }
-        
+
         if (_imageContainerView.hx_h < _longPictureView.hx_h - ButtomViewHeight) {
             CGFloat offsetY = (_longPictureView.hx_h - ButtomViewHeight - _imageContainerView.hx_h)/2;
-            cgPos.origin.y = offsetY + 10;
-            cgPos.size.height = _imageContainerView.hx_h - 20;
+            cgPos.origin.y = offsetY;
+            cgPos.size.height = _imageContainerView.hx_h;
         } else {
-            cgPos.origin.y = 10;
-            cgPos.size.height = _imageContainerView.hx_h - 20;
+            cgPos.origin.y = 0;
+            cgPos.size.height = _longPictureView.hx_h - ButtomViewHeight;
         }
-
         _imageContainerView.frame = cgPos;
-        
-        
-        
+        [_longPictureView setContentSize:CGSizeMake(_imageContainerView.hx_w, _imageContainerView.hx_h)];
 
     }
-
-    [_longPictureView setUserInteractionEnabled:YES];
-
-
     
 }
 
@@ -528,8 +533,15 @@
 #pragma mark - Private
 
 - (void)refreshImageContainerViewCenter {
+    CGFloat longPictureViewHeight;
+//    if (_imageContainerView.hx_h < _longPictureView.hx_h - ButtomViewHeight) {
+        longPictureViewHeight = _longPictureView.hx_h - ButtomViewHeight;
+//    } else {
+//        longPictureViewHeight = _longPictureView.hx_h;
+//    }
     CGFloat offsetX = (_longPictureView.hx_w > _longPictureView.contentSize.width) ? ((_longPictureView.hx_w - _longPictureView.contentSize.width) * 0.5) : 0.0;
-    CGFloat offsetY = (_longPictureView.hx_h > _longPictureView.contentSize.height) ? ((_longPictureView.hx_h - _longPictureView.contentSize.height) * 0.5) : 0.0;
+    CGFloat offsetY = (longPictureViewHeight > _longPictureView.contentSize.height) ? ((longPictureViewHeight - _longPictureView.contentSize.height) * 0.5) : 0.0;
+    
     self.imageContainerView.center = CGPointMake(_longPictureView.contentSize.width * 0.5 + offsetX, _longPictureView.contentSize.height * 0.5 + offsetY);
 }
 
