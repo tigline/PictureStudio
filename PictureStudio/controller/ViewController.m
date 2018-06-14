@@ -1329,7 +1329,7 @@ PhotoPreviewControllerDelegate
         ((SharePictureViewController *)(segue.destinationViewController)).manager = self.manager;
         ((SharePictureViewController *)(segue.destinationViewController)).resultImage = image;
     } else if ([[segue identifier] isEqualToString:@"toLongPictureView"]) {
-        UIImage *image = (UIImage *)sender;
+        //UIImage *image = (UIImage *)sender;
         ((LongPictureViewController *)(segue.destinationViewController)).manager = self.manager;
 
     }

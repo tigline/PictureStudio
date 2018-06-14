@@ -31,8 +31,8 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
     Mat previewMat;                         //前一次匹配的结果
     Mat resultMat;                          //最终匹配的结果
     float curUseHeight = 0;
- 
-    CGFloat cutLeftX = 0.22f;
+    CGFloat navigationHeight = kNavigationBarHeight * [UIScreen mainScreen].scale;
+    CGFloat cutLeftX = kDevice_Is_iPhoneX? 0.18f : 0.20f;
     CGFloat cutRightX = 0.75f;
     
     clock_t start_surf = clock();
@@ -46,7 +46,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             //NSString *path = [images objectAtIndex:i];
             //imageUpCut = imread([path UTF8String]);
             
-            imageUpCut = imageUpOrigin(cv::Rect(cv::Point(imageUpOrigin.cols*cutLeftX,kNavigationBarHeight*2),cv::Point(imageUpOrigin.cols*cutRightX,imageUpOrigin.rows)));
+            imageUpCut = imageUpOrigin(cv::Rect(cv::Point(imageUpOrigin.cols*cutLeftX,navigationHeight),cv::Point(imageUpOrigin.cols*cutRightX,imageUpOrigin.rows)));
             curUseHeight = imageUpCut.rows;
         } else {
             previewMat = resultMat;
@@ -79,7 +79,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         //默认识别
         good_matchesX = dectectMatchPoints(&keyPoint_Up, &keyPoint_Down, imageUpGray, imageDownGray, NO, 12000, YES);
         
-//        Mat img_matches;
+        Mat img_matches;
 //        drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
 //                    good_matchesX, img_matches, Scalar::all(-1), Scalar::all(-1),
 //                    vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
@@ -230,7 +230,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         
         Mat imageUpResult;
         if (i < 1) {
-            imageUpResult = imageUpOrigin(cv::Rect(cv::Point(0,0), cv::Point(imageUpOrigin.cols, originalLinkPoint.y + kNavigationBarHeight*2)));
+            imageUpResult = imageUpOrigin(cv::Rect(cv::Point(0,0), cv::Point(imageUpOrigin.cols, originalLinkPoint.y + navigationHeight)));
         } else {
             imageUpResult = previewMat(cv::Rect(cv::Point(0,0), cv::Point(imageUpOrigin.cols, resultMat.rows - imageUpCut.rows + originalLinkPoint.y)));
         }

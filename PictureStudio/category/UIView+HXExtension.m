@@ -231,7 +231,7 @@
     hud.alpha = 0;
     hud.tag = 1008611;
     [self addSubview:hud];
-    hud.center = CGPointMake(self.frame.size.width / 2, self.frame.size.height*0.85);
+    hud.center = CGPointMake(self.frame.size.width / 2, self.frame.size.height*0.75);
     [UIView animateWithDuration:0.25 animations:^{
         hud.alpha = 1;
     }];

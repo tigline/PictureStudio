@@ -32,6 +32,8 @@ SKStoreProductViewControllerDelegate
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *versionViewHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *iconMaginTop;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *iconSpaceToAppNameLabel;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *versionContainWidth;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bgImageViewWidth;
 
 
 @end
@@ -74,7 +76,8 @@ static NSString *identifier = @"AboutTableViewCell";
     
     _iconMaginTop.constant = 37*ScreenHeightRatio;
     _iconSpaceToAppNameLabel.constant = 12*ScreenHeightRatio;
-    
+    _versionContainWidth.constant = 340*ScreenWidthRatio;
+    _bgImageViewWidth.constant = 340*ScreenWidthRatio;
     if (kDevice_Is_iPhoneX || kDevice_Is_iPhone55 || kDevice_Is_iPhone47) {
     } else {
         _versionViewHeight.constant = self.view.frame.size.height * 0.299;
@@ -82,8 +85,8 @@ static NSString *identifier = @"AboutTableViewCell";
     }
     
     
-    [_bgImageView setImage:[UIImage imageNamed:@"Rectangle_bg"]];
-    _bgImageView.contentMode = UIViewContentModeCenter;
+    //[_bgImageView setImage:[UIImage imageNamed:@"Rectangle_bg"]];
+    //_bgImageView.contentMode = UIViewContentModeCenter;
     //_bgImageView.clipsToBounds = YES;
     //_bgImageView.frame = CGRectMake(0, -30*ScreenHeightRatio, _contantView.hx_w, _contantView.hx_h);
 //    _bgImageView.layer.cornerRadius = 12;
@@ -91,7 +94,7 @@ static NSString *identifier = @"AboutTableViewCell";
 //    _bgImageView.backgroundColor = UIColor.clearColor;
     
     _contantView.layer.cornerRadius = 12;
-    _contantView.backgroundColor = UIColor.clearColor;
+    //_contantView.backgroundColor = UIColor.clearColor;
     _contantView.frame = CGRectMake(_contantView.originX, _contantView.originY + 10*ScreenHeightRatio, _contantView.hx_w, _contantView.hx_h);
     //_contantView.layer.masksToBounds = YES;
 //    _contantView.layer.shadowColor = [UIColor colorWithRed:208/255.0 green:217/255.0 blue:237/255.0 alpha:1.0].CGColor;

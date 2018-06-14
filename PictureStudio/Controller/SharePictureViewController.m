@@ -33,6 +33,7 @@
 @property (strong, nonatomic) UIScrollView *shareScrollView;
 @property (strong, nonatomic) PhotoSaveBottomView *toolBarView;
 @property (assign, nonatomic) CGFloat lastContentOffset;
+@property (assign, nonatomic) BOOL isFinish;
 
 @property (strong, nonatomic) UIView *containImageView;
 @property (strong, nonatomic) ShareBoardView *shareBoardView;
@@ -64,7 +65,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    if (_manager.selectedCount > 3) {
+    if (_manager.selectedCount > 3 && !_isFinish) {
         [self.view showLoadingHUDText:LocalString(@"scroll_ing")];
     }
 //    [self.navigationController.navigationBar setHidden:YES];
@@ -98,6 +99,7 @@
 }
 
 - (void)scrollFinish {
+    _isFinish = YES;
     [self.view handleLoading];
     [self CreateShowImgaeView:[self.manager getScrollImage]];
     [self.view addSubview:self.shareBoardView];
@@ -167,19 +169,19 @@
     
     
     
-    
+    CGFloat maginTop = kDevice_Is_iPhoneX ? 10 : 10;
     
     if (_resultImage != nil ){
         CGRect cgpos;
         if (_resultImage.size.width > _showImageScrollView.frame.size.width - 20) {
             cgpos.origin.x = 10;
-            cgpos.origin.y = 10;
+            cgpos.origin.y = maginTop;
             cgpos.size.width = _showImageScrollView.frame.size.width - 20;
             cgpos.size.height = _resultImage.size.height * (cgpos.size.width/_resultImage.size.width);
             [_showImageScrollView setContentSize:CGSizeMake(_showImageScrollView.frame.size.width, cgpos.size.height+20)];
         }else {
             cgpos.origin.x =(_showImageScrollView.frame.size.width - 20 - _resultImage.size.width)/2;
-            cgpos.origin.y = 10;
+            cgpos.origin.y = maginTop;
             cgpos.size.width = _resultImage.size.width;
             cgpos.size.height = _resultImage.size.height;
             [_showImageScrollView setContentSize:CGSizeMake(_showImageScrollView.frame.size.width, cgpos.size.height + 20)];
@@ -375,7 +377,7 @@
 
 - (PhotoSaveBottomView *)toolBarView {
     if (!_toolBarView) {
-        _toolBarView = [[PhotoSaveBottomView alloc] initWithFrame:CGRectMake(0, self.view.hx_h - ButtomViewHeight - kBottomMargin, self.view.hx_w, ButtomViewHeight + kBottomMargin)];
+        _toolBarView = [[PhotoSaveBottomView alloc] initWithFrame:CGRectMake(0, self.view.hx_h - SaveViewHeight - kBottomMargin, self.view.hx_w, ButtomViewHeight + kBottomMargin)];
         _toolBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         
         _toolBarView.delegate = self;
@@ -385,7 +387,7 @@
 
 - (ShareBoardView *)shareBoardView {
     if (!_shareBoardView) {
-        _shareBoardView = [[ShareBoardView alloc] initWithFrame:CGRectMake(0, self.view.hx_h - ButtomViewHeight - kBottomMargin, self.view.hx_w, ShareBoardHeight)];
+        _shareBoardView = [[ShareBoardView alloc] initWithFrame:CGRectMake(0, self.view.hx_h - SaveViewHeight - kBottomMargin, self.view.hx_w, ShareBoardHeight)];
         _shareBoardView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         _shareBoardView.shareDelegate = self;
         _shareBoardView.hidden = YES;
@@ -404,8 +406,11 @@
 {
     CGFloat contentHeight = scrollView.contentSize.height - self.view.hx_h;
     CGFloat contentOffsetY = scrollView.contentOffset.y;
-    if (contentOffsetY < kTopMargin && contentOffsetY > -kTopMargin) {
-        self.showImageScrollView.frame = CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h);
+    
+    if (contentOffsetY < 0) {
+        //self.showImageScrollView.frame = CGRectMake(0, kTopMargin + contentOffsetY, self.view.hx_w, self.view.hx_h);
+    } else if (contentOffsetY < kTopMargin && contentOffsetY > 0) {
+        self.showImageScrollView.frame = CGRectMake(0, kTopMargin - contentOffsetY, self.view.hx_w, self.view.hx_h);
     } else if (contentOffsetY < contentHeight && contentOffsetY > kTopMargin) {
         //向下
         //if (_canDetectScroll) {

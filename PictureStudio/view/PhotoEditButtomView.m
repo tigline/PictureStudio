@@ -200,7 +200,7 @@
     self.scrollBtn.frame = CGRectMake(btnWidth, pointY, combineBtnWAll, btnHeight);
     self.scrollBtn.hidden = YES;
     
-    CGFloat offsetY = kDevice_Is_iPhoneX? 2.5:0 ;
+    CGFloat offsetY = kDevice_Is_iPhoneX? 3.5:0 ;
     
     _segmentingLineFrist = [CALayer layer];
     _segmentingLineFrist.frame = CGRectMake(btnWidth, 13+offsetY, 0.6, 18);
@@ -221,13 +221,13 @@
     _segmentingLineThird.hidden = YES;
     
     _segmentingLineThird = [CALayer layer];
-    _segmentingLineThird.frame = CGRectMake(btnWidth+combineBtnWAll, 13, 0.6, 18);
+    _segmentingLineThird.frame = CGRectMake(btnWidth+combineBtnWAll, 13+offsetY, 0.6, 18);
     _segmentingLineThird.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
     [self.bgView.layer addSublayer:_segmentingLineThird];
     _segmentingLineThird.hidden = YES;
     
     _segmentingLineFourth = [CALayer layer];
-    _segmentingLineFourth.frame = CGRectMake(btnWidth+combineBtnWAll*2, 13, 0.6, 18);
+    _segmentingLineFourth.frame = CGRectMake(btnWidth+combineBtnWAll*2, 13+offsetY, 0.6, 18);
     _segmentingLineFourth.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
     [self.bgView.layer addSublayer:_segmentingLineFourth];
     _segmentingLineFourth.hidden = YES;

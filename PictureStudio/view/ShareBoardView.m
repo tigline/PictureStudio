@@ -100,7 +100,7 @@
         _weChatBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_weChatBtn setBackgroundColor:UIColor.clearColor];
         [_weChatBtn setImage:[UIImage imageNamed:@"share_wechat"] forState:UIControlStateNormal];
-        _weChatBtn.imageView.contentMode = UIViewContentModeCenter;
+        _weChatBtn.imageView.contentMode = UIViewContentModeScaleAspectFit;
         [_weChatBtn addTarget:self action:@selector(onShareWechatClicked:) forControlEvents:UIControlEventTouchUpInside];
         
     }
@@ -112,7 +112,7 @@
         _momentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_momentBtn setBackgroundColor:UIColor.clearColor];
         [_momentBtn setImage:[UIImage imageNamed:@"share_moments"] forState:UIControlStateNormal];
-        _momentBtn.imageView.contentMode = UIViewContentModeCenter;
+        _momentBtn.imageView.contentMode = UIViewContentModeScaleAspectFit;
         [_momentBtn addTarget:self action:@selector(onShareMomentClicked:) forControlEvents:UIControlEventTouchUpInside];
         
     }
@@ -124,7 +124,7 @@
         _weiboBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_weiboBtn setBackgroundColor:UIColor.clearColor];
         [_weiboBtn setImage:[UIImage imageNamed:@"share_weibo"] forState:UIControlStateNormal];
-        _weiboBtn.imageView.contentMode = UIViewContentModeCenter;
+        _weiboBtn.imageView.contentMode = UIViewContentModeScaleAspectFit;
         [_weiboBtn addTarget:self action:@selector(onShareWeiboClicked:) forControlEvents:UIControlEventTouchUpInside];
         
     }
@@ -136,7 +136,7 @@
         _moreBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_moreBtn setBackgroundColor:UIColor.clearColor];
         [_moreBtn setImage:[UIImage imageNamed:@"share_more"] forState:UIControlStateNormal];
-        _moreBtn.imageView.contentMode = UIViewContentModeCenter;
+        _moreBtn.imageView.contentMode = UIViewContentModeScaleAspectFit;
         [_moreBtn addTarget:self action:@selector(onShareMoreClicked:) forControlEvents:UIControlEventTouchUpInside];
         
     }

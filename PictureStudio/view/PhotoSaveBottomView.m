@@ -98,7 +98,7 @@
     
 
     CGFloat pointY = 0;//(self.bgView.size.height - btnHeight)/2;
-    CGFloat offsetY = kDevice_Is_iPhoneX? 2.5:0 ;
+    CGFloat offsetY = 0 ;
     
     self.backBtn.frame = CGRectMake(28.4*ScreenWidthRatio, pointY, btnHeight, btnHeight);
     self.backBtn.backgroundColor = [UIColor clearColor];

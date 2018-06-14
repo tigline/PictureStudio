@@ -361,7 +361,7 @@
 
 - (PhotoSaveBottomView *)toolBarView {
     if (!_toolBarView) {
-        _toolBarView = [[PhotoSaveBottomView alloc] initWithFrame:CGRectMake(0, self.view.hx_h - ButtomViewHeight - kBottomMargin, self.view.hx_w, ButtomViewHeight + kBottomMargin)];
+        _toolBarView = [[PhotoSaveBottomView alloc] initWithFrame:CGRectMake(0, self.view.hx_h - SaveViewHeight - kBottomMargin, self.view.hx_w, ButtomViewHeight + kBottomMargin)];
         _toolBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         
         _toolBarView.delegate = self;
@@ -371,7 +371,7 @@
 
 - (ShareBoardView *)shareBoardView {
     if (!_shareBoardView) {
-        _shareBoardView = [[ShareBoardView alloc] initWithFrame:CGRectMake(0, self.view.hx_h - ButtomViewHeight - kBottomMargin, self.view.hx_w, ShareBoardHeight)];
+        _shareBoardView = [[ShareBoardView alloc] initWithFrame:CGRectMake(0, self.view.hx_h - SaveViewHeight - kBottomMargin, self.view.hx_w, ShareBoardHeight)];
         _shareBoardView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         _shareBoardView.shareDelegate = self;
         _shareBoardView.hidden = YES;
@@ -420,8 +420,10 @@
     CGFloat contentOffsetY = scrollView.contentOffset.y;
 
     
-    if (contentOffsetY < kTopMargin && contentOffsetY > -kTopMargin) {
-        self.longPictureView.frame = CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h);
+    if (contentOffsetY < 0) {
+
+    } else if (contentOffsetY < kTopMargin && contentOffsetY > 0) {
+        self.longPictureView.frame = CGRectMake(0, kTopMargin - contentOffsetY, self.view.hx_w, self.view.hx_h);
     } else if (contentOffsetY < contentHeight && contentOffsetY > kTopMargin) {
         //向下
         //if (_canDetectScroll) {
