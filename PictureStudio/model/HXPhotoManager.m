@@ -882,7 +882,7 @@
                         [self.selectedList addObject:model];
                         [self.selectedCameraList addObject:model];
                         model.selected = YES;
-                        model.selectIndexStr = [NSString stringWithFormat:@"%ld",[self.selectedList indexOfObject:model] + 1];
+                        model.selectIndexStr = [NSString stringWithFormat:@"%u",[self.selectedList indexOfObject:model] + 1];
                     }
                 }else {
                     [self.selectedCameraPhotos insertObject:model atIndex:0];
@@ -890,7 +890,7 @@
                     [self.selectedList addObject:model];
                     [self.selectedCameraList addObject:model];
                     model.selected = YES;
-                    model.selectIndexStr = [NSString stringWithFormat:@"%ld",[self.selectedList indexOfObject:model] + 1];
+                    model.selectIndexStr = [NSString stringWithFormat:@"%u",[self.selectedList indexOfObject:model] + 1];
                 }
             
         }

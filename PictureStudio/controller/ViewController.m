@@ -299,7 +299,7 @@ PhotoPreviewControllerDelegate
 //                [CATransaction begin];
 //                [CATransaction setDisableActions:YES];
                 
-                [UIView animateWithDuration:0.5 animations:^{
+                [UIView animateWithDuration:0.25 animations:^{
                     [weakSelf.collectionView reloadData];
                     if (_isScreenshotNotification || _shouldReloadAsset) {
                         _isScreenshotNotification = NO;

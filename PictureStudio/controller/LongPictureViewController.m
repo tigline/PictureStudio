@@ -430,6 +430,7 @@
             [self.toolBarView setProgressLength:_manager.selectedArray.count];
             [self.toolBarView setSaveBtnsHiddenValue:YES];
             [self.toolBarView setSaveLabelHidden:NO];
+            [self.toolBarView setProgressViewValue:0];
         //});
         
         
@@ -461,7 +462,7 @@
                 }];
             } completeIndex:^(NSInteger index) {
                 //dispatch_async(dispatch_get_main_queue(), ^{
-                    [weakSelf.toolBarView setProgressViewValue:index + 1];
+                    [weakSelf.toolBarView setProgressViewValue:index];
                 //});
             }];
             
