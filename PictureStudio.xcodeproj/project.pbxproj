@@ -60,6 +60,7 @@
 		937F74452084A4CB00F56AFD /* CombineIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 937F74442084A4CB00F56AFD /* CombineIndicatorView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9389461220B7E3DC00BC62DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9389461420B7E3DC00BC62DA /* InfoPlist.strings */; };
 		9389461820B7E4BB00BC62DA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9389461A20B7E4BB00BC62DA /* Localizable.strings */; };
+		9399E82020D23D5400791E92 /* ToastView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9399E81F20D23D5400791E92 /* ToastView.m */; };
 		CA77FD7BEBFA8FC98070EEF6 /* libPods-PictureStudioTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FBE47B7FBE857DD390CAF1A /* libPods-PictureStudioTests.a */; };
 /* End PBXBuildFile section */
 
@@ -172,6 +173,8 @@
 		9389461520B7E42600BC62DA /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		9389461920B7E4BB00BC62DA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9389461B20B7E4BF00BC62DA /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		9399E81E20D23D5400791E92 /* ToastView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ToastView.h; sourceTree = "<group>"; };
+		9399E81F20D23D5400791E92 /* ToastView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ToastView.m; sourceTree = "<group>"; };
 		AAE5E6A04762F2F9333FC11A /* Pods-PictureStudio.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PictureStudio.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PictureStudio/Pods-PictureStudio.debug.xcconfig"; sourceTree = "<group>"; };
 		C1CA1C5684A7B142E0E5A154 /* Pods-PictureStudioTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PictureStudioTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PictureStudioTests/Pods-PictureStudioTests.release.xcconfig"; sourceTree = "<group>"; };
 		D552EC3AE84972F5EBFA1999 /* libPods-PictureStudio.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PictureStudio.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -269,6 +272,8 @@
 			children = (
 				702C5FBE20D15DF000AA8CA5 /* XDProgressView.h */,
 				702C5FBF20D15DF000AA8CA5 /* XDProgressView.m */,
+				9399E81E20D23D5400791E92 /* ToastView.h */,
+				9399E81F20D23D5400791E92 /* ToastView.m */,
 				9338E55020A57A760059D58E /* PhotoPreviewCell.h */,
 				9338E55120A57A760059D58E /* PhotoPreviewCell.m */,
 				7082490420790F92000D60A3 /* PhotoCollectionReusableView.h */,
@@ -602,7 +607,7 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/UMSocialSDKResources.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -636,6 +641,7 @@
 				708248D8206A9884000D60A3 /* UIImage+HXExtension.m in Sources */,
 				937F74332084879800F56AFD /* HXPhotoManager.m in Sources */,
 				708249002078E510000D60A3 /* PhotoEditButtomView.m in Sources */,
+				9399E82020D23D5400791E92 /* ToastView.m in Sources */,
 				9338E54F20A577A10059D58E /* PhotoPreviewController.m in Sources */,
 				70C262FC207A72EF00F65EFD /* AHAssetGroupCell.m in Sources */,
 				707DBA7F209ED61100F2FAFB /* PhotoSaveBottomView.m in Sources */,
@@ -826,7 +832,7 @@
 				CLANG_WARN__ARC_BRIDGE_CAST_NONARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LW67YFH2F2;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/PictureStudio",
@@ -860,7 +866,7 @@
 				CLANG_WARN__ARC_BRIDGE_CAST_NONARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LW67YFH2F2;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/PictureStudio",

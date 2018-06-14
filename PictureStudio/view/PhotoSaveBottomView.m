@@ -98,6 +98,7 @@
     
 
     CGFloat pointY = 0;//(self.bgView.size.height - btnHeight)/2;
+    CGFloat offsetY = kDevice_Is_iPhoneX? 2.5:0 ;
     
     self.backBtn.frame = CGRectMake(28.4*ScreenWidthRatio, pointY, btnHeight, btnHeight);
     self.backBtn.backgroundColor = [UIColor clearColor];
@@ -112,12 +113,12 @@
     self.progressView.hidden = YES;
     
     _segmentingLineFrist = [CALayer layer];
-    _segmentingLineFrist.frame = CGRectMake(106*ScreenWidthRatio, 14, 0.6, 18);
+    _segmentingLineFrist.frame = CGRectMake(106*ScreenWidthRatio, 14 + offsetY, 0.6, 18);
     _segmentingLineFrist.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
     [self.bgView.layer addSublayer:_segmentingLineFrist];
     
     _segmentingLineSecond = [CALayer layer];
-    _segmentingLineSecond.frame = CGRectMake(271*ScreenWidthRatio, 14, 0.6, 18);
+    _segmentingLineSecond.frame = CGRectMake(271*ScreenWidthRatio, 14 + offsetY, 0.6, 18);
     _segmentingLineSecond.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
     [self.bgView.layer addSublayer:_segmentingLineSecond];
 }

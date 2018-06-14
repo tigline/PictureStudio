@@ -14,20 +14,18 @@
 #import "UIView+HXExtension.h"
 #import "HXPhotoDefine.h"
 #import "UINavigationController+FDFullscreenPopGesture.h"
+#import "ShareBoardView.h"
 
-@interface LongPictureViewController () <UIScrollViewDelegate,PhotoSaveBottomViewDelegate>
+@interface LongPictureViewController () <UIScrollViewDelegate,PhotoSaveBottomViewDelegate, ShareBoardViewDelegate>
 @property (strong, nonatomic)  UIScrollView *longPictureView;
 @property (strong, nonatomic) UIImageView *imageView;
-@property (weak, nonatomic) IBOutlet UIVisualEffectView *shareBoardView;
+@property (strong, nonatomic) ShareBoardView *shareBoardView;
 @property (strong, nonatomic) PhotoSaveBottomView *toolBarView;
 @property (assign, nonatomic) BOOL canOpenWeixin;
 @property (assign, nonatomic) BOOL canOpenWeibo;
 @property (assign, nonatomic) BOOL isShowShareBoardView;
 @property (assign, nonatomic) CGFloat lastContentOffset;
 @property (nonatomic, strong) UIView *imageContainerView;
-
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *shareBoardHeight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *shareBtnWidth;
 
 
 
@@ -41,8 +39,8 @@
     // Do any additional setup after loading the view.
     self.fd_prefersNavigationBarHidden = YES;
     [self createScrollView];
-    [self.view bringSubviewToFront:self.shareBoardView];
-    [_shareBoardView setHidden:YES];
+    _isShowShareBoardView = NO;
+    [self.view addSubview:self.shareBoardView];
     [self.view addSubview:self.toolBarView];//创建保存图片区域
     
 
@@ -50,9 +48,7 @@
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-//    if (!_manager.isCombineVertical) {
-//        _scrollMaginBottom.constant = kBottomMargin + ButtomViewHeight;
-//    }
+
 }
 
 - (void)createScrollView {
@@ -83,8 +79,6 @@
     tap2.numberOfTapsRequired = 2;
     [tap1 requireGestureRecognizerToFail:tap2];
     [self.view addGestureRecognizer:tap2];
-    _shareBoardHeight.constant = 73*ScreenHeightRatio;
-    _shareBtnWidth.constant = 46*ScreenWidthRatio;
     if (@available(iOS 11.0, *)) {
         _longPictureView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     } else {
@@ -107,10 +101,12 @@
     BOOL isCombineVertical = _manager.isCombineVertical;
     CGRect cgpos;
     if (isCombineVertical) {
-        for (int i = 0; i < _manager.selectedArray.count; i++) {
+        NSInteger count = _manager.selectedArray.count;
+        for (int i = 0; i < count; i++) {
             HXPhotoModel *mode = [_manager.selectedArray objectAtIndex:i];
             UIImage *image = mode.previewPhoto;
             UIImageView *imageView = [[UIImageView alloc]initWithImage:image];
+            
             CGFloat contentViewOffset;
             if(i == 0) {
                 contentViewOffset = _imageContainerView.hx_h + 10;
@@ -134,12 +130,15 @@
             } else {
                 lastOffset = cgpos.size.height;
             }
+            
             _imageContainerView.size = CGSizeMake(cgpos.size.width + 20, contentViewOffset + lastOffset);
             imageView.frame = cgpos;
+            [self addLayerBorder:imageView count:count index:i direction:isCombineVertical];
             [_imageContainerView addSubview:imageView];
             
+            
         }
-
+        
         if (_imageContainerView.hx_h < _longPictureView.hx_h - ButtomViewHeight) {
             CGFloat offsetY = (_longPictureView.hx_h - ButtomViewHeight - _imageContainerView.hx_h)/2;
             _imageContainerView.frame = CGRectMake(0, offsetY, _imageContainerView.hx_w, _imageContainerView.hx_h);
@@ -149,8 +148,8 @@
         [_longPictureView setContentSize:CGSizeMake(_longPictureView.frame.size.width, _imageContainerView.hx_h)];
         
     } else {
-        
-        for (int i = 0; i < _manager.selectedArray.count; i++) {
+        NSInteger count = _manager.selectedArray.count;
+        for (int i = 0; i < count; i++) {
             
             HXPhotoModel *mode = [_manager.selectedArray objectAtIndex:i];
             UIImage *image = mode.previewPhoto;
@@ -189,6 +188,7 @@
             
             imageView.frame = cgpos;
             [_imageContainerView addSubview:imageView];
+            [self addLayerBorder:imageView count:count index:i direction:isCombineVertical];
 
         }
         CGRect cgPos;
@@ -213,10 +213,41 @@
         [_longPictureView setContentSize:CGSizeMake(_imageContainerView.hx_w, _imageContainerView.hx_h)];
 
     }
-    
+
 }
 
-
+-(void)addLayerBorder:(UIImageView *)imageView count:(NSInteger)count index:(NSInteger)index direction:(BOOL)isVertical {
+    UIColor *color = [[UIColor blackColor] colorWithAlphaComponent:0.1];
+    CGFloat width = 1*ScreenWidthRatio;
+    if (isVertical) {
+        if (index == 0) {
+            [imageView addTopBorderWithColor:color andWidth:width];
+            [imageView addLeftBorderWithColor:color andWidth:width];
+            [imageView addRightBorderWithColor:color andWidth:width];
+        } else if (index == count - 1) {
+            [imageView addLeftBorderWithColor:color andWidth:width];
+            [imageView addRightBorderWithColor:color andWidth:width];
+            [imageView addBottomBorderWithColor:color andWidth:width];
+        } else {
+            [imageView addLeftBorderWithColor:color andWidth:width];
+            [imageView addRightBorderWithColor:color andWidth:width];
+        }
+    } else {
+        if (index == 0) {
+            [imageView addTopBorderWithColor:color andWidth:width];
+            [imageView addLeftBorderWithColor:color andWidth:width];
+            [imageView addBottomBorderWithColor:color andWidth:width];
+        } else if (index == count - 1) {
+            [imageView addTopBorderWithColor:color andWidth:width];
+            [imageView addRightBorderWithColor:color andWidth:width];
+            [imageView addBottomBorderWithColor:color andWidth:width];
+        } else {
+            [imageView addTopBorderWithColor:color andWidth:width];
+            [imageView addBottomBorderWithColor:color andWidth:width];
+        }
+    }
+    
+}
 
 - (BOOL)prefersStatusBarHidden {
     if (kDevice_Is_iPhoneX) {
@@ -241,22 +272,22 @@
 
 
 
-- (IBAction)onShareWechatClicked:(id)sender {
+- (void)shareBoardViewDidWeChatBtn {
     [self shareImageToPlatformType:UMSocialPlatformType_WechatSession];
     
 }
 
-- (IBAction)onShareMomentClicked:(id)sender {
+- (void)shareBoardViewDidMomentBtn {
     [self shareImageToPlatformType:UMSocialPlatformType_WechatTimeLine];
     
 }
 
-- (IBAction)onShareWeiboClicked:(id)sender {
+- (void)shareBoardViewDidWeiboBtn {
     [self shareImageToPlatformType:UMSocialPlatformType_Sina];
     
 }
 
-- (IBAction)onShareMoreClicked:(id)sender {
+- (void)shareBoardViewDidMoreBtn {
     NSLog(@"shareMoreImageOnClick");
     UIImage *imageToShare = _resultImage;
 
@@ -338,12 +369,22 @@
     return _toolBarView;
 }
 
+- (ShareBoardView *)shareBoardView {
+    if (!_shareBoardView) {
+        _shareBoardView = [[ShareBoardView alloc] initWithFrame:CGRectMake(0, self.view.hx_h - ButtomViewHeight - kBottomMargin, self.view.hx_w, ShareBoardHeight)];
+        _shareBoardView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        _shareBoardView.shareDelegate = self;
+        _shareBoardView.hidden = YES;
+    }
+    return _shareBoardView;
+}
+
 - (void)showShareBoard {
     [_shareBoardView setHidden:NO];
     [UIView animateWithDuration:0.3f
                      animations:^{
                          
-                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY - _toolBarView.hx_h + kBottomMargin, _shareBoardView.size.width, _shareBoardView.size.height)];
+                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY - ShareBoardHeight, _shareBoardView.size.width, _shareBoardView.size.height)];
                          
                      }completion:^(BOOL finished) {
                          _isShowShareBoardView = YES;
@@ -356,7 +397,7 @@
     [UIView animateWithDuration:0.3f
                      animations:^{
                          
-                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY + _toolBarView.hx_h - kBottomMargin, _shareBoardView.size.width, _shareBoardView.size.height)];
+                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY + ShareBoardHeight, _shareBoardView.size.width, _shareBoardView.size.height)];
                          
                      }completion:^(BOOL finished) {
                          [_shareBoardView setHidden:YES];

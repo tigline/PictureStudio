@@ -31,8 +31,8 @@
 #define kNavigationBarHeight (kDevice_Is_iPhoneX ? 88 : 64)
 #define kTopMargin (kDevice_Is_iPhoneX ? 44 : 0)
 #define kBottomMargin (kDevice_Is_iPhoneX ? 34 : 0)
-#define ButtomViewHeight 45 *ScreenHeightRatio
-
+#define ButtomViewHeight (kDevice_Is_iPhoneX ? 50 *ScreenHeightRatio : 45 *ScreenHeightRatio)
+#define ShareBoardHeight 73*ScreenHeightRatio
 
 #define iOS8_2Later ([UIDevice currentDevice].systemVersion.floatValue >= 8.2f)
 #define WEAKSELF(weakSelf)  __weak __typeof(&*self)weakSelf = self;

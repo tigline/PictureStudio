@@ -854,7 +854,7 @@
     
 //    __weak typeof(self) weakSelf = self;
 //    __block HXPhotoModel *bModel = model;
-    [HXPhotoTools getPhotoForPHAsset:model.asset size:CGSizeMake(model.previewViewSize.width*1.5, model.previewViewSize.height*1.5) completion:^(UIImage *image, NSDictionary *info) {
+    [HXPhotoTools getPhotoForPHAsset:model.asset size:CGSizeMake(model.previewViewSize.width*2, model.previewViewSize.height*2) completion:^(UIImage *image, NSDictionary *info) {
         model.previewPhoto = image;
 
     }];

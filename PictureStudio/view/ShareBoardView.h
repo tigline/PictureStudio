@@ -8,9 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol ShareBoardViewDelegate <NSObject>
+@optional
+- (void)shareBoardViewDidWeChatBtn;
+- (void)shareBoardViewDidWeiboBtn;
+- (void)shareBoardViewDidMomentBtn;
+- (void)shareBoardViewDidMoreBtn;
+@end
+
 @interface ShareBoardView : UIView
 
-- (void)showShareBoard:(UIView *)rootView;
-- (void)hideShareBoard:(UIView *)rootView;
+@property (weak, nonatomic) id <ShareBoardViewDelegate> shareDelegate;
 
 @end

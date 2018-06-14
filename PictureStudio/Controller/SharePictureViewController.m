@@ -14,13 +14,15 @@
 #import "UIView+HXExtension.h"
 #import "HXPhotoDefine.h"
 #import "UINavigationController+FDFullscreenPopGesture.h"
+#import "ToastView.h"
+#import "ShareBoardView.h"
 
 //#define URL_APPID @"wx3b864b92dca2bf8a"
 //#define URL_SECRET @"e998d19d22428e70c520f36a9c6f0e41"
 //static CGFloat shareAreaViewHeight = 73;//定义分享区域的高度
 
 
-@interface SharePictureViewController ()<WXDelegate,PhotoSaveBottomViewDelegate,UIScrollViewDelegate>
+@interface SharePictureViewController ()<WXDelegate,PhotoSaveBottomViewDelegate,UIScrollViewDelegate,ShareBoardViewDelegate>
 {
     AppDelegate *appdelegate;
 }
@@ -31,12 +33,11 @@
 @property (strong, nonatomic) UIScrollView *shareScrollView;
 @property (strong, nonatomic) PhotoSaveBottomView *toolBarView;
 @property (assign, nonatomic) CGFloat lastContentOffset;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *shareBoardHeight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *shareBtnWidth;
+
 @property (strong, nonatomic) UIView *containImageView;
+@property (strong, nonatomic) ShareBoardView *shareBoardView;
 
 
-@property (weak, nonatomic) IBOutlet UIVisualEffectView *shareBoardView;
 
 @end
 
@@ -46,14 +47,14 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self CustomTitle];//处理标透明化题栏 也可app统一设置
     [self createScrollView];
-    _shareBoardHeight.constant = 73*ScreenHeightRatio;
-    _shareBtnWidth.constant = 46*ScreenWidthRatio;
+
     if (_resultImage) {
         [self CreateShowImgaeView:_resultImage];//创建图片显示区域
-        [self.view bringSubviewToFront:self.shareBoardView];
+        _isShowShareBoardView = NO;
+        [self.view addSubview:self.shareBoardView];
         [self.view addSubview:self.toolBarView];//创建保存图片区域
+        
     }
     self.fd_prefersNavigationBarHidden = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollFinish) name:@"scrollFinish" object:nil];
@@ -76,8 +77,6 @@
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    //[self.shareBoardView setFrame:CGRectMake(0, self.toolBarView.originY, self.shareBoardView.hx_w, self.shareBoardView.hx_h)];
-    [_shareBoardView setHidden:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -101,7 +100,7 @@
 - (void)scrollFinish {
     [self.view handleLoading];
     [self CreateShowImgaeView:[self.manager getScrollImage]];
-    [self.view bringSubviewToFront:self.shareBoardView];
+    [self.view addSubview:self.shareBoardView];
     [self.view addSubview:self.toolBarView];
 }
 
@@ -122,10 +121,7 @@
 }
 
 #pragma mark - init view
--(void)CustomTitle
-{
-    
-}
+
 
 - (void)createScrollView {
     _showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h - kBottomMargin - kTopMargin)];
@@ -194,12 +190,13 @@
         imageView.image = _resultImage;
         
         [_containImageView addSubview:imageView];
-
+        imageView.layer.borderWidth = 1*ScreenWidthRatio;
+        imageView.layer.borderColor = [[UIColor blackColor] colorWithAlphaComponent:0.1].CGColor;
 //        imageView.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.7].CGColor;;
 //        imageView.layer.shadowOpacity = 0.8f;
 //        imageView.layer.shadowOffset = CGSizeMake(0, 0);
-        UITapGestureRecognizer* imgMsgTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchOnImage:)];
-        [_showImageScrollView addGestureRecognizer:imgMsgTap];
+//        UITapGestureRecognizer* imgMsgTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchOnImage:)];
+//        [_showImageScrollView addGestureRecognizer:imgMsgTap];
     }
     
 }
@@ -236,22 +233,22 @@
 }
 
 
-- (IBAction)onShareWechatClicked:(id)sender {
+- (void)shareBoardViewDidWeChatBtn {
     [self shareImageToPlatformType:UMSocialPlatformType_WechatSession];
 
 }
 
-- (IBAction)onShareMomentClicked:(id)sender {
+- (void)shareBoardViewDidMomentBtn {
     [self shareImageToPlatformType:UMSocialPlatformType_WechatTimeLine];
 
 }
 
-- (IBAction)onShareWeiboClicked:(id)sender {
+- (void)shareBoardViewDidWeiboBtn {
     [self shareImageToPlatformType:UMSocialPlatformType_Sina];
 
 }
 
-- (IBAction)onShareMoreClicked:(id)sender {
+- (void)shareBoardViewDidMoreBtn {
     NSLog(@"shareMoreImageOnClick");
     UIImage *imageToShare = _resultImage;
     if (imageToShare == nil) {
@@ -275,15 +272,27 @@
 }
 
 - (void)showShareBoard {
-    [_shareBoardView setHidden:NO];
+    _shareBoardView.hidden = NO;
     [UIView animateWithDuration:0.3f
                      animations:^{
                          
-                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY - _toolBarView.hx_h + kBottomMargin, _shareBoardView.size.width, _shareBoardView.size.height)];
+                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY - ShareBoardHeight, _shareBoardView.size.width, _shareBoardView.size.height)];
                          
                      }completion:^(BOOL finished) {
                          _isShowShareBoardView = YES;
                          
+                     }];
+}
+
+- (void)hideShareBoard {
+    [UIView animateWithDuration:0.3f
+                     animations:^{
+                         
+                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY + ShareBoardHeight, _shareBoardView.size.width, _shareBoardView.size.height)];
+                         
+                     }completion:^(BOOL finished) {
+                         _shareBoardView.hidden = YES;
+                         _isShowShareBoardView = NO;
                      }];
 }
 
@@ -305,18 +314,7 @@
     
 }
 
-- (void)hideShareBoard {
-    [_shareBoardView setHidden:NO];
-    [UIView animateWithDuration:0.3f
-                     animations:^{
-                         
-                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY + _toolBarView.hx_h - kBottomMargin, _shareBoardView.size.width, _shareBoardView.size.height)];
-                         
-                     }completion:^(BOOL finished) {
-                         [_shareBoardView setHidden:YES];
-                         _isShowShareBoardView = NO;
-                     }];
-}
+
 
 #pragma PhotoSaveBottomViewDelegate
 
@@ -324,7 +322,7 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 - (void)savePhotoBottomViewDidSaveBtn:(UIButton *)button {
-    
+    __weak typeof(self) weakSelf = self;
     if([button.titleLabel.text isEqualToString:LocalString(@"open_ablum")]) {
         NSURL *url = [NSURL URLWithString:@"photos-redirect://"];
         
@@ -335,7 +333,7 @@
         }
     } else {
         
-        __weak typeof(self) weakSelf = self;
+        
         [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
             //写入图片到相册
             UIImage *saveImage = _resultImage;
@@ -349,6 +347,7 @@
             if (success) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf.view showImageHUDText:LocalString(@"save_success")];
+
                     [button setTitle:LocalString(@"open_ablum") forState:UIControlStateNormal];
                 });
                 
@@ -382,6 +381,16 @@
         _toolBarView.delegate = self;
     }
     return _toolBarView;
+}
+
+- (ShareBoardView *)shareBoardView {
+    if (!_shareBoardView) {
+        _shareBoardView = [[ShareBoardView alloc] initWithFrame:CGRectMake(0, self.view.hx_h - ButtomViewHeight - kBottomMargin, self.view.hx_w, ShareBoardHeight)];
+        _shareBoardView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        _shareBoardView.shareDelegate = self;
+        _shareBoardView.hidden = YES;
+    }
+    return _shareBoardView;
 }
 
 #pragma mark scrollView delegate
