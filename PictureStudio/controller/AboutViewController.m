@@ -18,7 +18,7 @@ SKStoreProductViewControllerDelegate
 >
 
 @property (weak, nonatomic) IBOutlet UIImageView *bgImageView;
-@property (weak, nonatomic) IBOutlet UIView *contantView;
+
 @property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
 @property (weak, nonatomic) IBOutlet UILabel *appNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *versionLabel;
@@ -29,11 +29,18 @@ SKStoreProductViewControllerDelegate
 @property (weak, nonatomic) IBOutlet UIButton *contactBtn;
 @property (nonatomic, strong) NSMutableDictionary *teamInfoDictionary;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *InfoViewHeight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *versionViewHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *versionLableHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *iconMaginTop;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *iconSpaceToAppNameLabel;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *versionContainWidth;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bgImageViewHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bgImageViewWidth;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *iconHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *versionHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bgImageToInfoHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *quitBtnHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *quitBtnToTop;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *quitBtnToRight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bgImageViewToTop;
 
 
 @end
@@ -73,14 +80,24 @@ static NSString *identifier = @"AboutTableViewCell";
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
+    CGFloat offsetToTop = kDevice_Is_iPhoneX? 18:0;
+    _bgImageViewToTop.constant = 33*ScreenHeightRatio + offsetToTop;
+    _iconMaginTop.constant = 79*ScreenHeightRatio + offsetToTop;
+    _quitBtnToTop.constant = 48*ScreenHeightRatio + offsetToTop;
+    _quitBtnHeight.constant = 18*ScreenWidthRatio;
+    _quitBtnToRight.constant = 35*ScreenWidthRatio;
     
-    _iconMaginTop.constant = 37*ScreenHeightRatio;
-    _iconSpaceToAppNameLabel.constant = 12*ScreenHeightRatio;
-    _versionContainWidth.constant = 340*ScreenWidthRatio;
+    _iconSpaceToAppNameLabel.constant = 14*ScreenHeightRatio;
+    _bgImageViewHeight.constant = 200*ScreenHeightRatio;
     _bgImageViewWidth.constant = 340*ScreenWidthRatio;
+    _versionLableHeight.constant = 33*ScreenHeightRatio;
+    _versionHeight.constant = 14*ScreenHeightRatio;
+    _bgImageToInfoHeight.constant = 24*ScreenHeightRatio;
+    
+    
     if (kDevice_Is_iPhoneX || kDevice_Is_iPhone55 || kDevice_Is_iPhone47) {
     } else {
-        _versionViewHeight.constant = self.view.frame.size.height * 0.299;
+        _bgImageViewHeight.constant = self.view.frame.size.height * 0.299;
         _InfoViewHeight.constant = self.view.frame.size.height * 0.589;
     }
     
@@ -93,9 +110,9 @@ static NSString *identifier = @"AboutTableViewCell";
 //    _bgImageView.layer.masksToBounds = YES;
 //    _bgImageView.backgroundColor = UIColor.clearColor;
     
-    _contantView.layer.cornerRadius = 12;
+    _bgImageView.layer.cornerRadius = 12;
     //_contantView.backgroundColor = UIColor.clearColor;
-    _contantView.frame = CGRectMake(_contantView.originX, _contantView.originY + 10*ScreenHeightRatio, _contantView.hx_w, _contantView.hx_h);
+//    _contantView.frame = CGRectMake(_contantView.originX, _contantView.originY + 10*ScreenHeightRatio, _contantView.hx_w, _contantView.hx_h);
     //_contantView.layer.masksToBounds = YES;
 //    _contantView.layer.shadowColor = [UIColor colorWithRed:208/255.0 green:217/255.0 blue:237/255.0 alpha:1.0].CGColor;
 //    _contantView.layer.shadowOpacity = 0.8f;

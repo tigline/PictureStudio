@@ -278,7 +278,7 @@
     [UIView animateWithDuration:0.3f
                      animations:^{
                          
-                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY - ShareBoardHeight, _shareBoardView.size.width, _shareBoardView.size.height)];
+                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY - ShareBoardHeight+1, _shareBoardView.size.width, _shareBoardView.size.height)];
                          
                      }completion:^(BOOL finished) {
                          _isShowShareBoardView = YES;
@@ -290,7 +290,7 @@
     [UIView animateWithDuration:0.3f
                      animations:^{
                          
-                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY + ShareBoardHeight, _shareBoardView.size.width, _shareBoardView.size.height)];
+                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY + ShareBoardHeight-1, _shareBoardView.size.width, _shareBoardView.size.height)];
                          
                      }completion:^(BOOL finished) {
                          _shareBoardView.hidden = YES;
