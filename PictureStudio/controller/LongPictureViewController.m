@@ -26,7 +26,8 @@
 @property (assign, nonatomic) BOOL isShowShareBoardView;
 @property (assign, nonatomic) CGFloat lastContentOffset;
 @property (nonatomic, strong) UIView *imageContainerView;
-
+@property (nonatomic, assign) BOOL isFromShare;
+@property (nonatomic, assign) NSInteger shareType;
 
 
 
@@ -41,7 +42,7 @@
     [self createScrollView];
     _isShowShareBoardView = NO;
     [self.view addSubview:self.shareBoardView];
-    [self.view addSubview:self.toolBarView];//创建保存图片区域
+    [self.view addSubview:self.toolBarView];
     
 
 }
@@ -142,10 +143,19 @@
         if (_imageContainerView.hx_h < _longPictureView.hx_h - ButtomViewHeight) {
             CGFloat offsetY = (_longPictureView.hx_h - ButtomViewHeight - _imageContainerView.hx_h)/2;
             _imageContainerView.frame = CGRectMake(0, offsetY, _imageContainerView.hx_w, _imageContainerView.hx_h);
+            
+            [_longPictureView setContentSize:CGSizeMake(_longPictureView.frame.size.width, _imageContainerView.hx_h)];
+        } else if (_imageContainerView.hx_h < _longPictureView.hx_h){
+            CGFloat offsetY = (_longPictureView.hx_h - _imageContainerView.hx_h)/2;
+            //_imageContainerView.frame = CGRectMake(0, offsetY, _imageContainerView.hx_w, _imageContainerView.hx_h);
+            _longPictureView.frame = CGRectMake(_longPictureView.originX, _longPictureView.originY + offsetY, _imageContainerView.hx_w, _longPictureView.hx_h - 2*offsetY-1);
+            _imageContainerView.frame = CGRectMake(0, 0, _imageContainerView.hx_w, _imageContainerView.hx_h);
+            [_longPictureView setContentSize:CGSizeMake(_longPictureView.frame.size.width, _imageContainerView.hx_h)];
         } else {
             _imageContainerView.frame = CGRectMake(0, 0, _imageContainerView.hx_w, _imageContainerView.hx_h);
+            [_longPictureView setContentSize:CGSizeMake(_longPictureView.frame.size.width, _imageContainerView.hx_h)];
         }
-        [_longPictureView setContentSize:CGSizeMake(_longPictureView.frame.size.width, _imageContainerView.hx_h)];
+        
         
     } else {
         NSInteger count = _manager.selectedArray.count;
@@ -274,65 +284,78 @@
 
 - (void)shareBoardViewDidWeChatBtn {
     [self shareImageToPlatformType:UMSocialPlatformType_WechatSession];
-    
+    _shareType = UMSocialPlatformType_WechatSession;
 }
 
 - (void)shareBoardViewDidMomentBtn {
     [self shareImageToPlatformType:UMSocialPlatformType_WechatTimeLine];
-    
+    _shareType = UMSocialPlatformType_WechatTimeLine;
 }
 
 - (void)shareBoardViewDidWeiboBtn {
     [self shareImageToPlatformType:UMSocialPlatformType_Sina];
-    
+    _shareType = UMSocialPlatformType_Sina;
 }
 
 - (void)shareBoardViewDidMoreBtn {
     NSLog(@"shareMoreImageOnClick");
-    UIImage *imageToShare = _resultImage;
+    _shareType = 100;
+    if(_resultImage == nil) {
+        _isFromShare = YES;
+        [self savePhotoBottomViewDidSaveBtn:nil];
+        
+    } else {
 
-    NSArray *activityItems = @[imageToShare];
-    UIActivityViewController *activityVC = [[UIActivityViewController alloc]initWithActivityItems:activityItems applicationActivities:nil];
-    //不出现在活动项目
-    activityVC.excludedActivityTypes = @[UIActivityTypePrint, UIActivityTypeCopyToPasteboard,UIActivityTypeAssignToContact,UIActivityTypeSaveToCameraRoll];
-    [self presentViewController:activityVC animated:YES completion:nil];
-    // 分享之后的回调
-    activityVC.completionWithItemsHandler = ^(UIActivityType  _Nullable activityType, BOOL completed, NSArray * _Nullable returnedItems, NSError * _Nullable activityError) {
-        if (completed) {
-            NSLog(@"completed");
-            //分享 成功
-        } else  {
-            NSLog(@"cancled");
-            //分享 取消
-        }
-    };
+        NSArray *activityItems = @[_resultImage];
+        UIActivityViewController *activityVC = [[UIActivityViewController alloc]initWithActivityItems:activityItems applicationActivities:nil];
+        //不出现在活动项目
+        activityVC.excludedActivityTypes = @[UIActivityTypePrint, UIActivityTypeCopyToPasteboard,UIActivityTypeAssignToContact,UIActivityTypeSaveToCameraRoll];
+        [self presentViewController:activityVC animated:YES completion:nil];
+        // 分享之后的回调
+        activityVC.completionWithItemsHandler = ^(UIActivityType  _Nullable activityType, BOOL completed, NSArray * _Nullable returnedItems, NSError * _Nullable activityError) {
+            if (completed) {
+                NSLog(@"completed");
+                //分享 成功
+            } else  {
+                NSLog(@"cancled");
+                //分享 取消
+            }
+        };
+    }
 }
 
 - (void)shareImageToPlatformType:(UMSocialPlatformType)platformType
 {
-    //创建分享消息对象
-    UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
-    //创建图片内容对象
-    UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];
-    //如果有缩略图，则设置缩略图
-    shareObject.thumbImage = [UIImage imageNamed:@"icon"];
-    UIImage *saveImage = _resultImage;
-
-    [shareObject setShareImage:saveImage];
-    //分享消息对象设置分享内容对象
-    messageObject.shareObject = shareObject;
-    //调用分享接口
-    [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:self completion:^(id data, NSError *error) {
-        if (error) {
-            NSLog(@"************Share fail with error %@*********",error);
-            if ([error.localizedDescription containsString:@"2008"]) {
-                [self showShareError:platformType];
+    if(_resultImage == nil) {
+        _isFromShare = YES;
+        [self savePhotoBottomViewDidSaveBtn:nil];
+        
+    } else {
+        //创建分享消息对象
+        UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
+        //创建图片内容对象
+        UMShareImageObject *shareObject = [[UMShareImageObject alloc] init];
+        //如果有缩略图，则设置缩略图
+        shareObject.thumbImage = [UIImage imageNamed:@"icon"];
+        UIImage *saveImage = _resultImage;
+        
+        [shareObject setShareImage:saveImage];
+        //分享消息对象设置分享内容对象
+        messageObject.shareObject = shareObject;
+        //调用分享接口
+        [[UMSocialManager defaultManager] shareToPlatform:platformType messageObject:messageObject currentViewController:self completion:^(id data, NSError *error) {
+            if (error) {
+                NSLog(@"************Share fail with error %@*********",error);
+                if ([error.localizedDescription containsString:@"2008"]) {
+                    [self showShareError:platformType];
+                }
+            }else{
+                NSLog(@"response data is %@",data);
+                [self shareReturnByCode:0];
             }
-        }else{
-            NSLog(@"response data is %@",data);
-            [self shareReturnByCode:0];
-        }
-    }];
+        }];
+    }
+    
 }
 
 #pragma mark delegate 监听微信分享是否成功
@@ -418,39 +441,48 @@
 {
     CGFloat contentHeight = scrollView.contentSize.height - self.view.hx_h;
     CGFloat contentOffsetY = scrollView.contentOffset.y;
-
+    
+    if(contentHeight < 0)
+    {
+        return;
+        
+    }
+    
     
     if (contentOffsetY < 0) {
-
+        
     } else if (contentOffsetY < kTopMargin && contentOffsetY > 0) {
         self.longPictureView.frame = CGRectMake(0, kTopMargin - contentOffsetY, self.view.hx_w, self.view.hx_h);
     } else if (contentOffsetY < contentHeight && contentOffsetY > kTopMargin) {
-        //向下
-        //if (_canDetectScroll) {
-
+        
         self.longPictureView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h);
-        
-        
-        
-        //}
-        //[self.navigationController setNavigationBarHidden:NO animated:YES];
 
     } else if (contentOffsetY > contentHeight) {
 
 
         //向上
         CGFloat bottomMargin = 0.0;
+        CGFloat bottomOffset = 0.0;
         if (kDevice_Is_iPhoneX) {
             bottomMargin = self.toolBarView.hx_h;
         } else {
             bottomMargin = ButtomViewHeight;
         }
-        if (contentOffsetY > contentHeight && contentOffsetY < contentHeight+bottomMargin) {
-            self.longPictureView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h - bottomMargin);
+        if (contentHeight < bottomMargin) {
+            bottomOffset = bottomMargin - contentHeight;
+        } else {
+            bottomOffset = bottomMargin;
         }
+        if (contentOffsetY > contentHeight && contentOffsetY < contentHeight+bottomOffset) {
+            self.longPictureView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h - bottomOffset);
+        }
+//        else if (contentOffsetY > contentHeight+bottomOffset) {
+//            self.longPictureView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h - bottomMargin);
+//        }
         //[self.navigationController setNavigationBarHidden:YES animated:YES];
 
     }
+    
 }
 
 #pragma PhotoSaveBottomViewDelegate
@@ -474,12 +506,25 @@
             [self.toolBarView setSaveBtnsHiddenValue:YES];
             [self.toolBarView setSaveLabelHidden:NO];
             [self.toolBarView setProgressViewValue:0];
+        
+        if(_isFromShare) {
+            [self.toolBarView setSaveText:LocalString(@"share_init")];
+        } else {
+            [self.toolBarView setSaveText:LocalString(@"save_ing")];
+        }
         //});
         
         
         __weak typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.manager combinePhotosWithDirection:_manager.isCombineVertical resultImage:^(UIImage *combineImage) {
+                weakSelf.resultImage = combineImage;
+                if(weakSelf.isFromShare) {
+                    weakSelf.isFromShare = NO;
+                    [weakSelf.toolBarView setSaveBtnsHiddenValue:NO];
+                    [weakSelf.toolBarView setSaveLabelHidden:YES];
+                    [weakSelf savePhotoBottomViewDidShareBtn];
+                } else {
                 
                 [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
                     [PHAssetChangeRequest creationRequestForAssetFromImage:combineImage];
@@ -503,6 +548,7 @@
                         
                     }
                 }];
+                }
             } completeIndex:^(NSInteger index) {
                 //dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf.toolBarView setProgressViewValue:index];
@@ -516,14 +562,33 @@
                        
 }
 
+- (void)showTips
+{
+    //NSString *strTitle = LocalString(@"scroll_error");
+    
+    UIAlertController* successAlertController = [UIAlertController alertControllerWithTitle:nil
+                                                                                    message:LocalString(@"save_first")
+                                                                             preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:LocalString(@"sure") style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                              [self savePhotoBottomViewDidSaveBtn:nil];
+                                                          }];
+    [successAlertController addAction:defaultAction];
+    [self presentViewController:successAlertController animated:YES completion:nil];
+}
 
 
 - (void)savePhotoBottomViewDidShareBtn {
     
-    if (_isShowShareBoardView) {
-        [self hideShareBoard];
+    if (_resultImage == nil) {
+        _isFromShare = YES;
+        [self savePhotoBottomViewDidSaveBtn:nil];
     } else {
-        [self showShareBoard];
+        if (_isShowShareBoardView) {
+            [self hideShareBoard];
+        } else {
+            [self showShareBoard];
+        }
     }
     
 }
@@ -585,6 +650,8 @@
 }
 
 #pragma mark - Private
+
+
 
 - (void)refreshImageContainerViewCenter {
     CGFloat longPictureViewHeight;

@@ -90,6 +90,9 @@
     [_progressView setProgress:(index + 1) * (1.0/self.length)];
 }
 
+- (void)setSaveText:(NSString *)text {
+    _progressView.text = text;
+}
 
 - (void)layoutSubviews {
     [super layoutSubviews];

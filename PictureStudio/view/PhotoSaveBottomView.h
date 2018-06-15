@@ -22,4 +22,5 @@
 - (void)setSaveLabelHidden:(BOOL)value;
 - (void)setProgressViewValue:(NSInteger)index;
 - (void)setSaveBtnsHiddenValue:(BOOL)value;
+- (void)setSaveText:(NSString *)text;
 @end

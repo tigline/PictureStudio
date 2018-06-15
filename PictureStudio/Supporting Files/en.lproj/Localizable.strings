@@ -20,6 +20,8 @@
 "scroll_operate_tips" = "Please select picture that match scroll condition";
 "save_image" = "Save image to ablum";
 "save_ing" = "Saving Now";
+"save_first" = "Save Image Fisrt";
+"share_init" = "Ready to Share";
 "open_ablum" = "Open Ablum";
 "pm" = "PM";
 "ui" = "UI";

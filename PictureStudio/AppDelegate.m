@@ -61,7 +61,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     /* 设置微信的appKey和appSecret */
     [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatSession appKey:WX_APP_KEY appSecret:WX_APP_SECRET redirectURL:nil];
     /* 设置微博的appKey和appSecret */
-    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_Sina appKey:WB_APP_KEY  appSecret:WB_APP_SECRET redirectURL:@"https://sns.whalecloud.com/sina2/callback"];
+    [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_Sina appKey:WB_APP_KEY  appSecret:WB_APP_SECRET redirectURL:nil];
 
 }
 
