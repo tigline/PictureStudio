@@ -12,6 +12,7 @@
 #include "opencv2/legacy/legacy.hpp"
 #include <vector>
 #include <iostream>
+#import "PhotoCutModel.h"
 
 using namespace cv;
 using namespace std;
@@ -34,21 +35,25 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
     CGFloat navigationHeight = kNavigationBarHeight * [UIScreen mainScreen].scale;
     CGFloat cutLeftX = kDevice_Is_iPhoneX? 0.18f : 0.20f;
     CGFloat cutRightX = 0.75f;
-    
+    NSMutableArray *resultModels = [[NSMutableArray alloc]init];
     clock_t start_surf = clock();
     //依次拼接图片 （需要完善每张图片模型的信息）
     for (int i = 0; i < images.count-1; i++) {
-        
+        PhotoCutModel *model = [[PhotoCutModel alloc]init];
+        model.originPhoto = [images objectAtIndex:i];
         if (resultMat.data == NULL) {
             NSLog(@"resultMat.data == NULL");
             imageUpOrigin = [self cvMatFromUIImage:[images objectAtIndex:i]];
+            //UIImage *image = [self imageWithCVMat:imageUpOrigin];
             //路径读取图片暂不使用
             //NSString *path = [images objectAtIndex:i];
             //imageUpCut = imread([path UTF8String]);
             
+            model.beginY = 0;
             imageUpCut = imageUpOrigin(cv::Rect(cv::Point(imageUpOrigin.cols*cutLeftX,navigationHeight),cv::Point(imageUpOrigin.cols*cutRightX,imageUpOrigin.rows)));
             curUseHeight = imageUpCut.rows;
         } else {
+
             previewMat = resultMat;
             imageUpCut = resultMat(cv::Rect(cv::Point(resultMat.cols*cutLeftX,resultMat.rows-curUseHeight),cv::Point(resultMat.cols*cutRightX,resultMat.rows)));
         }
@@ -104,7 +109,8 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
                     } else {
                         resultMat = comMatC(resultMat, imageDownOrigin, resultMat);
                     }
-                    
+                    model.beginY = 0;
+                    model.endY = imageDownOrigin.rows;
                     curUseHeight = imageDownCut.rows;
                     isSuccess = NO;
                     continue;
@@ -119,6 +125,8 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         if (good_matchesX.size() == 0) {
             resultMat = comMatC(imageUpOrigin, imageDownOrigin, resultMat);
             curUseHeight = imageDownCut.rows;
+            model.beginY = 0;
+            model.endY = imageDownOrigin.rows;
             isSuccess = NO;
             continue;
         }
@@ -184,6 +192,8 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             }
             curUseHeight = imageDownCut.rows;
             isSuccess = NO;
+            model.beginY = 0;
+            model.endY = imageDownOrigin.rows;
             continue;
             //先寻找匹配点内 符合条件的
 //            vector<DMatch> final_matches;
@@ -244,6 +254,8 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         if (resultMat.rows < imageDownOrigin.rows) {
             resultMat = comMatC(imageUpOrigin, imageDownOrigin, resultMat);
             curUseHeight = imageDownCut.rows;
+            model.beginY = 0;
+            model.endY = imageDownOrigin.rows;
             continue;
         }
         
@@ -436,6 +448,7 @@ Mat comMatC(Mat Matrix1,Mat Matrix2,Mat &MatrixCom)  //需要处理列数不同�
 
 + (UIImage *)imageWithCVMat:(const cv::Mat&)cvMat
 {
+
     NSData *data = [NSData dataWithBytes:cvMat.data length:cvMat.elemSize() * cvMat.total()];
     CGColorSpaceRef colorSpace;
     if (cvMat.elemSize() == 1) {
@@ -462,6 +475,7 @@ Mat comMatC(Mat Matrix1,Mat Matrix2,Mat &MatrixCom)  //需要处理列数不同�
     CGImageRelease(imageRef);
     CGDataProviderRelease(provider);
     CGColorSpaceRelease(colorSpace);
+    
     return cvImage;
 }
 

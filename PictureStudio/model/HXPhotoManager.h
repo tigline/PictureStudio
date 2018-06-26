@@ -209,7 +209,7 @@ typedef enum : NSUInteger {
 
 - (void)selectedListTransformAfter;
 - (void)selectedListTransformBefore;
-- (void)setScrollImage:(UIImage *)resultImage;
+- (void)setScrollResult:(NSArray *)resultModels;
 
 - (CGFloat)getSelectPhotosMinWidth;
 

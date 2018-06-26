@@ -37,7 +37,7 @@
 @property (copy, nonatomic) NSString *endPhotosTotalBtyes;
 @property (strong, nonatomic) NSMutableArray *iCloudUploadArray;
 @property (strong, nonatomic) NSMutableArray *albums;
-@property (strong, nonatomic) UIImage *resultImage;
+@property (strong, nonatomic) NSArray *resultModels;
 @property (assign, nonatomic) CGFloat screenShotWidth;
 @end
 
@@ -1108,12 +1108,12 @@
     NSSLog(@"dealloc");
 }
 
-- (void)setScrollImage:(UIImage *)resultImage {
-    _resultImage = resultImage;
+- (void)setScrollResult:(NSArray *)resultModels {
+    _resultModels = resultModels;
 }
 
-- (UIImage *)getScrollImage {
-    return self.resultImage;
+- (NSArray *)getScrollResult {
+    return self.resultModels;
 }
 
 - (void)setScreenWidthSize:(CGFloat)size {

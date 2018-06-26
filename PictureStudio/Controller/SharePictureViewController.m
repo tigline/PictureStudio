@@ -93,7 +93,7 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [self.manager setScrollImage:nil];
+    [self.manager setScrollResult:nil];
 
     //[self.navigationController.navigationBar setHidden:NO];
 }

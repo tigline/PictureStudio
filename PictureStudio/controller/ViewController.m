@@ -957,12 +957,12 @@ PhotoPreviewControllerDelegate
         }
         __weak typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [CombinePictureTest CombinePictures:photoArray complete:^(UIImage *longPicture) {
+            [CombinePictureTest CombinePictures:photoArray complete:^(NSArray* resultModels) {
                 if (weakSelf.manager.selectedCount > 3) {
-                    [weakSelf.manager setScrollImage:longPicture];
+                    [weakSelf.manager setScrollResult:resultModels];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollFinish" object:nil];
                 } else {
-                    [self performSegueWithIdentifier:@"toSharePictureView" sender:longPicture];
+                    [self performSegueWithIdentifier:@"toSharePictureView" sender:resultModels];
                 }
             }success:^(BOOL success) {
                 weakSelf.manager.isScrollSuccess = success;
@@ -1325,9 +1325,9 @@ PhotoPreviewControllerDelegate
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
     if ([[segue identifier] isEqualToString:@"toSharePictureView"]) {
-        UIImage *image = (UIImage *)sender;
+        NSArray *modelArray = (NSArray *)sender;
         ((SharePictureViewController *)(segue.destinationViewController)).manager = self.manager;
-        ((SharePictureViewController *)(segue.destinationViewController)).resultImage = image;
+        ((SharePictureViewController *)(segue.destinationViewController)).resultModels = modelArray;
     } else if ([[segue identifier] isEqualToString:@"toLongPictureView"]) {
         //UIImage *image = (UIImage *)sender;
         ((LongPictureViewController *)(segue.destinationViewController)).manager = self.manager;
