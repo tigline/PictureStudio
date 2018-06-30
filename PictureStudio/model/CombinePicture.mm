@@ -12,6 +12,7 @@
 #include "opencv2/legacy/legacy.hpp"
 #include <vector>
 #include <iostream>
+#import "PhotoCutModel.h"
 
 using namespace cv;
 using namespace std;
@@ -21,226 +22,322 @@ using namespace std;
 //计算原始图像点位在经过矩阵变换后在目标图像上对应位置
 Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri);
 
-+(void)CombinePictures:(NSArray *)images complete:(CombineCompletely)state
++(void)CombinePictures:(NSArray *)images complete:(CombineCompletely)state success:(ScrollSuccess)success
 {
-
-    Mat imageTransform1;
-    Mat image01;
-    Mat image002;
-    Mat resultMat;
+    BOOL isSuccess = YES;
+    Mat imageUpOrigin;                      //上部原始图片
+    Mat imageDownOrigin;                    //下部原始图片
+    Mat imageUpCut;                         //截取上部图片需要匹配的区域
+    Mat imageDownCut;                       //截取下部图片需要匹配的区域
+    Mat previewMat;                         //前一次匹配的结果
+    Mat resultMat;                          //最终匹配的结果
+    float curUseHeight = 0;
+    float preCutupY = 0;
+    CGFloat navigationHeight = kNavigationBarHeight * [UIScreen mainScreen].scale;
+    CGFloat cutLeftX = kDevice_Is_iPhoneX? 0.18f : 0.20f;
+    CGFloat cutRightX = 0.75f;
+    NSMutableArray *resultModels = [[NSMutableArray alloc]init];
     clock_t start_surf = clock();
+    //依次拼接图片
     for (int i = 0; i < images.count-1; i++) {
+        PhotoCutModel *model = [[PhotoCutModel alloc]init];
         
-        if (resultMat.data == NULL) {
-            NSLog(@"imageTransform1.data == NULL");
-            image01 = [self cvMatFromUIImage:[images objectAtIndex:i]];
+        if (i == 0) {
+            imageUpOrigin = [self cvMatFromUIImage:[images objectAtIndex:i]];
+            //UIImage *image = [self imageWithCVMat:imageUpOrigin];
             //路径读取图片暂不使用
-//            NSString *path = [images objectAtIndex:i];
-//            image01 = imread([path UTF8String]);
+            //NSString *path = [images objectAtIndex:i];
+            //imageUpCut = imread([path UTF8String]);
+            model.originPhoto = [images objectAtIndex:i];
+            model.beginY = 0;
+            imageUpCut = imageUpOrigin(cv::Rect(cv::Point(imageUpOrigin.cols*cutLeftX, navigationHeight),cv::Point(imageUpOrigin.cols*cutRightX, imageUpOrigin.rows)));
+            curUseHeight = imageUpCut.rows;
         } else {
-            image01 = resultMat;
-            
+            model.originPhoto = [images objectAtIndex:i];
+            imageUpOrigin = [self cvMatFromUIImage:model.originPhoto];
+            model.beginY = preCutupY;
+            previewMat = resultMat;
+            imageUpCut = imageUpOrigin(cv::Rect(cv::Point(imageUpOrigin.cols*cutLeftX, preCutupY),cv::Point(imageUpOrigin.cols*cutRightX, imageUpOrigin.rows)));
         }
+        
         if (i + 1 < images.count) {
-            image002 = [self cvMatFromUIImage:[images objectAtIndex:i+1]];
+
+            imageDownOrigin = [self cvMatFromUIImage:[images objectAtIndex:i+1]];
             //路径读取图片暂不使用
-//            NSString *path = [images objectAtIndex:i+1];
-//            image002 = imread([path UTF8String]);
+            //NSString *path = [images objectAtIndex:i+1];
+            //imageDownOrigin = imread([path UTF8String]);
         }
         
+        imageDownCut = imageDownOrigin(cv::Rect(cv::Point(imageDownOrigin.cols*cutLeftX,0),cv::Point(imageDownOrigin.cols*cutRightX,imageDownOrigin.rows)));
         
-        Mat image02=image002(cv::Rect(cv::Point(0,128),cv::Point(image002.cols,image002.rows)));
         //灰度图转换
-        Mat image1,image2;
-        cvtColor(image01,image1,CV_RGB2GRAY);
-        cvtColor(image02,image2,CV_RGB2GRAY);
+        Mat imageUpGray,imageDownGray;
+        cvtColor(imageUpCut,imageUpGray,CV_RGB2GRAY);
+        cvtColor(imageDownCut,imageDownGray,CV_RGB2GRAY);
         
         
-//        ORB orb;
-//        vector<KeyPoint> keyPoints_1, keyPoints_2;
-//        Mat descriptors_1, descriptors_2;
-//
-//        orb(image1, Mat(), keyPoints_1, descriptors_1);
-//        orb(image2, Mat(), keyPoints_2, descriptors_2);
-//
-//        BruteForceMatcher<HammingLUT> matcher;
-//        vector<DMatch> matches;
-//        matcher.match(descriptors_1, descriptors_2, matches);
-//
-//        double max_dist = 0; double min_dist = 100;
-//        //-- Quick calculation of max and min distances between keypoints
-//        for( int i = 0; i < descriptors_1.cols; i++ )
-//        {
-//            double dist = matches[i].distance;
-//            if( dist < min_dist ) min_dist = dist;
-//            if( dist > max_dist ) max_dist = dist;
-//        }
-//        printf("-- Max dist : %f \n", max_dist );
-//        printf("-- Min dist : %f \n", min_dist );
-//        //-- Draw only "good" matches (i.e. whose distance is less than 0.6*max_dist )
-//        //-- PS.- radiusMatch can also be used here.
-//        std::vector< DMatch > good_matches;
-//        for( int i = 0; i < descriptors_1.cols; i++ )
-//        {
-//            if( matches[i].distance < 0.6*max_dist )
-//            {
-//                good_matches.push_back( matches[i]);
+        vector<DMatch> good_matchesX;
+        vector<DMatch> good_matches;
+        vector<KeyPoint> keyPoint_Up,keyPoint_Down;
+ 
+        //int *keyPoint_Up_p = 0;
+        //keyPoint_Up_p = keyPoint_Up;
+
+        //默认识别
+        good_matchesX = dectectMatchPoints(&keyPoint_Up, &keyPoint_Down, imageUpGray, imageDownGray, NO, 12000, YES);
+        
+        Mat img_matches;
+//        drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
+//                    good_matchesX, img_matches, Scalar::all(-1), Scalar::all(-1),
+//                    vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+//        UIImage *imageGoodMatchPoints = [self imageWithCVMat:img_matches];
+
+        //无X轴匹配点则判定为无重合 直接拼接  该处逻辑需要完善：先用快速法 再用精确法 或者调整海塞矩阵阈值 也可改变匹配区域。
+        if(good_matchesX.size() <= 5) {
+
+            good_matchesX = dectectMatchPoints(&keyPoint_Up, &keyPoint_Down, imageUpGray, imageDownGray, NO, 9000, NO);
+            
+//            drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
+//                        good_matchesX, img_matches, Scalar::all(-1), Scalar::all(-1),
+//                        vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+//            UIImage *imageGoodMatchPoints = [self imageWithCVMat:img_matches];
+            if (good_matchesX.size() == 0) {
+                
+                good_matchesX = dectectMatchPoints(&keyPoint_Up, &keyPoint_Down, imageUpGray, imageDownGray, YES, 150, NO);
+                
+                if (good_matchesX.size() == 0) {
+//                    if (resultMat.data == NULL) {
+//                        resultMat = comMatC(imageUpOrigin, imageDownOrigin, resultMat);
+//                    } else {
+//                        resultMat = comMatC(resultMat, imageDownOrigin, resultMat);
+//                    }
+                    model.endY = imageDownOrigin.rows;
+                    [resultModels addObject:model];
+                    
+                    if (i + 1 == images.count - 1) {
+                        PhotoCutModel *endModel = [[PhotoCutModel alloc] init];
+                        endModel.originPhoto = [images objectAtIndex:i+1];
+                        endModel.beginY = 0;
+                        endModel.endY = imageDownOrigin.rows;
+                        [resultModels addObject:endModel];
+                    }
+                    curUseHeight = imageDownCut.rows;
+                    preCutupY = navigationHeight;
+                    isSuccess = NO;
+                    
+                    continue;
+                }
+            }
+        }
+        
+        //寻找最大距离点 对于老司机的截图 有些问题。
+        Point2f curPointU = keyPoint_Up[good_matchesX[0].queryIdx].pt;
+        Point2f curPointD = keyPoint_Down[good_matchesX[0].trainIdx].pt;
+        float maxDistance = curPointU.y - curPointD.y;
+
+        int maxYIndex = 0;
+        for (int i = 1; i < good_matchesX.size(); i++) {
+            Point2f curPointU = keyPoint_Up[good_matchesX[i].queryIdx].pt;
+            Point2f curPointD = keyPoint_Down[good_matchesX[i].trainIdx].pt;
+            float curDistance = curPointU.y - curPointD.y;
+            if (maxDistance < curDistance) {
+                maxDistance = curDistance;
+                maxYIndex = i;
+            }
+
+        }
+
+        //获取最强配对点在原始图像和矩阵变换后图像上的对应位置，用于图像拼接点的定位 ,targetLinkPoint
+        Point2f originalLinkPoint,basedImagePoint;
+        
+        originalLinkPoint=keyPoint_Up[good_matchesX[maxYIndex].queryIdx].pt;
+        NSLog(@"originalLinkPoint x.y = %f / %f",originalLinkPoint.x, originalLinkPoint.y);
+
+        basedImagePoint=keyPoint_Down[good_matchesX[maxYIndex].trainIdx].pt;
+        NSLog(@"basedImagePoint x.y = %f / %f",basedImagePoint.x, basedImagePoint.y);
+        
+        //targetLinkPoint=getTransformPoint(originalLinkPoint,adjustHomo);
+        //NSLog(@"targetLinkPointx.y = %f / %f",targetLinkPoint.x, targetLinkPoint.y);
+
+        //不匹配则直接衔接  需要记录是哪两张图片 此功能待完善
+        CGFloat upPeMatchHeight = imageUpOrigin.rows - curUseHeight;
+        if(basedImagePoint.y > originalLinkPoint.y + upPeMatchHeight) {
+//            if (resultMat.data == NULL) {
+//                resultMat = comMatC(imageUpOrigin, imageDownOrigin, resultMat);
+//            } else {
+//                resultMat = comMatC(resultMat, imageDownOrigin, resultMat);
 //            }
-//        }
-        
-        //cout<<"ORB："<<totaltime_initPicture<<"秒！"<<endl;
-        
-        //提取特征点
+            model.endY = imageDownOrigin.rows;
+            [resultModels addObject:model];
+            if (i + 1 == images.count - 1) {
+                PhotoCutModel *endModel = [[PhotoCutModel alloc] init];
+                endModel.originPhoto = [images objectAtIndex:i+1];
+                endModel.beginY = 0;
+                endModel.endY = imageDownOrigin.rows;
+                [resultModels addObject:endModel];
+            }
+            preCutupY = navigationHeight;
+            curUseHeight = imageDownCut.rows;
+            isSuccess = NO;
+            continue;
 
+        }
         
-        //SiftFeatureDetector siftDetector(100);  // 海塞矩阵阈值  #最耗时操作一
-        FastFeatureDetector siftDetector(170);
-
-        vector<KeyPoint> keyPoint1,keyPoint2;
-        siftDetector.detect(image1,keyPoint1);
-        siftDetector.detect(image2,keyPoint2);
         
-        double totaltime_initPicture;
-        clock_t sift_picture = clock();
-        totaltime_initPicture = (double)(sift_picture - start_surf)/CLOCKS_PER_SEC;
-        cout<<"提取特征点："<<totaltime_initPicture<<"秒！"<<endl;
+        CGFloat combineHeight = (imageDownOrigin.rows - basedImagePoint.y) + originalLinkPoint.y;
+        if (combineHeight< imageDownOrigin.rows) {
+            //resultMat = comMatC(imageUpOrigin, imageDownOrigin, resultMat);
+            curUseHeight = imageDownCut.rows;
+            model.endY = imageDownOrigin.rows;
+            [resultModels addObject:model];
+            preCutupY = navigationHeight;
+            
+            if (i + 1 == images.count - 1) {
+                PhotoCutModel *endModel = [[PhotoCutModel alloc] init];
+                endModel.originPhoto = [images objectAtIndex:i+1];
+                endModel.beginY = 0;
+                endModel.endY = imageDownOrigin.rows;
+                [resultModels addObject:endModel];
+            }
+            continue;
+        }
         
-        //特征点描述，为下边的特征点匹配做准备  #最耗时操作二
-        //SiftDescriptorExtractor siftDescriptor;
-
-        OrbDescriptorExtractor siftDescriptor;
-
-        Mat imageDesc1,imageDesc2;
-        siftDescriptor.compute(image1,keyPoint1,imageDesc1);
-        siftDescriptor.compute(image2,keyPoint2,imageDesc2);
-        
-        clock_t siftd_picture = clock();
-        totaltime_initPicture = (double)(siftd_picture - start_surf)/CLOCKS_PER_SEC;
-        cout<<"特征点描述，为下边的特征点匹配做准备："<<totaltime_initPicture<<"秒！"<<endl;
-        
-        //获得匹配特征点，并提取最优配对
-
-        //FlannBasedMatcher matcher;
-        BFMatcher matcher;
-
-        vector<DMatch> matchePoints;
-        matcher.match(imageDesc1,imageDesc2,matchePoints,Mat());
-        sort(matchePoints.begin(),matchePoints.end()); //特征点排序
-        
-
-        //获取排在前N个的最优匹配特征点
-        vector<Point2f> imagePoints1,imagePoints2;
-        long pointCount = 0;
-        if (matchePoints.size() > 100) {
-            pointCount = 100;
+        curUseHeight = imageDownCut.rows - basedImagePoint.y;
+        Mat imageUpResult;
+        if (i < 1) {
+            //imageUpResult = imageUpOrigin(cv::Rect(cv::Point(0,0), cv::Point(imageUpOrigin.cols, originalLinkPoint.y + navigationHeight)));
+            model.endY = originalLinkPoint.y + navigationHeight;
         } else {
-            pointCount = matchePoints.size();
+            //imageUpResult = previewMat(cv::Rect(cv::Point(0,preCutupY), cv::Point(imageUpOrigin.cols, originalLinkPoint.y + preCutupY)));
+            model.endY = originalLinkPoint.y + preCutupY;
+        }
+        [resultModels addObject:model];
+        preCutupY = basedImagePoint.y;
+        //Mat imageDownResult=imageDownOrigin(cv::Rect(cv::Point(0,basedImagePoint.y),cv::Point(imageDownOrigin.cols, imageDownOrigin.rows)));
+        //UIImage *imageTransform01 = [self imageWithCVMat:imageDownResult];
+        if (i + 1 == images.count - 1) {
+            PhotoCutModel *endModel = [[PhotoCutModel alloc] init];
+            endModel.originPhoto = [images objectAtIndex:i+1];
+            endModel.beginY = basedImagePoint.y;
+            endModel.endY = imageDownOrigin.rows;
+            [resultModels addObject:endModel];
         }
         
-        for(int i=0;i<pointCount;i++)
-        {
-            imagePoints1.push_back(keyPoint1[matchePoints[i].queryIdx].pt);
-            imagePoints2.push_back(keyPoint2[matchePoints[i].trainIdx].pt);
-        }
 
-        //获取图像1到图像2的投影映射矩阵，尺寸为3*3
-        Mat homo=findHomography(imagePoints1,imagePoints2,CV_RANSAC);
-
-        Mat adjustMat=(Mat_<double>(3,3)<<1.0,0,0,  0,1.0,image01.rows,  0,0,1.0);
-
-        Mat adjustHomo=adjustMat*homo;
-
-        
-        //获取最强配对点在原始图像和矩阵变换后图像上的对应位置，用于图像拼接点的定位
-        Point2f originalLinkPoint,targetLinkPoint,basedImagePoint;
-        
-    
-        
-        originalLinkPoint=keyPoint1[matchePoints[0].queryIdx].pt;
-        
-        NSLog(@"originalLinkPointx.y = %f / %f",originalLinkPoint.x, originalLinkPoint.y);
-        
-        targetLinkPoint=getTransformPoint(originalLinkPoint,adjustHomo);
-        NSLog(@"targetLinkPointx.y = %f / %f",targetLinkPoint.x, targetLinkPoint.y);
-        
-        basedImagePoint=keyPoint2[matchePoints[0].trainIdx].pt;
-        NSLog(@"basedImagePointx.y = %f / %f",basedImagePoint.x, basedImagePoint.y);
-        int index = 0;
-        while (basedImagePoint.x != originalLinkPoint.x) {
-            if (index < 10) {
-                index ++;
-                originalLinkPoint=keyPoint1[matchePoints[index].queryIdx].pt;
-            }
-            else
-            {
-                originalLinkPoint=keyPoint1[matchePoints[0].queryIdx].pt;
-                break;
-            }
-        }
-        
-        
-        //Mat imageTransform;
-        //图像配准
-
-//        warpPerspective(image01,imageTransform1,adjustMat*homo,cv::Size(image02.cols,image01.rows+image02.rows));
-//        if(basedImagePoint.y > originalLinkPoint.y) {
-//            resultMat = comMatC(image01, image002, resultMat);
-//            continue;
-//        }
-//        UIImage *imageTransform06 = [self imageWithCVMat:imageTransform1];
-//        Mat image1Overlap, image2Overlap; //图1和图2的重叠部分
-//       // image1Overlap = image01(cv::Rect(cv::Point(0, originalLinkPoint.y - basedImagePoint.y), cv::Point(image01.cols, originalLinkPoint.y)));
-//        image1Overlap = imageTransform1(cv::Rect(cv::Point(0, targetLinkPoint.y - basedImagePoint.y), cv::Point(image02.cols, targetLinkPoint.y)));
-//        UIImage *imageTransform04 = [self imageWithCVMat:image1Overlap];
-//        image2Overlap = image02(cv::Rect(0, 0, image1Overlap.cols, image1Overlap.rows));
-//
-//        Mat image1ROICopy = image1Overlap.clone();  //复制一份图1的重叠部分
-//        UIImage *imageTransform05 = [self imageWithCVMat:image2Overlap];
-
-//        for (int j = 0; j<image1Overlap.cols; j++)
-//        {
-//            for (int i = 0; i<image1Overlap.rows; i++)
-//            {
-//                double height;
-//                height = (double)j / image1Overlap.rows;  //随距离改变而改变的叠加系数
-//                image1Overlap.at<Vec3b>(i, j)[0] = (1 - height)*image1ROICopy.at<Vec3b>(i, j)[0] + height*image2Overlap.at<Vec3b>(i, j)[0];
-//                image1Overlap.at<Vec3b>(i, j)[1] = (1 - height)*image1ROICopy.at<Vec3b>(i, j)[1] + height*image2Overlap.at<Vec3b>(i, j)[1];
-//                image1Overlap.at<Vec3b>(i, j)[2] = (1 - height)*image1ROICopy.at<Vec3b>(i, j)[2] + height*image2Overlap.at<Vec3b>(i, j)[2];
-//            }
-//        }
-        //在最强匹配点的位置处衔接，最强匹配点上侧是图1，下侧是图2，这样直接替换图像衔接不好，光线有突变
-        //不重合的部分
-        //UIImage *imageTransform03 = [self imageWithCVMat:image1Overlap];
-        //Mat cutImage01 = image01(cv::Rect(cv::Point(0,0), cv::Point(image01.cols, image01.rows - basedImagePoint.y - 79)));
-        Mat cutImage01 = image01(cv::Rect(cv::Point(0,0), cv::Point(image01.cols, originalLinkPoint.y)));
-        UIImage *cutImage1 = [self imageWithCVMat:cutImage01];
-        Mat ROIMat=image02(cv::Rect(cv::Point(0,basedImagePoint.y),cv::Point(image02.cols,image02.rows)));
-        UIImage *imageTransform01 = [self imageWithCVMat:ROIMat];
-        
-        //Mat resultMat;
-        resultMat = comMatC(cutImage01, ROIMat, resultMat);
-//        UIImage *imageTransform011 = [self imageWithCVMat:resultMat];
-//
-//
-//        //不重合的部分直接衔接上去
-//        ROIMat.copyTo(Mat(cutImage01,cv::Rect(0,targetLinkPoint.y,image02.cols,ROIMat.rows)));
-//        UIImage *imageTransform02 = [self imageWithCVMat:ROIMat];
-//        resultMat = imageTransform1(cv::Rect(cv::Point(0,image01.rows-originalLinkPoint.y+basedImagePoint.y),cv::Point(imageTransform1.cols,imageTransform1.rows)));
     }
-    UIImage *imageTransform03 = [self imageWithCVMat:resultMat];
-    
+
     clock_t end_surf = clock();
     double totaltime_surf;
     totaltime_surf = (double)(end_surf - start_surf)/CLOCKS_PER_SEC;
-    cout<<"常规程序的运行时间："<<totaltime_surf<<"秒！"<<endl;
-    //return [self imageWithCVMat:imageTransform1];
-    state(imageTransform03);
+    cout<<"拼接运行时间："<<totaltime_surf<<"秒！"<<endl;
+    
+    success(isSuccess);
+    state(resultModels);
     
 }
 
-Mat comMatC(Mat Matrix1,Mat Matrix2,Mat &MatrixCom)
+vector<DMatch> dectectMatchPoints(vector<KeyPoint> *keyPoint_Up, vector<KeyPoint> *keyPoint_Down, Mat imageUpGray, Mat imageDownGray, bool isFast, int detectValue, bool isGoodX) {
+    
+    clock_t start_surf = clock();
+    double totaltime_initPicture;
+    float cutHeight = imageDownGray.rows - imageUpGray.rows;
+    
+    Mat imageDesc_Up,imageDesc_Down;
+    vector<DMatch> matchePoints;
+    vector<DMatch> good_matches;
+    
+//    clock_t sift_picture = clock();
+//    totaltime_initPicture = (double)(sift_picture - start_surf)/CLOCKS_PER_SEC;
+//    cout<<"提取特征点："<<totaltime_initPicture<<"秒！"<<endl;
+    
+    if (isFast) {
+        FastFeatureDetector detector(detectValue);
+        detector.detect(imageUpGray,*keyPoint_Up);
+        detector.detect(imageDownGray,*keyPoint_Down);
+        
+        OrbDescriptorExtractor descriptor;
+        descriptor.compute(imageUpGray,*keyPoint_Up,imageDesc_Up);
+        descriptor.compute(imageDownGray,*keyPoint_Down,imageDesc_Down);
+        
+        BFMatcher matchers; //强制匹配 用于快速法
+        matchers.match(imageDesc_Up,imageDesc_Down,matchePoints,Mat());
+        
+    } else {
+        //提取特征点 最耗时操作一
+        SurfFeatureDetector detector(detectValue);
+        detector.detect(imageUpGray,*keyPoint_Up);
+        detector.detect(imageDownGray,*keyPoint_Down);
+        
+        //特征点描述，为下边的特征点匹配做准备  #最耗时操作二
+        SurfDescriptorExtractor descriptor;
+        descriptor.compute(imageUpGray,*keyPoint_Up,imageDesc_Up);
+        descriptor.compute(imageDownGray,*keyPoint_Down,imageDesc_Down);
+        
+        //获得匹配特征点，并提取最优配对
+        FlannBasedMatcher matchers;
+        matchers.match(imageDesc_Up,imageDesc_Down,matchePoints,Mat());
+    }
+
+
+    
+    clock_t siftd_picture = clock();
+    totaltime_initPicture = (double)(siftd_picture - start_surf)/CLOCKS_PER_SEC;
+    cout<<"特征点描述，为下边的特征点匹配做准备："<<totaltime_initPicture<<"秒！"<<endl;
+    
+//    double max_dist = 0; double min_dist = 100;
+//    //-- Quick calculation of max and min distances between keypoints
+//    for( int i = 0; i < imageDesc_Up.rows; i++ )
+//    { double dist = matchePoints[i].distance;
+//        if( dist < min_dist ) min_dist = dist;
+//        if( dist > max_dist ) max_dist = dist;
+//    }
+//    printf("-- Max dist : %f \n", max_dist );
+//    printf("-- Min dist : %f \n", min_dist );
+//    //-- Draw only "good" matches (i.e. whose distance is less than 2*min_dist,
+//    //-- or a small arbitary value ( 0.02 ) in the event that min_dist is very
+//    //-- small)
+//    //-- PS.- radiusMatch can also be used here.
+//    for( int i = 0; i < imageDesc_Up.rows; i++ )
+//    {
+//        if( matchePoints[i].distance <= max(2*min_dist, 0.02) ) {
+//            good_matches.push_back( matchePoints[i]);
+//        }
+//    }
+    sort(matchePoints.begin(),matchePoints.end()); //特征点排序
+    
+    //获取排在前N个的最优匹配特征点
+    //vector<Point2f> imagePoints1,imagePoints2;
+    long usefullCount; //选取需要的匹配点
+    if (matchePoints.size() < 100) {
+        usefullCount = matchePoints.size();
+    } else {
+        usefullCount = 100;
+    }
+    std::vector< DMatch > good_matchesX;
+    for(int i=0;i<usefullCount;i++)
+    {
+        Point2f tempPoint1 = (*keyPoint_Up)[matchePoints[i].queryIdx].pt;
+        Point2f tempPoint2 = (*keyPoint_Down)[matchePoints[i].trainIdx].pt;
+        if ((tempPoint1.x >= tempPoint2.x - 1 && tempPoint1.x <= tempPoint2.x + 1) &&
+            ((tempPoint1.y <= tempPoint2.y -cutHeight -1) ||
+                                               (tempPoint1.y >= tempPoint2.y -cutHeight+1))) {
+            good_matchesX.push_back(matchePoints[i]);
+        }
+    }
+    
+    
+    //if (isGoodX) {
+        return good_matchesX;
+    //}
+    
+    //return matchePoints;
+}
+
+Mat comMatC(Mat Matrix1,Mat Matrix2,Mat &MatrixCom)  //需要处理列数不同的状况
 {
     CV_Assert(Matrix1.cols==Matrix2.cols);//列数不相等，出现错误中断
+    
+    
     MatrixCom.create(Matrix1.rows+Matrix2.rows,Matrix1.cols,Matrix1.type());
     Mat temp=MatrixCom.rowRange(0,Matrix1.rows);
     Matrix1.copyTo(temp);
@@ -276,6 +373,7 @@ Mat comMatC(Mat Matrix1,Mat Matrix2,Mat &MatrixCom)
 
 + (UIImage *)imageWithCVMat:(const cv::Mat&)cvMat
 {
+
     NSData *data = [NSData dataWithBytes:cvMat.data length:cvMat.elemSize() * cvMat.total()];
     CGColorSpaceRef colorSpace;
     if (cvMat.elemSize() == 1) {
@@ -302,6 +400,7 @@ Mat comMatC(Mat Matrix1,Mat Matrix2,Mat &MatrixCom)
     CGImageRelease(imageRef);
     CGDataProviderRelease(provider);
     CGColorSpaceRelease(colorSpace);
+    
     return cvImage;
 }
 

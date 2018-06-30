@@ -1,12 +1,12 @@
 //
-//  JointPicture.m
+//  StitchePicture.m
 //  PictureStudio
 //
-//  Created by Aaron Hou on 24/02/2018.
-//  Copyright © 2018 Aaron Hou. All rights reserved.
+//  Created by Aaron Hou on 2018/7/1.
+//  Copyright © 2018年 Aaron Hou. All rights reserved.
 //
 
-#import "CombinePictureTest.h"
+#import "StitchePicture.h"
 #include "opencv2/opencv.hpp"
 #include "opencv2/nonfree/nonfree.hpp"
 #include "opencv2/legacy/legacy.hpp"
@@ -17,12 +17,12 @@
 using namespace cv;
 using namespace std;
 
-@implementation CombinePictureTest
 
-//计算原始图像点位在经过矩阵变换后在目标图像上对应位置
+@implementation StitchePicture
+
 Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri);
 
-+(void)CombinePictures:(NSArray *)images complete:(CombineCompletely)state success:(ScrollSuccess)success
++(void)StitchePictures:(NSArray *)images complete:(StitcheCompletely)state success:(ScrollSuccess)success
 {
     BOOL isSuccess = YES;
     Mat imageUpOrigin;                      //上部原始图片
@@ -61,7 +61,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         }
         
         if (i + 1 < images.count) {
-
+            
             imageDownOrigin = [self cvMatFromUIImage:[images objectAtIndex:i+1]];
             //路径读取图片暂不使用
             //NSString *path = [images objectAtIndex:i+1];
@@ -79,28 +79,28 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         vector<DMatch> good_matchesX;
         vector<DMatch> good_matches;
         vector<KeyPoint> keyPoint_Up,keyPoint_Down;
- 
+        
         //int *keyPoint_Up_p = 0;
         //keyPoint_Up_p = keyPoint_Up;
-
+        
         //默认识别
         good_matchesX = dectectMatchPoints(&keyPoint_Up, &keyPoint_Down, imageUpGray, imageDownGray, NO, 12000, YES);
         
         Mat img_matches;
-//        drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
-//                    good_matchesX, img_matches, Scalar::all(-1), Scalar::all(-1),
-//                    vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
-//        UIImage *imageGoodMatchPoints = [self imageWithCVMat:img_matches];
-
+        //        drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
+        //                    good_matchesX, img_matches, Scalar::all(-1), Scalar::all(-1),
+        //                    vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+        //        UIImage *imageGoodMatchPoints = [self imageWithCVMat:img_matches];
+        
         //无X轴匹配点则判定为无重合 直接拼接  该处逻辑需要完善：先用快速法 再用精确法 或者调整海塞矩阵阈值 也可改变匹配区域。
         if(good_matchesX.size() <= 5) {
-
+            
             good_matchesX = dectectMatchPoints(&keyPoint_Up, &keyPoint_Down, imageUpGray, imageDownGray, NO, 9000, NO);
             
-//            drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
-//                        good_matchesX, img_matches, Scalar::all(-1), Scalar::all(-1),
-//                        vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
-//            UIImage *imageGoodMatchPoints = [self imageWithCVMat:img_matches];
+            //            drawMatches(imageUpGray, keyPoint_Up, imageDownGray, keyPoint_Down,
+            //                        good_matchesX, img_matches, Scalar::all(-1), Scalar::all(-1),
+            //                        vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+            //            UIImage *imageGoodMatchPoints = [self imageWithCVMat:img_matches];
             if (good_matchesX.size() == 0) {
                 
                 good_matchesX = dectectMatchPoints(&keyPoint_Up, &keyPoint_Down, imageUpGray, imageDownGray, YES, 150, NO);
@@ -136,7 +136,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         Point2f curPointU = keyPoint_Up[good_matchesX[0].queryIdx].pt;
         Point2f curPointD = keyPoint_Down[good_matchesX[0].trainIdx].pt;
         float maxDistance = curPointU.y - curPointD.y;
-
+        
         int maxYIndex = 0;
         for (int i = 1; i < good_matchesX.size(); i++) {
             Point2f curPointU = keyPoint_Up[good_matchesX[i].queryIdx].pt;
@@ -146,21 +146,21 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
                 maxDistance = curDistance;
                 maxYIndex = i;
             }
-
+            
         }
-
+        
         
         //获取图像1到图像2的投影映射矩阵，尺寸为3*3
-//        Mat homo=findHomography(imagePoints1,imagePoints2,CV_RANSAC);
-//        Mat adjustMat=(Mat_<double>(3,3)<<1.0,0,0,  0,1.0,imageUpCut.rows,  0,0,1.0);
-//        Mat adjustHomo=adjustMat*homo;
+        //        Mat homo=findHomography(imagePoints1,imagePoints2,CV_RANSAC);
+        //        Mat adjustMat=(Mat_<double>(3,3)<<1.0,0,0,  0,1.0,imageUpCut.rows,  0,0,1.0);
+        //        Mat adjustHomo=adjustMat*homo;
         
         //获取最强配对点在原始图像和矩阵变换后图像上的对应位置，用于图像拼接点的定位 ,targetLinkPoint
         Point2f originalLinkPoint,basedImagePoint;
         
         originalLinkPoint=keyPoint_Up[good_matchesX[maxYIndex].queryIdx].pt;
         NSLog(@"originalLinkPoint x.y = %f / %f",originalLinkPoint.x, originalLinkPoint.y);
-
+        
         basedImagePoint=keyPoint_Down[good_matchesX[maxYIndex].trainIdx].pt;
         NSLog(@"basedImagePoint x.y = %f / %f",basedImagePoint.x, basedImagePoint.y);
         preCutupY = basedImagePoint.y;
@@ -169,19 +169,19 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         
         //前面已筛选 为所有匹配点X相等 所以此处已不需要。
         /*
-        int index = 0;
-        while (basedImagePoint.x != originalLinkPoint.x) {
-            if (index < good_matchesX.size()) {
-                index ++;
-                originalLinkPoint=keyPoint_Up[good_matches[index].queryIdx].pt;
-            }
-            else
-            {
-                originalLinkPoint=keyPoint_Up[good_matches[0].queryIdx].pt;
-                break;
-            }
-        }
-        */
+         int index = 0;
+         while (basedImagePoint.x != originalLinkPoint.x) {
+         if (index < good_matchesX.size()) {
+         index ++;
+         originalLinkPoint=keyPoint_Up[good_matches[index].queryIdx].pt;
+         }
+         else
+         {
+         originalLinkPoint=keyPoint_Up[good_matches[0].queryIdx].pt;
+         break;
+         }
+         }
+         */
         //不匹配则直接衔接  需要记录是哪两张图片 此功能待完善
         CGFloat upPeMatchHeight = imageUpOrigin.rows - curUseHeight;
         if(basedImagePoint.y > originalLinkPoint.y + upPeMatchHeight) {
@@ -207,44 +207,44 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             isSuccess = NO;
             continue;
             //先寻找匹配点内 符合条件的
-//            vector<DMatch> final_matches;
-//            for (int i = 1; i < good_matchesX.size(); i++) {
-//                Point2f upPoint = keyPoint_Up[good_matchesX[i].queryIdx].pt;
-//                Point2f downPoint = keyPoint_Down[good_matchesX[i].trainIdx].pt;
-//                if (downPoint.y <= upPoint.y + 128) {
-//                    final_matches.push_back(good_matchesX[i]);
-//                }
-//            }
-//            //确实没有 拼接
-//            if (final_matches.size() == 0) {
-//                if (resultMat.data == NULL) {
-//                    resultMat = comMatC(imageUpOrigin, imageDownOrigin, resultMat);
-//                } else {
-//                    resultMat = comMatC(resultMat, imageDownOrigin, resultMat);
-//                }
-//                curUseHeight = imageDownCut.rows;
-//                continue;
-//            }
-//
-//            Point2f curPoint0 = keyPoint_Down[final_matches[0].trainIdx].pt;
-//            float minY = curPoint0.y;
-//
-//            int minYIndex = 0;
-//            for (int i = 1; i < final_matches.size(); i++) {
-//                Point2f curPoint = keyPoint_Down[final_matches[i].trainIdx].pt;
-//                if (minY > curPoint.y) {
-//                    minY = curPoint.y;
-//                    minYIndex = i;
-//                }
-//
-//            }
-//            //找出距离最大的点
-//            originalLinkPoint=keyPoint_Up[final_matches[minYIndex].queryIdx].pt;
-//            NSLog(@"originalLinkPoint x.y = %f / %f",originalLinkPoint.x, originalLinkPoint.y);
-//
-//            basedImagePoint=keyPoint_Down[final_matches[minYIndex].trainIdx].pt;
-//            NSLog(@"basedImagePoint x.y = %f / %f",basedImagePoint.x, basedImagePoint.y);
-
+            //            vector<DMatch> final_matches;
+            //            for (int i = 1; i < good_matchesX.size(); i++) {
+            //                Point2f upPoint = keyPoint_Up[good_matchesX[i].queryIdx].pt;
+            //                Point2f downPoint = keyPoint_Down[good_matchesX[i].trainIdx].pt;
+            //                if (downPoint.y <= upPoint.y + 128) {
+            //                    final_matches.push_back(good_matchesX[i]);
+            //                }
+            //            }
+            //            //确实没有 拼接
+            //            if (final_matches.size() == 0) {
+            //                if (resultMat.data == NULL) {
+            //                    resultMat = comMatC(imageUpOrigin, imageDownOrigin, resultMat);
+            //                } else {
+            //                    resultMat = comMatC(resultMat, imageDownOrigin, resultMat);
+            //                }
+            //                curUseHeight = imageDownCut.rows;
+            //                continue;
+            //            }
+            //
+            //            Point2f curPoint0 = keyPoint_Down[final_matches[0].trainIdx].pt;
+            //            float minY = curPoint0.y;
+            //
+            //            int minYIndex = 0;
+            //            for (int i = 1; i < final_matches.size(); i++) {
+            //                Point2f curPoint = keyPoint_Down[final_matches[i].trainIdx].pt;
+            //                if (minY > curPoint.y) {
+            //                    minY = curPoint.y;
+            //                    minYIndex = i;
+            //                }
+            //
+            //            }
+            //            //找出距离最大的点
+            //            originalLinkPoint=keyPoint_Up[final_matches[minYIndex].queryIdx].pt;
+            //            NSLog(@"originalLinkPoint x.y = %f / %f",originalLinkPoint.x, originalLinkPoint.y);
+            //
+            //            basedImagePoint=keyPoint_Down[final_matches[minYIndex].trainIdx].pt;
+            //            NSLog(@"basedImagePoint x.y = %f / %f",basedImagePoint.x, basedImagePoint.y);
+            
         }
         
         
@@ -282,7 +282,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
         }
         
         //UIImage *imageTransform011 = [self imageWithCVMat:resultMat];
-
+        
     }
     //UIImage *combineImage = [self imageWithCVMat:resultMat];
     clock_t end_surf = clock();
@@ -305,9 +305,9 @@ vector<DMatch> dectectMatchPoints(vector<KeyPoint> *keyPoint_Up, vector<KeyPoint
     vector<DMatch> matchePoints;
     vector<DMatch> good_matches;
     
-//    clock_t sift_picture = clock();
-//    totaltime_initPicture = (double)(sift_picture - start_surf)/CLOCKS_PER_SEC;
-//    cout<<"提取特征点："<<totaltime_initPicture<<"秒！"<<endl;
+    //    clock_t sift_picture = clock();
+    //    totaltime_initPicture = (double)(sift_picture - start_surf)/CLOCKS_PER_SEC;
+    //    cout<<"提取特征点："<<totaltime_initPicture<<"秒！"<<endl;
     
     if (isFast) {
         FastFeatureDetector detector(detectValue);
@@ -336,32 +336,32 @@ vector<DMatch> dectectMatchPoints(vector<KeyPoint> *keyPoint_Up, vector<KeyPoint
         FlannBasedMatcher matchers;
         matchers.match(imageDesc_Up,imageDesc_Down,matchePoints,Mat());
     }
-
-
+    
+    
     
     clock_t siftd_picture = clock();
     totaltime_initPicture = (double)(siftd_picture - start_surf)/CLOCKS_PER_SEC;
     cout<<"特征点描述，为下边的特征点匹配做准备："<<totaltime_initPicture<<"秒！"<<endl;
     
-//    double max_dist = 0; double min_dist = 100;
-//    //-- Quick calculation of max and min distances between keypoints
-//    for( int i = 0; i < imageDesc_Up.rows; i++ )
-//    { double dist = matchePoints[i].distance;
-//        if( dist < min_dist ) min_dist = dist;
-//        if( dist > max_dist ) max_dist = dist;
-//    }
-//    printf("-- Max dist : %f \n", max_dist );
-//    printf("-- Min dist : %f \n", min_dist );
-//    //-- Draw only "good" matches (i.e. whose distance is less than 2*min_dist,
-//    //-- or a small arbitary value ( 0.02 ) in the event that min_dist is very
-//    //-- small)
-//    //-- PS.- radiusMatch can also be used here.
-//    for( int i = 0; i < imageDesc_Up.rows; i++ )
-//    {
-//        if( matchePoints[i].distance <= max(2*min_dist, 0.02) ) {
-//            good_matches.push_back( matchePoints[i]);
-//        }
-//    }
+    //    double max_dist = 0; double min_dist = 100;
+    //    //-- Quick calculation of max and min distances between keypoints
+    //    for( int i = 0; i < imageDesc_Up.rows; i++ )
+    //    { double dist = matchePoints[i].distance;
+    //        if( dist < min_dist ) min_dist = dist;
+    //        if( dist > max_dist ) max_dist = dist;
+    //    }
+    //    printf("-- Max dist : %f \n", max_dist );
+    //    printf("-- Min dist : %f \n", min_dist );
+    //    //-- Draw only "good" matches (i.e. whose distance is less than 2*min_dist,
+    //    //-- or a small arbitary value ( 0.02 ) in the event that min_dist is very
+    //    //-- small)
+    //    //-- PS.- radiusMatch can also be used here.
+    //    for( int i = 0; i < imageDesc_Up.rows; i++ )
+    //    {
+    //        if( matchePoints[i].distance <= max(2*min_dist, 0.02) ) {
+    //            good_matches.push_back( matchePoints[i]);
+    //        }
+    //    }
     sort(matchePoints.begin(),matchePoints.end()); //特征点排序
     
     //获取排在前N个的最优匹配特征点
@@ -379,52 +379,52 @@ vector<DMatch> dectectMatchPoints(vector<KeyPoint> *keyPoint_Up, vector<KeyPoint
         Point2f tempPoint2 = (*keyPoint_Down)[matchePoints[i].trainIdx].pt;
         if ((tempPoint1.x >= tempPoint2.x - 1 && tempPoint1.x <= tempPoint2.x + 1) &&
             ((tempPoint1.y <= tempPoint2.y -cutHeight -1) ||
-                                               (tempPoint1.y >= tempPoint2.y -cutHeight+1))) {
-            good_matchesX.push_back(matchePoints[i]);
-        }
+             (tempPoint1.y >= tempPoint2.y -cutHeight+1))) {
+                good_matchesX.push_back(matchePoints[i]);
+            }
     }
     
-//    Mat img_matches;
-//    drawMatches(imageUpGray, *keyPoint_Up, imageDownGray, *keyPoint_Down,
-//                matchePoints, img_matches, Scalar::all(-1), Scalar::all(-1),
-//                vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+    //    Mat img_matches;
+    //    drawMatches(imageUpGray, *keyPoint_Up, imageDownGray, *keyPoint_Down,
+    //                matchePoints, img_matches, Scalar::all(-1), Scalar::all(-1),
+    //                vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
     
-//    NSData *data = [NSData dataWithBytes:img_matches.data length:img_matches.elemSize() * img_matches.total()];
-//    CGColorSpaceRef colorSpace;
-//    if (img_matches.elemSize() == 1) {
-//        colorSpace = CGColorSpaceCreateDeviceGray();
-//    } else {
-//        colorSpace = CGColorSpaceCreateDeviceRGB();
-//    }
-//    CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
-//    // Creating CGImage from cv::Mat
-//    CGImageRef imageRef = CGImageCreate(img_matches.cols,                                 //width
-//                                        img_matches.rows,                                 //height
-//                                        8,                                          //bits per component
-//                                        8 * img_matches.elemSize(),                       //bits per pixel
-//                                        img_matches.step[0],                              //bytesPerRow
-//                                        colorSpace,                                 //colorspace
-//                                        kCGImageAlphaNone|kCGBitmapByteOrderDefault,// bitmap info
-//                                        provider,                                   //CGDataProviderRef
-//                                        NULL,                                       //decode
-//                                        false,                                      //should interpolate
-//                                        kCGRenderingIntentDefault                   //intent
-//                                        );
-//
-//    UIImage *cvImage = [[UIImage alloc]initWithCGImage:imageRef];
-//    CGImageRelease(imageRef);
-//    CGDataProviderRelease(provider);
-//    CGColorSpaceRelease(colorSpace);
-//
-//    if (good_matchesX.size() == 0&&isGoodX) {
-//        good_matchesX = dectectMatchPoints(keyPoint_Up, keyPoint_Down, imageUpGray, imageDownGray, isFast, 8000, NO);
-//    }
-//    if (good_matchesX.size() < 5) {
-//        return matchePoints;
-//    }
+    //    NSData *data = [NSData dataWithBytes:img_matches.data length:img_matches.elemSize() * img_matches.total()];
+    //    CGColorSpaceRef colorSpace;
+    //    if (img_matches.elemSize() == 1) {
+    //        colorSpace = CGColorSpaceCreateDeviceGray();
+    //    } else {
+    //        colorSpace = CGColorSpaceCreateDeviceRGB();
+    //    }
+    //    CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
+    //    // Creating CGImage from cv::Mat
+    //    CGImageRef imageRef = CGImageCreate(img_matches.cols,                                 //width
+    //                                        img_matches.rows,                                 //height
+    //                                        8,                                          //bits per component
+    //                                        8 * img_matches.elemSize(),                       //bits per pixel
+    //                                        img_matches.step[0],                              //bytesPerRow
+    //                                        colorSpace,                                 //colorspace
+    //                                        kCGImageAlphaNone|kCGBitmapByteOrderDefault,// bitmap info
+    //                                        provider,                                   //CGDataProviderRef
+    //                                        NULL,                                       //decode
+    //                                        false,                                      //should interpolate
+    //                                        kCGRenderingIntentDefault                   //intent
+    //                                        );
+    //
+    //    UIImage *cvImage = [[UIImage alloc]initWithCGImage:imageRef];
+    //    CGImageRelease(imageRef);
+    //    CGDataProviderRelease(provider);
+    //    CGColorSpaceRelease(colorSpace);
+    //
+    //    if (good_matchesX.size() == 0&&isGoodX) {
+    //        good_matchesX = dectectMatchPoints(keyPoint_Up, keyPoint_Down, imageUpGray, imageDownGray, isFast, 8000, NO);
+    //    }
+    //    if (good_matchesX.size() < 5) {
+    //        return matchePoints;
+    //    }
     
     //if (isGoodX) {
-        return good_matchesX;
+    return good_matchesX;
     //}
     
     //return matchePoints;
@@ -470,7 +470,7 @@ Mat comMatC(Mat Matrix1,Mat Matrix2,Mat &MatrixCom)  //需要处理列数不同�
 
 + (UIImage *)imageWithCVMat:(const cv::Mat&)cvMat
 {
-
+    
     NSData *data = [NSData dataWithBytes:cvMat.data length:cvMat.elemSize() * cvMat.total()];
     CGColorSpaceRef colorSpace;
     if (cvMat.elemSize() == 1) {
@@ -515,4 +515,3 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
 }
 
 @end
-

@@ -7,3 +7,4 @@
 */
 CFBundleDisplayName = "Shote";
 NSPhotoLibraryUsageDescription = "Allow Shote App to Access Your Photos When You Use it to Edit Pictures.";
+NSMicrophoneUsageDescription =  "Allow Shote App to Open Your Camera When You Use it to Take Photos.";

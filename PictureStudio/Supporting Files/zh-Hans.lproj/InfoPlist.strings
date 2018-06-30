@@ -7,3 +7,4 @@
 */
 CFBundleDisplayName = "Shote";
 NSPhotoLibraryUsageDescription = "允许Shote访问相册，当你要使用它来编辑图片。";
+NSMicrophoneUsageDescription =  "允许Shote打开相机，当你使用它来拍摄照片。";

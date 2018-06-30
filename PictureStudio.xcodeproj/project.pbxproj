@@ -39,7 +39,7 @@
 		708249002078E510000D60A3 /* PhotoEditButtomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248FF2078E510000D60A3 /* PhotoEditButtomView.m */; };
 		7082490320790E0E000D60A3 /* UIView+HXExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7082490120790E0E000D60A3 /* UIView+HXExtension.m */; };
 		7082490620790F92000D60A3 /* PhotoCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7082490520790F92000D60A3 /* PhotoCollectionReusableView.m */; };
-		708811072099FDE1003A1CF4 /* CombinePictureTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = 708811062099FDE1003A1CF4 /* CombinePictureTest.mm */; };
+		708811072099FDE1003A1CF4 /* CombinePicture.mm in Sources */ = {isa = PBXBuildFile; fileRef = 708811062099FDE1003A1CF4 /* CombinePicture.mm */; };
 		70B3080D20E27D6100FFF131 /* PhotoCutModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 70B3080C20E27D6100FFF131 /* PhotoCutModel.m */; };
 		70C262FB207A72EF00F65EFD /* AHAssetGroupsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70C262F9207A72EF00F65EFD /* AHAssetGroupsView.m */; };
 		70C262FC207A72EF00F65EFD /* AHAssetGroupCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 70C262FA207A72EF00F65EFD /* AHAssetGroupCell.m */; };
@@ -137,8 +137,8 @@
 		7082490220790E0E000D60A3 /* UIView+HXExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+HXExtension.h"; sourceTree = "<group>"; };
 		7082490420790F92000D60A3 /* PhotoCollectionReusableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoCollectionReusableView.h; sourceTree = "<group>"; };
 		7082490520790F92000D60A3 /* PhotoCollectionReusableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoCollectionReusableView.m; sourceTree = "<group>"; };
-		708811052099FDE1003A1CF4 /* CombinePictureTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CombinePictureTest.h; path = PictureStudio/Model/CombinePictureTest.h; sourceTree = SOURCE_ROOT; };
-		708811062099FDE1003A1CF4 /* CombinePictureTest.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CombinePictureTest.mm; path = PictureStudio/Model/CombinePictureTest.mm; sourceTree = SOURCE_ROOT; };
+		708811052099FDE1003A1CF4 /* CombinePicture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CombinePicture.h; path = PictureStudio/Model/CombinePicture.h; sourceTree = SOURCE_ROOT; };
+		708811062099FDE1003A1CF4 /* CombinePicture.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CombinePicture.mm; path = PictureStudio/Model/CombinePicture.mm; sourceTree = SOURCE_ROOT; };
 		70B3080B20E27D6100FFF131 /* PhotoCutModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PhotoCutModel.h; path = PictureStudio/Model/PhotoCutModel.h; sourceTree = SOURCE_ROOT; };
 		70B3080C20E27D6100FFF131 /* PhotoCutModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PhotoCutModel.m; path = PictureStudio/Model/PhotoCutModel.m; sourceTree = SOURCE_ROOT; };
 		70C262F7207A72EF00F65EFD /* AHAssetGroupCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AHAssetGroupCell.h; sourceTree = "<group>"; };
@@ -243,8 +243,8 @@
 		708248A3204EC70A000D60A3 /* model */ = {
 			isa = PBXGroup;
 			children = (
-				708811052099FDE1003A1CF4 /* CombinePictureTest.h */,
-				708811062099FDE1003A1CF4 /* CombinePictureTest.mm */,
+				708811052099FDE1003A1CF4 /* CombinePicture.h */,
+				708811062099FDE1003A1CF4 /* CombinePicture.mm */,
 				937F74312084879800F56AFD /* HXPhotoManager.h */,
 				937F74322084879800F56AFD /* HXPhotoManager.m */,
 				708248BC206A9103000D60A3 /* HXPhotoModel.m */,
@@ -656,7 +656,7 @@
 				936FAC3920200B9A00F80BCF /* main.m in Sources */,
 				936FAC2B20200B9A00F80BCF /* AppDelegate.m in Sources */,
 				702C5FC020D15DF100AA8CA5 /* XDProgressView.m in Sources */,
-				708811072099FDE1003A1CF4 /* CombinePictureTest.mm in Sources */,
+				708811072099FDE1003A1CF4 /* CombinePicture.mm in Sources */,
 				708248C4206A9153000D60A3 /* HXPhotoTools.m in Sources */,
 				700E325520A1E464007A23E0 /* WeiboTableViewCell.m in Sources */,
 				707DBA88209EDBAC00F2FAFB /* AboutViewController.m in Sources */,

@@ -185,10 +185,8 @@
             CGFloat contentViewOffset;
             if(i == 0) {
                 contentViewOffset = 10;
-                itemView.backgroundColor = UIColor.blueColor;
             } else {
                 contentViewOffset = _containImageView.hx_h;
-                itemView.backgroundColor = UIColor.orangeColor;
             }
 
             CGFloat ratio = (_showImageScrollView.hx_w - 20)/imageView.hx_w;

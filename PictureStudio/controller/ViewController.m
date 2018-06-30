@@ -16,7 +16,7 @@
 #import "AHAssetGroupsView.h"
 #import "UINavigationBar+Color.h"
 #import "CombineIndicatorView.h"
-#import "CombinePictureTest.h"
+#import "CombinePicture.h"
 #import "SharePictureViewController.h"
 #import "AboutViewController.h"
 #import "PhotoPreviewController.h"
@@ -1104,7 +1104,7 @@ PhotoPreviewControllerDelegate
         }
         __weak typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [CombinePictureTest CombinePictures:photoArray complete:^(NSArray* resultModels) {
+            [CombinePicture CombinePictures:photoArray complete:^(NSArray* resultModels) {
                 if (weakSelf.manager.selectedCount > 3) {
                     [weakSelf.manager setScrollResult:resultModels];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollFinish" object:nil];
