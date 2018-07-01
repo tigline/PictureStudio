@@ -6,3 +6,4 @@
   Copyright © 2018 Aaron Hou. All rights reserved.
 */
 CFBundleDisplayName = "Shote";
+NSPhotoLibraryUsageDescription = "Allow Shote App to Access Your Photos When You Use it to Edit Pictures.";

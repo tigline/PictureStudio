@@ -81,7 +81,7 @@ PhotoPreviewControllerDelegate
 @property (assign, nonatomic) CGFloat moveEndX;
 @property (assign, nonatomic) CGFloat moveEndY;
 
-@property (nonatomic, strong) ASPopover *itemPopover;
+@property (nonatomic, strong) NSTimer *timer;
 
 @end
 
@@ -113,7 +113,7 @@ PhotoPreviewControllerDelegate
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidTakeScreenshot:)name:UIApplicationUserDidTakeScreenshotNotification object:nil];
     
     UIPanGestureRecognizer *gestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
-    //[self.view addGestureRecognizer:gestureRecognizer];
+    [self.view addGestureRecognizer:gestureRecognizer];
     [gestureRecognizer setMinimumNumberOfTouches:1];
     [gestureRecognizer setMaximumNumberOfTouches:1];
     
@@ -299,7 +299,7 @@ PhotoPreviewControllerDelegate
 //                [CATransaction begin];
 //                [CATransaction setDisableActions:YES];
                 
-                [UIView animateWithDuration:0.5 animations:^{
+                [UIView animateWithDuration:0.25 animations:^{
                     [weakSelf.collectionView reloadData];
                     if (_isScreenshotNotification || _shouldReloadAsset) {
                         _isScreenshotNotification = NO;
@@ -498,121 +498,243 @@ PhotoPreviewControllerDelegate
     self.collectionView.scrollEnabled = YES;
     float pointerX = [gestureRecognizer locationInView:self.collectionView].x;
     float pointerY = [gestureRecognizer locationInView:self.collectionView].y;
-//    if (pointerX - _preSwipeX < 10) {
-//        _swipePositionChangeX = YES;
-//    } else {
-//        _swipePositionChangeX = NO;
-//    }
-//    _preSwipeX = pointerX;
-//    if (pointerY - _preSwipeY > 0) {
-//        _swipePositionChangeY = NO;
-//    } else {
-//        _swipePositionChangeY = YES;
-//    }
-//    _preSwipeY = pointerY;
+    //**************在滚动过程中 判断 手势 是否反向**************
+    if (isGotoScroll){
+        if (isGotoScrolldown){
+            if (_preSwipeY > pointerY){
+                isGotoScroll = NO;
+                isGotoScrolldown = NO;
+                [self removeTimer];
+            }
+        }else{
+            if (_preSwipeY < pointerY){
+                isGotoScroll = NO;
+                isGotoScrolldown = NO;
+                [self removeTimer];
+            }
+        }
+    }
+    //****************************
+    _preSwipeY = pointerY;
     
-    for (ImgCollectionViewCell *cell in self.collectionView.visibleCells) {
-        
-//        if (!_swipePositionChangeY) {
-//            _curSwipeYB = cell.frame.origin.y;
-//            _curSwipeYE = cell.frame.origin.y + cell.frame.size.height;
-//        }
-        
+    for (ImgCollectionViewCell *cell in [self.collectionView visibleCells])
+    {
         float cellSX = cell.frame.origin.x;
         float cellEX = cell.frame.origin.x + cell.frame.size.width;
         float cellSY = cell.frame.origin.y;
         float cellEY = cell.frame.origin.y + cell.frame.size.height;
-
-        if (pointerX >= cellSX && pointerX <= cellEX && pointerY >= cellSY && pointerY <= cellEY) {
-            
+        
+        currentArray= [[NSMutableArray alloc] initWithCapacity:1024];
+        
+        if (pointerX >= cellSX && pointerX <= cellEX && pointerY >= cellSY && pointerY <= cellEY)
+        {
             NSIndexPath *touchOver = [self.collectionView indexPathForCell:cell];
-            if (_lastAccessed != touchOver) {
-
-                if (cell.selected) {
-                    [_manager beforeSelectedListdeletePhotoModel:cell.model];
-                    self.bottomView.selectCount = [self.manager selectedCount];
-                    cell.matchX = NO;
-
-                    cell.matchY = NO;
-                    cell.selected = NO;
+            
+            //判断滑动，开启自动上下滑动
+            [self goToScrollWithHeight:pointerY];
+            
+            if (_lastAccessed != touchOver){
+                if (!isFirstSelect){
+                    isFirstSelect = YES;
+                    firstCell = touchOver.item;
+                    if (cell.selectBtn.selected){
+                        cell.matchY = NO;
+                        isFirstCellSelect = NO;
+                    }else {
+                        cell.matchY = YES;
+                        isFirstCellSelect = YES;
+                    }
+                    [lastArray addObject:[NSString stringWithFormat:@"%ld",(long)touchOver.item]];
+                }else{
+                    currentCell = touchOver.item;
+                    NSInteger max = currentCell;
+                    NSInteger min = firstCell;
+                    //
+                    BOOL isScrollDown = YES;//默认用户是向下滑动
+                    if (max < firstCell)
+                    {
+                        //说明是向上滑动
+                        isScrollDown = NO;
+                        max = firstCell;
+                        min = currentCell;
+                    }
+                    for (NSInteger i = min; i <= max; i ++)
+                    {
+                        [currentArray addObject:[NSString stringWithFormat:@"%ld",(long)i]];
+                    }
                     
-                } else {
-
-                    cell.matchY = YES;
-                    cell.selected = YES;
-
-                }
-                //self.bottomView.selectCount = [self.manager selectedCount];
-            }
-            _lastAccessed = touchOver;
-            
-        }
-        
-            
-            
-            
-//            if (_swipePositionChangeX) {
-//                _lastAccessed1 = touchOver;  || (_swipePositionChangeX&&_lastAccessed1 != touchOver)
-//            }
-        
-        
-        /*
-        if (pointerX >= cellSX && pointerX <= cellEX) {
-            
-            if (!cell.matchX) {
-                cell.matchX = YES;
-            }
-        }
-        
-        if (pointerY <= cellEY && pointerY >= cellSY && cell.matchX) {
-            if (![_swipeSelectArray containsObject:cell]) {
-
-                    if (cell.selected) {
-                        cell.matchX = NO;
-                        cell.selected = NO;
-                        cell.matchY = NO;
-                        [_manager beforeSelectedListdeletePhotoModel:cell.model];
-//                        if ([_swipeSelectArray containsObject:cell]) {
-//                            [_swipeSelectArray removeObject:cell];
-//                        }[_swipeSelectArray addObject:cell];
-                    } else {
-                        cell.matchX = YES;
-                        cell.selected = YES;
-                        cell.matchY = YES;
-
-                        [_swipeSelectArray addObject:cell];
-                        
+                    [self setDateCurrentArray:currentArray withLastArray:lastArray withIsScrollDown:isScrollDown];
+                    
+                    for (int i = 0; i < [addArray count]; i ++){
+                        for (ImgCollectionViewCell *setCell in self.collectionView.visibleCells){
+                            NSIndexPath *setTouchOver = [self.collectionView indexPathForCell:setCell];
+                            if (setTouchOver.item == [[addArray objectAtIndex:i] integerValue]){
+                                if (isFirstCellSelect){
+                                    if (!setCell.selectBtn.selected){
+                                        setCell.matchY = YES;
+                                    }
+                                }else{
+                                    if (setCell.selectBtn.selected){
+                                        setCell.matchY = NO;
+                                    }
+                                }
+                            }
+                        }
                     }
-            } else if([_swipeSelectArray containsObject:cell] && _swipePositionChangeY) {
+                    
+                    for (int i = 0; i < [minusArray count]; i ++){
+                        for (ImgCollectionViewCell *minuscell in self.collectionView.visibleCells){
+                            NSIndexPath *minustouchOver = [self.collectionView indexPathForCell:minuscell];
+                            if (minustouchOver.item == [[minusArray objectAtIndex:i] integerValue]){
+                                if (minuscell.selectBtn.selected){
+                                    minuscell.matchY = NO;
+                                }else {
+                                    minuscell.matchY = YES;
+                                }
+                            }
+                        }
+                    }
+                }
                 
-                if (![_finalselectArray containsObject:cell]) {
-                    if (!cell.selected) {
-                        cell.matchX = NO;
-                        cell.selected = NO;
-                        cell.matchY = NO;
-                        [_manager beforeSelectedListdeletePhotoModel:cell.model];
-                        [_finalselectArray addObject:cell];
-                    } else {
-                        cell.matchX = YES;
-                        cell.selected = YES;
-                        cell.matchY = YES;
-                    }
-                }
+                _lastAccessed = touchOver;
             }
         }
-         */
     }
-
     
-//    if (gestureRecognizer.state == UIGestureRecognizerStateEnded)
-//    {
-//        //lastAccessed = nil;
-//        _swipePositionChangeY = NO;
-//        self.collectionView.scrollEnabled = YES;
-//    }
+    if (gestureRecognizer.state == UIGestureRecognizerStateEnded)
+    {
+        //当手势结束后 初始化一些数据
+        _lastAccessed = nil;
+        self.collectionView.scrollEnabled = YES;
+        isFirstSelect = NO;
+        lastArray = [[NSMutableArray alloc] initWithCapacity:1024];
+        NSLog(@"-------UIGestureRecognizerStateEnded------");
+        [self removeTimer];
+        isGotoScroll = NO;
+        isGotoScrolldown = NO;
+    }
     
     
 }
+
+-(void)goToScrollWithHeight:(float)pointerY
+{
+    if (!isGotoScroll)
+    {
+        if ((self.view.frame.size.height -(pointerY - self.collectionView.contentOffset.y)) < (self.view.hx_w - 41)/3){
+            [self addTimer];
+            isGotoScroll = YES;
+            isGotoScrolldown = YES;
+        }
+        if (pointerY - self.collectionView.contentOffset.y < (self.view.hx_w - 41)/3){
+            [self addTimer];
+            isGotoScroll = YES;
+            isGotoScrolldown = NO;
+        }
+    }
+}
+
+
+//开启定时器
+- (void)addTimer
+{
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1f target:self selector:@selector(change:) userInfo:nil repeats:YES];
+}
+
+//关闭定时器
+- (void)removeTimer{
+    if (_timer) {
+        if ([self.timer isValid]) {
+            [self.timer invalidate];
+            _timer=nil;
+        }
+    }
+}
+
+//定时器执行方法,当前滑动每次自动滑动30 可优化
+- (void)change:(NSTimer *)time{
+    if (isGotoScrolldown){
+        if (self.collectionView.contentOffset.y >=  self.collectionView.contentSize.height - [UIScreen mainScreen].bounds.size.height - 10){
+            [self removeTimer];
+        }else{
+            [self.collectionView setContentOffset:CGPointMake(0, self.collectionView.contentOffset.y + 30) animated:NO];
+        }
+    }else{
+        if (self.collectionView.contentOffset.y <= 10){
+            [self removeTimer];
+        }else{
+            [self.collectionView setContentOffset:CGPointMake(0, self.collectionView.contentOffset.y - 30) animated:NO];
+        }
+    }
+}
+
+
+-(void)setDateCurrentArray:(NSMutableArray*)curArray withLastArray:(NSMutableArray*)lArray withIsScrollDown:(BOOL)isScrollDown{
+    [addArray removeAllObjects];
+    [minusArray removeAllObjects];
+    addArray= [[NSMutableArray alloc] initWithCapacity:1024];
+    minusArray= [[NSMutableArray alloc] initWithCapacity:1024];
+    
+    for (int i = 0; i < [curArray count]; i++)
+    {
+        //当前需要控制的值 之前的数组中是否存在
+        BOOL isExist = NO;
+        for (int j = 0; j < [lArray count]; j++)
+        {
+            if ([[curArray objectAtIndex:i] isEqualToString:[lArray objectAtIndex:j]])
+            {
+                isExist = YES;
+            }
+        }
+        
+        if (!isExist)
+        {
+            [addArray addObject:[curArray objectAtIndex:i]];
+        }
+    }
+    
+    for (int i = 0; i < [lArray count]; i++)
+    {
+        //当前需要控制的值 之前的数组中是否存在
+        BOOL isExist = NO;
+        for (int j = 0; j < [curArray count]; j++)
+        {
+            if ([[curArray objectAtIndex:j] isEqualToString:[lArray objectAtIndex:i]])
+            {
+                isExist = YES;
+            }
+        }
+        
+        if (!isExist)
+        {
+            [minusArray addObject:[lArray objectAtIndex:i]];
+        }
+    }
+    
+    for ( int i = 0; i < [minusArray count]; i++)
+    {
+        [lastArray removeObject:[minusArray objectAtIndex:i]];
+    }
+    for ( int i = 0; i < [addArray count]; i++)
+    {
+        [lastArray addObject:[addArray objectAtIndex:i]];
+    }
+    
+    //这一步 将获取的的lastArray 做排序，已图片标号的正确性
+    //     [lastArray sortUsingSelector:@selector(compare:)];
+    //    //通过倒序的方法进行降序排列
+    //    NSEnumerator *enumerator = [lastArray reverseObjectEnumerator];
+    //
+    //    lastArray =[[NSMutableArray alloc]initWithArray: [enumerator allObjects]];
+    if (!isScrollDown)
+    {
+        [addArray sortUsingComparator:^NSComparisonResult(__strong id obj1,__strong id obj2){
+            return [obj2 intValue] > [obj1 intValue];
+        }];
+    }
+}
+
+
 
 - (void) selectCellForCollectionView:(ImgCollectionViewCell *)cell
 {
@@ -717,7 +839,14 @@ PhotoPreviewControllerDelegate
     
 }
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-
+    //NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[self dateItem:model] inSection:model.dateSection];
+    
+//    ImgCollectionViewCell *indexcell = (ImgCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+////    cell.model.selectIndexStr = @"";
+////    cell.selectMaskLayer.hidden = YES;
+////    cell.selectBtn.selected = NO;
+////    cell.model.selected = NO;
+//    cell.selected = indexcell.selected;
 }
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingSupplementaryView:(UICollectionReusableView *)view forElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath {
     if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
@@ -839,11 +968,11 @@ PhotoPreviewControllerDelegate
         selectBtn.selected = NO;
         //cell.selected = NO;
     }else {
-        NSString *str = [self.manager maximumOfJudgment:cell.model];
-        if (str) {
-            [self.view showImageHUDText:str];
-            return;
-        }
+//        NSString *str = [self.manager maximumOfJudgment:cell.model];
+//        if (str) {
+//            [self.view showImageHUDText:str];
+//            return;
+//        }
         if (cell.model.type != HXPhotoModelMediaTypeCameraVideo && cell.model.type != HXPhotoModelMediaTypeCameraPhoto) {
             cell.model.thumbPhoto = cell.imageView.image;
         }
@@ -915,7 +1044,7 @@ PhotoPreviewControllerDelegate
 }
 
 - (void)datePhotoBottomViewDidClearBtn {
-    
+
     for (HXPhotoModel *model in [self.manager selectedArray]) {
         if (model.dateCellIsVisible) {
             NSIndexPath *indexPath = [NSIndexPath indexPathForItem:[self dateItem:model] inSection:model.dateSection];
@@ -927,22 +1056,40 @@ PhotoPreviewControllerDelegate
             cell.model.selected = NO;
             cell.selected = NO;
             
+            if (cell == nil) {
+                model.selectIndexStr = @"";
+                model.selected = NO;
+                [self.allArray replaceObjectAtIndex:model.dateSection withObject:model];
+
+                [UIView performWithoutAnimation:^{
+                    
+                    [self.collectionView reloadItemsAtIndexPaths: @[indexPath]];
+                    
+                }];
+                
+            }
+            
+            
         }
     }
     [self.manager clearSelectedList];
     self.bottomView.selectCount = [self.manager selectedCount];
     [_swipeSelectArray removeAllObjects];
+
+    
 }
 
+
+
 - (void)datePhotoBottomViewDidScrollBtn {
-    if (_manager.selectedPhotoArray.count < 2) {
+    if (_manager.selectedArray.count < 2) {
         
     } else {
         __block NSMutableArray *photoArray = [[NSMutableArray alloc] init];
         PHCachingImageManager *imageManager = [[PHCachingImageManager alloc] init];
-        for (int i = 0; i < _manager.selectedPhotoArray.count; i++) {
+        for (int i = 0; i < _manager.selectedArray.count; i++) {
             HXPhotoModel *model;
-            model = _manager.selectedPhotoArray[i];
+            model = _manager.selectedArray[i];
             PHAsset *phAsset = model.asset;
             PHImageRequestOptions * options=[[PHImageRequestOptions alloc]init];
             options.resizeMode = PHImageRequestOptionsResizeModeFast;
@@ -957,12 +1104,13 @@ PhotoPreviewControllerDelegate
         }
         __weak typeof(self) weakSelf = self;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [CombinePictureTest CombinePictures:photoArray complete:^(UIImage *longPicture) {
+            [CombinePictureTest CombinePictures:photoArray complete:^(NSArray* resultModels) {
                 if (weakSelf.manager.selectedCount > 3) {
-                    [weakSelf.manager setScrollImage:longPicture];
+                    [weakSelf.manager setScrollResult:resultModels];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollFinish" object:nil];
                 } else {
-                    [self performSegueWithIdentifier:@"toSharePictureView" sender:longPicture];
+                    [weakSelf.manager setScrollResult:resultModels];
+                    [self performSegueWithIdentifier:@"toSharePictureView" sender:resultModels];
                 }
             }success:^(BOOL success) {
                 weakSelf.manager.isScrollSuccess = success;
@@ -1073,21 +1221,7 @@ PhotoPreviewControllerDelegate
             }
         }
         }
-    
-    
-//    _collectionView.allowsSelection = _collectionView.allowsMultipleSelection = YES;
-//
-//    // Do any additional setup after loading the view.
-//    ARSwipeToSelectGestureRecognizer *gestureRecognizer = [[ARSwipeToSelectGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture) toggleSelectedHandler:^(NSIndexPath *indexPath) {
-//        if ([[_collectionView indexPathsForSelectedItems] containsObject:indexPath]) {
-//            [_collectionView deselectItemAtIndexPath:indexPath animated:NO];
-//            [_collectionView cellForItemAtIndexPath:indexPath].alpha = 1.0;
-//        } else {
-//            [_collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
-//            [_collectionView cellForItemAtIndexPath:indexPath].alpha = 0.5;
-//        }
-//    }];
-    //[_collectionView addGestureRecognizer:gestureRecognizer];
+
         return _collectionView;
     }
 
@@ -1224,26 +1358,7 @@ PhotoPreviewControllerDelegate
                      }];
 }
 
-- (ASPopover *)itemPopover {
-    if (!_itemPopover) {
-        ASPopoverOption *option = [[ASPopoverOption alloc] init];
-        option.offset = 20;
-        option.autoAjustDirection = NO;
-        option.arrowSize = CGSizeMake(10, 6);
-        option.blackOverlayColor = [UIColor clearColor];
-        option.sideEdge = 15;
-        option.dismissOnBlackOverlayTap = YES;
-        option.popoverColor = [UIColor whiteColor];
-        option.autoAjustDirection = YES;
-        option.animationIn = 0.4;
-        option.springDamping = 0.5;
-        option.initialSpringVelocity = 1;
-        //option.overlayBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
 
-        _itemPopover = [[ASPopover alloc] initWithOption:option];
-    }
-    return _itemPopover;
-}
 
 - (UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller {
     return UIModalPresentationNone;
@@ -1325,11 +1440,11 @@ PhotoPreviewControllerDelegate
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
     if ([[segue identifier] isEqualToString:@"toSharePictureView"]) {
-        UIImage *image = (UIImage *)sender;
+        NSArray *modelArray = (NSArray *)sender;
         ((SharePictureViewController *)(segue.destinationViewController)).manager = self.manager;
-        ((SharePictureViewController *)(segue.destinationViewController)).resultImage = image;
+        ((SharePictureViewController *)(segue.destinationViewController)).resultModels = modelArray;
     } else if ([[segue identifier] isEqualToString:@"toLongPictureView"]) {
-        UIImage *image = (UIImage *)sender;
+        //UIImage *image = (UIImage *)sender;
         ((LongPictureViewController *)(segue.destinationViewController)).manager = self.manager;
 
     }

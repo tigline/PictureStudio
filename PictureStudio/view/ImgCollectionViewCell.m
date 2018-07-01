@@ -38,15 +38,15 @@
     if (self) {
         [self setupUI];
     }
-return self;
+    return self;
 }
 
 - (void)setupUI {
     self.layer.borderWidth = 1*ScreenWidthRatio;
     self.layer.borderColor = [[UIColor blackColor] colorWithAlphaComponent:0.1].CGColor;
-//    self.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5].CGColor;;
-//    self.layer.shadowOpacity = 0.8f;
-//    self.layer.shadowOffset = CGSizeMake(0, 0);
+    //    self.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5].CGColor;;
+    //    self.layer.shadowOpacity = 0.8f;
+    //    self.layer.shadowOffset = CGSizeMake(0, 0);
     [self.contentView addSubview:self.imageView];
     [self.contentView addSubview:self.maskView];
     //self.selectBgColor = [UIColor colorWithRed:102/255.0 green:153/255.0 blue:1.0 alpha:1.0];
@@ -70,21 +70,21 @@ return self;
 - (void)setMatchY:(BOOL)matchY
 {
     if (matchY) {
-//        self.selectMaskLayer.hidden = !_model.selected;
-//        self.selectBtn.selected = _model.selected;
-//        [self.selectBtn setTitle:_model.selectIndexStr forState:UIControlStateSelected];
+        //        self.selectMaskLayer.hidden = !_model.selected;
+        //        self.selectBtn.selected = _model.selected;
+        //        [self.selectBtn setTitle:_model.selectIndexStr forState:UIControlStateSelected];
         //self.selectBtn.selected = NO;
         [self.collectionViewCelldelegate imgCollectionViewCell:self didSelectBtn:self.selectBtn];
     } else {
         //self.selectBtn.selected = YES;
-
+        [self.collectionViewCelldelegate imgCollectionViewCell:self didSelectBtn:self.selectBtn];
         
         //[self.collectionViewCelldelegate imgCollectionViewCell:self didSelectBtn:self.selectBtn];
-        _model.selectIndexStr = @"";
-        _selectMaskLayer.hidden = YES;
-        _selectBtn.selected = NO;
+        //        _model.selectIndexStr = @"";
+        //        _selectMaskLayer.hidden = YES;
+        //        _selectBtn.selected = NO;
         //self.selectCount = [self.manager selectedCount];
-
+        
     }
 }
 
@@ -109,10 +109,10 @@ return self;
     }
     self.selectMaskLayer.hidden = !model.selected;
     self.selectBtn.selected = model.selected;
-
+    
     [self.selectBtn setTitle:model.selectIndexStr forState:UIControlStateSelected];
     //self.selectBtn.backgroundColor = model.selected ? self.selectBgColor :nil;
-
+    
 }
 
 - (void)setSelectBgColor:(UIColor *)selectBgColor {
@@ -134,15 +134,21 @@ return self;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-//    [CATransaction begin];
-//    [CATransaction setDisableActions:YES];
+    //    [CATransaction begin];
+    //    [CATransaction setDisableActions:YES];
     self.imageView.frame = self.bounds;
     self.maskView.frame = self.bounds;
     //self.stateLb.frame = CGRectMake(0, self.hx_h - 18, self.hx_w - 4, 18);
     //self.bottomMaskLayer.frame = CGRectMake(0, self.hx_h - 25, self.hx_w, 25);
     self.selectBtn.frame = CGRectMake(self.hx_w - 28, self.hx_w - 28, 25, 25);
     self.selectMaskLayer.frame = self.bounds;
-//    [CATransaction commit];
+    //    [CATransaction commit];
+    
+
+        
+
+        
+
 }
 
 
@@ -168,6 +174,7 @@ return self;
         _imageView = [[UIImageView alloc] init];
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
         _imageView.clipsToBounds = YES;
+        //_imageView.alpha = 1.0f;
     }
     return _imageView;
 }

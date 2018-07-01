@@ -10,6 +10,7 @@
 #import "HXPhotoManager.h"
 
 @interface SharePictureViewController : UIViewController
+@property (nonatomic,strong) NSArray *resultModels;
 @property (nonatomic,strong) UIImage *resultImage;
 @property (nonatomic,strong) HXPhotoManager * manager;
 @end

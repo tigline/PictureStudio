@@ -18,4 +18,9 @@
 @interface PhotoSaveBottomView : UIView
 @property (weak, nonatomic) id<PhotoSaveBottomViewDelegate> delegate;
 @property (strong, nonatomic) UIToolbar *bgView;
+- (void)setProgressLength:(NSInteger)length;
+- (void)setSaveLabelHidden:(BOOL)value;
+- (void)setProgressViewValue:(NSInteger)index;
+- (void)setSaveBtnsHiddenValue:(BOOL)value;
+- (void)setSaveText:(NSString *)text;
 @end

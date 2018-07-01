@@ -18,6 +18,9 @@
 "scroll_error" = "拼接错误";
 "scroll_operate_tips" = "请选择符合条件的截图";
 "save_image" = "保存到相册";
+"save_ing" = "正在保存";
+"save_first" = "请先保存图片";
+"share_init" = "正在生成图片";
 "open_ablum" = "打开相册";
 "pm" = "产品";
 "ui" = "设计";

@@ -6,3 +6,4 @@
   Copyright © 2018 Aaron Hou. All rights reserved.
 */
 CFBundleDisplayName = "Shote";
+NSPhotoLibraryUsageDescription = "允许Shote访问相册，当你要使用它来编辑图片。";

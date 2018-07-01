@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class HXPhotoManager;
+@class HXHUD;
 @interface UIView (HXExtension)
 
 @property (assign, nonatomic) CGFloat hx_x;
@@ -27,6 +28,7 @@
 @property (nonatomic, assign) CGPoint rightTop;
 @property (nonatomic, assign) CGPoint leftBottom;
 @property (nonatomic, assign) CGPoint rightBottom;
+@property (strong, nonatomic) HXHUD *hud;
 
 /**
  获取当前视图的控制器
@@ -51,6 +53,11 @@
 
 /* <HXCustomCameraViewControllerDelegate> */
 - (void)hx_presentCustomCameraViewControllerWithManager:(HXPhotoManager *)manager delegate:(id)delegate;
+
+-(void)addBottomBorderWithColor: (UIColor *) color andWidth:(CGFloat) borderWidth;
+-(void)addLeftBorderWithColor: (UIColor *) color andWidth:(CGFloat) borderWidth;
+-(void)addRightBorderWithColor: (UIColor *) color andWidth:(CGFloat) borderWidth;
+-(void)addTopBorderWithColor: (UIColor *) color andWidth:(CGFloat) borderWidth;
 
 @end
 

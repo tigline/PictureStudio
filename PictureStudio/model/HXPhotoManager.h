@@ -11,6 +11,7 @@
 #import "HXAlbumModel.h"
 #import "HXPhotoModel.h"
 #import "HXPhotoTools.h"
+#import "PhotoCutModel.h"
 #import "HXPhotoConfiguration.h"
 /**
  *  照片选择的管理类, 使用照片选择时必须先懒加载此类,然后赋值给对应的对象
@@ -209,11 +210,18 @@ typedef enum : NSUInteger {
 
 - (void)selectedListTransformAfter;
 - (void)selectedListTransformBefore;
-- (void)setScrollImage:(UIImage *)resultImage;
+- (void)setScrollResult:(NSArray *)resultModels;
 
-- (void)combinePhotosWithDirection:(BOOL)isVertical resultImage:(void(^)(UIImage *combineImage))resultImage;
+- (CGFloat)getSelectPhotosMinWidth;
 
-- (UIImage *)getScrollImage;
+- (CGFloat)getSelectPhotosMinHeight;
+- (void)combineScrollPhotos:(NSArray*)imagesArray resultImage:(void(^)(UIImage *combineImage))combineImage completeIndex:(void(^)(NSInteger index))completeIndex;
+
+- (void)combinePhotosWithDirection:(BOOL)isVertical resultImage:(void(^)(UIImage *combineImage))resultImage completeIndex:(void(^)(NSInteger index))completeIndex;
+
+- (NSArray *)getScrollResult;
+//获取裁剪后的长截图源图
+- (NSArray *)getCutImagesWithModels:(NSArray *)modelArray;
 
 - (void)setScreenWidthSize:(CGFloat)size;
 

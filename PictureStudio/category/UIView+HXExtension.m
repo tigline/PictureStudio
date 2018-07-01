@@ -156,6 +156,33 @@
     return self.center.x;
 }
 
+-(void)addTopBorderWithColor:(UIColor* )color andWidth:(CGFloat) borderWidth {
+    CALayer *border = [CALayer layer];
+    border.backgroundColor = color.CGColor;
+    border.frame = CGRectMake(0, 0, self.frame.size.width, borderWidth); [self.layer addSublayer:border];
+    
+}
+-(void)addBottomBorderWithColor:(UIColor* )color andWidth:(CGFloat) borderWidth {
+    CALayer *border = [CALayer layer];
+    border.backgroundColor = color.CGColor;
+    border.frame = CGRectMake(0, self.frame.size.height - borderWidth, self.frame.size.width, borderWidth);
+    [self.layer addSublayer:border];
+    
+}
+-(void)addLeftBorderWithColor:(UIColor* )color andWidth:(CGFloat) borderWidth {
+    CALayer *border = [CALayer layer];
+    border.backgroundColor = color.CGColor;
+    border.frame = CGRectMake(0, 0, borderWidth, self.frame.size.height); [self.layer addSublayer:border];
+    
+}
+-(void)addRightBorderWithColor:(UIColor* )color andWidth:(CGFloat) borderWidth {
+    CALayer *border = [CALayer layer];
+    border.backgroundColor = color.CGColor;
+    border.frame = CGRectMake(self.frame.size.width - borderWidth, 0, borderWidth, self.frame.size.height);
+    [self.layer addSublayer:border];
+    
+}
+
 /**
  获取当前视图的控制器
  
@@ -204,7 +231,7 @@
     hud.alpha = 0;
     hud.tag = 1008611;
     [self addSubview:hud];
-    hud.center = CGPointMake(self.frame.size.width / 2, self.frame.size.height*0.85);
+    hud.center = CGPointMake(self.frame.size.width / 2, self.frame.size.height*0.75);
     [UIView animateWithDuration:0.25 animations:^{
         hud.alpha = 1;
     }];

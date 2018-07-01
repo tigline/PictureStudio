@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -67,95 +66,9 @@
                     <view key="view" contentMode="scaleToFill" id="jdG-ny-dTD">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yHj-Bb-zAF">
-                                <rect key="frame" x="0.0" y="594" width="375" height="73"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="A7I-1w-NWc">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="73"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kJi-Oa-ddM">
-                                            <rect key="frame" x="125" y="13" width="46" height="46"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="46" id="LqR-G8-536"/>
-                                                <constraint firstAttribute="width" secondItem="kJi-Oa-ddM" secondAttribute="height" multiplier="1:1" id="bl8-vK-qd7"/>
-                                                <constraint firstAttribute="width" constant="46" id="cDr-93-Fid"/>
-                                            </constraints>
-                                            <state key="normal" image="share_moments"/>
-                                            <connections>
-                                                <action selector="onShareMomentClicked:" destination="MBT-LT-jHU" eventType="touchUpInside" id="Uhu-vQ-uIw"/>
-                                            </connections>
-                                        </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zdE-Oi-3Yf">
-                                            <rect key="frame" x="46" y="13" width="46" height="46"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="46" id="PzU-9S-YLG"/>
-                                                <constraint firstAttribute="width" secondItem="zdE-Oi-3Yf" secondAttribute="height" multiplier="1:1" id="k89-02-GbQ"/>
-                                                <constraint firstAttribute="width" constant="46" id="peu-2v-Eou"/>
-                                            </constraints>
-                                            <state key="normal" image="share_wechat"/>
-                                            <connections>
-                                                <action selector="onShareWechatClicked:" destination="MBT-LT-jHU" eventType="touchUpInside" id="NHn-uT-IJw"/>
-                                            </connections>
-                                        </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xlt-8S-rcz">
-                                            <rect key="frame" x="283" y="13" width="46" height="46"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="46" id="Ab3-hK-7YH"/>
-                                                <constraint firstAttribute="width" secondItem="Xlt-8S-rcz" secondAttribute="height" multiplier="1:1" id="BnW-SN-e1x"/>
-                                                <constraint firstAttribute="height" constant="46" id="cPu-Wa-sQM"/>
-                                            </constraints>
-                                            <state key="normal" image="share_more"/>
-                                            <connections>
-                                                <action selector="onShareMoreClicked:" destination="MBT-LT-jHU" eventType="touchUpInside" id="ItN-lx-AeY"/>
-                                            </connections>
-                                        </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="axL-TP-9xE">
-                                            <rect key="frame" x="204" y="13" width="46" height="46"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="46" id="pni-Gh-KcR"/>
-                                                <constraint firstAttribute="width" secondItem="axL-TP-9xE" secondAttribute="height" multiplier="1:1" id="vi4-oK-mmf"/>
-                                                <constraint firstAttribute="height" constant="46" id="w6P-CQ-Vrv"/>
-                                            </constraints>
-                                            <state key="normal" image="share_weibo"/>
-                                            <connections>
-                                                <action selector="onShareWeiboClicked:" destination="MBT-LT-jHU" eventType="touchUpInside" id="vFP-Mz-tcO"/>
-                                            </connections>
-                                        </button>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstItem="Xlt-8S-rcz" firstAttribute="leading" secondItem="axL-TP-9xE" secondAttribute="trailing" constant="33" id="5x4-jv-HSZ"/>
-                                        <constraint firstItem="Xlt-8S-rcz" firstAttribute="centerY" secondItem="axL-TP-9xE" secondAttribute="centerY" id="65K-mW-oPR"/>
-                                        <constraint firstItem="kJi-Oa-ddM" firstAttribute="width" secondItem="zdE-Oi-3Yf" secondAttribute="width" id="Jlo-6B-Pr6"/>
-                                        <constraint firstItem="kJi-Oa-ddM" firstAttribute="leading" secondItem="zdE-Oi-3Yf" secondAttribute="trailing" constant="33" id="Oae-89-jTL"/>
-                                        <constraint firstItem="zdE-Oi-3Yf" firstAttribute="leading" secondItem="A7I-1w-NWc" secondAttribute="leading" constant="46" id="gJg-74-PbH"/>
-                                        <constraint firstAttribute="trailing" secondItem="Xlt-8S-rcz" secondAttribute="trailing" constant="46" id="jRO-It-MKQ"/>
-                                        <constraint firstItem="axL-TP-9xE" firstAttribute="leading" secondItem="kJi-Oa-ddM" secondAttribute="trailing" constant="33" id="pIN-gz-nD9"/>
-                                        <constraint firstItem="zdE-Oi-3Yf" firstAttribute="centerY" secondItem="A7I-1w-NWc" secondAttribute="centerY" id="sMT-45-YOW"/>
-                                        <constraint firstItem="kJi-Oa-ddM" firstAttribute="centerY" secondItem="zdE-Oi-3Yf" secondAttribute="centerY" id="uIT-lg-QdT"/>
-                                        <constraint firstItem="Xlt-8S-rcz" firstAttribute="width" secondItem="zdE-Oi-3Yf" secondAttribute="width" id="ulO-WH-Ba1"/>
-                                        <constraint firstItem="axL-TP-9xE" firstAttribute="centerY" secondItem="kJi-Oa-ddM" secondAttribute="centerY" id="uq2-vp-zmY"/>
-                                        <constraint firstItem="axL-TP-9xE" firstAttribute="width" secondItem="zdE-Oi-3Yf" secondAttribute="width" id="vLd-aE-Npp"/>
-                                    </constraints>
-                                </view>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="73" id="rQr-QD-5kx"/>
-                                </constraints>
-                                <blurEffect style="extraLight"/>
-                            </visualEffectView>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="yHj-Bb-zAF" firstAttribute="leading" secondItem="4dV-Bd-WVG" secondAttribute="leading" id="Aud-4B-ZoL"/>
-                            <constraint firstItem="yHj-Bb-zAF" firstAttribute="bottom" secondItem="4dV-Bd-WVG" secondAttribute="bottom" id="WVe-zG-tzI"/>
-                        </constraints>
                         <viewLayoutGuide key="safeArea" id="4dV-Bd-WVG"/>
                     </view>
-                    <connections>
-                        <outlet property="shareBoardHeight" destination="rQr-QD-5kx" id="w6w-2s-ieT"/>
-                        <outlet property="shareBoardView" destination="yHj-Bb-zAF" id="sxm-8r-6US"/>
-                        <outlet property="shareBtnWidth" destination="peu-2v-Eou" id="2uI-3B-IV7"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wOc-Vn-cFk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -168,94 +81,9 @@
                     <view key="view" contentMode="scaleToFill" id="Tg2-jT-TNY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1zi-rS-8Vh">
-                                <rect key="frame" x="0.0" y="594" width="375" height="73"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="wuH-ij-2jG">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="73"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OIM-kZ-9AG">
-                                            <rect key="frame" x="125" y="13" width="46" height="46"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="46" id="3vP-VF-eGN"/>
-                                                <constraint firstAttribute="width" secondItem="OIM-kZ-9AG" secondAttribute="height" multiplier="1:1" id="UfH-El-vm4"/>
-                                                <constraint firstAttribute="height" constant="46" id="dzE-Gx-WHn"/>
-                                            </constraints>
-                                            <state key="normal" image="share_moments"/>
-                                            <connections>
-                                                <action selector="onShareMomentClicked:" destination="v3X-Pq-viG" eventType="touchUpInside" id="de3-wx-FWp"/>
-                                            </connections>
-                                        </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pCf-cn-RmT">
-                                            <rect key="frame" x="46" y="13" width="46" height="46"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="46" id="K95-Nu-9Gg"/>
-                                                <constraint firstAttribute="height" constant="46" id="X7N-5B-LcL"/>
-                                                <constraint firstAttribute="width" secondItem="pCf-cn-RmT" secondAttribute="height" multiplier="1:1" id="g5i-FF-kZD"/>
-                                            </constraints>
-                                            <state key="normal" image="share_wechat"/>
-                                            <connections>
-                                                <action selector="onShareWechatClicked:" destination="v3X-Pq-viG" eventType="touchUpInside" id="1gA-Mb-rGo"/>
-                                            </connections>
-                                        </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="go6-05-rAN">
-                                            <rect key="frame" x="283" y="13" width="46" height="46"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" secondItem="go6-05-rAN" secondAttribute="height" multiplier="1:1" id="0Uy-lB-qp6"/>
-                                                <constraint firstAttribute="width" constant="46" id="QW9-Y5-dtg"/>
-                                                <constraint firstAttribute="height" constant="46" id="yxq-hY-WPe"/>
-                                            </constraints>
-                                            <state key="normal" image="share_more"/>
-                                            <connections>
-                                                <action selector="onShareMoreClicked:" destination="v3X-Pq-viG" eventType="touchUpInside" id="NLl-0A-csJ"/>
-                                            </connections>
-                                        </button>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ehg-Hk-lxH">
-                                            <rect key="frame" x="204" y="13" width="46" height="46"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" secondItem="ehg-Hk-lxH" secondAttribute="height" multiplier="1:1" id="Lhs-4H-45z"/>
-                                                <constraint firstAttribute="width" constant="46" id="jry-pU-12g"/>
-                                                <constraint firstAttribute="height" constant="46" id="sub-0f-N1b"/>
-                                            </constraints>
-                                            <state key="normal" image="share_weibo"/>
-                                            <connections>
-                                                <action selector="onShareWeiboClicked:" destination="v3X-Pq-viG" eventType="touchUpInside" id="SbG-yZ-WZ3"/>
-                                            </connections>
-                                        </button>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstItem="ehg-Hk-lxH" firstAttribute="leading" secondItem="OIM-kZ-9AG" secondAttribute="trailing" constant="33" id="1aW-aA-yqW"/>
-                                        <constraint firstItem="go6-05-rAN" firstAttribute="width" secondItem="pCf-cn-RmT" secondAttribute="width" id="424-Uz-6Yk"/>
-                                        <constraint firstItem="go6-05-rAN" firstAttribute="centerY" secondItem="ehg-Hk-lxH" secondAttribute="centerY" id="6M8-TT-Zlq"/>
-                                        <constraint firstAttribute="trailing" secondItem="go6-05-rAN" secondAttribute="trailing" constant="46" id="FAE-Lz-tJZ"/>
-                                        <constraint firstItem="OIM-kZ-9AG" firstAttribute="leading" secondItem="pCf-cn-RmT" secondAttribute="trailing" constant="33" id="KN0-Pc-jWe"/>
-                                        <constraint firstItem="pCf-cn-RmT" firstAttribute="leading" secondItem="wuH-ij-2jG" secondAttribute="leading" constant="46" id="RHB-CU-ViL"/>
-                                        <constraint firstItem="go6-05-rAN" firstAttribute="leading" secondItem="ehg-Hk-lxH" secondAttribute="trailing" constant="33" id="RU7-nv-QoW"/>
-                                        <constraint firstItem="OIM-kZ-9AG" firstAttribute="centerY" secondItem="pCf-cn-RmT" secondAttribute="centerY" id="uuz-3n-OHT"/>
-                                        <constraint firstItem="pCf-cn-RmT" firstAttribute="centerY" secondItem="wuH-ij-2jG" secondAttribute="centerY" id="yp8-3y-2wP"/>
-                                        <constraint firstItem="ehg-Hk-lxH" firstAttribute="centerY" secondItem="OIM-kZ-9AG" secondAttribute="centerY" id="zLz-kg-pXc"/>
-                                    </constraints>
-                                </view>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="73" id="6sg-7U-XRI"/>
-                                </constraints>
-                                <blurEffect style="extraLight"/>
-                            </visualEffectView>
-                        </subviews>
                         <color key="backgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="1zi-rS-8Vh" firstAttribute="bottom" secondItem="5bZ-He-J4y" secondAttribute="bottom" id="2az-vP-jj9"/>
-                            <constraint firstItem="1zi-rS-8Vh" firstAttribute="leading" secondItem="5bZ-He-J4y" secondAttribute="leading" id="7Qi-yd-mdy"/>
-                            <constraint firstItem="1zi-rS-8Vh" firstAttribute="trailing" secondItem="5bZ-He-J4y" secondAttribute="trailing" id="KKP-WE-BoU"/>
-                        </constraints>
                         <viewLayoutGuide key="safeArea" id="5bZ-He-J4y"/>
                     </view>
-                    <connections>
-                        <outlet property="shareBoardHeight" destination="6sg-7U-XRI" id="gZ5-0c-HfG"/>
-                        <outlet property="shareBoardView" destination="1zi-rS-8Vh" id="U9R-hc-RWl"/>
-                        <outlet property="shareBtnWidth" destination="3vP-VF-eGN" id="8gL-S0-Cli"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9qO-KA-emO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -264,9 +92,5 @@
     </scenes>
     <resources>
         <image name="no_photos" width="147" height="76"/>
-        <image name="share_moments" width="48" height="48"/>
-        <image name="share_more" width="48" height="48"/>
-        <image name="share_wechat" width="48" height="48"/>
-        <image name="share_weibo" width="48" height="48"/>
     </resources>
 </document>

@@ -65,9 +65,9 @@
     if ([UIScreen mainScreen].bounds.size.width == 320) {
         self.clarityScale = 0.8;
     }else if ([UIScreen mainScreen].bounds.size.width == 375) {
-        self.clarityScale = 1.7;
+        self.clarityScale = 1.4;
     }else {
-        self.clarityScale = 2.0;
+        self.clarityScale = 1.8;
     }
     self.doneBtnShowDetail = YES;
 //    self.videoCanEdit = YES;

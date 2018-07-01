@@ -61,6 +61,22 @@
 //        }
 //    }
 }
+
++(UIImage*)getCutImage:(UIImage*)image rect:(CGRect)rect
+{
+    CGImageRef subImageRef = CGImageCreateWithImageInRect([image CGImage], rect);
+    CGRect smallBounds = CGRectMake(0, 0, CGImageGetWidth(subImageRef), CGImageGetHeight(subImageRef));
+    
+    UIGraphicsBeginImageContext(smallBounds.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextDrawImage(context, smallBounds, subImageRef);
+    UIImage* smallImage = [UIImage imageWithCGImage:subImageRef];
+    UIGraphicsEndImageContext();
+    
+    return smallImage;
+}
+
+
 + (PHImageRequestID)getAVAssetWithModel:(HXPhotoModel *)model startRequestIcloud:(void (^)(HXPhotoModel *model, PHImageRequestID cloudRequestId))startRequestIcloud progressHandler:(void (^)(HXPhotoModel *model, double progress))progressHandler completion:(void(^)(HXPhotoModel *model, AVAsset *asset))completion failed:(void(^)(HXPhotoModel *model, NSDictionary *info))failed {
     PHVideoRequestOptions *options = [[PHVideoRequestOptions alloc] init];
     options.deliveryMode = PHVideoRequestOptionsDeliveryModeFastFormat;

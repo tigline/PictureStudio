@@ -9,8 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+
 @interface CombinePictureTest : NSObject
-typedef void (^CombineCompletely)(UIImage* longPicture); // Connection block
+typedef void (^CombineCompletely)(NSArray* resultModels); // Connection block
 typedef void (^ScrollSuccess)(BOOL success);
 
 @property (nonatomic, strong) CombineCompletely jointCompletelyBlock;

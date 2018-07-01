@@ -14,13 +14,16 @@
 #import "UIView+HXExtension.h"
 #import "HXPhotoDefine.h"
 #import "UINavigationController+FDFullscreenPopGesture.h"
+#import "ToastView.h"
+#import "ShareBoardView.h"
+#import "PhotoCutModel.h"
 
 //#define URL_APPID @"wx3b864b92dca2bf8a"
 //#define URL_SECRET @"e998d19d22428e70c520f36a9c6f0e41"
 //static CGFloat shareAreaViewHeight = 73;//定义分享区域的高度
 
 
-@interface SharePictureViewController ()<WXDelegate,PhotoSaveBottomViewDelegate,UIScrollViewDelegate>
+@interface SharePictureViewController ()<WXDelegate,PhotoSaveBottomViewDelegate,UIScrollViewDelegate,ShareBoardViewDelegate>
 {
     AppDelegate *appdelegate;
 }
@@ -31,11 +34,12 @@
 @property (strong, nonatomic) UIScrollView *shareScrollView;
 @property (strong, nonatomic) PhotoSaveBottomView *toolBarView;
 @property (assign, nonatomic) CGFloat lastContentOffset;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *shareBoardHeight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *shareBtnWidth;
+@property (assign, nonatomic) BOOL isFinish;
 
+@property (strong, nonatomic) UIView *containImageView;
+@property (strong, nonatomic) ShareBoardView *shareBoardView;
+@property (nonatomic, assign) BOOL isFromShare;
 
-@property (weak, nonatomic) IBOutlet UIVisualEffectView *shareBoardView;
 
 @end
 
@@ -45,13 +49,14 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self CustomTitle];//处理标透明化题栏 也可app统一设置
-    _shareBoardHeight.constant = 73*ScreenHeightRatio;
-    _shareBtnWidth.constant = 46*ScreenWidthRatio;
-    if (_resultImage) {
-        [self CreateShowImgaeView:_resultImage];//创建图片显示区域
-        [self.view bringSubviewToFront:self.shareBoardView];
+    [self createScrollView];
+
+    if (_resultModels) {
+        [self CreateShowImgaeView:_resultModels];//创建图片显示区域
+        _isShowShareBoardView = NO;
+        [self.view addSubview:self.shareBoardView];
         [self.view addSubview:self.toolBarView];//创建保存图片区域
+        
     }
     self.fd_prefersNavigationBarHidden = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollFinish) name:@"scrollFinish" object:nil];
@@ -61,7 +66,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    if (_manager.selectedCount > 3) {
+    if (_manager.selectedCount > 3 && !_isFinish) {
         [self.view showLoadingHUDText:LocalString(@"scroll_ing")];
     }
 //    [self.navigationController.navigationBar setHidden:YES];
@@ -72,15 +77,13 @@
 
 
 
-- (void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
-    //[self.shareBoardView setFrame:CGRectMake(0, self.toolBarView.originY, self.shareBoardView.hx_w, self.shareBoardView.hx_h)];
-    [_shareBoardView setHidden:YES];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-}
+//- (void)viewDidLayoutSubviews {
+//    [super viewDidLayoutSubviews];
+//}
+//
+//- (void)viewWillDisappear:(BOOL)animated {
+//    [super viewWillDisappear:animated];
+//}
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -91,15 +94,16 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [self.manager setScrollImage:nil];
+    [self.manager setScrollResult:nil];
 
     //[self.navigationController.navigationBar setHidden:NO];
 }
 
 - (void)scrollFinish {
+    _isFinish = YES;
     [self.view handleLoading];
-    [self CreateShowImgaeView:[self.manager getScrollImage]];
-    [self.view bringSubviewToFront:self.shareBoardView];
+    [self CreateShowImgaeView:[self.manager getScrollResult]];
+    [self.view addSubview:self.shareBoardView];
     [self.view addSubview:self.toolBarView];
 }
 
@@ -120,57 +124,144 @@
 }
 
 #pragma mark - init view
--(void)CustomTitle
-{
+
+
+- (void)createScrollView {
+    _showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h - kBottomMargin - kTopMargin)];
+    _showImageScrollView.delegate = self;
+    [self.view addSubview:_showImageScrollView];
+    _showImageScrollView.backgroundColor = [UIColor whiteColor];
+    _showImageScrollView.bouncesZoom = YES;
+    _showImageScrollView.maximumZoomScale = 2.5;
+    _showImageScrollView.minimumZoomScale = 1.0;
+    _showImageScrollView.multipleTouchEnabled = YES;
+    _showImageScrollView.scrollsToTop = NO;
+    _showImageScrollView.showsHorizontalScrollIndicator = NO;
+    _showImageScrollView.showsVerticalScrollIndicator = NO;
+    _showImageScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _showImageScrollView.delaysContentTouches = NO;
+    _showImageScrollView.canCancelContentTouches = YES;
+    _showImageScrollView.alwaysBounceVertical = NO;
+    _shareScrollView.userInteractionEnabled = YES;
     
+    _containImageView = [[UIView alloc] init];
+    _containImageView.clipsToBounds = YES;
+
+    _containImageView.contentMode = UIViewContentModeScaleAspectFit;
+    [_showImageScrollView addSubview:_containImageView];
+    
+    if (@available(iOS 11.0, *)) {
+        _showImageScrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    } else {
+        
+    }
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(touchOnImage:)];
+    [_showImageScrollView addGestureRecognizer:tapGesture];
+    
+    UITapGestureRecognizer *tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTap:)];
+    [self.view addGestureRecognizer:tap1];
+    UITapGestureRecognizer *tap2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
+    tap2.numberOfTapsRequired = 2;
+    [tap1 requireGestureRecognizerToFail:tap2];
+    [self.view addGestureRecognizer:tap2];
 }
 
-- (void)CreateShowImgaeView:(UIImage *)_resultImage
+- (void)CreateShowImgaeView:(NSArray *)resultArray
 {
 //    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10*ScreenWidthRatio, kTopMargin + 10*ScreenHeightRatio, 355*ScreenWidthRatio, 517*ScreenHeightRatio)];
-    
-    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h - kBottomMargin - kTopMargin)];
-    
-    self.showImageScrollView.delegate = self;
-    NSLog(@"%f",ScreenHeightRatio);
-    
-    [self.view addSubview:self.showImageScrollView];
-    
-    self.showImageScrollView.backgroundColor = [UIColor whiteColor];
-    
-    if (_resultImage != nil ){
-        CGRect cgpos;
-        if (_resultImage.size.width > _showImageScrollView.frame.size.width - 20) {
-            cgpos.origin.x = 10;
-            cgpos.origin.y = 10;
-            cgpos.size.width = _showImageScrollView.frame.size.width - 20;
-            cgpos.size.height = _resultImage.size.height * (cgpos.size.width/_resultImage.size.width);
-            [_showImageScrollView setContentSize:CGSizeMake(_showImageScrollView.frame.size.width, cgpos.size.height+20)];
-        }else {
-            cgpos.origin.x =(_showImageScrollView.frame.size.width - 20 - _resultImage.size.width)/2;
-            cgpos.origin.y = 10;
-            cgpos.size.width = _resultImage.size.width;
-            cgpos.size.height = _resultImage.size.height;
-            [_showImageScrollView setContentSize:CGSizeMake(_showImageScrollView.frame.size.width, cgpos.size.height + 20)];
-        }
-        UIImageView *imageView = [[UIImageView alloc]initWithFrame:cgpos];
 
+    //CGFloat maginTop = kDevice_Is_iPhoneX ? 10 : 10;
+    
+    if (resultArray != nil ){
+        CGRect cgpos;
+        NSInteger count = resultArray.count;
+        for (int i = 0; i < count; i++) {
+            PhotoCutModel *mode = [resultArray objectAtIndex:i];
+            UIImage *image = mode.originPhoto;
+            UIImageView *imageView = [[UIImageView alloc]initWithImage:image];
+            CGFloat itemHeight = (mode.endY - mode.beginY);
+            UIScrollView *itemView = [[UIScrollView alloc]initWithFrame:CGRectZero];
+
+            CGFloat contentViewOffset;
+            if(i == 0) {
+                contentViewOffset = 10;
+                itemView.backgroundColor = UIColor.blueColor;
+            } else {
+                contentViewOffset = _containImageView.hx_h;
+                itemView.backgroundColor = UIColor.orangeColor;
+            }
+
+            CGFloat ratio = (_showImageScrollView.hx_w - 20)/imageView.hx_w;
+            
+            cgpos.origin.x = 10;
+            cgpos.origin.y = contentViewOffset;
+            cgpos.size.width = _showImageScrollView.hx_w - 20;
+            cgpos.size.height = itemHeight*ratio;
+            itemView.frame = cgpos;
+            
+            
+            [_containImageView addSubview:itemView];
+            itemView.contentSize = CGSizeMake(_showImageScrollView.hx_w - 20, imageView.hx_h*ratio);
+            itemView.contentOffset = CGPointMake(0, mode.beginY*ratio);
+            itemView.scrollEnabled = NO;
+            
+            CGFloat lastOffset;
+            if (i == _manager.selectedArray.count - 1 || i == 0) {
+                lastOffset = cgpos.size.height + 10;
+            } else {
+                lastOffset = cgpos.size.height;
+            }
+            
+            _containImageView.size = CGSizeMake(cgpos.size.width, _containImageView.hx_h + lastOffset);
+            
+            imageView.size = CGSizeMake(_showImageScrollView.hx_w - 20, itemView.contentSize.height);
+            [itemView addSubview:imageView];
+            [self addLayerBorder:imageView count:count index:i direction:YES];
+            //[self addLayerBorder:imageView count:count index:i direction:isCombineVertical];
+
+        }
+        _containImageView.frame = CGRectMake(0, 0, _showImageScrollView.hx_w, _containImageView.hx_h);
+
+//        _containImageView.layer.borderWidth = 1*ScreenWidthRatio;
+//        _containImageView.layer.borderColor = [[UIColor blackColor] colorWithAlphaComponent:0.1].CGColor;
         
-        [imageView setImage:_resultImage];
         
-        [_showImageScrollView addSubview:imageView];
-        imageView.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.7].CGColor;;
-        imageView.layer.shadowOpacity = 0.8f;
-        imageView.layer.shadowOffset = CGSizeMake(0, 0);
-        UITapGestureRecognizer* imgMsgTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchOnImage:)];
-        [_showImageScrollView addGestureRecognizer:imgMsgTap];
+        [_showImageScrollView setContentSize:CGSizeMake(_showImageScrollView.hx_w, _containImageView.hx_h)];
     }
-    self.showImageScrollView.showsVerticalScrollIndicator = NO;
-    self.showImageScrollView.showsHorizontalScrollIndicator = NO;
-    _shareScrollView.userInteractionEnabled = YES;
 }
 
-
+-(void)addLayerBorder:(UIImageView *)imageView count:(NSInteger)count index:(NSInteger)index direction:(BOOL)isVertical {
+    UIColor *color = [[UIColor blackColor] colorWithAlphaComponent:0.1];
+    CGFloat width = 1*ScreenWidthRatio;
+    if (isVertical) {
+        if (index == 0) {
+            [imageView addTopBorderWithColor:color andWidth:width];
+            [imageView addLeftBorderWithColor:color andWidth:width];
+            [imageView addRightBorderWithColor:color andWidth:width];
+        } else if (index == count - 1) {
+            [imageView addLeftBorderWithColor:color andWidth:width];
+            [imageView addRightBorderWithColor:color andWidth:width];
+            [imageView addBottomBorderWithColor:color andWidth:width];
+        } else {
+            [imageView addLeftBorderWithColor:color andWidth:width];
+            [imageView addRightBorderWithColor:color andWidth:width];
+        }
+    } else {
+        if (index == 0) {
+            [imageView addTopBorderWithColor:color andWidth:width];
+            [imageView addLeftBorderWithColor:color andWidth:width];
+            [imageView addBottomBorderWithColor:color andWidth:width];
+        } else if (index == count - 1) {
+            [imageView addTopBorderWithColor:color andWidth:width];
+            [imageView addRightBorderWithColor:color andWidth:width];
+            [imageView addBottomBorderWithColor:color andWidth:width];
+        } else {
+            [imageView addTopBorderWithColor:color andWidth:width];
+            [imageView addBottomBorderWithColor:color andWidth:width];
+        }
+    }
+    
+}
 
 - (void)shareImageToPlatformType:(UMSocialPlatformType)platformType
 {
@@ -182,7 +273,7 @@
     shareObject.thumbImage = [UIImage imageNamed:@"icon"];
     UIImage *saveImage = _resultImage;
     if (saveImage == nil) {
-        saveImage = [self.manager getScrollImage];
+        return;
     }
     [shareObject setShareImage:saveImage];
     //分享消息对象设置分享内容对象
@@ -202,26 +293,26 @@
 }
 
 
-- (IBAction)onShareWechatClicked:(id)sender {
+- (void)shareBoardViewDidWeChatBtn {
     [self shareImageToPlatformType:UMSocialPlatformType_WechatSession];
 
 }
 
-- (IBAction)onShareMomentClicked:(id)sender {
+- (void)shareBoardViewDidMomentBtn {
     [self shareImageToPlatformType:UMSocialPlatformType_WechatTimeLine];
 
 }
 
-- (IBAction)onShareWeiboClicked:(id)sender {
+- (void)shareBoardViewDidWeiboBtn {
     [self shareImageToPlatformType:UMSocialPlatformType_Sina];
 
 }
 
-- (IBAction)onShareMoreClicked:(id)sender {
+- (void)shareBoardViewDidMoreBtn {
     NSLog(@"shareMoreImageOnClick");
     UIImage *imageToShare = _resultImage;
     if (imageToShare == nil) {
-        imageToShare = [self.manager getScrollImage];
+        return;
     }
     NSArray *activityItems = @[imageToShare];
     UIActivityViewController *activityVC = [[UIActivityViewController alloc]initWithActivityItems:activityItems applicationActivities:nil];
@@ -241,15 +332,27 @@
 }
 
 - (void)showShareBoard {
-    [_shareBoardView setHidden:NO];
+    _shareBoardView.hidden = NO;
     [UIView animateWithDuration:0.3f
                      animations:^{
                          
-                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY - _toolBarView.hx_h + kBottomMargin, _shareBoardView.size.width, _shareBoardView.size.height)];
+                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY - ShareBoardHeight+1, _shareBoardView.size.width, _shareBoardView.size.height)];
                          
                      }completion:^(BOOL finished) {
                          _isShowShareBoardView = YES;
                          
+                     }];
+}
+
+- (void)hideShareBoard {
+    [UIView animateWithDuration:0.3f
+                     animations:^{
+                         
+                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY + ShareBoardHeight-1, _shareBoardView.size.width, _shareBoardView.size.height)];
+                         
+                     }completion:^(BOOL finished) {
+                         _shareBoardView.hidden = YES;
+                         _isShowShareBoardView = NO;
                      }];
 }
 
@@ -271,18 +374,7 @@
     
 }
 
-- (void)hideShareBoard {
-    [_shareBoardView setHidden:NO];
-    [UIView animateWithDuration:0.3f
-                     animations:^{
-                         
-                         [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY + _toolBarView.hx_h - kBottomMargin, _shareBoardView.size.width, _shareBoardView.size.height)];
-                         
-                     }completion:^(BOOL finished) {
-                         [_shareBoardView setHidden:YES];
-                         _isShowShareBoardView = NO;
-                     }];
-}
+
 
 #pragma PhotoSaveBottomViewDelegate
 
@@ -290,7 +382,6 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 - (void)savePhotoBottomViewDidSaveBtn:(UIButton *)button {
-    
     if([button.titleLabel.text isEqualToString:LocalString(@"open_ablum")]) {
         NSURL *url = [NSURL URLWithString:@"photos-redirect://"];
         
@@ -300,41 +391,82 @@
             [[UIApplication sharedApplication] openURL:url];
         }
     } else {
+        //dispatch_async(dispatch_get_main_queue(), ^{
+        [self.toolBarView setProgressLength:_manager.selectedArray.count];
+        [self.toolBarView setSaveBtnsHiddenValue:YES];
+        [self.toolBarView setSaveLabelHidden:NO];
+        [self.toolBarView setProgressViewValue:0];
+        
+        if(_isFromShare) {
+            [self.toolBarView setSaveText:LocalString(@"share_init")];
+        } else {
+            [self.toolBarView setSaveText:LocalString(@"save_ing")];
+        }
+        //});
+        
         
         __weak typeof(self) weakSelf = self;
-        [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
-            //写入图片到相册
-            UIImage *saveImage = _resultImage;
-            if (saveImage == nil) {
-                saveImage = [self.manager getScrollImage];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSArray *imagesArray = [weakSelf.manager getCutImagesWithModels:[weakSelf.manager getScrollResult]];
+            if (imagesArray == nil) {
+                NSLog(@"images is empty");
+                return;
             }
-
-            [PHAssetChangeRequest creationRequestForAssetFromImage:saveImage];
-        } completionHandler:^(BOOL success, NSError * _Nullable error) {
-            NSLog(@"success = %d, error = %@", success, error);
-            if (success) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [weakSelf.view showImageHUDText:LocalString(@"save_success")];
-                    [button setTitle:LocalString(@"open_ablum") forState:UIControlStateNormal];
-                });
-                
-            } else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    //[weakSelf.view showImageHUDText:LocalString(@"save_failed")];
-                    [button setTitle:LocalString(@"save_failed") forState:UIControlStateNormal];
-                });
-                
-            }
-        }];
+            [weakSelf.manager combineScrollPhotos:imagesArray resultImage:^(UIImage *combineImage) {
+                weakSelf.resultImage = combineImage;
+                if(weakSelf.isFromShare) {
+                    weakSelf.isFromShare = NO;
+                    [weakSelf.toolBarView setSaveBtnsHiddenValue:NO];
+                    [weakSelf.toolBarView setSaveLabelHidden:YES];
+                    [weakSelf savePhotoBottomViewDidShareBtn];
+                } else {
+                    
+                    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+                        [PHAssetChangeRequest creationRequestForAssetFromImage:combineImage];
+                    } completionHandler:^(BOOL success, NSError * _Nullable error) {
+                        NSLog(@"success = %d, error = %@", success, error);
+                        
+                        if (success) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [weakSelf.toolBarView setSaveBtnsHiddenValue:NO];
+                                [weakSelf.toolBarView setSaveLabelHidden:YES];
+                                [weakSelf.view showImageHUDText:LocalString(@"save_success")];
+                                [button setTitle:LocalString(@"open_ablum") forState:UIControlStateNormal];
+                            });
+                            
+                        } else {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [weakSelf.view handleLoading];
+                                //[weakSelf.view showImageHUDText:LocalString(@"save_failed")];
+                                [button setTitle:LocalString(@"save_failed") forState:UIControlStateNormal];
+                            });
+                            
+                        }
+                    }];
+                }
+            } completeIndex:^(NSInteger index) {
+                //dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf.toolBarView setProgressViewValue:index];
+                //});
+            }];
+            
+        });
+        
+        
     }
 }
 
 - (void)savePhotoBottomViewDidShareBtn {
 
-    if (_isShowShareBoardView) {
-        [self hideShareBoard];
+    if (_resultImage == nil) {
+        _isFromShare = YES;
+        [self savePhotoBottomViewDidSaveBtn:nil];
     } else {
-        [self showShareBoard];
+        if (_isShowShareBoardView) {
+            [self hideShareBoard];
+        } else {
+            [self showShareBoard];
+        }
     }
     
 }
@@ -342,12 +474,22 @@
 
 - (PhotoSaveBottomView *)toolBarView {
     if (!_toolBarView) {
-        _toolBarView = [[PhotoSaveBottomView alloc] initWithFrame:CGRectMake(0, self.view.hx_h - ButtomViewHeight - kBottomMargin, self.view.hx_w, ButtomViewHeight + kBottomMargin)];
+        _toolBarView = [[PhotoSaveBottomView alloc] initWithFrame:CGRectMake(0, self.view.hx_h - SaveViewHeight - kBottomMargin, self.view.hx_w, ButtomViewHeight + kBottomMargin)];
         _toolBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         
         _toolBarView.delegate = self;
     }
     return _toolBarView;
+}
+
+- (ShareBoardView *)shareBoardView {
+    if (!_shareBoardView) {
+        _shareBoardView = [[ShareBoardView alloc] initWithFrame:CGRectMake(0, self.view.hx_h - SaveViewHeight - kBottomMargin, self.view.hx_w, ShareBoardHeight)];
+        _shareBoardView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        _shareBoardView.shareDelegate = self;
+        _shareBoardView.hidden = YES;
+    }
+    return _shareBoardView;
 }
 
 #pragma mark scrollView delegate
@@ -361,8 +503,11 @@
 {
     CGFloat contentHeight = scrollView.contentSize.height - self.view.hx_h;
     CGFloat contentOffsetY = scrollView.contentOffset.y;
-    if (contentOffsetY < kTopMargin && contentOffsetY > -kTopMargin) {
-        self.showImageScrollView.frame = CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h);
+    
+    if (contentOffsetY < 0) {
+        //self.showImageScrollView.frame = CGRectMake(0, kTopMargin + contentOffsetY, self.view.hx_w, self.view.hx_h);
+    } else if (contentOffsetY < kTopMargin && contentOffsetY > 0) {
+        self.showImageScrollView.frame = CGRectMake(0, kTopMargin - contentOffsetY, self.view.hx_w, self.view.hx_h);
     } else if (contentOffsetY < contentHeight && contentOffsetY > kTopMargin) {
         //向下
         //if (_canDetectScroll) {
@@ -463,6 +608,54 @@
 
 -(void)loginSuccessByCode:(NSString *)code
 {}
+
+- (void)doubleTap:(UITapGestureRecognizer *)tap {
+    if (_showImageScrollView.zoomScale > 1.0) {
+        _showImageScrollView.contentInset = UIEdgeInsetsZero;
+        [_showImageScrollView setZoomScale:1.0 animated:YES];
+        
+    } else {
+        CGPoint touchPoint = [tap locationInView:self.containImageView];
+        CGFloat newZoomScale = _showImageScrollView.maximumZoomScale;
+        CGFloat xsize = self.view.frame.size.width / newZoomScale;
+        CGFloat ysize = self.view.frame.size.height / newZoomScale;
+        [_showImageScrollView zoomToRect:CGRectMake(touchPoint.x - xsize/2, touchPoint.y - ysize/2, xsize, ysize) animated:YES];
+    }
+}
+
+- (void)singleTap:(UITapGestureRecognizer *)tap {
+    //    if (self.singleTapGestureBlock) {
+    //        self.singleTapGestureBlock();
+    //    }
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
+    return _containImageView;
+}
+
+- (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(UIView *)view {
+    scrollView.contentInset = UIEdgeInsetsZero;
+}
+
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
+    [self refreshImageContainerViewCenter];
+}
+
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
+    //[self refreshScrollViewContentSize];
+    //_containImageView.frame = CGRectMake(_containImageView.originX, _containImageView.originY, _containImageView.hx_w, _containImageView.hx_h);
+    //[_showImageScrollView setContentSize:CGSizeMake(_showImageScrollView.frame.size.width, _showImageScrollView.contentSize.height)];
+}
+
+#pragma mark - Private
+
+- (void)refreshImageContainerViewCenter {
+    CGFloat offsetX = (_showImageScrollView.hx_w > _showImageScrollView.contentSize.width) ? ((_showImageScrollView.hx_w - _showImageScrollView.contentSize.width) * 0.5) : 0.0;
+    CGFloat offsetY = (_showImageScrollView.hx_h > _showImageScrollView.contentSize.height) ? ((_showImageScrollView.hx_h - _showImageScrollView.contentSize.height) * 0.5) : 0.0;
+    self.containImageView.center = CGPointMake(_showImageScrollView.contentSize.width * 0.5 + offsetX, _showImageScrollView.contentSize.height * 0.5 + offsetY);
+}
 
 /*
 #pragma mark - Navigation

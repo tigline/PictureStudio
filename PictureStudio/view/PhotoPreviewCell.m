@@ -76,7 +76,9 @@
     if (self) {
         _scrollView = [[UIScrollView alloc] init];
         _scrollView.bouncesZoom = YES;
-        _scrollView.maximumZoomScale = 2.5;
+        
+        _scrollView.maximumZoomScale = 3.0;
+        
         _scrollView.minimumZoomScale = 1.0;
         _scrollView.multipleTouchEnabled = YES;
         _scrollView.delegate = self;
@@ -127,7 +129,6 @@
     _imageView.image = model.thumbPhoto;
     model.tempImage = nil;
     self.asset = model.asset;
-    
 }
 
 - (void)setAsset:(id)asset {
@@ -146,24 +147,24 @@
 //        fullScreenWidth = 600;
 //    }
     if ([asset isKindOfClass:[PHAsset class]]) {
-        CGSize imageSize;
-//        if (fullScreenWidth < SCREEN_W && fullScreenWidth < 600) {
-//            imageSize =  CGSizeMake(((SCREEN_W-41)/3) * screenScale, ((SCREEN_W-41)/3) * screenScale);;
-//        } else {
-            //PHAsset *phAsset = (PHAsset *)asset;
-            CGFloat aspectRatio = phAsset.pixelWidth / (CGFloat)phAsset.pixelHeight;
-            CGFloat pixelWidth = fullScreenWidth * screenScale;
-            // 超宽图片
-            if (aspectRatio > 1.8) {
-                pixelWidth = pixelWidth * aspectRatio;
-            }
-            // 超高图片
-            if (aspectRatio < 0.2) {
-                pixelWidth = pixelWidth * 0.5;
-            }
-            CGFloat pixelHeight = pixelWidth / aspectRatio;
-            imageSize = CGSizeMake(pixelWidth, pixelHeight);
-        //}
+//        CGSize imageSize;
+////        if (fullScreenWidth < SCREEN_W && fullScreenWidth < 600) {
+////            imageSize =  CGSizeMake(((SCREEN_W-41)/3) * screenScale, ((SCREEN_W-41)/3) * screenScale);;
+////        } else {
+//            //PHAsset *phAsset = (PHAsset *)asset;
+//            CGFloat aspectRatio = phAsset.pixelWidth / (CGFloat)phAsset.pixelHeight;
+//            CGFloat pixelWidth = fullScreenWidth * screenScale;
+//            // 超宽图片
+//            if (aspectRatio > 1.8) {
+//                pixelWidth = pixelWidth * aspectRatio;
+//            }
+//            // 超高图片
+//            if (aspectRatio < 0.2) {
+//                pixelWidth = pixelWidth * 0.5;
+//            }
+//            CGFloat pixelHeight = pixelWidth / aspectRatio;
+//            imageSize = CGSizeMake(pixelWidth, pixelHeight);
+//        //}
 
         PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
         //option.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
@@ -171,7 +172,7 @@
         option.networkAccessAllowed = NO;
         option.deliveryMode = PHImageRequestOptionsDeliveryModeOpportunistic;
 //        option.synchronous = YES;
-        [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:imageSize contentMode:PHImageContentModeAspectFill options:option resultHandler:^(UIImage *result, NSDictionary *info) {
+        [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(self.model.previewViewSize.width*1.5, self.model.previewViewSize.height*1.5) contentMode:PHImageContentModeAspectFill options:option resultHandler:^(UIImage *result, NSDictionary *info) {
 
             BOOL downloadFinined = (![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey]);
             if (downloadFinined ) {
@@ -326,12 +327,32 @@
         _scrollView.contentInset = UIEdgeInsetsZero;
         [_scrollView setZoomScale:1.0 animated:YES];
     } else {
-        CGPoint touchPoint = [tap locationInView:self.imageView];
-        CGFloat newZoomScale = _scrollView.maximumZoomScale;
+        
+        CGPoint touchPoint = [tap locationInView:self.imageContainerView];
+        CGFloat newZoomScale = [self getMaxZoomScale:self.imageContainerView];
         CGFloat xsize = self.frame.size.width / newZoomScale;
         CGFloat ysize = self.frame.size.height / newZoomScale;
         [_scrollView zoomToRect:CGRectMake(touchPoint.x - xsize/2, touchPoint.y - ysize/2, xsize, ysize) animated:YES];
     }
+}
+
+
+- (CGFloat)getMaxZoomScale:(UIView *)containerView {
+    if (containerView == nil) {
+        return 3.0;
+    }
+    CGFloat maxScale;
+    CGFloat aspectRatio = containerView.hx_h / containerView.hx_w;
+    
+    
+    if (aspectRatio > 3 ) {
+        maxScale = _scrollView.hx_w / (containerView.hx_h/aspectRatio);
+    } else if(aspectRatio < 0.33) {
+        maxScale = _scrollView.hx_h / (containerView.hx_w*aspectRatio);
+    } else {
+        maxScale = 2.5;
+    }
+    return maxScale;
 }
 
 - (void)singleTap:(UITapGestureRecognizer *)tap {

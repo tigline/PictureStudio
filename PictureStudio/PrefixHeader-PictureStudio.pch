@@ -31,8 +31,10 @@
 #define kNavigationBarHeight (kDevice_Is_iPhoneX ? 88 : 64)
 #define kTopMargin (kDevice_Is_iPhoneX ? 44 : 0)
 #define kBottomMargin (kDevice_Is_iPhoneX ? 34 : 0)
-#define ButtomViewHeight 45 *ScreenHeightRatio
 
+#define SaveViewHeight (kDevice_Is_iPhoneX ? 43.5*ScreenHeightRatio : 45*ScreenHeightRatio)
+#define ButtomViewHeight (kDevice_Is_iPhoneX ? 55*ScreenHeightRatio : 45*ScreenHeightRatio)
+#define ShareBoardHeight 73*ScreenHeightRatio
 
 #define iOS8_2Later ([UIDevice currentDevice].systemVersion.floatValue >= 8.2f)
 #define WEAKSELF(weakSelf)  __weak __typeof(&*self)weakSelf = self;
@@ -40,6 +42,7 @@
 #define LocalString(name) NSLocalizedString(name,nil)
 #define SCREEN_W [UIScreen mainScreen].bounds.size.width
 #define SCREEN_H [UIScreen mainScreen].bounds.size.height
+#define SCREEN_SCALE [UIScreen mainScreen].scale
 
 #define SHARE_IMAGE_VIEW_HEIGHT         45     //定义分享图片的直径
 #define SAVE_VIEW_HEIGHT         45     //定义保存区域的高度
