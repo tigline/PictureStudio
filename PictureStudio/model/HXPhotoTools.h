@@ -31,6 +31,10 @@
  */
 + (void)saveVideoToCustomAlbumWithName:(NSString *)albumName videoURL:(NSURL *)videoURL;
 
+//裁剪图片
+
++(UIImage*)getCutImage:(UIImage*)image rect:(CGRect)rect;
+
 /**
  保存图片到系统相册和自定义相册
 

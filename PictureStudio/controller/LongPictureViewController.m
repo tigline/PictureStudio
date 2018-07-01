@@ -92,6 +92,8 @@
     } else {
         scrollViewSizeValue = [_manager getSelectPhotosMinHeight]/[UIScreen mainScreen].scale;
     }
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(touchOnImage:)];
+    [_longPictureView addGestureRecognizer:tapGesture];
     
     [self resetImageView:scrollViewSizeValue];
 }
@@ -267,7 +269,9 @@
 }
 
 -(void)touchOnImage:(UITapGestureRecognizer*)sender{
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if (!_shareBoardView.isHidden) {
+        [self hideShareBoard];
+    }
 }
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
@@ -459,7 +463,6 @@
 
     } else if (contentOffsetY > contentHeight) {
 
-
         //向上
         CGFloat bottomMargin = 0.0;
         CGFloat bottomOffset = 0.0;
@@ -626,9 +629,9 @@
 }
 
 - (void)singleTap:(UITapGestureRecognizer *)tap {
-    //    if (self.singleTapGestureBlock) {
-    //        self.singleTapGestureBlock();
-    //    }
+//    if (self.singleTapGestureBlock) {
+//        self.singleTapGestureBlock();
+//    }
 }
 
 #pragma mark - UIScrollViewDelegate

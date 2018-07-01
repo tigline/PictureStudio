@@ -545,19 +545,49 @@
     return isALLScreenShot;
 }
 
+- (void)combineScrollPhotos:(NSArray*)imagesArray resultImage:(void(^)(UIImage *combineImage))combineImage completeIndex:(void(^)(NSInteger index))completeIndex {
+    
+    UIImage *masterImage = [imagesArray objectAtIndex:0];
+    
+    for (int i = 1; i < imagesArray.count; i ++) {
+        
+        UIImage *slaveImage = [imagesArray objectAtIndex:i];
+        CGSize size;
+        size.width = masterImage.size.width;
+        CGFloat masterHeight = masterImage.size.height;
+        CGFloat slaveHeight = slaveImage.size.height;
+        size.height = masterHeight + slaveHeight;
+        
+        UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
+        //Draw masterImage
+        [masterImage drawInRect:CGRectMake(0, 0, size.width, masterHeight)];
+        //Draw slaveImage
+        [slaveImage drawInRect:CGRectMake(0, masterHeight, size.width, slaveHeight)];
+        UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+        masterImage = nil;
+        masterImage = resultImage;
+        UIGraphicsEndImageContext();
+        completeIndex(i);
+        
+    }
+    combineImage(masterImage);
+    
+}
+
 - (void)combinePhotosWithDirection:(BOOL)isVertical resultImage:(void(^)(UIImage *combineImage))combineImage completeIndex:(void(^)(NSInteger index))completeIndex {
     
     CGFloat combineValueSize;
-
+    
     NSArray *imagesArray = [self getSelectImages];
-    if (isVertical) {
+    if (isVertical)
+    {
         combineValueSize = [self getSelectPhotosMinWidth];
-//        if (combineValueSize > 800) {
-//            combineValueSize = 800;
-//        }
+        //        if (combineValueSize > 800) {
+        //            combineValueSize = 800;
+        //        }
         UIImage *masterImage = [imagesArray objectAtIndex:0];
         for (int i = 1; i < imagesArray.count; i ++) {
-
+            
             UIImage *slaveImage = [imagesArray objectAtIndex:i];
             CGSize size;
             size.width = combineValueSize;
@@ -569,7 +599,7 @@
             }
             CGFloat slaveHeight = (combineValueSize/slaveImage.size.width) * slaveImage.size.height;
             size.height = masterHeight + slaveHeight;
-
+            
             UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
             //Draw masterImage
             [masterImage drawInRect:CGRectMake(0, 0, combineValueSize, masterHeight)];
@@ -577,6 +607,10 @@
             
             [slaveImage drawInRect:CGRectMake(0, masterHeight, combineValueSize, slaveHeight)];
             UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+            
+            
+            //此部分 待考虑
+            resultImage = [self compressImageQuality:resultImage toByte:20*1024*1024];
             masterImage = nil;
             masterImage = resultImage;
             UIGraphicsEndImageContext();
@@ -588,9 +622,9 @@
         
     } else {
         combineValueSize = [self getSelectPhotosMinHeight];
-//        if (combineValueSize > 1600) {
-//            combineValueSize = 1600;
-//        }
+        //        if (combineValueSize > 1600) {
+        //            combineValueSize = 1600;
+        //        }
         UIImage *masterImage = [imagesArray objectAtIndex:0];
         for (int i = 1; i < imagesArray.count; i ++) {
             
@@ -612,16 +646,67 @@
             //Draw slaveImage
             [slaveImage drawInRect:CGRectMake(masterWidth, 0, slaveWidth, combineValueSize)];
             UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+            //此部分 待考虑
+            resultImage = [self compressImageQuality:resultImage toByte:20*1024*1024];
             masterImage = nil;
             masterImage = resultImage;
             UIGraphicsEndImageContext();
             completeIndex(i);
         }
         combineImage(masterImage);
-        
     }
+}
 
 
+- (UIImage *)compressImageQuality:(UIImage *)image toByte:(NSInteger)maxLength {
+    CGFloat compression = 1;
+    NSData *data = UIImageJPEGRepresentation(image, compression);
+    if (data.length < maxLength) return image;
+    CGFloat max = 1;
+    CGFloat min = 0;
+    for (int i = 0; i < 6; ++i) {
+        compression = (max + min) / 2;
+        data = UIImageJPEGRepresentation(image, compression);
+        if (data.length < maxLength * 0.9) {
+            min = compression;
+        } else if (data.length > maxLength) {
+            max = compression;
+        } else {
+            break;
+        }
+    }
+    UIImage *resultImage = [UIImage imageWithData:data];
+    return resultImage;
+}
+
+- (void)calulateImageFileSize:(UIImage *)image {
+    NSData *data = UIImagePNGRepresentation(image);
+    if (!data) {
+        data = UIImageJPEGRepresentation(image, 1.0);//需要改成0.5才接近原图片大小，原因请看下文
+    }
+    double dataLength = [data length] * 1.0;
+    NSArray *typeArray = @[@"bytes",@"KB",@"MB",@"GB",@"TB",@"PB", @"EB",@"ZB",@"YB"];
+    NSInteger index = 0;
+    while (dataLength > 1024) {
+        dataLength /= 1024.0;
+        index ++;
+    }
+    NSLog(@"image = %.3f %@",dataLength,typeArray[index]);
+}
+- (NSArray *)getCutImagesWithModels:(NSArray *)modelArray {
+    NSMutableArray *imageList = [[NSMutableArray alloc] init];
+    
+    for (int i = 0; i < modelArray.count; i ++ ) {
+        PhotoCutModel *model = [modelArray objectAtIndex:i];
+        CGRect rect;
+        rect.origin.x = 0;
+        rect.origin.y = model.beginY;
+        rect.size.width = model.originPhoto.size.width;
+        rect.size.height = model.endY - rect.origin.y;
+        UIImage *image = [HXPhotoTools getCutImage:model.originPhoto rect:rect];
+        [imageList addObject:image];
+    }
+    return imageList;
 }
 
 - (NSArray *)getSelectImages {
@@ -1060,32 +1145,9 @@
     [self.cameraList removeAllObjects];
 }
 - (void)clearSelectedList {
-    [self.endSelectedList removeAllObjects];
-    [self.endCameraPhotos removeAllObjects];
-    [self.endSelectedCameraPhotos removeAllObjects];
-    [self.endCameraList removeAllObjects];
-    [self.endSelectedCameraList removeAllObjects];
-    [self.endSelectedPhotos removeAllObjects];
-    [self.endCameraList removeAllObjects];
-    [self.endSelectedCameraList removeAllObjects];
-    [self.endSelectedPhotos removeAllObjects];
-    self.endIsOriginal = NO;
-    self.endPhotosTotalBtyes = nil;
     
     [self.selectedList removeAllObjects];
-    [self.cameraPhotos removeAllObjects];
-    [self.selectedCameraPhotos removeAllObjects];
-    [self.cameraList removeAllObjects];
-    [self.selectedCameraList removeAllObjects];
-    [self.selectedPhotos removeAllObjects];
-    [self.cameraList removeAllObjects];
-    [self.selectedCameraList removeAllObjects];
-    [self.selectedPhotos removeAllObjects];
-    self.isOriginal = NO;
-    self.photosTotalBtyes = nil;
-    
-    [self.albums removeAllObjects];
-    [self.iCloudUploadArray removeAllObjects];
+
 }
 
 #pragma mark - < PHPhotoLibraryChangeObserver >
