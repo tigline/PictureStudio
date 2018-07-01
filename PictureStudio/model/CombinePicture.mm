@@ -29,10 +29,10 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
     Mat imageDownOrigin;                    //下部原始图片
     Mat imageUpCut;                         //截取上部图片需要匹配的区域
     Mat imageDownCut;                       //截取下部图片需要匹配的区域
-    Mat previewMat;                         //前一次匹配的结果
-    Mat resultMat;                          //最终匹配的结果
-    float curUseHeight = 0;
-    float preCutupY = 0;
+    //Mat previewMat;                         //前一次匹配的结果
+    //Mat resultMat;                          //最终匹配的结果
+    CGFloat curUseHeight = 0;
+    CGFloat preCutupY = 0;
     CGFloat navigationHeight = kNavigationBarHeight * [UIScreen mainScreen].scale;
     CGFloat cutLeftX = kDevice_Is_iPhoneX? 0.18f : 0.20f;
     CGFloat cutRightX = 0.75f;
@@ -56,7 +56,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             model.originPhoto = [images objectAtIndex:i];
             imageUpOrigin = [self cvMatFromUIImage:model.originPhoto];
             model.beginY = preCutupY;
-            previewMat = resultMat;
+            //previewMat = resultMat;
             imageUpCut = imageUpOrigin(cv::Rect(cv::Point(imageUpOrigin.cols*cutLeftX, preCutupY),cv::Point(imageUpOrigin.cols*cutRightX, imageUpOrigin.rows)));
         }
         
@@ -240,7 +240,7 @@ vector<DMatch> dectectMatchPoints(vector<KeyPoint> *keyPoint_Up, vector<KeyPoint
     
     clock_t start_surf = clock();
     double totaltime_initPicture;
-    float cutHeight = imageDownGray.rows - imageUpGray.rows;
+    CGFloat cutHeight = imageDownGray.rows - imageUpGray.rows;
     
     Mat imageDesc_Up,imageDesc_Down;
     vector<DMatch> matchePoints;
