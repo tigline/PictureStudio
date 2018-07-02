@@ -549,27 +549,32 @@
     
     UIImage *masterImage = [imagesArray objectAtIndex:0];
     
-    for (int i = 1; i < imagesArray.count; i ++) {
+
         
-        UIImage *slaveImage = [imagesArray objectAtIndex:i];
-        CGSize size;
-        size.width = masterImage.size.width;
-        CGFloat masterHeight = masterImage.size.height;
-        CGFloat slaveHeight = slaveImage.size.height;
-        size.height = masterHeight + slaveHeight;
         
-        UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
-        //Draw masterImage
-        [masterImage drawInRect:CGRectMake(0, 0, size.width, masterHeight)];
-        //Draw slaveImage
-        [slaveImage drawInRect:CGRectMake(0, masterHeight, size.width, slaveHeight)];
-        masterImage = UIGraphicsGetImageFromCurrentImageContext();
-//        masterImage = nil;
-//        masterImage = resultImage;
-        UIGraphicsEndImageContext();
-        completeIndex(i);
-        
-    }
+        for (int i = 1; i < imagesArray.count; i ++) {
+            @autoreleasepool {
+                UIImage *slaveImage = [imagesArray objectAtIndex:i];
+                CGSize size;
+                size.width = masterImage.size.width;
+                CGFloat masterHeight = masterImage.size.height;
+                CGFloat slaveHeight = slaveImage.size.height;
+                size.height = masterHeight + slaveHeight;
+                
+                UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
+                //Draw masterImage
+                [masterImage drawInRect:CGRectMake(0, 0, size.width, masterHeight)];
+                //Draw slaveImage
+                [slaveImage drawInRect:CGRectMake(0, masterHeight, size.width, slaveHeight)];
+                masterImage = UIGraphicsGetImageFromCurrentImageContext();
+                
+                slaveImage = nil;
+                UIGraphicsEndImageContext();
+                completeIndex(i);
+            }
+            
+        }
+
     combineImage(masterImage);
     
 }
@@ -587,34 +592,33 @@
         //        }
         UIImage *masterImage = [imagesArray objectAtIndex:0];
         for (int i = 1; i < imagesArray.count; i ++) {
-            
-            UIImage *slaveImage = [imagesArray objectAtIndex:i];
-            CGSize size;
-            size.width = combineValueSize;
-            CGFloat masterHeight;
-            if (masterImage.size.width > combineValueSize) {
-                masterHeight = (combineValueSize/masterImage.size.width) * masterImage.size.height;
-            } else {
-                masterHeight = masterImage.size.height;
+            @autoreleasepool {
+                UIImage *slaveImage = [imagesArray objectAtIndex:i];
+                CGSize size;
+                size.width = combineValueSize;
+                CGFloat masterHeight;
+                if (masterImage.size.width > combineValueSize) {
+                    masterHeight = (combineValueSize/masterImage.size.width) * masterImage.size.height;
+                } else {
+                    masterHeight = masterImage.size.height;
+                }
+                CGFloat slaveHeight = (combineValueSize/slaveImage.size.width) * slaveImage.size.height;
+                size.height = masterHeight + slaveHeight;
+                
+                UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
+                //Draw masterImage
+                [masterImage drawInRect:CGRectMake(0, 0, combineValueSize, masterHeight)];
+                //Draw slaveImage
+                
+                [slaveImage drawInRect:CGRectMake(0, masterHeight, combineValueSize, slaveHeight)];
+                masterImage = UIGraphicsGetImageFromCurrentImageContext();
+                slaveImage = nil;
+                
+                //此部分 待考虑
+                masterImage = [self compressImageQuality:masterImage toByte:20*1024*1024];
+                UIGraphicsEndImageContext();
+                completeIndex(i);
             }
-            CGFloat slaveHeight = (combineValueSize/slaveImage.size.width) * slaveImage.size.height;
-            size.height = masterHeight + slaveHeight;
-            
-            UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
-            //Draw masterImage
-            [masterImage drawInRect:CGRectMake(0, 0, combineValueSize, masterHeight)];
-            //Draw slaveImage
-            
-            [slaveImage drawInRect:CGRectMake(0, masterHeight, combineValueSize, slaveHeight)];
-            UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
-            
-            
-            //此部分 待考虑
-            resultImage = [self compressImageQuality:resultImage toByte:20*1024*1024];
-            masterImage = nil;
-            masterImage = resultImage;
-            UIGraphicsEndImageContext();
-            completeIndex(i);
             
         }
         combineImage(masterImage);
