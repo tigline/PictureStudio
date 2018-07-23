@@ -335,7 +335,7 @@ PhotoPreviewControllerDelegate
     
 
 
-    self.manager.configuration.photoMaxNum = 9;
+    self.manager.configuration.photoMaxNum = 24;
     self.manager.configuration.rowCount = 3;
     self.manager.configuration.saveSystemAblum = YES;
     [self.manager selectedListTransformBefore];
@@ -638,7 +638,7 @@ PhotoPreviewControllerDelegate
 //开启定时器
 - (void)addTimer
 {
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1f target:self selector:@selector(change:) userInfo:nil repeats:YES];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.03f target:self selector:@selector(change:) userInfo:nil repeats:YES];
 }
 
 //关闭定时器
@@ -657,13 +657,13 @@ PhotoPreviewControllerDelegate
         if (self.collectionView.contentOffset.y >=  self.collectionView.contentSize.height - [UIScreen mainScreen].bounds.size.height - 10){
             [self removeTimer];
         }else{
-            [self.collectionView setContentOffset:CGPointMake(0, self.collectionView.contentOffset.y + 30) animated:NO];
+            [self.collectionView setContentOffset:CGPointMake(0, self.collectionView.contentOffset.y + 10) animated:NO];
         }
     }else{
         if (self.collectionView.contentOffset.y <= 10){
             [self removeTimer];
         }else{
-            [self.collectionView setContentOffset:CGPointMake(0, self.collectionView.contentOffset.y - 30) animated:NO];
+            [self.collectionView setContentOffset:CGPointMake(0, self.collectionView.contentOffset.y - 10) animated:NO];
         }
     }
 }
@@ -968,11 +968,12 @@ PhotoPreviewControllerDelegate
         selectBtn.selected = NO;
         //cell.selected = NO;
     }else {
-//        NSString *str = [self.manager maximumOfJudgment:cell.model];
-//        if (str) {
-//            [self.view showImageHUDText:str];
-//            return;
-//        }
+        NSString *str = [self.manager maximumOfJudgment:cell.model];
+        if (str) {
+            [self.view showImageHUDText:str];
+            [self removeTimer];
+            return;
+        }
         if (cell.model.type != HXPhotoModelMediaTypeCameraVideo && cell.model.type != HXPhotoModelMediaTypeCameraPhoto) {
             cell.model.thumbPhoto = cell.imageView.image;
         }
