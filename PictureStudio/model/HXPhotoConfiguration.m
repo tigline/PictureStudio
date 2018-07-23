@@ -26,7 +26,7 @@
     self.lookGifPhoto = YES;
     self.selectTogether = YES;
     self.maxNum = 10;
-    self.photoMaxNum = 9;
+    self.photoMaxNum = 24;
     self.videoMaxNum = 1;
     if ([UIScreen mainScreen].bounds.size.width == 320) {
         self.rowCount = 3;
