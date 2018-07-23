@@ -563,9 +563,9 @@
         [masterImage drawInRect:CGRectMake(0, 0, size.width, masterHeight)];
         //Draw slaveImage
         [slaveImage drawInRect:CGRectMake(0, masterHeight, size.width, slaveHeight)];
-        UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
-        masterImage = nil;
-        masterImage = resultImage;
+        masterImage = UIGraphicsGetImageFromCurrentImageContext();
+//        masterImage = nil;
+//        masterImage = resultImage;
         UIGraphicsEndImageContext();
         completeIndex(i);
         
