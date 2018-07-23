@@ -495,6 +495,10 @@ PhotoPreviewControllerDelegate
 
 - (void)handleGesture:(UIPanGestureRecognizer *)gestureRecognizer
 {
+    
+    /////test
+    
+    
     self.collectionView.scrollEnabled = YES;
     float pointerX = [gestureRecognizer locationInView:self.collectionView].x;
     float pointerY = [gestureRecognizer locationInView:self.collectionView].y;
