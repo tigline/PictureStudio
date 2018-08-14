@@ -32,13 +32,15 @@ PhotoEditBottomViewDelegate,
 ImgCollectionViewCellDelegate,
 UIViewControllerPreviewingDelegate,
 UICollectionViewDelegateFlowLayout,
-PhotoPreviewControllerDelegate
+PhotoPreviewControllerDelegate,
+UIPopoverPresentationControllerDelegate
 
 >
 
 @property (strong, nonatomic) UICollectionViewFlowLayout *flowLayout;
 @property (strong, nonatomic) UICollectionView *collectionView;
 @property (strong, nonatomic) NSMutableArray *allArray;
+@property (strong, nonatomic) NSMutableArray *allScreenShotArray;
 @property (strong, nonatomic) NSMutableArray *previewArray;
 @property (strong, nonatomic) NSMutableArray *photoArray;
 @property (strong, nonatomic) NSMutableArray *videoArray;
@@ -116,7 +118,6 @@ PhotoPreviewControllerDelegate
     [self.view addGestureRecognizer:gestureRecognizer];
     [gestureRecognizer setMinimumNumberOfTouches:1];
     [gestureRecognizer setMaximumNumberOfTouches:1];
-    
 }
 
 //- (BOOL)prefersStatusBarHidden
@@ -242,8 +243,6 @@ PhotoPreviewControllerDelegate
     
 }
 
-
-
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
@@ -264,7 +263,6 @@ PhotoPreviewControllerDelegate
             });
         } albums:^(NSArray *albums) {
             weakSelf.albumModelArray = [NSMutableArray arrayWithArray:albums];
-            
         } isFirst:isFirst];
     });
 }
@@ -275,14 +273,71 @@ PhotoPreviewControllerDelegate
     if (_shouldShowIndicator) {
         //[self.view showLoadingHUDText:LocalString(@"load_ablum")];
     }
+    __block HXPhotoModel *mHXPhotoModel;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
         weakSelf.albumModel = albumModel;
         [weakSelf.allArray removeAllObjects];
+        [weakSelf.allScreenShotArray removeAllObjects];
         [weakSelf.manager getPhotoListWithAlbumModel:albumModel complete:^(NSArray *allList, NSArray *previewList, NSArray *photoList, NSArray *videoList, NSArray *dateList, HXPhotoModel *firstSelectModel) {
             weakSelf.dateArray = [NSMutableArray arrayWithArray:dateList];
             weakSelf.allArray = [NSMutableArray arrayWithArray:allList];
             weakSelf.previewArray = [NSMutableArray arrayWithArray:previewList];
+            
+            #pragma mark - 开发最近长截图
+ //----------------------------------------------------------------------------------
+            for (int i = 0; i < [weakSelf.allArray count]; i++)
+            {
+                mHXPhotoModel = [weakSelf.allArray objectAtIndex:i];
+                NSDate *sendDate=[NSDate date];
+                NSDateFormatter* formatter = [[NSDateFormatter alloc]init];
+                [formatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+                if (mHXPhotoModel.isScreenShot)
+                {
+                    if ([self dateTimeDifferenceWithStartTime:[formatter stringFromDate:mHXPhotoModel.creationDate] endTime: [formatter stringFromDate:sendDate]] < 121)
+                    {
+                        [weakSelf.allScreenShotArray addObject:mHXPhotoModel];
+                    }
+                }
+            }
+            
+            if ([weakSelf.allScreenShotArray count] > 1)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    _mRecentScrollView = [[RecentScrollView alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 49.5*2)/2,self.bottomView.frame.origin.y - 64.5*2, 49.5*2, 64.5*2)];
+                    
+                    
+                    UITapGestureRecognizer *tapGesturRecognizer=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(RecentScrollViewClick:)];
+
+                    [_mRecentScrollView addGestureRecognizer:tapGesturRecognizer];
+                });
+                mHXPhotoModel = [weakSelf.allScreenShotArray objectAtIndex:0];
+                if ( mHXPhotoModel.type == HXPhotoModelMediaTypeCameraPhoto)
+                {
+                    _mRecentScrollView.image = mHXPhotoModel.thumbPhoto;
+                }
+                else
+                {
+                    [HXPhotoTools getImageWithModel:mHXPhotoModel completion:^(UIImage *image, HXPhotoModel *model) {
+                        _mRecentScrollView.image = image;
+                    }];
+                }
+            }
+            else
+            {
+                if (_mRecentScrollView != nil)
+                {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [UIView animateWithDuration:1.0f animations:^{
+                            _mRecentScrollView.alpha = 0.0f;
+                        }];
+                    });
+                }
+            }
+//----------------------------------------------------------------------------------
+            
+            
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 CGFloat bottomMargin = 0.0;
                 if (kDevice_Is_iPhoneX) {
@@ -305,7 +360,18 @@ PhotoPreviewControllerDelegate
                         _isScreenshotNotification = NO;
                         _shouldReloadAsset = NO;
                     } else {
-                        [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+                        if (_mRecentScrollView == nil)
+                        {
+                             [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+                        }
+                        else
+                        {
+                            [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
+                        }
+                    }
+                    if (_mRecentScrollView != nil)
+                    {
+                        [self.view addSubview:_mRecentScrollView];
                     }
                 }];
                 
@@ -333,8 +399,6 @@ PhotoPreviewControllerDelegate
 
 - (void)setPhotoManager {
     
-
-
     self.manager.configuration.photoMaxNum = 24;
     self.manager.configuration.rowCount = 3;
     self.manager.configuration.saveSystemAblum = YES;
@@ -401,13 +465,10 @@ PhotoPreviewControllerDelegate
     [UIView animateWithDuration:0.9 animations:^{
         [button setImage:[UIImage imageNamed:@"about_pressed"] forState:UIControlStateNormal];
     } completion:^(BOOL finished) {
-        
         [button setImage:[UIImage imageNamed:@"about"] forState:UIControlStateNormal];
         _aboutViewController = [[AboutViewController alloc] initWithNibName:@"AboutViewController" bundle:nil];
         [self.navigationController presentViewController:_aboutViewController animated:YES completion:nil];
     }];
-    
-    
 }
 
 
@@ -433,6 +494,14 @@ PhotoPreviewControllerDelegate
 
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     _lastContentOffset = scrollView.contentOffset.y;
+    if (_mRecentScrollView != nil)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [UIView animateWithDuration:1.0f animations:^{
+                _mRecentScrollView.alpha = 0.0f;
+            }];
+        });
+    }
 }
 
 
@@ -957,6 +1026,16 @@ PhotoPreviewControllerDelegate
 }
 
 - (void)imgCollectionViewCell:(ImgCollectionViewCell *)cell didSelectBtn:(UIButton *)selectBtn {
+    
+    if (_mRecentScrollView != nil)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [UIView animateWithDuration:1.0f animations:^{
+                _mRecentScrollView.alpha = 0.0f;
+            }];
+        });
+    }
+    
     if (selectBtn.selected) {
         if (cell.model.type != HXPhotoModelMediaTypeCameraPhoto) {
             cell.model.thumbPhoto = nil;
@@ -1081,6 +1160,50 @@ PhotoPreviewControllerDelegate
 }
 
 
+#pragma mark - 开发最近长截图
+//----------------------------------------------------------------------------------
+-(void)RecentScrollViewClick:(id)tap {
+    if (self.allScreenShotArray.count < 2) {
+        
+    } else {
+        __block NSMutableArray *photoArray = [[NSMutableArray alloc] init];
+        PHCachingImageManager *imageManager = [[PHCachingImageManager alloc] init];
+        for (int i = 0; i < self.allScreenShotArray.count; i++) {
+            HXPhotoModel *model;
+            model = [self.allScreenShotArray objectAtIndex:i];
+            PHAsset *phAsset = model.asset;
+            PHImageRequestOptions * options=[[PHImageRequestOptions alloc]init];
+            options.resizeMode = PHImageRequestOptionsResizeModeFast;
+            options.synchronous=YES;
+            [imageManager requestImageForAsset:phAsset targetSize:PHImageManagerMaximumSize
+                                   contentMode:PHImageContentModeDefault
+                                       options:options
+                                 resultHandler:^(UIImage *result, NSDictionary *info)
+             {
+                 [photoArray addObject:result];
+             }];
+        }
+        __weak typeof(self) weakSelf = self;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [CombinePicture CombinePictures:photoArray complete:^(NSArray* resultModels) {
+                if ([weakSelf.allScreenShotArray count]> 3) {
+                    [weakSelf.manager setScrollResult:resultModels];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollFinish" object:nil];
+                } else {
+                    [weakSelf.manager setScrollResult:resultModels];
+                    [self performSegueWithIdentifier:@"toSharePictureView" sender:resultModels];
+                }
+            }success:^(BOOL success) {
+                weakSelf.manager.isScrollSuccess = success;
+            }];
+        });
+        
+        if ([weakSelf.allScreenShotArray count]> 3) {
+            [self performSegueWithIdentifier:@"toSharePictureView" sender:nil];
+        }
+    }
+}
+//----------------------------------------------------------------------------------
 
 - (void)datePhotoBottomViewDidScrollBtn {
     if (_manager.selectedArray.count < 2) {
@@ -1266,6 +1389,12 @@ PhotoPreviewControllerDelegate
     }
     return _allArray;
 }
+- (NSMutableArray *)allScreenShotArray {
+    if (!_allScreenShotArray) {
+        _allScreenShotArray = [NSMutableArray array];
+    }
+    return _allScreenShotArray;
+}
 - (NSMutableArray *)photoArray {
     if (!_photoArray) {
         _photoArray = [NSMutableArray array];
@@ -1329,6 +1458,8 @@ PhotoPreviewControllerDelegate
         weakSelf.assetGroupView.assetsGroups = albums;
     } isFirst:NO];
 }
+
+
 
 - (void)showAssetsGroupView
 {
@@ -1453,6 +1584,18 @@ PhotoPreviewControllerDelegate
 }
 
 
+- (NSInteger)dateTimeDifferenceWithStartTime:(NSString *)startTime endTime:(NSString *)endTime
+{
+    NSDateFormatter *date = [[NSDateFormatter alloc]init];
+    [date setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSDate *startD =[date dateFromString:startTime];
+    NSDate *endD = [date dateFromString:endTime];
+    NSTimeInterval start = [startD timeIntervalSince1970]*1;
+    NSTimeInterval end = [endD timeIntervalSince1970]*1;
+    NSTimeInterval value = end - start;
+    int minute = (int)value;
+    return minute;
+}
 
 @end
 

@@ -1157,7 +1157,7 @@
         HXPhotoModel *photoModel = [[HXPhotoModel alloc] init];
         photoModel.asset = asset;
         photoModel.clarityScale = self.configuration.clarityScale;
-
+        photoModel.creationDate =[asset valueForKey:@"creationDate"];
         if (selectList.count > 0) {
             NSString *property = @"asset";
             NSPredicate *pred = [NSPredicate predicateWithFormat:@"%K = %@", property, asset];
@@ -1177,6 +1177,8 @@
                 photoModel.thumbPhoto = model.thumbPhoto;
                 photoModel.previewPhoto = model.previewPhoto;
                 photoModel.selectIndexStr = model.selectIndexStr;
+                photoModel.creationDate = model.creationDate;
+                photoModel.modificationDate = model.modificationDate;
                 if (!firstSelectModel) {
                     firstSelectModel = photoModel;
                 }
