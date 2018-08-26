@@ -23,7 +23,7 @@
 @end
 
 @implementation PhotoSaveBottomView
-#define btnHeight 45*ScreenHeightRatio
+#define btnHeight 60*ScreenHeightRatio
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];

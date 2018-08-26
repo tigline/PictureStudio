@@ -11,6 +11,7 @@
 
 #import <UMShare/UMShare.h>
 #import <UMCommon/UMCommon.h>
+#import "UIColor+CustomColor.h"
 // Include any system framework and library headers here that should be included in all compilation units.
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
 
@@ -33,8 +34,9 @@
 #define kBottomMargin (kDevice_Is_iPhoneX ? 34 : 0)
 
 #define SaveViewHeight (kDevice_Is_iPhoneX ? 43.5*ScreenHeightRatio : 45*ScreenHeightRatio)
-#define ButtomViewHeight (kDevice_Is_iPhoneX ? 55*ScreenHeightRatio : 45*ScreenHeightRatio)
+#define ButtomViewHeight (kDevice_Is_iPhoneX ? 55*ScreenHeightRatio : 60*ScreenHeightRatio)
 #define ShareBoardHeight 73*ScreenHeightRatio
+#define AblumViewWidth 353*ScreenWidthRatio
 
 #define iOS8_2Later ([UIDevice currentDevice].systemVersion.floatValue >= 8.2f)
 #define WEAKSELF(weakSelf)  __weak __typeof(&*self)weakSelf = self;

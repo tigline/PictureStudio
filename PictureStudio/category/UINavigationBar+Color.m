@@ -25,4 +25,9 @@
     [self setValue:view forKey:@"backgroundView"];
 }
 
+- (CGSize)sizeThatFits:(CGSize)size {
+    CGSize newSize = CGSizeMake(self.frame.size.width,82*ScreenHeightRatio);
+    return newSize;
+}
+
 @end

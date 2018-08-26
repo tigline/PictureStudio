@@ -11,7 +11,7 @@
 #import <Photos/Photos.h>
 #import "FilePathUtils.h"
 #import "ImgCollectionViewCell.h"
-#import "PhotoCollectionReusableView.h"
+//#import "PhotoCollectionReusableView.h"
 #import "AssetTitleView.h"
 #import "AHAssetGroupsView.h"
 #import "UINavigationBar+Color.h"
@@ -23,6 +23,7 @@
 #import "UINavigationController+FDFullscreenPopGesture.h"
 #import "HXPhoto3DTouchViewController.h"
 #import "ASPopover.h"
+#import "AssetTitleButton.h"
 
 
 @interface ViewController ()<UICollectionViewDataSource,
@@ -37,8 +38,12 @@ UIPopoverPresentationControllerDelegate
 
 >
 
+@property (weak, nonatomic) IBOutlet AssetTitleButton *assetTitleView;
+@property (weak, nonatomic) IBOutlet UIView *navView;
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+
 @property (strong, nonatomic) UICollectionViewFlowLayout *flowLayout;
-@property (strong, nonatomic) UICollectionView *collectionView;
+//@property (strong, nonatomic) UICollectionView *collectionView;
 @property (strong, nonatomic) NSMutableArray *allArray;
 @property (strong, nonatomic) NSMutableArray *allScreenShotArray;
 @property (strong, nonatomic) NSMutableArray *previewArray;
@@ -51,7 +56,7 @@ UIPopoverPresentationControllerDelegate
 @property (weak, nonatomic) id<UIViewControllerPreviewing> previewingContext;
 @property (assign, nonatomic) BOOL orientationDidChange;
 @property (strong, nonatomic) NSIndexPath *beforeOrientationIndexPath;
-@property (nonatomic, strong) AssetTitleView *groupTitleView;
+//@property (nonatomic, strong) AssetTitleView *groupTitleView;
 @property (nonatomic, strong) UIButton *touchButton;
 @property (nonatomic, strong) UIViewController *assetPopoViewController;
 @property (nonatomic, strong) AHAssetGroupsView *assetGroupView;
@@ -59,7 +64,7 @@ UIPopoverPresentationControllerDelegate
 @property (strong, nonatomic) UIBarButtonItem *aboutMeBtn;
 @property (weak, nonatomic) UIActivityIndicatorView *combineIndicatorView;
 @property (nonatomic, strong) CombineIndicatorView* indicator;
-@property (weak, nonatomic) PhotoCollectionReusableView *footerView;
+//@property (weak, nonatomic) PhotoCollectionReusableView *footerView;
 @property (assign, nonatomic) __block BOOL canDetectScroll;
 @property (assign, nonatomic) CGFloat lastContentOffset;
 @property (strong, nonatomic) AboutViewController *aboutViewController;
@@ -95,13 +100,26 @@ UIPopoverPresentationControllerDelegate
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.navigationController.navigationBar setColor:[UIColor whiteColor]];
-    [self.view setBackgroundColor:[UIColor whiteColor]];
-    self.fd_prefersNavigationBarHidden = NO;
+    
+//    [self.navigationController.navigationBar setBackgroundColor:UIColor.barColor];
+//    [self.view setBackgroundColor:[UIColor colorWithRed:238/255.0 green:238/255.0 blue:238/255.0 alpha:1.0]];
+//    self.fd_prefersNavigationBarHidden = NO;
 
-    self.navigationItem.titleView = self.groupTitleView;
-    CGFloat width = [self.groupTitleView updateTitleConstraints:YES];
-    self.groupTitleView.frame = CGRectMake(0, 0, width, 40);
+//    self.navigationItem.titleView = self.groupTitleView;
+    
+    [self.view setBackgroundColor: UIColor.barColor];
+    [self initCollectionView];
+    self.navView.backgroundColor = UIColor.barColor;
+    self.navView.layer.shadowColor = UIColor.navShadowColor.CGColor;
+    self.navView.layer.shadowOpacity = 0.8f;
+    self.navView.layer.shadowRadius = 18;
+    self.navView.layer.shadowOffset = CGSizeMake(0, 6);
+    [self.view bringSubviewToFront:self.navView];
+    [self.assetTitleView buildUI];
+    CGFloat width = [self.assetTitleView updateTitleConstraints:YES];
+    self.assetTitleView.size = CGSizeMake(width, self.assetTitleView.hx_h);
+    self.assetTitleView.center = CGPointMake(self.navView.center.x, self.navView.center.y + 10);
+    
     [self askForAuthorize];
     _canDetectScroll = NO;
     _swipeSelectArray = [[NSMutableArray alloc] init];
@@ -246,7 +264,7 @@ UIPopoverPresentationControllerDelegate
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
-    //_showStatusBar = NO;
+    //[self addCornerRadiusInCollectionView];
 }
 
 
@@ -346,11 +364,12 @@ UIPopoverPresentationControllerDelegate
                     bottomMargin = ButtomViewHeight;
                 }
 
-                weakSelf.collectionView.frame = CGRectMake(0, 0, SCREEN_W, SCREEN_H - bottomMargin - 10);
-                weakSelf.groupTitleView.titleButton.text = weakSelf.albumModel.albumName;
-                CGFloat width = [weakSelf.groupTitleView updateTitleConstraints:NO];
-                weakSelf.groupTitleView.frame = CGRectMake(0, 0, width, 40);
-                
+                //weakSelf.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84, AblumViewWidth, SCREEN_H - bottomMargin - 20);
+ 
+                [weakSelf.assetTitleView setTitle:weakSelf.albumModel.albumName forState:UIControlStateNormal];
+                CGFloat width = [weakSelf.assetTitleView updateTitleConstraints:NO];
+                self.assetTitleView.size = CGSizeMake(width, self.assetTitleView.hx_h);
+                self.assetTitleView.center = CGPointMake(self.navView.center.x, self.navView.center.y + 10);
 //                [CATransaction begin];
 //                [CATransaction setDisableActions:YES];
                 
@@ -406,23 +425,28 @@ UIPopoverPresentationControllerDelegate
     [self.manager setScreenWidthSize:[[UIScreen mainScreen] currentMode].size.width];
 }
 
+- (IBAction)assetButtonClicked:(id)sender {
+    [self getAssetsGroup];
+    self.assetGroupView.indexAssetsGroup = self.currentSectionIndex;
+}
+
+
 - (void)setupUI {
     
     
     self.currentSectionIndex = 0;
-    __weak typeof(self) weakSelf = self;
-    self.groupTitleView.titleViewDidClick = ^{
-        [weakSelf getAssetsGroup];
-        weakSelf.assetGroupView.indexAssetsGroup = weakSelf.currentSectionIndex;
-    };
+    //__weak typeof(self) weakSelf = self;
+//    self.assetTitleView.titleViewDidClick = ^{
+//
+//    };
     
     _assetPopoViewController =  [self popoverViewController];
-    UIButton *aboutButton = [[UIButton alloc] init];
-    [aboutButton setImage:[UIImage imageNamed:@"about"] forState:UIControlStateNormal];
+//    UIButton *aboutButton = [[UIButton alloc] init];
+//    [aboutButton setImage:[UIImage imageNamed:@"about"] forState:UIControlStateNormal];
+//
+//    [aboutButton addTarget:self action:@selector(aboutMe:) forControlEvents:UIControlEventTouchDown];
     
-    [aboutButton addTarget:self action:@selector(aboutMe:) forControlEvents:UIControlEventTouchDown];
-    
-    _aboutMeBtn = [[UIBarButtonItem alloc] initWithCustomView:aboutButton];
+//    _aboutMeBtn = [[UIBarButtonItem alloc] initWithCustomView:aboutButton];
     
 //    _aboutMeBtn = [[UIBarButtonItem alloc] initWithImage:[[UIImage alloc]init] style:UIBarButtonItemStyleDone target:self action:@selector(aboutMe:)];
 //    [_aboutMeBtn setBackgroundImage:[UIImage imageNamed:@"about"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
@@ -447,7 +471,7 @@ UIPopoverPresentationControllerDelegate
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
     CGFloat height = [UIScreen mainScreen].bounds.size.height;
     CGFloat viewWidth = [UIScreen mainScreen].bounds.size.width;
-    self.collectionView.frame = CGRectMake(0, 0, width, height - ButtomViewHeight);
+    //self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84, AblumViewWidth, height - ButtomViewHeight - 10);
     
     if (kDevice_Is_iPhoneX) {
         bottomMargin = 21;
@@ -459,6 +483,19 @@ UIPopoverPresentationControllerDelegate
     self.bottomView.frame = CGRectMake(0, bottomViewY, viewWidth, ButtomViewHeight + bottomMargin);
 }
 
+- (IBAction)aboutMeTouchTap:(id)sender {
+    UIButton *button = (UIButton *)sender;
+    //[button setImage:[UIImage imageNamed:@"about_pressed"] forState:UIControlStateNormal];
+    [UIView animateWithDuration:0.9 animations:^{
+        [button setImage:[UIImage imageNamed:@"nav_about_p"] forState:UIControlStateNormal];
+    } completion:^(BOOL finished) {
+        [button setImage:[UIImage imageNamed:@"nav_about"] forState:UIControlStateNormal];
+        _aboutViewController = [[AboutViewController alloc] initWithNibName:@"AboutViewController" bundle:nil];
+        [self presentViewController:_aboutViewController animated:YES completion:nil];
+    }];
+}
+
+
 - (void)aboutMe:(id)sender {
     UIButton *button = (UIButton *)sender;
     //[button setImage:[UIImage imageNamed:@"about_pressed"] forState:UIControlStateNormal];
@@ -467,7 +504,7 @@ UIPopoverPresentationControllerDelegate
     } completion:^(BOOL finished) {
         [button setImage:[UIImage imageNamed:@"about"] forState:UIControlStateNormal];
         _aboutViewController = [[AboutViewController alloc] initWithNibName:@"AboutViewController" bundle:nil];
-        [self.navigationController presentViewController:_aboutViewController animated:YES completion:nil];
+        [self presentViewController:_aboutViewController animated:YES completion:nil];
     }];
 }
 
@@ -491,7 +528,7 @@ UIPopoverPresentationControllerDelegate
 
 #pragma mark -scrollView delegate
 
-
+/*
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     _lastContentOffset = scrollView.contentOffset.y;
     if (_mRecentScrollView != nil)
@@ -512,7 +549,7 @@ UIPopoverPresentationControllerDelegate
     if (contentOffsetY < contentHeight) {
         //向下
         if (_canDetectScroll) {
-            self.collectionView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h);
+            self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84, AblumViewWidth, self.view.hx_h);
         }
         //[self.navigationController setNavigationBarHidden:NO animated:YES];
         
@@ -525,37 +562,37 @@ UIPopoverPresentationControllerDelegate
             bottomMargin = ButtomViewHeight;
         }
         if (_canDetectScroll && contentOffsetY > contentHeight) {
-            self.collectionView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h - bottomMargin);
+            self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84, AblumViewWidth, self.view.hx_h - bottomMargin);
         }
         //[self.navigationController setNavigationBarHidden:YES animated:YES];
 
     }
 }
+*/
 
-
-- (void)scrollViewDidChangeAdjustedContentInset:(UIScrollView *)scrollView
-{
-    
-}
-#pragma mark - UITouch Event
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-{
-    CGPoint touchPoint = [[touches anyObject] locationInView:self.collectionView];
-    _moveBeginX = touchPoint.x;
-    _moveBeginY = touchPoint.y;
-}
-
-- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+//- (void)scrollViewDidChangeAdjustedContentInset:(UIScrollView *)scrollView
+//{
+//
+//}
+//#pragma mark - UITouch Event
+//- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+//{
 //    CGPoint touchPoint = [[touches anyObject] locationInView:self.collectionView];
+//    _moveBeginX = touchPoint.x;
+//    _moveBeginY = touchPoint.y;
+//}
 //
-//    for (ImgCollectionViewCell *cell in self.collectionView.visibleCells) {
+//- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+////    CGPoint touchPoint = [[touches anyObject] locationInView:self.collectionView];
+////
+////    for (ImgCollectionViewCell *cell in self.collectionView.visibleCells) {
+////
+////
+////
+////    }
 //
 //
-//
-//    }
-    
-    
-}
+//}
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
@@ -916,6 +953,7 @@ UIPopoverPresentationControllerDelegate
 ////    cell.selectBtn.selected = NO;
 ////    cell.model.selected = NO;
 //    cell.selected = indexcell.selected;
+    
 }
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingSupplementaryView:(UICollectionReusableView *)view forElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath {
     if ([elementKind isEqualToString:UICollectionElementKindSectionHeader]) {
@@ -924,9 +962,11 @@ UIPopoverPresentationControllerDelegate
 }
 
 
+
+
 //设置每个Cell的大小
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    CGSize size = CGSizeMake((self.view.hx_w - 41)/3,(self.view.hx_w - 41)/3);
+    CGSize size = CGSizeMake((AblumViewWidth - 20*ScreenWidthRatio)/3,(AblumViewWidth - 20*ScreenWidthRatio)/3);
     return size;
 }
 
@@ -934,36 +974,36 @@ UIPopoverPresentationControllerDelegate
     
     return CGSizeZero;
 }
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
-
-    return CGSizeMake(self.view.hx_w, 50);
-
-}
+//- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
+//
+//    return CGSizeMake(self.collectionView.hx_w, 50);
+//
+//}
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {
-    return UIEdgeInsetsMake(10, 10, 10, 10);//分别为上、左、下、右
+    return UIEdgeInsetsMake(5, 5, 5, 5);//分别为上、左、下、右
 }
 //这个是两行cell之间的间距（上下行cell的间距）
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
 {
-    return 10.0f;
+    return 5;
 }
 //两个cell之间的间距（同一行的cell的间距）
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
 {
-    return 10.0f;
+    return 5;
 }
 
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
-    
-    if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
-        PhotoCollectionReusableView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"sectionFooterId" forIndexPath:indexPath];
-        footerView.photoCount = self.allArray.count;
-        self.footerView = footerView;
-        return footerView;
-    }
-    return nil;
-}
+//- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+//
+////    if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
+////        PhotoCollectionReusableView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"sectionFooterId" forIndexPath:indexPath];
+////        footerView.photoCount = self.allArray.count;
+////        self.footerView = footerView;
+////        return footerView;
+////    }
+//    return nil;
+//}
 
 - (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
     NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:location];
@@ -1323,19 +1363,33 @@ UIPopoverPresentationControllerDelegate
     return _bottomView;
 }
 
-- (UICollectionView *)collectionView {
-    if (!_collectionView) {
-        CGFloat collectionHeight = self.view.hx_h;
 
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, self.view.hx_w, collectionHeight) collectionViewLayout:self.flowLayout];
+
+- (void)addCornerRadiusInCollectionView {
+    CAShapeLayer * maskLayer = [CAShapeLayer layer];
+    CGRect bounds = _collectionView.bounds;
+    maskLayer.path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height) byRoundingCorners: UIRectCornerBottomLeft | UIRectCornerBottomRight cornerRadii: (CGSize){5.0, 15.0}].CGPath;
+    _collectionView.layer.mask = maskLayer;
+}
+
+- (void)initCollectionView {
+
+        //CGFloat collectionHeight = self.view.hx_h;
+
+        //_collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(11*ScreenWidthRatio, 84, AblumViewWidth, collectionHeight) collectionViewLayout:self.flowLayout];
         
-        _collectionView.backgroundColor = [UIColor whiteColor];
+        _collectionView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.9];
+        _collectionView.layer.shadowOpacity = 1.0;
+        _collectionView.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.05].CGColor;
+        _collectionView.layer.shadowOffset = CGSizeMake(0, 4);
+        _collectionView.layer.shadowRadius = 12;
+    
         _collectionView.dataSource = self;
         _collectionView.delegate = self;
         _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _collectionView.alwaysBounceVertical = YES;
         [_collectionView registerClass:[ImgCollectionViewCell class] forCellWithReuseIdentifier:@"DateCellId"];
-        [_collectionView registerClass:[PhotoCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"sectionFooterId"];
+        //[_collectionView registerClass:[PhotoCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"sectionFooterId"];
         //_collectionView.allowsMultipleSelection = YES;
         if ([self respondsToSelector:@selector(traitCollection)]) {
             if ([self.traitCollection respondsToSelector:@selector(forceTouchCapability)]) {
@@ -1344,9 +1398,9 @@ UIPopoverPresentationControllerDelegate
                 }
             }
         }
-        }
+    
 
-        return _collectionView;
+
     }
 
 - (void)handleGesture {
@@ -1365,13 +1419,18 @@ UIPopoverPresentationControllerDelegate
     return _flowLayout;
 }
 
-- (AssetTitleView *)groupTitleView
-{
-    if (_groupTitleView == nil) {
-        _groupTitleView = [[AssetTitleView alloc] init];
-    }
-    return _groupTitleView;
-}
+//- (AssetTitleView *)groupTitleView
+//{
+//    if (_groupTitleView == nil) {
+//        _groupTitleView = [[AssetTitleView alloc] init];
+//        _groupTitleView.layer.borderWidth = 1;
+//        _groupTitleView.layer.borderColor = UIColor.lightGrayColor.CGColor;
+//        _groupTitleView.layer.cornerRadius = 13*ScreenHeightRatio;
+//        _groupTitleView.layer.masksToBounds = YES;
+//        
+//    }
+//    return _groupTitleView;
+//}
 
 - (UIButton *)touchButton{
     if (!_touchButton) {
@@ -1433,9 +1492,10 @@ UIPopoverPresentationControllerDelegate
         //更新标题
         _shouldShowIndicator = YES;
         self.currentSectionIndex = selectedAlbumModel.index;
-        self.groupTitleView.titleButton.text = selectedAlbumModel.albumName;
-        CGFloat width = [self.groupTitleView updateTitleConstraints:NO];
-        self.groupTitleView.frame = CGRectMake(0, 0, width, 40);
+        [self.assetTitleView setTitle:selectedAlbumModel.albumName forState:UIControlStateNormal];
+        CGFloat width = [self.assetTitleView updateTitleConstraints:NO];
+        self.assetTitleView.size = CGSizeMake(width, self.assetTitleView.hx_h);
+        self.assetTitleView.center = CGPointMake(self.navView.center.x, self.navView.center.y + 10);
         [self getPhotoListByAblumModel:selectedAlbumModel];
     }
     
@@ -1470,7 +1530,7 @@ UIPopoverPresentationControllerDelegate
                      animations:^{
                          //self.assetGroupView.originY = 0;
                          //self.overlayView.alpha = 0.85f;
-                         self.groupTitleView.arrowBtn.transform = CGAffineTransformRotate(self.groupTitleView.arrowBtn.transform, M_PI);
+                         //self.groupTitleView.arrowBtn.transform = CGAffineTransformRotate(self.groupTitleView.arrowBtn.transform, M_PI);
                          if(![_assetPopoViewController presentingViewController])
                          {
                              UIPopoverPresentationController* popContentVC = _assetPopoViewController.popoverPresentationController;
@@ -1501,7 +1561,7 @@ UIPopoverPresentationControllerDelegate
     [UIView animateWithDuration:0.3f
                      animations:^{
                          
-                         self.groupTitleView.arrowBtn.transform = CGAffineTransformRotate(self.groupTitleView.arrowBtn.transform, -M_PI_2*1.999);
+                         //self.groupTitleView.arrowBtn.transform = CGAffineTransformRotate(self.groupTitleView.arrowBtn.transform, -M_PI_2*1.999);
                      }completion:^(BOOL finished) {
                          [_touchButton removeFromSuperview];
                          _touchButton = nil;
@@ -1516,7 +1576,7 @@ UIPopoverPresentationControllerDelegate
     [UIView animateWithDuration:0.3f
                      animations:^{
 
-                         self.groupTitleView.arrowBtn.transform = CGAffineTransformRotate(self.groupTitleView.arrowBtn.transform, -M_PI_2*1.999);
+                         //self.groupTitleView.arrowBtn.transform = CGAffineTransformRotate(self.groupTitleView.arrowBtn.transform, -M_PI_2*1.999);
                      }completion:^(BOOL finished) {
                          [_touchButton removeFromSuperview];
                          _touchButton = nil;

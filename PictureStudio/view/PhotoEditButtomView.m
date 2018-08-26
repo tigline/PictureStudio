@@ -23,7 +23,8 @@
 @end
 
 @implementation PhotoEditButtomView
-#define btnHeight 45*ScreenHeightRatio
+#define btnHeight 34*ScreenHeightRatio
+#define btnWidth 72*ScreenWidthRatio
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -39,14 +40,13 @@
     
 }
 - (void)setupUI {
-    [self setBackgroundColor:[UIColor clearColor]];
+    [self setBackgroundColor:UIColor.barColor];
     self.clipsToBounds = YES;
-    [self addSubview:self.bgView];
-    [self addSubview:self.selectLabel];
+    //[self addSubview:self.selectLabel];
     [self addSubview:self.clearBtn];
     [self addSubview:self.combineBtn];
     [self addSubview:self.scrollBtn];
-    [self addSubview:self.combineBtnH];
+    [self addSubview:self.editBtn];
     
 }
 - (void)setManager:(HXPhotoManager *)manager {
@@ -59,8 +59,7 @@
     [self.scrollBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
     [self.editBtn setTitleColor:themeColor forState:UIControlStateNormal];
     [self.editBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
-    [self.combineBtnH setTitleColor:themeColor forState:UIControlStateNormal];
-    [self.combineBtnH setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+
     //[self.clearBtn setTitleColor:self.manager.configuration.themeColor forState:UIControlStateNormal];
     [self.clearBtn setTintColor:[UIColor grayColor]];
 
@@ -69,21 +68,30 @@
     _selectCount = selectCount;
 
     if (selectCount > 0) {
-        self.clearBtn.hidden = NO;
+        self.clearBtn.enabled = YES;
     } else {
-        self.clearBtn.hidden = YES;
+        self.clearBtn.enabled = NO;
     }
     
     if(selectCount > 1) {
-        
         if (_manager.isAllScreenShotPhoto) {
-            [self showAllButtons];
+            self.combineBtn.enabled = YES;
+            self.scrollBtn.enabled = YES;
+            self.editBtn.enabled = NO;
         } else {
-            [self showCombineButtons];
+            self.combineBtn.enabled = YES;
+            self.scrollBtn.enabled = NO;
+            self.editBtn.enabled = NO;
         }
         
+    } else if (selectCount == 1) {
+        self.combineBtn.enabled = NO;
+        self.scrollBtn.enabled = NO;
+        self.editBtn.enabled = YES;
     } else {
-        [self hideAllButtons];
+        self.combineBtn.enabled = NO;
+        self.scrollBtn.enabled = NO;
+        self.editBtn.enabled = NO;
     }
 }
 
@@ -116,68 +124,6 @@
     }
 }
 
-- (void)showCombineButtons {
-    
-    _selectLabel.hidden = YES;
-    _scrollBtn.hidden = YES;
-    _combineBtn.hidden = NO;
-    _combineBtnH.hidden = NO;
-    self.segmentingLineFrist.hidden = NO;
-    self.segmentingLineSecond.hidden = NO;
-    _segmentingLineThird.hidden = YES;
-    _segmentingLineFourth.hidden = YES;
-    
-    CGFloat btnWidth = self.bgView.hx_w/7;
-    CGFloat pointY = 0;
-    CGFloat combineBtnW = (self.bgView.hx_w - btnWidth)/2;
-
-    self.combineBtn.frame = CGRectMake(btnWidth, pointY, combineBtnW, btnHeight);
-
-    self.combineBtnH.frame = CGRectMake(btnWidth+combineBtnW, pointY, combineBtnW, btnHeight);
-
-}
-
-- (void)showAllButtons {
-    _selectLabel.hidden = YES;
-    _scrollBtn.hidden = NO;
-    _combineBtn.hidden = NO;
-    _combineBtnH.hidden = NO;
-    self.segmentingLineFrist.hidden = NO;
-    self.segmentingLineSecond.hidden = YES;
-    _segmentingLineThird.hidden = NO;
-    _segmentingLineFourth.hidden = NO;
-    
-    CGFloat btnWidth = self.bgView.hx_w/7;
-    CGFloat pointY = 0;
-    CGFloat combineBtnW = (self.bgView.hx_w - btnWidth)/3;
-
-    self.combineBtn.frame = CGRectMake(btnWidth+combineBtnW, pointY, combineBtnW, btnHeight);
-    
-    self.combineBtnH.frame = CGRectMake(btnWidth+combineBtnW*2, pointY, combineBtnW, btnHeight);
-}
-
-- (void)hideAllButtons {
-    _selectLabel.hidden = NO;
-    _scrollBtn.hidden = YES;
-    _combineBtn.hidden = YES;
-    _combineBtnH.hidden = YES;
-    _segmentingLineFrist.hidden = YES;
-    _segmentingLineSecond.hidden = YES;
-    _segmentingLineThird.hidden = YES;
-    _segmentingLineFourth.hidden = YES;
-}
-
-- (void)showClearBtn {
-
-    CGFloat btnWidth = self.bgView.frame.size.width/6;
-    CGFloat pointY = 0;//(self.bgView.size.height - btnHeight)/2 - kBottomMargin/2;
-    self.clearBtn.hidden = NO;
-    
-    self.combineBtn.frame = CGRectMake(btnWidth, pointY, btnWidth*5, btnHeight);
-    
-
-}
-
 
 - (void)layoutSubviews {
     [super layoutSubviews];
@@ -186,61 +132,29 @@
         return;
     }
     
+
+    CGFloat pointY = (self.hx_h - btnHeight)/2;
+
+    self.clearBtn.frame = CGRectMake(22*ScreenWidthRatio, (self.hx_h - 22*ScreenWidthRatio)/2, 22*ScreenWidthRatio, 22*ScreenWidthRatio);
     
-    self.bgView.frame = self.bounds;
-    CGFloat btnWidth = self.bgView.hx_w/7;
-    CGFloat pointY = 0;//(self.bgView.size.height - btnHeight)/2 - kBottomMargin/2;
-    CGFloat combineBtnWAll = (self.bgView.hx_w - btnWidth)/3;
-    CGFloat combineBtnWTwo = (self.bgView.hx_w - btnWidth)/2;
-    self.selectLabel.frame = CGRectMake(btnWidth, pointY, SCREEN_W - btnWidth*2, btnHeight);
+    self.combineBtn.frame = CGRectMake(self.clearBtn.rightBottom.x + 42*ScreenWidthRatio, pointY, btnWidth, btnHeight);
     
-    self.clearBtn.frame = CGRectMake(0, pointY, btnWidth, btnHeight);
-    self.clearBtn.hidden = YES;
+    self.scrollBtn.frame = CGRectMake(self.combineBtn.rightBottom.x + 20*ScreenWidthRatio, pointY, btnWidth, btnHeight);
+
+    self.editBtn.frame = CGRectMake(self.scrollBtn.rightBottom.x + 20*ScreenWidthRatio, pointY, btnWidth, btnHeight);
+
     
-    self.scrollBtn.frame = CGRectMake(btnWidth, pointY, combineBtnWAll, btnHeight);
-    self.scrollBtn.hidden = YES;
-    
-    CGFloat offsetY = kDevice_Is_iPhoneX? 3.5:0 ;
-    
-    _segmentingLineFrist = [CALayer layer];
-    _segmentingLineFrist.frame = CGRectMake(btnWidth, 13+offsetY, 0.6, 18);
-    _segmentingLineFrist.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
-    [self.bgView.layer addSublayer:_segmentingLineFrist];
-    _segmentingLineFrist.hidden = YES;
-    
-    _segmentingLineSecond = [CALayer layer];
-    _segmentingLineSecond.frame = CGRectMake(btnWidth+combineBtnWTwo, 13+offsetY, 0.6, 18);
-    _segmentingLineSecond.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
-    [self.bgView.layer addSublayer:_segmentingLineSecond];
-    _segmentingLineSecond.hidden = YES;
-    
-    _segmentingLineThird = [CALayer layer];
-    _segmentingLineThird.frame = CGRectMake(btnWidth+combineBtnWAll, 13+offsetY, 0.6, 18);
-    _segmentingLineThird.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
-    [self.bgView.layer addSublayer:_segmentingLineThird];
-    _segmentingLineThird.hidden = YES;
-    
-    _segmentingLineThird = [CALayer layer];
-    _segmentingLineThird.frame = CGRectMake(btnWidth+combineBtnWAll, 13+offsetY, 0.6, 18);
-    _segmentingLineThird.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
-    [self.bgView.layer addSublayer:_segmentingLineThird];
-    _segmentingLineThird.hidden = YES;
-    
-    _segmentingLineFourth = [CALayer layer];
-    _segmentingLineFourth.frame = CGRectMake(btnWidth+combineBtnWAll*2, 13+offsetY, 0.6, 18);
-    _segmentingLineFourth.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
-    [self.bgView.layer addSublayer:_segmentingLineFourth];
-    _segmentingLineFourth.hidden = YES;
+
     
     
 }
-- (UIToolbar *)bgView {
-    if (!_bgView) {
-        _bgView = [[UIToolbar alloc] init];
-        
-    }
-    return _bgView;
-}
+//- (UIToolbar *)bgView {
+//    if (!_bgView) {
+//        _bgView = [[UIToolbar alloc] init];
+//
+//    }
+//    return _bgView;
+//}
 
 - (UILabel *)selectLabel {
     if (!_selectLabel) {
@@ -258,12 +172,12 @@
     if (!_clearBtn) {
         _clearBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         
-        self.bgView.frame = self.bounds;
-        UIImage *image = [UIImage imageNamed:@"cancel-1"];
-        [_clearBtn setImage:image forState:UIControlStateNormal];
+        [_clearBtn setImage:[UIImage imageNamed:@"cancel_blue_p"] forState:UIControlStateNormal];
+        [_clearBtn setImage:[UIImage imageNamed:@"cancel_blue_p"] forState:UIControlStateSelected];
+        [_clearBtn setImage:[UIImage imageNamed:@"tool_unselect"] forState:UIControlStateDisabled];
         _clearBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_clearBtn addTarget:self action:@selector(didClearClick) forControlEvents:UIControlEventTouchUpInside];
-        //_clearBtn.enabled = NO;
+        _clearBtn.enabled = NO;
     }
     return _clearBtn;
 }
@@ -271,16 +185,17 @@
 - (UIButton *)combineBtn {
     if (!_combineBtn) {
         _combineBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        
-        self.bgView.frame = self.bounds;
-        [_combineBtn setImage:[UIImage imageNamed:@"tab_combine_active"] forState:UIControlStateNormal];
-        [_combineBtn setImage:[UIImage imageNamed:@"tab_combine"] forState:UIControlStateDisabled];
-        [_combineBtn setTitle:LocalString(@"combine_v") forState:UIControlStateNormal];
+
+        [_combineBtn setImage:[UIImage imageNamed:@"tool_combine_p"] forState:UIControlStateNormal];
+        [_combineBtn setImage:[UIImage imageNamed:@"tool_combine_l"] forState:UIControlStateSelected];
+        [_combineBtn setImage:[UIImage imageNamed:@"tool_combine_u"] forState:UIControlStateDisabled];
         _combineBtn.titleLabel.font = [UIFont systemFontOfSize:12];
-        _combineBtn.imageEdgeInsets = UIEdgeInsetsMake(0, -10*ScreenWidthRatio, 0, 0);
-        _combineBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 10*ScreenWidthRatio, 0, 0);
+//        _combineBtn.imageEdgeInsets = UIEdgeInsetsMake(0, -10*ScreenWidthRatio, 0, 0);
+//        _combineBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 10*ScreenWidthRatio, 0, 0);
         _combineBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_combineBtn addTarget:self action:@selector(didCombineClick) forControlEvents:UIControlEventTouchUpInside];
+        _combineBtn.enabled = NO;
+        
     }
     return _combineBtn;
 }
@@ -288,15 +203,12 @@
 - (UIButton *)scrollBtn {
     if (!_scrollBtn) {
         _scrollBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_scrollBtn setImage:[UIImage imageNamed:@"tab_scroll_active"] forState:UIControlStateNormal];
-        [_scrollBtn setImage:[UIImage imageNamed:@"tab_scroll"] forState:UIControlStateDisabled];
-        [_scrollBtn setTitle:LocalString(@"scroll") forState:UIControlStateNormal];
+        [_scrollBtn setImage:[UIImage imageNamed:@"tool_scroll_p"] forState:UIControlStateNormal];
+        [_scrollBtn setImage:[UIImage imageNamed:@"tool_scroll_l"] forState:UIControlStateSelected];
+        [_scrollBtn setImage:[UIImage imageNamed:@"tool_scroll_u"] forState:UIControlStateDisabled];
         _scrollBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_scrollBtn addTarget:self action:@selector(didScrollClick) forControlEvents:UIControlEventTouchUpInside];
-        _scrollBtn.titleLabel.font = [UIFont systemFontOfSize:12];
-        _scrollBtn.imageEdgeInsets = UIEdgeInsetsMake(0, -10*ScreenWidthRatio, 0, 0);
-        _scrollBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 10*ScreenWidthRatio, 0, 0);
-        //_scrollBtn.enabled = NO;
+        _scrollBtn.enabled = NO;
 
     }
     return _scrollBtn;
@@ -305,12 +217,9 @@
     if (!_editBtn) {
         _editBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         //[_editBtn setTintColor:[UIColor clearColor]];
-        [_editBtn setImage:[UIImage imageNamed:@"tab_edit_active"] forState:UIControlStateNormal];
-        [_editBtn setImage:[UIImage imageNamed:@"tab_edit"] forState:UIControlStateDisabled];
-        [_editBtn setTitle:LocalString(@"edit") forState:UIControlStateNormal];
-        _editBtn.titleLabel.font = [UIFont systemFontOfSize:12];
-        _editBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 30*ScreenWidthRatio, 0, 0);
-        _editBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 40*ScreenWidthRatio, 0, 0);
+        [_editBtn setImage:[UIImage imageNamed:@"tool_edit_p"] forState:UIControlStateNormal];
+        [_editBtn setImage:[UIImage imageNamed:@"tool_edit_l"] forState:UIControlStateSelected];
+        [_editBtn setImage:[UIImage imageNamed:@"tool_edit_u"] forState:UIControlStateDisabled];
         _editBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_editBtn addTarget:self action:@selector(didEditClick) forControlEvents:UIControlEventTouchUpInside];
         _editBtn.enabled = NO;
@@ -323,10 +232,8 @@
         //[_editBtn setTintColor:[UIColor clearColor]];
         [_combineBtnH setImage:[UIImage imageNamed:@"tab_combine_active"] forState:UIControlStateNormal];
         [_combineBtnH setImage:[UIImage imageNamed:@"tab_combine"] forState:UIControlStateDisabled];
-        [_combineBtnH setTitle:LocalString(@"combine_h") forState:UIControlStateNormal];
         _combineBtnH.titleLabel.font = [UIFont systemFontOfSize:12];
-        _combineBtnH.imageEdgeInsets = UIEdgeInsetsMake(0, -10*ScreenWidthRatio, 0, 0);
-        _combineBtnH.titleEdgeInsets = UIEdgeInsetsMake(0, 10*ScreenWidthRatio, 0, 0);
+
         _combineBtnH.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_combineBtnH addTarget:self action:@selector(didcombineBtnHClick) forControlEvents:UIControlEventTouchUpInside];
 

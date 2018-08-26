@@ -42,8 +42,8 @@
 }
 
 - (void)setupUI {
-    self.layer.borderWidth = 1*ScreenWidthRatio;
-    self.layer.borderColor = [[UIColor blackColor] colorWithAlphaComponent:0.1].CGColor;
+    //self.layer.borderWidth = 1*ScreenWidthRatio;
+    //self.layer.borderColor = [[UIColor blackColor] colorWithAlphaComponent:0.1].CGColor;
     //    self.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5].CGColor;;
     //    self.layer.shadowOpacity = 0.8f;
     //    self.layer.shadowOffset = CGSizeMake(0, 0);

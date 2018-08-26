@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AssetTitleView : UIView
+@interface AssetTitleView : UIButton
 @property (nonatomic, strong) UILabel *titleButton;
 
 @property (nonatomic, strong) UIImageView *arrowBtn;

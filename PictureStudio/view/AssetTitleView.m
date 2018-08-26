@@ -22,7 +22,7 @@
 
 - (void)buildUI
 {
-
+    
     [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(eventHandler)]];
 }
 

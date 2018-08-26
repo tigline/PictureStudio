@@ -28,6 +28,6 @@
 @property (assign, nonatomic) BOOL previewBtnEnabled;
 @property (assign, nonatomic) BOOL doneBtnEnabled;
 @property (assign, nonatomic) NSInteger selectCount;
-@property (strong, nonatomic) UIToolbar *bgView;
+//@property (strong, nonatomic) UIToolbar *bgView;
 @end
 

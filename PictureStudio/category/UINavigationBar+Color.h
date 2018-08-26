@@ -10,4 +10,5 @@
 
 @interface UINavigationBar (Color)
 - (void)setColor:(UIColor *)color;
+- (CGSize)sizeThatFits:(CGSize)size;
 @end
