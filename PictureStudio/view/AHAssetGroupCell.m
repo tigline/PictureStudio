@@ -63,17 +63,25 @@
 //    self.assetsCountLabel.frame = CGRectMake(nameX, countY, 100, 20);
 }
 
-- (void)setSelectedImage {
+- (void)setSelectedImage:(NSInteger)index {
     [self.checkImageView setImage:[UIImage imageNamed:@"album_selected"]];
+    if (index == 0) {
+        
+    } else {
+        
+    }
+    
+    
+    
 }
 
-- (void)setSelectedImagenil {
+- (void)setSelectedImagenil:(NSInteger)index {
     [self.checkImageView setImage:[UIImage imageNamed:@" "]];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
+    
     
     // Configure the view for the selected state
 }

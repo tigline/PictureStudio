@@ -24,6 +24,9 @@
 #import "HXPhoto3DTouchViewController.h"
 #import "ASPopover.h"
 #import "AssetTitleButton.h"
+#import "AssetGroupViewController.h"
+#import "PictureStudio_Bridging_Header.h"
+#import "MyCollectionViewController.h"
 
 
 @interface ViewController ()<UICollectionViewDataSource,
@@ -41,6 +44,7 @@ UIPopoverPresentationControllerDelegate
 @property (weak, nonatomic) IBOutlet AssetTitleButton *assetTitleView;
 @property (weak, nonatomic) IBOutlet UIView *navView;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (weak, nonatomic) IBOutlet UIView *tabelContaintView;
 
 @property (strong, nonatomic) UICollectionViewFlowLayout *flowLayout;
 //@property (strong, nonatomic) UICollectionView *collectionView;
@@ -88,6 +92,8 @@ UIPopoverPresentationControllerDelegate
 @property (assign, nonatomic) CGFloat moveEndX;
 @property (assign, nonatomic) CGFloat moveEndY;
 
+@property (nonatomic, strong) AssetGroupViewController *assetGroupViewController;
+
 @property (nonatomic, strong) NSTimer *timer;
 
 @end
@@ -127,6 +133,10 @@ UIPopoverPresentationControllerDelegate
     
     _preSwipeX = 0;
     _preSwipeY = 0;
+    
+    _assetGroupViewController = [[AssetGroupViewController alloc] init];
+    //[self.tabelContaintView addSubview:_assetGroupViewController.view];
+    self.tabelContaintView.hidden = YES;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(whenBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
@@ -1513,9 +1523,25 @@ UIPopoverPresentationControllerDelegate
         
     } albums:^(NSArray *albums) {
         weakSelf.albumModelArray = [NSMutableArray arrayWithArray:albums];
-        weakSelf.assetGroupView.assetsGroups = weakSelf.albumModelArray;
-        [weakSelf showAssetsGroupView];
-        weakSelf.assetGroupView.assetsGroups = albums;
+        //weakSelf.assetGroupView.assetsGroups = weakSelf.albumModelArray;
+        //[weakSelf showAssetsGroupView];
+        //weakSelf.assetGroupView.assetsGroups = albums;
+        weakSelf.collectionView.hidden = YES;
+        weakSelf.tabelContaintView.hidden = NO;
+        //weakSelf.assetGroupViewController.assetsGroups = albums;
+        MyCollectionViewController *VC = [[MyCollectionViewController alloc] initWithNibName:@"MyCollectionViewController" bundle:nil];
+        VC.assetsGroups = albums;
+        //[weakSelf.assetGroupViewController reloadCollectionView];
+        [weakSelf addChildViewController:VC];
+        VC.view.frame = weakSelf.tabelContaintView.bounds;
+        [weakSelf.tabelContaintView addSubview:VC.view];
+        [VC didMoveToParentViewController:weakSelf];
+        
+        
+//        [weakSelf presentViewController:VC animated:YES completion:^{
+//
+//        }];
+        
     } isFirst:NO];
 }
 
@@ -1523,7 +1549,10 @@ UIPopoverPresentationControllerDelegate
 
 - (void)showAssetsGroupView
 {
-    [[UIApplication sharedApplication].keyWindow addSubview:self.touchButton];
+    //[[UIApplication sharedApplication].keyWindow addSubview:self.touchButton];
+    
+    
+    
     
     //self.overlayView.alpha = 0.0f;
     [UIView animateWithDuration:0.2f

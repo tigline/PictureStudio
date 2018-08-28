@@ -19,6 +19,7 @@ static const NSString *kPHCount = @"PHCount";
 @property (nonatomic, strong) NSDictionary *assetsGroup;
 @property (strong, nonatomic) HXAlbumModel *model;
 @property (nonatomic, assign) BOOL   isSelected;
-- (void)setSelectedImage;
-- (void)setSelectedImagenil;
+@property (weak, nonatomic) IBOutlet UIImageView *bgImage;
+- (void)setSelectedImage:(NSInteger)index;
+- (void)setSelectedImagenil:(NSInteger)index;
 @end

@@ -17,7 +17,7 @@
 
 @end
 
-static CGFloat kHeightAssetsGroupCell = 47.8;
+static CGFloat kHeightAssetsGroupCell = 80;
 
 @implementation AHAssetGroupsView
 
@@ -42,6 +42,18 @@ static CGFloat kHeightAssetsGroupCell = 47.8;
 {
     return self.assetsGroups.count;
 }
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+    return self.assetsGroups.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return 10;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    return 0.00001;
+}
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -50,12 +62,16 @@ static CGFloat kHeightAssetsGroupCell = 47.8;
     AHAssetGroupCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AHAssetGroupCell"];
     //cell.assetsGroup = self.assetsGroups[indexPath.row];
     cell.model = self.assetsGroups[indexPath.row];
+    if (indexPath.row == 0) {
+        [cell.bgImage setImage:[UIImage imageNamed:@"album_list_top"]];
+        [cell.bgImage setHighlightedImage:[UIImage imageNamed:@"album_list_top_p"]];
+    }
     if (_indexAssetsGroup == indexPath.row) {
         //cell.isSelected = YES;
-        [cell setSelectedImage];
+        [cell setSelectedImage:indexPath.row];
     } else {
         cell.isSelected = NO;
-        [cell setSelectedImagenil];
+        [cell setSelectedImagenil:indexPath.row];
     }
     return cell;
 }
@@ -64,6 +80,9 @@ static CGFloat kHeightAssetsGroupCell = 47.8;
 #pragma mark - UITableViewDelegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (indexPath.item == 0) {
+        return 87.4;
+    }
     return kHeightAssetsGroupCell;
 }
 
@@ -80,11 +99,25 @@ static CGFloat kHeightAssetsGroupCell = 47.8;
     }
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    CGRect initFrame = cell.frame;
+    cell.frame = CGRectMake(cell.originX, cell.originY + 3*cell.hx_h, cell.hx_w, cell.hx_h);
+    cell.alpha = 0.5;
+    CGFloat duration = 0.5;
+    CGFloat offset = 0.08 * indexPath.row;
+    [UIView animateWithDuration:duration + offset  animations:^{
+        cell.frame = initFrame;
+        cell.alpha = 1;
+    }];
+}
+
+
+
 
 #pragma mark - getter
 - (UITableView *)tableView{
     if (!_tableView) {
-        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.size.width, self.size.height) style:UITableViewStylePlain];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.hx_w, self.hx_h) style:UITableViewStylePlain];
         //[_tableView registerClass:[AHAssetGroupCell class] forCellReuseIdentifier:@"AHAssetGroupCell"];
         
         UINib *mfbCellNib = [UINib nibWithNibName:@"AHAssetGroupCell" bundle:nil];
@@ -94,8 +127,10 @@ static CGFloat kHeightAssetsGroupCell = 47.8;
         _tableView.showsHorizontalScrollIndicator = NO;
         _tableView.showsVerticalScrollIndicator = NO;
         _tableView.backgroundColor = [UIColor clearColor];
-        _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.separatorInset=UIEdgeInsetsMake(0,0,0,0);
+        _tableView.backgroundColor = UIColor.clearColor;
+        
         [self addSubview:_tableView];
     }
     return _tableView;
