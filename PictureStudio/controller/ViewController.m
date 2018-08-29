@@ -26,7 +26,7 @@
 #import "AssetTitleButton.h"
 #import "AssetGroupViewController.h"
 #import "PictureStudio_Bridging_Header.h"
-#import "MyCollectionViewController.h"
+#import "AssetGroupViewController.h"
 
 
 @interface ViewController ()<UICollectionViewDataSource,
@@ -76,6 +76,7 @@ UIPopoverPresentationControllerDelegate
 @property (assign, nonatomic) BOOL isScreenshotNotification;
 @property (assign, nonatomic) BOOL isLaunch;
 @property (assign, nonatomic) BOOL shouldShowIndicator;
+@property (assign, nonatomic) BOOL isAssetViewShow;
 @property (strong, nonatomic) NSIndexPath *lastAccessed;
 @property (strong, nonatomic) NSIndexPath *lastAccessed1;
 @property (strong, nonatomic) NSMutableArray *swipeSelectArray;
@@ -134,10 +135,10 @@ UIPopoverPresentationControllerDelegate
     _preSwipeX = 0;
     _preSwipeY = 0;
     
-    _assetGroupViewController = [[AssetGroupViewController alloc] init];
+    //_assetGroupViewController = [[AssetGroupViewController alloc] init];
     //[self.tabelContaintView addSubview:_assetGroupViewController.view];
     self.tabelContaintView.hidden = YES;
-    
+    _isAssetViewShow = NO;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(whenBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidTakeScreenshot:)name:UIApplicationUserDidTakeScreenshotNotification object:nil];
@@ -436,8 +437,17 @@ UIPopoverPresentationControllerDelegate
 }
 
 - (IBAction)assetButtonClicked:(id)sender {
-    [self getAssetsGroup];
-    self.assetGroupView.indexAssetsGroup = self.currentSectionIndex;
+
+    _isAssetViewShow = !_isAssetViewShow;
+    if (_isAssetViewShow) {
+        [self getAssetsGroup];
+        self.assetGroupView.indexAssetsGroup = self.currentSectionIndex;
+    } else {
+        [self hideAssetsGroupView];
+        self.collectionView.hidden = NO;
+    }
+    
+    
 }
 
 
@@ -1523,63 +1533,28 @@ UIPopoverPresentationControllerDelegate
         
     } albums:^(NSArray *albums) {
         weakSelf.albumModelArray = [NSMutableArray arrayWithArray:albums];
-        //weakSelf.assetGroupView.assetsGroups = weakSelf.albumModelArray;
-        //[weakSelf showAssetsGroupView];
-        //weakSelf.assetGroupView.assetsGroups = albums;
         weakSelf.collectionView.hidden = YES;
         weakSelf.tabelContaintView.hidden = NO;
-        //weakSelf.assetGroupViewController.assetsGroups = albums;
-        MyCollectionViewController *VC = [[MyCollectionViewController alloc] initWithNibName:@"MyCollectionViewController" bundle:nil];
-        VC.assetsGroups = albums;
-        //[weakSelf.assetGroupViewController reloadCollectionView];
-        [weakSelf addChildViewController:VC];
-        VC.view.frame = weakSelf.tabelContaintView.bounds;
-        [weakSelf.tabelContaintView addSubview:VC.view];
-        [VC didMoveToParentViewController:weakSelf];
+        if (_assetGroupViewController == nil) {
+            _assetGroupViewController = [[AssetGroupViewController alloc] initWithNibName:@"AssetGroupViewController" bundle:nil];
+            _assetGroupViewController.assetsGroups = albums;
+            _assetGroupView.groupSelectedBlock = ^(HXAlbumModel *selectedAlbumModel) {
+                [weakSelf groupViewDidSelected:selectedAlbumModel];
+            };
+            [weakSelf addChildViewController:_assetGroupViewController];
+            _assetGroupViewController.view.frame = weakSelf.tabelContaintView.bounds;
+            [weakSelf.tabelContaintView addSubview:_assetGroupViewController.view];
+            [_assetGroupViewController didMoveToParentViewController:weakSelf];
+        } else {
+            _assetGroupViewController.assetsGroups = albums;
+            [_assetGroupViewController.collectionView reloadData];
+        }
         
         
-//        [weakSelf presentViewController:VC animated:YES completion:^{
-//
-//        }];
+        
         
     } isFirst:NO];
 }
-
-
-
-- (void)showAssetsGroupView
-{
-    //[[UIApplication sharedApplication].keyWindow addSubview:self.touchButton];
-    
-    
-    
-    
-    //self.overlayView.alpha = 0.0f;
-    [UIView animateWithDuration:0.2f
-                     animations:^{
-                         //self.assetGroupView.originY = 0;
-                         //self.overlayView.alpha = 0.85f;
-                         //self.groupTitleView.arrowBtn.transform = CGAffineTransformRotate(self.groupTitleView.arrowBtn.transform, M_PI);
-                         if(![_assetPopoViewController presentingViewController])
-                         {
-                             UIPopoverPresentationController* popContentVC = _assetPopoViewController.popoverPresentationController;
-                             popContentVC.backgroundColor = [UIColor colorWithRed:231/255.0 green:231/255.0 blue:231/255.0 alpha:1.0];
-                             popContentVC.delegate = (id)self;
-                             popContentVC.sourceView = self.touchButton;
-                             popContentVC.sourceRect = self.touchButton.bounds;
-                             popContentVC.permittedArrowDirections = UIPopoverArrowDirectionAny;
-                             
-
-                             [self presentViewController:_assetPopoViewController animated:YES completion:nil];
-                         }
-                         //[self.itemPopover show:self.assetGroupView fromView:self.touchButton];
-                         
-                     }completion:^(BOOL finished) {
-                         
-                     }];
-}
-
-
 
 - (UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller {
     return UIModalPresentationNone;
@@ -1602,16 +1577,12 @@ UIPopoverPresentationControllerDelegate
 
 - (void)hideAssetsGroupView
 {
-    [UIView animateWithDuration:0.3f
-                     animations:^{
-
-                         //self.groupTitleView.arrowBtn.transform = CGAffineTransformRotate(self.groupTitleView.arrowBtn.transform, -M_PI_2*1.999);
-                     }completion:^(BOOL finished) {
-                         [_touchButton removeFromSuperview];
-                         _touchButton = nil;
-                         [self dismissViewControllerAnimated:_assetPopoViewController completion:nil];
-
-                     }];
+//    for (UIView *subView in self.tabelContaintView.subviews) {
+//        [subView removeFromSuperview];
+//    }
+    
+    self.tabelContaintView.hidden = YES;
+    
 }
 
 -(NSString *)getMessageID

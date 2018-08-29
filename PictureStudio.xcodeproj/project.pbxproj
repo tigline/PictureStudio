@@ -17,14 +17,13 @@
 		702C5FC020D15DF100AA8CA5 /* XDProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 702C5FBF20D15DF000AA8CA5 /* XDProgressView.m */; };
 		703FDEB4212C5FE1006218D0 /* UIColor+CustomColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 703FDEB3212C5FE1006218D0 /* UIColor+CustomColor.m */; };
 		703FDEB82132E3CB006218D0 /* AssetTitleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 703FDEB72132E3CB006218D0 /* AssetTitleButton.m */; };
-		7042145821343C510005AB2F /* AssetGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7042145721343C510005AB2F /* AssetGroupViewController.m */; };
 		7042145B21343F7B0005AB2F /* AssetTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7042145A21343F7B0005AB2F /* AssetTableViewCell.m */; };
 		7042145F21344D100005AB2F /* UIViewController+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7042145E21344D100005AB2F /* UIViewController+Extensions.m */; };
 		7042146121344FD10005AB2F /* ViewControllerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7042146021344FD10005AB2F /* ViewControllerExtensions.swift */; };
 		7060808220BEF56A0045F49E /* HXPhoto3DTouchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7060808020BEF56A0045F49E /* HXPhoto3DTouchViewController.m */; };
 		7060808420C58A2C0045F49E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7060808320C58A2C0045F49E /* MessageUI.framework */; };
-		70711C9621359B4E008A6121 /* MyCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 70711C9421359B4E008A6121 /* MyCollectionViewController.m */; };
-		70711C9721359B4E008A6121 /* MyCollectionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 70711C9521359B4E008A6121 /* MyCollectionViewController.xib */; };
+		70711C9621359B4E008A6121 /* AssetGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 70711C9421359B4E008A6121 /* AssetGroupViewController.m */; };
+		70711C9721359B4E008A6121 /* AssetGroupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 70711C9521359B4E008A6121 /* AssetGroupViewController.xib */; };
 		70711C992135A0E2008A6121 /* AssetCollectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 70711C982135A0E2008A6121 /* AssetCollectionCell.xib */; };
 		707DBA7A209EC4BF00F2FAFB /* SharePictureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 707DBA78209EC4BE00F2FAFB /* SharePictureViewController.m */; };
 		707DBA7C209EC52700F2FAFB /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707DBA7B209EC52700F2FAFB /* Photos.framework */; };
@@ -104,8 +103,6 @@
 		703FDEB3212C5FE1006218D0 /* UIColor+CustomColor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+CustomColor.m"; sourceTree = "<group>"; };
 		703FDEB62132E3CB006218D0 /* AssetTitleButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AssetTitleButton.h; path = PictureStudio/View/AssetTitleButton.h; sourceTree = SOURCE_ROOT; };
 		703FDEB72132E3CB006218D0 /* AssetTitleButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AssetTitleButton.m; path = PictureStudio/View/AssetTitleButton.m; sourceTree = SOURCE_ROOT; };
-		7042145621343C510005AB2F /* AssetGroupViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AssetGroupViewController.h; path = PictureStudio/Controller/AssetGroupViewController.h; sourceTree = SOURCE_ROOT; };
-		7042145721343C510005AB2F /* AssetGroupViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AssetGroupViewController.m; path = PictureStudio/Controller/AssetGroupViewController.m; sourceTree = SOURCE_ROOT; };
 		7042145921343F7B0005AB2F /* AssetTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AssetTableViewCell.h; path = PictureStudio/View/AssetTableViewCell.h; sourceTree = SOURCE_ROOT; };
 		7042145A21343F7B0005AB2F /* AssetTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AssetTableViewCell.m; path = PictureStudio/View/AssetTableViewCell.m; sourceTree = SOURCE_ROOT; };
 		7042145D21344D100005AB2F /* UIViewController+Extensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "UIViewController+Extensions.h"; path = "PictureStudio/Category/UIViewController+Extensions.h"; sourceTree = SOURCE_ROOT; };
@@ -115,9 +112,9 @@
 		7060808020BEF56A0045F49E /* HXPhoto3DTouchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HXPhoto3DTouchViewController.m; path = PictureStudio/Controller/HXPhoto3DTouchViewController.m; sourceTree = SOURCE_ROOT; };
 		7060808120BEF56A0045F49E /* HXPhoto3DTouchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HXPhoto3DTouchViewController.h; path = PictureStudio/Controller/HXPhoto3DTouchViewController.h; sourceTree = SOURCE_ROOT; };
 		7060808320C58A2C0045F49E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		70711C9321359B4E008A6121 /* MyCollectionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyCollectionViewController.h; sourceTree = "<group>"; };
-		70711C9421359B4E008A6121 /* MyCollectionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyCollectionViewController.m; sourceTree = "<group>"; };
-		70711C9521359B4E008A6121 /* MyCollectionViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MyCollectionViewController.xib; sourceTree = "<group>"; };
+		70711C9321359B4E008A6121 /* AssetGroupViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AssetGroupViewController.h; sourceTree = "<group>"; };
+		70711C9421359B4E008A6121 /* AssetGroupViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AssetGroupViewController.m; sourceTree = "<group>"; };
+		70711C9521359B4E008A6121 /* AssetGroupViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AssetGroupViewController.xib; sourceTree = "<group>"; };
 		70711C982135A0E2008A6121 /* AssetCollectionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AssetCollectionCell.xib; sourceTree = "<group>"; };
 		707DBA78209EC4BE00F2FAFB /* SharePictureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SharePictureViewController.m; path = PictureStudio/Controller/SharePictureViewController.m; sourceTree = SOURCE_ROOT; };
 		707DBA79209EC4BE00F2FAFB /* SharePictureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SharePictureViewController.h; path = PictureStudio/Controller/SharePictureViewController.h; sourceTree = SOURCE_ROOT; };
@@ -268,14 +265,12 @@
 				707DBA85209EDBAC00F2FAFB /* AboutViewController.h */,
 				707DBA86209EDBAC00F2FAFB /* AboutViewController.m */,
 				707DBA87209EDBAC00F2FAFB /* AboutViewController.xib */,
-				7042145621343C510005AB2F /* AssetGroupViewController.h */,
-				7042145721343C510005AB2F /* AssetGroupViewController.m */,
 				70925B5A213578A800AE9373 /* AssetCollectionCell.h */,
 				70925B5B213578A800AE9373 /* AssetCollectionCell.m */,
 				70711C982135A0E2008A6121 /* AssetCollectionCell.xib */,
-				70711C9321359B4E008A6121 /* MyCollectionViewController.h */,
-				70711C9421359B4E008A6121 /* MyCollectionViewController.m */,
-				70711C9521359B4E008A6121 /* MyCollectionViewController.xib */,
+				70711C9321359B4E008A6121 /* AssetGroupViewController.h */,
+				70711C9421359B4E008A6121 /* AssetGroupViewController.m */,
+				70711C9521359B4E008A6121 /* AssetGroupViewController.xib */,
 				7060808120BEF56A0045F49E /* HXPhoto3DTouchViewController.h */,
 				7060808020BEF56A0045F49E /* HXPhoto3DTouchViewController.m */,
 			);
@@ -553,7 +548,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				70711C9721359B4E008A6121 /* MyCollectionViewController.xib in Resources */,
+				70711C9721359B4E008A6121 /* AssetGroupViewController.xib in Resources */,
 				936FAC3620200B9A00F80BCF /* LaunchScreen.storyboard in Resources */,
 				700E325020A1C8A0007A23E0 /* AboutViewTableViewCell.xib in Resources */,
 				70C26300207A7C9100F65EFD /* AHAssetGroupCell.xib in Resources */,
@@ -670,7 +665,7 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/UMSocialSDKResources.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -694,7 +689,7 @@
 				708248A2204EC6FC000D60A3 /* LongPictureViewController.m in Sources */,
 				70BD41DB212AFA9A00CA0941 /* RecentScrollView.m in Sources */,
 				937F74452084A4CB00F56AFD /* CombineIndicatorView.m in Sources */,
-				70711C9621359B4E008A6121 /* MyCollectionViewController.m in Sources */,
+				70711C9621359B4E008A6121 /* AssetGroupViewController.m in Sources */,
 				708248D0206A94E2000D60A3 /* UIFont+HXExtension.m in Sources */,
 				708248AE204ED48B000D60A3 /* FilePathUtils.m in Sources */,
 				708248FA2078B3D7000D60A3 /* UIButton+Extension.m in Sources */,
@@ -720,7 +715,6 @@
 				936FAC3920200B9A00F80BCF /* main.m in Sources */,
 				936FAC2B20200B9A00F80BCF /* AppDelegate.m in Sources */,
 				702C5FC020D15DF100AA8CA5 /* XDProgressView.m in Sources */,
-				7042145821343C510005AB2F /* AssetGroupViewController.m in Sources */,
 				708811072099FDE1003A1CF4 /* CombinePicture.mm in Sources */,
 				7042145F21344D100005AB2F /* UIViewController+Extensions.m in Sources */,
 				708248C4206A9153000D60A3 /* HXPhotoTools.m in Sources */,

@@ -6,15 +6,15 @@
 //  Copyright © 2018年 Aaron Hou. All rights reserved.
 //
 
-#import "MyCollectionViewController.h"
+#import "AssetGroupViewController.h"
 #import "UIView+HXExtension.h"
 #import "AssetCollectionCell.h"
-@interface MyCollectionViewController ()
+@interface AssetGroupViewController ()
 @property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *flowLayout;
 
 @end
 
-@implementation MyCollectionViewController
+@implementation AssetGroupViewController
 
 static NSString * const reuseIdentifier = @"Cell";
 
@@ -99,16 +99,32 @@ static NSString * const reuseIdentifier = @"Cell";
 
 #pragma mark <UICollectionViewDelegate>
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-    CGRect initFrame = cell.frame;
-    cell.frame = CGRectMake(cell.originX, cell.originY + 3*cell.hx_h, cell.hx_w, cell.hx_h);
+    //CGRect initFrame = cell.frame;
+    //cell.frame = CGRectMake(cell.originX, cell.originY + 3*cell.hx_h, cell.hx_w, cell.hx_h);
+    cell.transform = CGAffineTransformMakeTranslation(0, 4 * cell.hx_h); //CGAffineTransform(translationX: 0, y: CGFloat(4.0 * cell.frame.size.height))
     cell.alpha = 0.5;
     CGFloat duration = 0.5;
     CGFloat offset = 0.08 * indexPath.row;
     [UIView animateWithDuration:(duration + offset) animations:^{
-        cell.frame = initFrame;
+        cell.transform = CGAffineTransformIdentity;
+        //cell.frame = initFrame;
         cell.alpha = 1;
     }];
 }
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    //_selectedIndexPath = indexPath;
+
+    HXAlbumModel *albumModel = self.assetsGroups[indexPath.row];
+    _indexAssetsGroup = indexPath.row;
+    //NSDictionary *collection = self.assetsGroups[indexPath.row];
+    
+    
+    if (self.groupSelectedBlock) {
+        self.groupSelectedBlock(albumModel);
+    }
+}
+
 /*
 // Uncomment this method to specify if the specified item should be highlighted during tracking
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
