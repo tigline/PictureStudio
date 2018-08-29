@@ -94,9 +94,9 @@ static CGFloat kHeightAssetsGroupCell = 80;
     HXAlbumModel *albumModel = self.assetsGroups[indexPath.row];
     _indexAssetsGroup = indexPath.row;
     //NSDictionary *collection = self.assetsGroups[indexPath.row];
-    if (self.groupSelectedBlock) {
-        self.groupSelectedBlock(albumModel);
-    }
+//    if (self.groupSelectedBlock) {
+//        self.groupSelectedBlock(albumModel);
+//    }
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {

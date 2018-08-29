@@ -11,7 +11,7 @@
 #import "AssetCollectionCell.h"
 @interface AssetGroupViewController ()
 @property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *flowLayout;
-
+@property (assign, nonatomic) BOOL needRunAnimation;
 @end
 
 @implementation AssetGroupViewController
@@ -20,7 +20,7 @@ static NSString * const reuseIdentifier = @"Cell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    _needRunAnimation = NO;
     self.collectionView.backgroundColor = UIColor.clearColor;
     // Uncomment the following line to preserve selection between presentations
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -38,6 +38,7 @@ static NSString * const reuseIdentifier = @"Cell";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    _needRunAnimation = YES;
     [self.collectionView reloadData];
 }
 
@@ -77,7 +78,7 @@ static NSString * const reuseIdentifier = @"Cell";
         [cell.bgImageView setHighlightedImage:[UIImage imageNamed:@"album_list_top_p"]];
     }
     if (_indexAssetsGroup == indexPath.row) {
-        //cell.isSelected = YES;
+        cell.isSelected = YES;
         [cell setSelectedImage:indexPath.row];
     } else {
         cell.isSelected = NO;
@@ -101,15 +102,19 @@ static NSString * const reuseIdentifier = @"Cell";
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     //CGRect initFrame = cell.frame;
     //cell.frame = CGRectMake(cell.originX, cell.originY + 3*cell.hx_h, cell.hx_w, cell.hx_h);
-    cell.transform = CGAffineTransformMakeTranslation(0, 4 * cell.hx_h); //CGAffineTransform(translationX: 0, y: CGFloat(4.0 * cell.frame.size.height))
-    cell.alpha = 0.5;
-    CGFloat duration = 0.5;
-    CGFloat offset = 0.08 * indexPath.row;
-    [UIView animateWithDuration:(duration + offset) animations:^{
-        cell.transform = CGAffineTransformIdentity;
-        //cell.frame = initFrame;
-        cell.alpha = 1;
-    }];
+    
+    if (_needRunAnimation) {
+        cell.transform = CGAffineTransformMakeTranslation(0, 4 * cell.hx_h); //CGAffineTransform(translationX: 0, y: CGFloat(4.0 * cell.frame.size.height))
+        cell.alpha = 0.5;
+        CGFloat duration = 0.5;
+        CGFloat offset = 0.08 * indexPath.row;
+        [UIView animateWithDuration:(duration + offset) animations:^{
+            cell.transform = CGAffineTransformIdentity;
+            //cell.frame = initFrame;
+            cell.alpha = 1;
+        }];
+    }
+
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -118,11 +123,35 @@ static NSString * const reuseIdentifier = @"Cell";
     HXAlbumModel *albumModel = self.assetsGroups[indexPath.row];
     _indexAssetsGroup = indexPath.row;
     //NSDictionary *collection = self.assetsGroups[indexPath.row];
+    [self moveCellToHide:albumModel];
     
     
-    if (self.groupSelectedBlock) {
-        self.groupSelectedBlock(albumModel);
+}
+
+
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    if (_needRunAnimation) {
+        _needRunAnimation = NO;
     }
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    if (_needRunAnimation) {
+        _needRunAnimation = NO;
+    }
+}
+
+
+- (void)moveCellToHide:(HXAlbumModel *)albumModel {
+    [UIView animateWithDuration:1 animations:^{
+        //self.view.alpha = 0.3;
+    } completion:^(BOOL finished) {
+        if (self.groupSelectedBlock) {
+            self.groupSelectedBlock(albumModel);
+        }
+    }];
+    
 }
 
 /*

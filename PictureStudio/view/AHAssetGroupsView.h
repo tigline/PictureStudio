@@ -19,7 +19,7 @@
 @property (nonatomic, strong) NSArray *assetsGroups;
 @property (nonatomic, strong) NSMutableDictionary *selectedAssetCount;
 
-@property (nonatomic, copy) void (^groupSelectedBlock)(HXAlbumModel *selectedAlbumModel);
+//@property (nonatomic, copy) void (^groupSelectedBlock)(HXAlbumModel *selectedAlbumModel);
 
 @end
 

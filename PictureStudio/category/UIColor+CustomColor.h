@@ -13,4 +13,12 @@
 + (UIColor *)assetTitleColor;
 + (UIColor *)assetBorderColor;
 + (UIColor *)navShadowColor;
++ (UIColor *)backgroundColor;
++ (UIColor *)cellTitleNormalColor;
+
++ (UIColor *)cellTitleSelectedColor;
+
++ (UIColor *)cellCountColor;
+
++ (UIColor *)cellTimeColor;
 @end

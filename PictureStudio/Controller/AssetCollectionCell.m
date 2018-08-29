@@ -28,23 +28,59 @@
     return self;
 }
 
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    [self buildUI];
+}
+
 - (void)buildUI
 {
     self.backgroundColor = [UIColor clearColor];
+    
+//    self.layer.shadowColor = UIColor.navShadowColor.CGColor;
+//    self.layer.shadowOffset = CGSizeMake(0, 4);
+//    self.layer.shadowOpacity = 0.99;
+//    self.layer.shadowRadius = 12;
+    
     self.albumView.layer.cornerRadius = 3;
     self.albumView.layer.masksToBounds = YES;
+    
+}
+
+- (void)setIsSelected:(BOOL)isSelected {
+    if (isSelected) {
+        
+    } else {
+        
+    }
 }
 
 - (void)setSelectedImage:(NSInteger)index {
-
+    if (index == 0) {
+        [self.bgImageView setImage:[UIImage imageNamed:@"album_list_top_p"]];
+    } else {
+        [self.bgImageView setImage:[UIImage imageNamed:@"album_list_p"]];
+    }
+    self.titleLabel.textColor = UIColor.cellTitleSelectedColor;
+    self.countLabel.textColor = UIColor.cellCountColor;
+    self.timeLabel.textColor = UIColor.cellCountColor;
 }
 
 - (void)setSelectedImagenil:(NSInteger)index {
-
+    if (index == 0) {
+        [self.bgImageView setImage:[UIImage imageNamed:@"album_list_top"]];
+    } else {
+        [self.bgImageView setImage:[UIImage imageNamed:@"album_list"]];
+    }
+    self.titleLabel.textColor = UIColor.cellTitleNormalColor;
+    self.countLabel.textColor = UIColor.cellTimeColor;
+    self.timeLabel.textColor = UIColor.cellTimeColor;
 }
 
 
 - (void)setModel:(HXAlbumModel *)model {
+    
+    
     _model = model;
     if (!model.asset) {
         model.asset = model.result.lastObject;

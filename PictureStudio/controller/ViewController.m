@@ -114,7 +114,7 @@ UIPopoverPresentationControllerDelegate
 
 //    self.navigationItem.titleView = self.groupTitleView;
     
-    [self.view setBackgroundColor: UIColor.barColor];
+    [self.view setBackgroundColor: UIColor.backgroundColor];
     [self initCollectionView];
     self.navView.backgroundColor = UIColor.barColor;
     self.navView.layer.shadowColor = UIColor.navShadowColor.CGColor;
@@ -1364,9 +1364,9 @@ UIPopoverPresentationControllerDelegate
         //_assetGroupView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         [_assetGroupView.touchButton addTarget:self action:@selector(hideAssetsGroupView) forControlEvents:UIControlEventTouchUpInside];
         WEAKSELF(weakSelf);
-        _assetGroupView.groupSelectedBlock = ^(HXAlbumModel *selectedAlbumModel){
-            [weakSelf groupViewDidSelected:selectedAlbumModel];
-        };
+//        _assetGroupView.groupSelectedBlock = ^(HXAlbumModel *selectedAlbumModel){
+//            [weakSelf groupViewDidSelected:selectedAlbumModel];
+//        };
         //[self.view addSubview:_assetGroupView];
     }
     return _assetGroupView;
@@ -1537,16 +1537,19 @@ UIPopoverPresentationControllerDelegate
         weakSelf.tabelContaintView.hidden = NO;
         if (_assetGroupViewController == nil) {
             _assetGroupViewController = [[AssetGroupViewController alloc] initWithNibName:@"AssetGroupViewController" bundle:nil];
-            _assetGroupViewController.assetsGroups = albums;
-            _assetGroupView.groupSelectedBlock = ^(HXAlbumModel *selectedAlbumModel) {
+            _assetGroupViewController.groupSelectedBlock = ^(HXAlbumModel *selectedAlbumModel) {
                 [weakSelf groupViewDidSelected:selectedAlbumModel];
             };
+            _assetGroupViewController.assetsGroups = albums;
+            _assetGroupViewController.indexAssetsGroup = _currentSectionIndex;
+            
             [weakSelf addChildViewController:_assetGroupViewController];
             _assetGroupViewController.view.frame = weakSelf.tabelContaintView.bounds;
             [weakSelf.tabelContaintView addSubview:_assetGroupViewController.view];
             [_assetGroupViewController didMoveToParentViewController:weakSelf];
         } else {
             _assetGroupViewController.assetsGroups = albums;
+            _assetGroupViewController.indexAssetsGroup = _currentSectionIndex;
             [_assetGroupViewController.collectionView reloadData];
         }
         
@@ -1580,9 +1583,9 @@ UIPopoverPresentationControllerDelegate
 //    for (UIView *subView in self.tabelContaintView.subviews) {
 //        [subView removeFromSuperview];
 //    }
-    
+    _isAssetViewShow = NO;
     self.tabelContaintView.hidden = YES;
-    
+    self.collectionView.hidden = NO;
 }
 
 -(NSString *)getMessageID
