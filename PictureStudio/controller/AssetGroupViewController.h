@@ -17,4 +17,5 @@
 @property (assign, nonatomic) BOOL needRunAnimation;
 @property (nonatomic, copy) void (^groupSelectedBlock)(HXAlbumModel *selectedAlbumModel);
 @property (nonatomic, copy) void (^groupDismissBlock)(void);
+- (void)moveCellToHide:(HXAlbumModel *)albumModel;
 @end

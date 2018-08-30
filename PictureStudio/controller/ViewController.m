@@ -45,6 +45,7 @@ UIPopoverPresentationControllerDelegate
 @property (weak, nonatomic) IBOutlet UIView *navView;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIView *tabelContaintView;
+@property (weak, nonatomic) IBOutlet UIView *noPhotoView;
 
 @property (strong, nonatomic) UICollectionViewFlowLayout *flowLayout;
 //@property (strong, nonatomic) UICollectionView *collectionView;
@@ -115,13 +116,26 @@ UIPopoverPresentationControllerDelegate
 //    self.navigationItem.titleView = self.groupTitleView;
     
     [self.view setBackgroundColor: UIColor.backgroundColor];
+    
     [self initCollectionView];
     self.navView.backgroundColor = UIColor.barColor;
     self.navView.layer.shadowColor = UIColor.navShadowColor.CGColor;
     self.navView.layer.shadowOpacity = 0.8f;
     self.navView.layer.shadowRadius = 18;
     self.navView.layer.shadowOffset = CGSizeMake(0, 6);
+    
     [self.view bringSubviewToFront:self.navView];
+    //self.noPhotoView.layer.cornerRadius = 4;
+    self.noPhotoView.layer.shadowRadius = 8;
+    self.noPhotoView.layer.shadowOpacity = 0.99;
+    self.noPhotoView.layer.shadowColor = UIColor.navShadowColor.CGColor;
+    self.noPhotoView.layer.shadowOffset = CGSizeMake(0, 0);
+    _noPhotoView.backgroundColor = UIColor.whiteColor;
+    CGRect contentBound = _noPhotoView.bounds;
+    CAShapeLayer * maskLayer = [CAShapeLayer layer];
+    maskLayer.path = [UIBezierPath bezierPathWithRoundedRect:contentBound byRoundingCorners: UIRectCornerBottomLeft | UIRectCornerBottomRight cornerRadii: (CGSize){4.0, 4.0}].CGPath;
+    _noPhotoView.layer.mask = maskLayer;
+    
     [self.assetTitleView buildUI];
     CGFloat width = [self.assetTitleView updateTitleConstraints:YES];
     self.assetTitleView.size = CGSizeMake(width, self.assetTitleView.hx_h);
@@ -443,8 +457,11 @@ UIPopoverPresentationControllerDelegate
         [self getAssetsGroup];
         self.assetGroupView.indexAssetsGroup = self.currentSectionIndex;
     } else {
-        [self hideAssetsGroupView];
-        self.collectionView.hidden = NO;
+        
+        //[self hideAssetsGroupView];
+        if (_assetGroupViewController != nil) {
+            [_assetGroupViewController moveCellToHide:self.albumModel];
+        }
     }
     
     
@@ -1397,13 +1414,18 @@ UIPopoverPresentationControllerDelegate
         //CGFloat collectionHeight = self.view.hx_h;
 
         //_collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(11*ScreenWidthRatio, 84, AblumViewWidth, collectionHeight) collectionViewLayout:self.flowLayout];
-        
-        _collectionView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.9];
-        _collectionView.layer.shadowOpacity = 1.0;
-        _collectionView.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.05].CGColor;
-        _collectionView.layer.shadowOffset = CGSizeMake(0, 4);
-        _collectionView.layer.shadowRadius = 12;
+    _collectionView.backgroundColor = UIColor.clearColor;
+//        _collectionView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.9];
+//        _collectionView.layer.shadowOpacity = 1.0;
+//        _collectionView.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.05].CGColor;
+//        _collectionView.layer.shadowOffset = CGSizeMake(0, 4);
+//        _collectionView.layer.shadowRadius = 12;
     
+//        CGRect contentBound = _collectionView.bounds;
+//        CAShapeLayer * maskLayer = [CAShapeLayer layer];
+//        maskLayer.path = [UIBezierPath bezierPathWithRoundedRect:contentBound byRoundingCorners: UIRectCornerTopLeft | UIRectCornerTopRight cornerRadii: (CGSize){15.0, 15.0}].CGPath;
+//        _collectionView.layer.mask = maskLayer;
+//
         _collectionView.dataSource = self;
         _collectionView.delegate = self;
         _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -1590,7 +1612,11 @@ UIPopoverPresentationControllerDelegate
 //    }
     _isAssetViewShow = NO;
     self.tabelContaintView.hidden = YES;
+    self.collectionView.alpha = 0;
     self.collectionView.hidden = NO;
+    [UIView animateWithDuration:0.3 animations:^{
+        self.collectionView.alpha = 1.0;
+    }];
 }
 
 -(NSString *)getMessageID
@@ -1646,9 +1672,7 @@ UIPopoverPresentationControllerDelegate
     } else if ([[segue identifier] isEqualToString:@"toLongPictureView"]) {
         //UIImage *image = (UIImage *)sender;
         ((LongPictureViewController *)(segue.destinationViewController)).manager = self.manager;
-
     }
-    
 }
 
 

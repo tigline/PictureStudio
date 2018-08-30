@@ -161,7 +161,7 @@ static NSString * const reuseIdentifier = @"Cell";
         AssetCollectionCell *cell = (AssetCollectionCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
         cell.transform = CGAffineTransformIdentity;
         CGFloat offset = index*0.08;
-        [UIView animateWithDuration:0.5 + offset animations:^{
+        [UIView animateWithDuration:0.4 + offset animations:^{
             cell.transform = CGAffineTransformMakeTranslation(0, 4 * cell.hx_h);
             cell.alpha = 0;
         } completion:^(BOOL finished) {
