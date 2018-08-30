@@ -11,7 +11,7 @@
 #import "AssetCollectionCell.h"
 @interface AssetGroupViewController ()
 @property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *flowLayout;
-@property (assign, nonatomic) BOOL needRunAnimation;
+
 @end
 
 @implementation AssetGroupViewController
@@ -107,7 +107,7 @@ static NSString * const reuseIdentifier = @"Cell";
         cell.transform = CGAffineTransformMakeTranslation(0, 4 * cell.hx_h); //CGAffineTransform(translationX: 0, y: CGFloat(4.0 * cell.frame.size.height))
         cell.alpha = 0.5;
         CGFloat duration = 0.5;
-        CGFloat offset = 0.08 * indexPath.row;
+        CGFloat offset = 0.08 * indexPath.item;
         [UIView animateWithDuration:(duration + offset) animations:^{
             cell.transform = CGAffineTransformIdentity;
             //cell.frame = initFrame;
@@ -143,14 +143,36 @@ static NSString * const reuseIdentifier = @"Cell";
 }
 
 
+
 - (void)moveCellToHide:(HXAlbumModel *)albumModel {
-    [UIView animateWithDuration:1 animations:^{
-        //self.view.alpha = 0.3;
-    } completion:^(BOOL finished) {
-        if (self.groupSelectedBlock) {
-            self.groupSelectedBlock(albumModel);
-        }
+    
+    NSArray *indexPathArray = [self.collectionView.indexPathsForVisibleItems sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        NSIndexPath *path1 = obj1;
+        NSIndexPath *path2 = obj2;
+        NSComparisonResult result = [path1 compare:path2];
+        //        return result == NSOrderedDescending; // 升序
+        return result == NSOrderedAscending;  // 降序
     }];
+    if (self.groupSelectedBlock) {
+        self.groupSelectedBlock(albumModel);
+    }
+    NSInteger index = 0;
+    for (NSIndexPath *indexPath in indexPathArray) {
+        AssetCollectionCell *cell = (AssetCollectionCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+        cell.transform = CGAffineTransformIdentity;
+        CGFloat offset = index*0.08;
+        [UIView animateWithDuration:0.5 + offset animations:^{
+            cell.transform = CGAffineTransformMakeTranslation(0, 4 * cell.hx_h);
+            cell.alpha = 0;
+        } completion:^(BOOL finished) {
+            if (index == indexPathArray.count - 1) {
+                if (self.groupDismissBlock) {
+                    self.groupDismissBlock();
+                }
+            }
+        }];
+        index += 1;
+    }
     
 }
 

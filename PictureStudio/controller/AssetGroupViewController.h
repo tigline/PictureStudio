@@ -14,6 +14,7 @@
 @property (nonatomic, assign) NSInteger indexAssetsGroup;
 @property (nonatomic, strong) NSArray *assetsGroups;
 @property (nonatomic, strong) NSMutableDictionary *selectedAssetCount;
-
+@property (assign, nonatomic) BOOL needRunAnimation;
 @property (nonatomic, copy) void (^groupSelectedBlock)(HXAlbumModel *selectedAlbumModel);
+@property (nonatomic, copy) void (^groupDismissBlock)(void);
 @end

@@ -1503,7 +1503,7 @@ UIPopoverPresentationControllerDelegate
 
 - (void)groupViewDidSelected:(HXAlbumModel *)selectedAlbumModel
 {
-    [self hideAssetsGroupView];
+    //[self hideAssetsGroupView];
      //self.assetGroupView.indexAssetsGroup = selectedAlbumModel.index;
     
     if ([self.albumModel.albumName isEqualToString:selectedAlbumModel.albumName]) {
@@ -1540,6 +1540,10 @@ UIPopoverPresentationControllerDelegate
             _assetGroupViewController.groupSelectedBlock = ^(HXAlbumModel *selectedAlbumModel) {
                 [weakSelf groupViewDidSelected:selectedAlbumModel];
             };
+            _assetGroupViewController.groupDismissBlock = ^{
+                weakSelf.collectionView.hidden = NO;
+                [self hideAssetsGroupView];
+            };
             _assetGroupViewController.assetsGroups = albums;
             _assetGroupViewController.indexAssetsGroup = _currentSectionIndex;
             
@@ -1550,6 +1554,7 @@ UIPopoverPresentationControllerDelegate
         } else {
             _assetGroupViewController.assetsGroups = albums;
             _assetGroupViewController.indexAssetsGroup = _currentSectionIndex;
+            _assetGroupViewController.needRunAnimation = YES;
             [_assetGroupViewController.collectionView reloadData];
         }
         
