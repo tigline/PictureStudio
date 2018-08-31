@@ -11,7 +11,7 @@
 #import "PhotoPreviewCell.h"
 #import "ViewController.h"
 #import "UINavigationBar+Color.h"
-
+#import "EditImageViewController.h"
 @interface PhotoPreviewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UIScrollViewDelegate,DatePhotoViewControllerDelegate> {
     UICollectionView *_collectionView;
     UICollectionViewFlowLayout *_layout;
@@ -21,7 +21,7 @@
     UIView *_naviBar;
     UIButton *_backButton;
     UIButton *_selectButton;
-    
+    UIButton *_editButton;
     UIView *_toolBar;
     UIButton *_doneButton;
     UIImageView *_numberImageView;
@@ -57,15 +57,18 @@
     //self.view.clipsToBounds = YES;
     self.navigationItem.title = @"未选择";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeStatusBarOrientationNotification:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+    
+    
+    //[self.navigationController setNavigationBarHidden:YES animated:YES];
+    //if (iOS7Later) [UIApplication sharedApplication].statusBarHidden = YES;
+    if (_currentIndex) [_collectionView setContentOffset:CGPointMake((self.view.hx_w + 20) * _currentIndex, 0) animated:NO];
+    [self refreshNaviBarAndBottomBarState];
 }
 
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    //[self.navigationController setNavigationBarHidden:YES animated:YES];
-    //if (iOS7Later) [UIApplication sharedApplication].statusBarHidden = YES;
-    if (_currentIndex) [_collectionView setContentOffset:CGPointMake((self.view.hx_w + 20) * _currentIndex, 0) animated:NO];
-    [self refreshNaviBarAndBottomBarState];
+    self.navigationController.navigationBar.hidden = NO;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -88,7 +91,7 @@
     _backButton = [[UIButton alloc] initWithFrame:CGRectZero];
     [_backButton setImage:[UIImage imageNamed:@"navi_back"] forState:UIControlStateNormal];
     [_backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [_backButton addTarget:self action:@selector(backButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    [_backButton addTarget:self action:@selector(backButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     
     _selectButton = [[UIButton alloc] initWithFrame:CGRectZero];
     [_selectButton setImage:[UIImage imageNamed:@"photo_unselect"] forState:UIControlStateNormal];
@@ -104,6 +107,15 @@
 - (void)configBottomToolBar {
     _toolBar = [[UIView alloc] initWithFrame:CGRectZero];
     _toolBar.backgroundColor = [UIColor colorWithRed:249/255.0 green:249/255.0 blue:249/255.0 alpha:1.0];
+    
+    
+    _editButton = [[UIButton alloc] initWithFrame:CGRectZero];
+    [_editButton setImage:[UIImage imageNamed:@"tool_edit"] forState:UIControlStateNormal];
+    [_editButton setImage:[UIImage imageNamed:@"tool_edit_p"] forState:UIControlStateSelected];
+    [_editButton addTarget:self action:@selector(EditButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [_toolBar addSubview:_editButton];
+    
+    
     
     _selectButton = [[UIButton alloc] initWithFrame:CGRectZero];
     [_selectButton setImage:[UIImage imageNamed:@"photo_unselect"] forState:UIControlStateNormal];
@@ -136,7 +148,7 @@
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     //ViewController *_tzImagePickerVc = (ViewController *)self.navigationController;
-    CGFloat toolBarHeight = kDevice_Is_iPhoneX ? 44 + (83 - 49) : 44;
+    CGFloat toolBarHeight = kDevice_Is_iPhoneX ? 60 + (83 - 49) : 60;
 //    CGFloat statusBarHeight = kDevice_Is_iPhoneX ? 44 : 20 ;
 //    CGFloat statusBarHeightInterval = statusBarHeight - 20;
 //    CGFloat naviBarHeight = statusBarHeight + kNavigationBarHeight;
@@ -158,7 +170,8 @@
     
     CGFloat toolBarTop = self.view.hx_h - toolBarHeight;
     _toolBar.frame = CGRectMake(0, toolBarTop, self.view.hx_w, toolBarHeight);
-    _selectButton.frame = CGRectMake((self.view.hx_w - toolBarHeight)/2, 0, toolBarHeight, toolBarHeight);
+    _selectButton.frame = CGRectMake(165.5*2*ScreenWidthRatio,(toolBarHeight - kBottomMargin - 26)/2, 26, 26);
+    _editButton.frame = CGRectMake((self.view.hx_w - toolBarHeight)/2, (toolBarHeight - kBottomMargin - 36)/2, 74, 36);
     //_selectButton.center = _toolBar.center;
 
  
@@ -179,6 +192,14 @@
 }
 
 #pragma mark - Click Event
+
+- (void)EditButtonClick:(UIButton *)editButton{
+    //test 编辑跳转
+    EditImageViewController *photoPreviewVc = [[EditImageViewController alloc] init];
+    photoPreviewVc.model = _models[_currentIndex];
+    [self.navigationController pushViewController:photoPreviewVc animated:NO];
+}
+
 
 - (void)select:(UIButton *)selectButton {
     //ViewController *_tzImagePickerVc = (ViewController *)self.navigationController;
@@ -273,7 +294,6 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     //ViewController *_tzImagePickerVc = (ViewController *)self.navigationController;
 
-    
     __weak typeof(self) weakSelf = self;
     PhotoPreviewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PhotoPreviewCell" forIndexPath:indexPath];
     HXPhotoModel *model = self.models[indexPath.item];
@@ -331,9 +351,9 @@
 }
 
 
-/*
-#pragma mark - Navigation
 
+#pragma mark - Navigation
+/**
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
