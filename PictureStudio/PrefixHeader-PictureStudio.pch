@@ -33,7 +33,7 @@
 #define kTopMargin (kDevice_Is_iPhoneX ? 44 : 0)
 #define kBottomMargin (kDevice_Is_iPhoneX ? 34 : 0)
 
-#define SaveViewHeight (kDevice_Is_iPhoneX ? 43.5*ScreenHeightRatio : 45*ScreenHeightRatio)
+#define SaveViewHeight (kDevice_Is_iPhoneX ? 43.5*ScreenHeightRatio : 60*ScreenHeightRatio)
 #define ButtomViewHeight (kDevice_Is_iPhoneX ? 55*ScreenHeightRatio : 60*ScreenHeightRatio)
 #define ShareBoardHeight 73*ScreenHeightRatio
 #define AblumViewWidth 353*ScreenWidthRatio

@@ -15,6 +15,7 @@
 @property (strong, nonatomic) UIButton *backBtn;
 @property (strong, nonatomic) UIButton *saveBtn;
 @property (strong, nonatomic) UIButton *shareBtn;
+@property (strong, nonatomic) UIButton *closeBtn;
 @property (strong, nonatomic) XDProgressView *progressView;
 @property (strong, nonatomic) UILabel *saveLabel;
 @property (assign, nonatomic) NSInteger length;
@@ -23,7 +24,9 @@
 @end
 
 @implementation PhotoSaveBottomView
-#define btnHeight 60*ScreenHeightRatio
+#define ViewHeight 60*ScreenHeightRatio
+#define BtnHeight  34*ScreenHeightRatio
+#define BtnWidth   72*ScreenWidthRatio
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -39,12 +42,13 @@
     
 }
 - (void)setupUI {
-    [self setBackgroundColor:[UIColor clearColor]];
+    [self setBackgroundColor:[UIColor barColor]];
     self.clipsToBounds = YES;
-    [self addSubview:self.bgView];
+    //[self addSubview:self.bgView];
     [self addSubview:self.backBtn];
     [self addSubview:self.saveBtn];
     [self addSubview:self.shareBtn];
+    [self addSubview:self.closeBtn];
     [self addSubview:self.progressView];
 }
 
@@ -97,51 +101,43 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    self.bgView.frame = self.bounds;
-    
 
     CGFloat pointY = 0;//(self.bgView.size.height - btnHeight)/2;
-    CGFloat offsetY = 0 ;
+
     
-    self.backBtn.frame = CGRectMake(28.4*ScreenWidthRatio, pointY, btnHeight, btnHeight);
+    self.backBtn.frame = CGRectMake(0, 0, ViewHeight, ViewHeight);
     self.backBtn.backgroundColor = [UIColor clearColor];
     
-    self.saveBtn.frame = CGRectMake(106*ScreenWidthRatio, pointY, 165*ScreenWidthRatio, btnHeight);
+    self.saveBtn.frame = CGRectMake(21*ScreenWidthRatio + ViewHeight ,(ViewHeight - BtnHeight) / 2, BtnWidth, BtnHeight);
     self.saveBtn.backgroundColor = [UIColor clearColor];
     
-    self.shareBtn.frame = CGRectMake(self.hx_w - btnHeight - 20*ScreenWidthRatio, pointY, btnHeight, btnHeight);
+    self.shareBtn.frame = CGRectMake(20*ScreenWidthRatio + BtnWidth, (ViewHeight - BtnHeight) / 2, BtnWidth, BtnHeight);
     self.shareBtn.backgroundColor = [UIColor clearColor];
     
-    self.progressView.frame = CGRectMake(0, 0, SCREEN_W, btnHeight);
+    self.closeBtn.frame = CGRectMake(62*ScreenWidthRatio + self.shareBtn.rightBottom.x, 0, ViewHeight, ViewHeight);
+    self.closeBtn.backgroundColor = [UIColor clearColor];
+    
+    self.progressView.frame = CGRectMake(0, 0, SCREEN_W, ViewHeight);
     self.progressView.hidden = YES;
     
-    _segmentingLineFrist = [CALayer layer];
-    _segmentingLineFrist.frame = CGRectMake(106*ScreenWidthRatio, 14 + offsetY, 0.6, 18);
-    _segmentingLineFrist.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
-    [self.bgView.layer addSublayer:_segmentingLineFrist];
-    
-    _segmentingLineSecond = [CALayer layer];
-    _segmentingLineSecond.frame = CGRectMake(271*ScreenWidthRatio, 14 + offsetY, 0.6, 18);
-    _segmentingLineSecond.backgroundColor = [[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.1f] CGColor];
-    [self.bgView.layer addSublayer:_segmentingLineSecond];
-}
-- (UIToolbar *)bgView {
-    if (!_bgView) {
-    
-        _bgView = [[UIToolbar alloc] init];
 
-    }
-    return _bgView;
 }
+//- (UIToolbar *)bgView {
+//    if (!_bgView) {
+//
+//        _bgView = [[UIToolbar alloc] init];
+//
+//    }
+//    return _bgView;
+//}
 - (UIButton *)backBtn {
     if (!_backBtn) {
         _backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        
-        self.bgView.frame = self.bounds;
-        [_backBtn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
 
-        
-        _backBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        [_backBtn setImage:[UIImage imageNamed:@"tool_back"] forState:UIControlStateNormal];
+        [_backBtn setImage:[UIImage imageNamed:@"tool_back"] forState:UIControlStateSelected];
+        _backBtn.imageView.contentMode = UIViewContentModeCenter;
+        //_backBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_backBtn addTarget:self action:@selector(didBackClick) forControlEvents:UIControlEventTouchUpInside];
 
     }
@@ -151,17 +147,17 @@
 - (UIButton *)saveBtn {
     if (!_saveBtn) {
         _saveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_saveBtn setImage:[UIImage imageNamed:@"download"] forState:UIControlStateNormal];
-
-        [_saveBtn setTitle:LocalString(@"save_image") forState:UIControlStateNormal];
-        [_saveBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+        [_saveBtn setImage:[UIImage imageNamed:@"tool_save_u"] forState:UIControlStateNormal];
+        [_saveBtn setImage:[UIImage imageNamed:@"tool_save_p"] forState:UIControlStateSelected];
+//        [_saveBtn setTitle:LocalString(@"save_image") forState:UIControlStateNormal];
+//        [_saveBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
         //_saveBtn.titleLabel.adjustsFontSizeToFitWidth = YES;
         //_saveBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
         [_saveBtn addTarget:self action:@selector(didSaveClick:) forControlEvents:UIControlEventTouchUpInside];
-        _saveBtn.titleLabel.font = [UIFont systemFontOfSize:11];
-        _saveBtn.titleLabel.textAlignment = NSTextAlignmentLeft;
-        _saveBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
-        _saveBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
+//        _saveBtn.titleLabel.font = [UIFont systemFontOfSize:11];
+//        _saveBtn.titleLabel.textAlignment = NSTextAlignmentLeft;
+//        _saveBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
+//        _saveBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 0);
 
         
     }
@@ -171,12 +167,26 @@
     if (!_shareBtn) {
         _shareBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         //[_shareBtn setTintColor:[UIColor clearColor]];
-        [_shareBtn setImage:[UIImage imageNamed:@"share"] forState:UIControlStateNormal];
-
-        _shareBtn.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        [_shareBtn setImage:[UIImage imageNamed:@"tool_share"] forState:UIControlStateNormal];
+        [_shareBtn setImage:[UIImage imageNamed:@"tool_share_p"] forState:UIControlStateSelected];
+        _shareBtn.imageView.contentMode = UIViewContentModeCenter;
         //_shareBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
         [_shareBtn addTarget:self action:@selector(didShareClick) forControlEvents:UIControlEventTouchUpInside];
 
+    }
+    return _shareBtn;
+}
+
+- (UIButton *)closeBtn {
+    if (!_closeBtn) {
+        _closeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        //[_shareBtn setTintColor:[UIColor clearColor]];
+        [_closeBtn setImage:[UIImage imageNamed:@"tool_cancel"] forState:UIControlStateNormal];
+        [_closeBtn setImage:[UIImage imageNamed:@"tool_cancel_p"] forState:UIControlStateSelected];
+        _closeBtn.imageView.contentMode = UIViewContentModeCenter;
+        //_shareBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        [_closeBtn addTarget:self action:@selector(didShareClick) forControlEvents:UIControlEventTouchUpInside];
+        
     }
     return _shareBtn;
 }

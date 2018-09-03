@@ -61,8 +61,6 @@ UIPopoverPresentationControllerDelegate
 @property (weak, nonatomic) id<UIViewControllerPreviewing> previewingContext;
 @property (assign, nonatomic) BOOL orientationDidChange;
 @property (strong, nonatomic) NSIndexPath *beforeOrientationIndexPath;
-//@property (nonatomic, strong) AssetTitleView *groupTitleView;
-@property (nonatomic, strong) UIButton *touchButton;
 @property (nonatomic, strong) UIViewController *assetPopoViewController;
 @property (nonatomic, strong) AHAssetGroupsView *assetGroupView;
 @property (nonatomic, assign) NSInteger currentSectionIndex;
@@ -93,6 +91,7 @@ UIPopoverPresentationControllerDelegate
 @property (assign, nonatomic) CGFloat moveBeginY;
 @property (assign, nonatomic) CGFloat moveEndX;
 @property (assign, nonatomic) CGFloat moveEndY;
+@property (weak, nonatomic) IBOutlet UILabel *imageCount;
 
 @property (nonatomic, strong) AssetGroupViewController *assetGroupViewController;
 
@@ -565,7 +564,9 @@ UIPopoverPresentationControllerDelegate
 
 #pragma mark -scrollView delegate
 
-/*
+#define ScrollToBarHeight 73*ScreenHeightRatio
+#define ScrollToButtom    133*ScreenHeightRatio
+
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     _lastContentOffset = scrollView.contentOffset.y;
     if (_mRecentScrollView != nil)
@@ -581,55 +582,48 @@ UIPopoverPresentationControllerDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    CGFloat contentHeight = scrollView.contentSize.height - self.view.hx_h;
+    CGFloat contentHeight = scrollView.contentSize.height - (self.view.hx_h - 217*ScreenHeightRatio);
     CGFloat contentOffsetY = scrollView.contentOffset.y;
-    if (contentOffsetY < contentHeight) {
-        //向下
-        if (_canDetectScroll) {
-            self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84, AblumViewWidth, self.view.hx_h);
-        }
+
+    if (contentOffsetY < contentHeight && contentOffsetY > (contentHeight - 73*ScreenHeightRatio)) {
+        
+        self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84, AblumViewWidth, self.view.hx_h - 217*ScreenHeightRatio + (contentHeight - contentOffsetY));
+        
         //[self.navigationController setNavigationBarHidden:NO animated:YES];
         
-    } else if (scrollView.contentOffset.y > _lastContentOffset) {
-        //向上
-        CGFloat bottomMargin = 0.0;
-        if (kDevice_Is_iPhoneX) {
-            bottomMargin = self.bottomView.hx_h;
-        } else {
-            bottomMargin = ButtomViewHeight;
-        }
-        if (_canDetectScroll && contentOffsetY > contentHeight) {
-            self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84, AblumViewWidth, self.view.hx_h - bottomMargin);
-        }
-        //[self.navigationController setNavigationBarHidden:YES animated:YES];
-
+    } else if (contentOffsetY <= (contentHeight - 73*ScreenHeightRatio)) {
+        self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84, AblumViewWidth, self.view.hx_h - 144*ScreenHeightRatio);
+    } else if (contentOffsetY > contentHeight) {
+        
+        self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84, AblumViewWidth, self.view.hx_h - 217*ScreenHeightRatio);
+        
     }
 }
-*/
 
-//- (void)scrollViewDidChangeAdjustedContentInset:(UIScrollView *)scrollView
-//{
-//
-//}
-//#pragma mark - UITouch Event
-//- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
-//{
+
+- (void)scrollViewDidChangeAdjustedContentInset:(UIScrollView *)scrollView
+{
+
+}
+#pragma mark - UITouch Event
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    CGPoint touchPoint = [[touches anyObject] locationInView:self.collectionView];
+    _moveBeginX = touchPoint.x;
+    _moveBeginY = touchPoint.y;
+}
+
+- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
 //    CGPoint touchPoint = [[touches anyObject] locationInView:self.collectionView];
-//    _moveBeginX = touchPoint.x;
-//    _moveBeginY = touchPoint.y;
-//}
 //
-//- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-////    CGPoint touchPoint = [[touches anyObject] locationInView:self.collectionView];
-////
-////    for (ImgCollectionViewCell *cell in self.collectionView.visibleCells) {
-////
-////
-////
-////    }
+//    for (ImgCollectionViewCell *cell in self.collectionView.visibleCells) {
 //
 //
-//}
+//
+//    }
+
+
+}
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
@@ -1414,8 +1408,8 @@ UIPopoverPresentationControllerDelegate
         //CGFloat collectionHeight = self.view.hx_h;
 
         //_collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(11*ScreenWidthRatio, 84, AblumViewWidth, collectionHeight) collectionViewLayout:self.flowLayout];
-    _collectionView.backgroundColor = UIColor.clearColor;
-//        _collectionView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.9];
+
+        _collectionView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.9];
 //        _collectionView.layer.shadowOpacity = 1.0;
 //        _collectionView.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.05].CGColor;
 //        _collectionView.layer.shadowOffset = CGSizeMake(0, 4);
@@ -1474,15 +1468,7 @@ UIPopoverPresentationControllerDelegate
 //    return _groupTitleView;
 //}
 
-- (UIButton *)touchButton{
-    if (!_touchButton) {
-        _touchButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _touchButton.frame = CGRectMake(0, 0, self.view.size.width, kNavigationBarHeight+10*ScreenHeightRatio);
-        [_touchButton setBackgroundColor:[UIColor clearColor]];
-        [_touchButton addTarget:self action:@selector(assetsGroupsDidDeselected) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _touchButton;
-}
+
 
 - (NSMutableArray *)allArray {
     if (!_allArray) {
@@ -1597,9 +1583,7 @@ UIPopoverPresentationControllerDelegate
                          
                          //self.groupTitleView.arrowBtn.transform = CGAffineTransformRotate(self.groupTitleView.arrowBtn.transform, -M_PI_2*1.999);
                      }completion:^(BOOL finished) {
-                         [_touchButton removeFromSuperview];
-                         _touchButton = nil;
-                         
+
                      }];
     return YES;
 }

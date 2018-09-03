@@ -539,13 +539,13 @@
     if (contentOffsetY < 0) {
         //self.showImageScrollView.frame = CGRectMake(0, kTopMargin + contentOffsetY, self.view.hx_w, self.view.hx_h);
     } else if (contentOffsetY < kTopMargin && contentOffsetY > 0) {
-        self.showImageScrollView.frame = CGRectMake(0, kTopMargin - contentOffsetY, self.view.hx_w, self.view.hx_h);
+        self.showImageScrollView.frame = CGRectMake(0, kTopMargin - contentOffsetY, self.view.hx_w, self.view.hx_h - self.toolBarView.hx_h);
     } else if (contentOffsetY < contentHeight && contentOffsetY > kTopMargin) {
         //向下
         //if (_canDetectScroll) {
         
 
-        self.showImageScrollView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h);
+        self.showImageScrollView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h - self.toolBarView.hx_h);
         
         //}
         //[self.navigationController setNavigationBarHidden:NO animated:YES];
