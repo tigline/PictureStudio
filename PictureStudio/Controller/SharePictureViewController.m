@@ -58,7 +58,8 @@
         [self.view addSubview:self.toolBarView];//创建保存图片区域
         
     }
-    self.fd_prefersNavigationBarHidden = YES;
+    self.view.backgroundColor = UIColor.barColor;
+    //self.fd_prefersNavigationBarHidden = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollFinish) name:@"scrollFinish" object:nil];
 
     //[self.view bringSubviewToFront:self.toolBarView];
@@ -130,7 +131,7 @@
     _showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h - kBottomMargin - kTopMargin)];
     _showImageScrollView.delegate = self;
     [self.view addSubview:_showImageScrollView];
-    _showImageScrollView.backgroundColor = [UIColor whiteColor];
+    _showImageScrollView.backgroundColor = [UIColor barColor];
     _showImageScrollView.bouncesZoom = YES;
     _showImageScrollView.maximumZoomScale = 2.5;
     _showImageScrollView.minimumZoomScale = 1.0;

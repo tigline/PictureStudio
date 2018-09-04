@@ -45,4 +45,8 @@
 + (UIColor *)cellTimeColor {
     return [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
 }
+
++ (UIColor *)imageBorderColor {
+    return [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1];
+}
 @end

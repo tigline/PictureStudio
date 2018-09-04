@@ -102,19 +102,19 @@
     [super layoutSubviews];
     
 
-    CGFloat pointY = 0;//(self.bgView.size.height - btnHeight)/2;
+    //CGFloat pointY = 0;//(self.bgView.size.height - btnHeight)/2;
 
     
-    self.backBtn.frame = CGRectMake(0, 0, ViewHeight, ViewHeight);
+    self.backBtn.frame = CGRectMake(22*ScreenWidthRatio, 19*ScreenHeightRatio, 22*ScreenWidthRatio, 22*ScreenHeightRatio);
     self.backBtn.backgroundColor = [UIColor clearColor];
     
-    self.saveBtn.frame = CGRectMake(21*ScreenWidthRatio + ViewHeight ,(ViewHeight - BtnHeight) / 2, BtnWidth, BtnHeight);
+    self.saveBtn.frame = CGRectMake(103*ScreenWidthRatio ,13*ScreenHeightRatio, BtnWidth, BtnHeight);
     self.saveBtn.backgroundColor = [UIColor clearColor];
     
-    self.shareBtn.frame = CGRectMake(20*ScreenWidthRatio + BtnWidth, (ViewHeight - BtnHeight) / 2, BtnWidth, BtnHeight);
+    self.shareBtn.frame = CGRectMake(197*ScreenWidthRatio, 13*ScreenHeightRatio, BtnWidth, BtnHeight);
     self.shareBtn.backgroundColor = [UIColor clearColor];
     
-    self.closeBtn.frame = CGRectMake(62*ScreenWidthRatio + self.shareBtn.rightBottom.x, 0, ViewHeight, ViewHeight);
+    self.closeBtn.frame = CGRectMake(331*ScreenWidthRatio, 19*ScreenHeightRatio, 22*ScreenWidthRatio, 22*ScreenHeightRatio);
     self.closeBtn.backgroundColor = [UIColor clearColor];
     
     self.progressView.frame = CGRectMake(0, 0, SCREEN_W, ViewHeight);
@@ -136,8 +136,8 @@
 
         [_backBtn setImage:[UIImage imageNamed:@"tool_back"] forState:UIControlStateNormal];
         [_backBtn setImage:[UIImage imageNamed:@"tool_back"] forState:UIControlStateSelected];
-        _backBtn.imageView.contentMode = UIViewContentModeCenter;
-        //_backBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+        //_backBtn.imageView.contentMode = UIViewContentModeCenter;
+        _backBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_backBtn addTarget:self action:@selector(didBackClick) forControlEvents:UIControlEventTouchUpInside];
 
     }
@@ -149,10 +149,11 @@
         _saveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_saveBtn setImage:[UIImage imageNamed:@"tool_save_u"] forState:UIControlStateNormal];
         [_saveBtn setImage:[UIImage imageNamed:@"tool_save_p"] forState:UIControlStateSelected];
+        //_saveBtn.imageView.contentMode = UIViewContentModeCenter;
 //        [_saveBtn setTitle:LocalString(@"save_image") forState:UIControlStateNormal];
 //        [_saveBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
         //_saveBtn.titleLabel.adjustsFontSizeToFitWidth = YES;
-        //_saveBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        _saveBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_saveBtn addTarget:self action:@selector(didSaveClick:) forControlEvents:UIControlEventTouchUpInside];
 //        _saveBtn.titleLabel.font = [UIFont systemFontOfSize:11];
 //        _saveBtn.titleLabel.textAlignment = NSTextAlignmentLeft;
@@ -169,8 +170,8 @@
         //[_shareBtn setTintColor:[UIColor clearColor]];
         [_shareBtn setImage:[UIImage imageNamed:@"tool_share"] forState:UIControlStateNormal];
         [_shareBtn setImage:[UIImage imageNamed:@"tool_share_p"] forState:UIControlStateSelected];
-        _shareBtn.imageView.contentMode = UIViewContentModeCenter;
-        //_shareBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        //_shareBtn.imageView.contentMode = UIViewContentModeCenter;
+        _shareBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_shareBtn addTarget:self action:@selector(didShareClick) forControlEvents:UIControlEventTouchUpInside];
 
     }
@@ -183,12 +184,12 @@
         //[_shareBtn setTintColor:[UIColor clearColor]];
         [_closeBtn setImage:[UIImage imageNamed:@"tool_cancel"] forState:UIControlStateNormal];
         [_closeBtn setImage:[UIImage imageNamed:@"tool_cancel_p"] forState:UIControlStateSelected];
-        _closeBtn.imageView.contentMode = UIViewContentModeCenter;
-        //_shareBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        //_closeBtn.imageView.contentMode = UIViewContentModeCenter;
+        _closeBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_closeBtn addTarget:self action:@selector(didShareClick) forControlEvents:UIControlEventTouchUpInside];
         
     }
-    return _shareBtn;
+    return _closeBtn;
 }
 
 - (XDProgressView *)progressView {
