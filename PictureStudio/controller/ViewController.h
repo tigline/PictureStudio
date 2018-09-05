@@ -11,6 +11,7 @@
 #import "HXPhotoManager.h"
 #import "PhotoEditButtomView.h"
 #import "RecentScrollView.h"
+#import "BaseViewController.h"
 @class ViewController;
 
 @protocol DatePhotoViewControllerDelegate <NSObject>
@@ -43,7 +44,7 @@
 - (void)datePhotoViewControllerDidChangeSelect:(HXPhotoModel *)model selected:(BOOL)selected;
 @end
 
-@interface ViewController : UIViewController
+@interface ViewController : BaseViewController
 {
     NSMutableArray *lastArray; //记录当前一次操作的所有cell
     NSMutableArray *currentArray;//通过currentcell于firstcell计算出的应该显示的cell

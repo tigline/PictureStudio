@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "HXPhotoManager.h"
-
-@interface SharePictureViewController : UIViewController
+#import "BaseViewController.h"
+@class SwipeEdgeInteractionController;
+@interface SharePictureViewController : BaseViewController
 @property (nonatomic,strong) NSArray *resultModels;
 @property (nonatomic,strong) UIImage *resultImage;
 @property (nonatomic,strong) HXPhotoManager * manager;
+@property (strong, nonatomic) SwipeEdgeInteractionController *interactionController;
 @end

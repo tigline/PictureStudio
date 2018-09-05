@@ -111,8 +111,6 @@
                         <outlet property="navView" destination="dgd-E2-h5V" id="AfF-jP-vl5"/>
                         <outlet property="noPhotoView" destination="fH4-U2-j1I" id="nmd-1u-T2q"/>
                         <outlet property="tabelContaintView" destination="W85-Mh-uIK" id="EbK-Q7-H2B"/>
-                        <segue destination="MBT-LT-jHU" kind="show" identifier="toLongPictureView" id="Zx8-CY-HUL"/>
-                        <segue destination="v3X-Pq-viG" kind="show" identifier="toSharePictureView" id="MyQ-kc-yCj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yQH-pw-mgd" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -17,6 +17,8 @@
 #import "ToastView.h"
 #import "ShareBoardView.h"
 #import "PhotoCutModel.h"
+#import "SwipeEdgeInteractionController.h"
+
 
 //#define URL_APPID @"wx3b864b92dca2bf8a"
 //#define URL_SECRET @"e998d19d22428e70c520f36a9c6f0e41"
@@ -48,7 +50,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
     [self createScrollView];
 
     if (_resultModels) {
@@ -59,9 +61,13 @@
         
     }
     self.view.backgroundColor = UIColor.barColor;
+    __weak typeof(self) weakSelf = self;
+    _interactionController = [[SwipeEdgeInteractionController alloc] initWithViewController:self interationDirection:left completion:^{
+        [weakSelf dismissViewControllerAnimated:YES completion:nil];
+    }];
     //self.fd_prefersNavigationBarHidden = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollFinish) name:@"scrollFinish" object:nil];
-
+    
     //[self.view bringSubviewToFront:self.toolBarView];
 }
 
@@ -412,7 +418,8 @@
 #pragma PhotoSaveBottomViewDelegate
 
 - (void)savePhotoBottomViewDidBackBtn {
-    [self.navigationController popViewControllerAnimated:YES];
+    //[self.navigationController popViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 - (void)savePhotoBottomViewDidSaveBtn:(UIButton *)button {
     if([button.titleLabel.text isEqualToString:LocalString(@"open_ablum")]) {

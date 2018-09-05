@@ -27,6 +27,9 @@
 #import "AssetGroupViewController.h"
 #import "PictureStudio_Bridging_Header.h"
 #import "AssetGroupViewController.h"
+#import "Base/BaseNavigationController.h"
+#import "Helps/CustomTransitionPushSimilarHepler.h"
+#import "SwipeEdgeInteractionController.h"
 
 
 @interface ViewController ()<UICollectionViewDataSource,
@@ -37,8 +40,8 @@ ImgCollectionViewCellDelegate,
 UIViewControllerPreviewingDelegate,
 UICollectionViewDelegateFlowLayout,
 PhotoPreviewControllerDelegate,
-UIPopoverPresentationControllerDelegate
-
+UIPopoverPresentationControllerDelegate,
+UIViewControllerTransitioningDelegate
 >
 
 @property (weak, nonatomic) IBOutlet AssetTitleButton *assetTitleView;
@@ -94,6 +97,7 @@ UIPopoverPresentationControllerDelegate
 @property (weak, nonatomic) IBOutlet UILabel *imageCount;
 
 @property (nonatomic, strong) AssetGroupViewController *assetGroupViewController;
+@property (strong, nonatomic) SwipeEdgeInteractionController *interactionController;
 
 @property (nonatomic, strong) NSTimer *timer;
 
@@ -155,6 +159,10 @@ UIPopoverPresentationControllerDelegate
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(whenBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidTakeScreenshot:)name:UIApplicationUserDidTakeScreenshotNotification object:nil];
+    
+    _interactionController = [[SwipeEdgeInteractionController alloc] initWithViewController:self interationDirection:left completion:^{
+        
+    }];
     
     UIPanGestureRecognizer *gestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
     [self.view addGestureRecognizer:gestureRecognizer];
@@ -1025,16 +1033,7 @@ UIPopoverPresentationControllerDelegate
     return 5;
 }
 
-//- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
-//
-////    if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
-////        PhotoCollectionReusableView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"sectionFooterId" forIndexPath:indexPath];
-////        footerView.photoCount = self.allArray.count;
-////        self.footerView = footerView;
-////        return footerView;
-////    }
-//    return nil;
-//}
+
 
 - (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
     NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:location];
@@ -1305,7 +1304,15 @@ UIPopoverPresentationControllerDelegate
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollFinish" object:nil];
                 } else {
                     [weakSelf.manager setScrollResult:resultModels];
-                    [self performSegueWithIdentifier:@"toSharePictureView" sender:resultModels];
+                    SharePictureViewController *scrollVc = [[SharePictureViewController alloc] init];
+                    scrollVc.manager = weakSelf.manager;
+                    scrollVc.resultModels = resultModels;
+                    BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:scrollVc];
+                    [nav.view layoutIfNeeded];
+                    nav.transitioningDelegate = weakSelf;
+                    [self presentViewController:nav animated:YES completion:nil];
+                    //[self performSegueWithIdentifier:@"toSharePictureView" sender:resultModels];
+                    
                 }
             }success:^(BOOL success) {
                 weakSelf.manager.isScrollSuccess = success;
@@ -1313,6 +1320,7 @@ UIPopoverPresentationControllerDelegate
         });
         
         if (_manager.selectedCount > 3) {
+            
             [self performSegueWithIdentifier:@"toSharePictureView" sender:nil];
         }
         
@@ -1339,6 +1347,55 @@ UIPopoverPresentationControllerDelegate
 - (void)hideAsetTabelView {
     
 }
+
+
+- (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source {
+    
+    if ([presented isKindOfClass:UINavigationController.class]) {
+     
+        UINavigationController *presentNav = (UINavigationController*)presented;
+    
+        if ([presentNav.viewControllers.firstObject isKindOfClass:SharePictureViewController.class]) {
+            CustomTransitionPushSimilarHepler *pushTransition = [[CustomTransitionPushSimilarHepler alloc]init];
+            pushTransition.isPush = YES;
+            
+            return pushTransition;
+        }
+        
+    }
+    return nil;
+}
+
+- (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
+    if ([dismissed isKindOfClass:UINavigationController.class]) {
+        
+        UINavigationController *dismissNav = (UINavigationController*)dismissed;
+        
+        
+        if ([dismissNav.viewControllers.firstObject isKindOfClass:SharePictureViewController.class]) {
+            SharePictureViewController *vc = (SharePictureViewController *)dismissNav.viewControllers.firstObject;
+            CustomTransitionPushSimilarHepler *popTransition = [[CustomTransitionPushSimilarHepler alloc]init];
+            popTransition.isPush = NO;
+            popTransition.interactionController =  vc.interactionController;
+            
+            return popTransition;
+        }
+
+    }
+    return nil;
+}
+
+- (nullable id <UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id <UIViewControllerAnimatedTransitioning>)animator {
+    
+    if ([animator isKindOfClass:CustomTransitionPushSimilarHepler.class]) {
+        CustomTransitionPushSimilarHepler *transitionPushSimilarHepler = (CustomTransitionPushSimilarHepler*)animator;
+        return transitionPushSimilarHepler.interactionController;
+    }
+    return nil;
+}
+
+
+
 
 #pragma mark - < 懒加载 >
 

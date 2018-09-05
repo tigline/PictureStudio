@@ -73,6 +73,10 @@
 		9389461220B7E3DC00BC62DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9389461420B7E3DC00BC62DA /* InfoPlist.strings */; };
 		9389461820B7E4BB00BC62DA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9389461A20B7E4BB00BC62DA /* Localizable.strings */; };
 		9399E82020D23D5400791E92 /* ToastView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9399E81F20D23D5400791E92 /* ToastView.m */; };
+		939F2703213FAD4B00718374 /* BaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 939F2702213FAD4B00718374 /* BaseNavigationController.m */; };
+		939F2709213FBB2E00718374 /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 939F2708213FBB2E00718374 /* BaseViewController.m */; };
+		939F270E213FBF6600718374 /* CustomTransitionPushSimilarHepler.m in Sources */ = {isa = PBXBuildFile; fileRef = 939F270D213FBF6600718374 /* CustomTransitionPushSimilarHepler.m */; };
+		939F2711213FCE9000718374 /* SwipeEdgeInteractionController.m in Sources */ = {isa = PBXBuildFile; fileRef = 939F2710213FCE9000718374 /* SwipeEdgeInteractionController.m */; };
 		CA77FD7BEBFA8FC98070EEF6 /* libPods-PictureStudioTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FBE47B7FBE857DD390CAF1A /* libPods-PictureStudioTests.a */; };
 /* End PBXBuildFile section */
 
@@ -209,6 +213,14 @@
 		9389461B20B7E4BF00BC62DA /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		9399E81E20D23D5400791E92 /* ToastView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ToastView.h; sourceTree = "<group>"; };
 		9399E81F20D23D5400791E92 /* ToastView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ToastView.m; sourceTree = "<group>"; };
+		939F2701213FAD4B00718374 /* BaseNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseNavigationController.h; sourceTree = "<group>"; };
+		939F2702213FAD4B00718374 /* BaseNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BaseNavigationController.m; sourceTree = "<group>"; };
+		939F2707213FBB2E00718374 /* BaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseViewController.h; sourceTree = "<group>"; };
+		939F2708213FBB2E00718374 /* BaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BaseViewController.m; sourceTree = "<group>"; };
+		939F270C213FBF6600718374 /* CustomTransitionPushSimilarHepler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CustomTransitionPushSimilarHepler.h; sourceTree = "<group>"; };
+		939F270D213FBF6600718374 /* CustomTransitionPushSimilarHepler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomTransitionPushSimilarHepler.m; sourceTree = "<group>"; };
+		939F270F213FCE9000718374 /* SwipeEdgeInteractionController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwipeEdgeInteractionController.h; sourceTree = "<group>"; };
+		939F2710213FCE9000718374 /* SwipeEdgeInteractionController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SwipeEdgeInteractionController.m; sourceTree = "<group>"; };
 		AAE5E6A04762F2F9333FC11A /* Pods-PictureStudio.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PictureStudio.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PictureStudio/Pods-PictureStudio.debug.xcconfig"; sourceTree = "<group>"; };
 		C1CA1C5684A7B142E0E5A154 /* Pods-PictureStudioTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PictureStudioTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PictureStudioTests/Pods-PictureStudioTests.release.xcconfig"; sourceTree = "<group>"; };
 		D552EC3AE84972F5EBFA1999 /* libPods-PictureStudio.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PictureStudio.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -251,9 +263,11 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		7082489F204EC6FC000D60A3 /* controller */ = {
+		7082489F204EC6FC000D60A3 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				939F2700213FACF900718374 /* Base */,
+				939F270B213FBF4600718374 /* Helps */,
 				936FAC2C20200B9A00F80BCF /* ViewController.h */,
 				936FAC2D20200B9A00F80BCF /* ViewController.m */,
 				9338E54D20A577A10059D58E /* PhotoPreviewController.h */,
@@ -274,7 +288,7 @@
 				7060808120BEF56A0045F49E /* HXPhoto3DTouchViewController.h */,
 				7060808020BEF56A0045F49E /* HXPhoto3DTouchViewController.m */,
 			);
-			path = controller;
+			path = Controller;
 			sourceTree = "<group>";
 		};
 		708248A3204EC70A000D60A3 /* model */ = {
@@ -409,7 +423,7 @@
 				70D24BBA207FA98C003430BA /* category */,
 				708248AB204ED44B000D60A3 /* Utils */,
 				708248A3204EC70A000D60A3 /* model */,
-				7082489F204EC6FC000D60A3 /* controller */,
+				7082489F204EC6FC000D60A3 /* Controller */,
 				708248F42078AE81000D60A3 /* view */,
 				936FAC2920200B9A00F80BCF /* AppDelegate.h */,
 				936FAC2A20200B9A00F80BCF /* AppDelegate.m */,
@@ -442,6 +456,28 @@
 				9389461A20B7E4BB00BC62DA /* Localizable.strings */,
 			);
 			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		939F2700213FACF900718374 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				939F2701213FAD4B00718374 /* BaseNavigationController.h */,
+				939F2702213FAD4B00718374 /* BaseNavigationController.m */,
+				939F2707213FBB2E00718374 /* BaseViewController.h */,
+				939F2708213FBB2E00718374 /* BaseViewController.m */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		939F270B213FBF4600718374 /* Helps */ = {
+			isa = PBXGroup;
+			children = (
+				939F270C213FBF6600718374 /* CustomTransitionPushSimilarHepler.h */,
+				939F270D213FBF6600718374 /* CustomTransitionPushSimilarHepler.m */,
+				939F270F213FCE9000718374 /* SwipeEdgeInteractionController.h */,
+				939F2710213FCE9000718374 /* SwipeEdgeInteractionController.m */,
+			);
+			path = Helps;
 			sourceTree = "<group>";
 		};
 		F25F94BCEE068E820AFA5EA8 /* Frameworks */ = {
@@ -696,13 +732,16 @@
 				708248F72078AFAF000D60A3 /* ImgCollectionViewCell.m in Sources */,
 				708248CD206A94C8000D60A3 /* NSBundle+HXWeiboPhotoPicker.m in Sources */,
 				70B3080D20E27D6100FFF131 /* PhotoCutModel.m in Sources */,
+				939F2711213FCE9000718374 /* SwipeEdgeInteractionController.m in Sources */,
 				9338E55220A57A760059D58E /* PhotoPreviewCell.m in Sources */,
 				708248BE206A9103000D60A3 /* HXPhotoModel.m in Sources */,
 				707DBA7A209EC4BF00F2FAFB /* SharePictureViewController.m in Sources */,
+				939F2703213FAD4B00718374 /* BaseNavigationController.m in Sources */,
 				703FDEB4212C5FE1006218D0 /* UIColor+CustomColor.m in Sources */,
 				70D24BBD207FA9CA003430BA /* UINavigationBar+Color.m in Sources */,
 				70925B5C213578A800AE9373 /* AssetCollectionCell.m in Sources */,
 				708248D8206A9884000D60A3 /* UIImage+HXExtension.m in Sources */,
+				939F270E213FBF6600718374 /* CustomTransitionPushSimilarHepler.m in Sources */,
 				937F74332084879800F56AFD /* HXPhotoManager.m in Sources */,
 				708249002078E510000D60A3 /* PhotoEditButtomView.m in Sources */,
 				9399E82020D23D5400791E92 /* ToastView.m in Sources */,
@@ -725,6 +764,7 @@
 				708248FD2078BD4C000D60A3 /* UIImageView+HXExtension.m in Sources */,
 				70C262FB207A72EF00F65EFD /* AHAssetGroupsView.m in Sources */,
 				7042146121344FD10005AB2F /* ViewControllerExtensions.swift in Sources */,
+				939F2709213FBB2E00718374 /* BaseViewController.m in Sources */,
 				708248C7206A9182000D60A3 /* NSDate+HXExtension.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
