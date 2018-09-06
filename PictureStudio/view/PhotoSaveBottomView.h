@@ -13,6 +13,7 @@
 - (void)savePhotoBottomViewDidBackBtn;
 - (void)savePhotoBottomViewDidSaveBtn:(UIButton *)button;
 - (void)savePhotoBottomViewDidShareBtn;
+- (void)savePhotoBottomViewDidCloseBtn;
 @end
 
 @interface PhotoSaveBottomView : UIView

@@ -70,7 +70,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    //[self.navigationController setNavigationBarHidden:NO animated:YES];
 
 
 }
@@ -227,10 +227,12 @@
 
 - (void)backButtonClick {
     if (self.navigationController.childViewControllers.count < 2) {
-        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+        //[self.navigationController dismissViewControllerAnimated:YES completion:nil];
+        [self dismissViewControllerAnimated:NO completion:nil];
         return;
     }
-    [self.navigationController popViewControllerAnimated:YES];
+    //[self.navigationController popViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:NO completion:nil];
     if (self.backButtonClickBlock) {
         self.backButtonClickBlock(_isSelectOriginalPhoto);
     }

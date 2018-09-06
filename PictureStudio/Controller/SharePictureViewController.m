@@ -41,6 +41,7 @@
 @property (strong, nonatomic) UIView *containImageView;
 @property (strong, nonatomic) ShareBoardView *shareBoardView;
 @property (nonatomic, assign) BOOL isFromShare;
+@property (nonatomic, assign) BOOL isSaved;
 
 
 @end
@@ -60,7 +61,7 @@
         [self.view addSubview:self.toolBarView];//创建保存图片区域
         
     }
-    self.view.backgroundColor = UIColor.barColor;
+    self.view.backgroundColor = UIColor.backgroundColor;
     __weak typeof(self) weakSelf = self;
     _interactionController = [[SwipeEdgeInteractionController alloc] initWithViewController:self interationDirection:left completion:^{
         [weakSelf dismissViewControllerAnimated:YES completion:nil];
@@ -137,7 +138,7 @@
     _showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h - kBottomMargin - kTopMargin)];
     _showImageScrollView.delegate = self;
     [self.view addSubview:_showImageScrollView];
-    _showImageScrollView.backgroundColor = [UIColor barColor];
+    _showImageScrollView.backgroundColor = [UIColor backgroundColor];
     _showImageScrollView.bouncesZoom = YES;
     _showImageScrollView.maximumZoomScale = 2.5;
     _showImageScrollView.minimumZoomScale = 1.0;
@@ -422,7 +423,7 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 - (void)savePhotoBottomViewDidSaveBtn:(UIButton *)button {
-    if([button.titleLabel.text isEqualToString:LocalString(@"open_ablum")]) {
+    if(_isSaved) {
         NSURL *url = [NSURL URLWithString:@"photos-redirect://"];
         
         if (@available(iOS 10.0, *)) {
@@ -471,14 +472,19 @@
                                 [weakSelf.toolBarView setSaveBtnsHiddenValue:NO];
                                 [weakSelf.toolBarView setSaveLabelHidden:YES];
                                 [weakSelf.view showImageHUDText:LocalString(@"save_success")];
-                                [button setTitle:LocalString(@"open_ablum") forState:UIControlStateNormal];
+                                //[button setTitle:LocalString(@"open_ablum") forState:UIControlStateNormal];
+                                _isSaved = YES;
+                                [button setImage:[UIImage imageNamed:@"tool_open"] forState:UIControlStateNormal];
+                                [button setImage:[UIImage imageNamed:@"tool_open_p"] forState:UIControlStateFocused];
                             });
                             
                         } else {
                             dispatch_async(dispatch_get_main_queue(), ^{
+                                _isSaved = false;
                                 [weakSelf.view handleLoading];
-                                //[weakSelf.view showImageHUDText:LocalString(@"save_failed")];
-                                [button setTitle:LocalString(@"save_failed") forState:UIControlStateNormal];
+                                [weakSelf.view showImageHUDText:LocalString(@"save_failed")];
+                                [button setImage:[UIImage imageNamed:@"tool_save_u"] forState:UIControlStateNormal];
+                                //[button setTitle:LocalString(@"save_failed") forState:UIControlStateNormal];
                             });
                             
                         }
@@ -508,7 +514,10 @@
             [self showShareBoard];
         }
     }
-    
+}
+
+- (void)savePhotoBottomViewDidCloseBtn {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -516,7 +525,6 @@
     if (!_toolBarView) {
         _toolBarView = [[PhotoSaveBottomView alloc] initWithFrame:CGRectMake(0, self.view.hx_h - SaveViewHeight - kBottomMargin, self.view.hx_w, ButtomViewHeight + kBottomMargin)];
         _toolBarView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        
         _toolBarView.delegate = self;
     }
     return _toolBarView;

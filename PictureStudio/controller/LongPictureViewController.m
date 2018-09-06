@@ -15,6 +15,7 @@
 #import "HXPhotoDefine.h"
 #import "UINavigationController+FDFullscreenPopGesture.h"
 #import "ShareBoardView.h"
+#import "SwipeEdgeInteractionController.h"
 
 @interface LongPictureViewController () <UIScrollViewDelegate,PhotoSaveBottomViewDelegate, ShareBoardViewDelegate>
 @property (strong, nonatomic)  UIScrollView *longPictureView;
@@ -43,7 +44,9 @@
     _isShowShareBoardView = NO;
     [self.view addSubview:self.shareBoardView];
     [self.view addSubview:self.toolBarView];
-    
+    _interactionController = [[SwipeEdgeInteractionController alloc] initWithViewController:self interationDirection:left completion:^{
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }];
 
 }
 
@@ -524,7 +527,8 @@
 #pragma PhotoSaveBottomViewDelegate
 
 - (void)savePhotoBottomViewDidBackBtn {
-    [self.navigationController popViewControllerAnimated:YES];
+    //[self.navigationController popViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 - (void)savePhotoBottomViewDidSaveBtn:(UIButton *)button {
     

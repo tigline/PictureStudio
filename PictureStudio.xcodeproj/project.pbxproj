@@ -69,7 +69,6 @@
 		936FAC4320200B9A00F80BCF /* PictureStudioTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 936FAC4220200B9A00F80BCF /* PictureStudioTests.m */; };
 		937F74332084879800F56AFD /* HXPhotoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 937F74322084879800F56AFD /* HXPhotoManager.m */; };
 		937F743F20849DB200F56AFD /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 937F743E20849DB100F56AFD /* opencv2.framework */; };
-		937F74452084A4CB00F56AFD /* CombineIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 937F74442084A4CB00F56AFD /* CombineIndicatorView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9389461220B7E3DC00BC62DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9389461420B7E3DC00BC62DA /* InfoPlist.strings */; };
 		9389461820B7E4BB00BC62DA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9389461A20B7E4BB00BC62DA /* Localizable.strings */; };
 		9399E82020D23D5400791E92 /* ToastView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9399E81F20D23D5400791E92 /* ToastView.m */; };
@@ -107,8 +106,8 @@
 		703FDEB3212C5FE1006218D0 /* UIColor+CustomColor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+CustomColor.m"; sourceTree = "<group>"; };
 		703FDEB62132E3CB006218D0 /* AssetTitleButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AssetTitleButton.h; path = PictureStudio/View/AssetTitleButton.h; sourceTree = SOURCE_ROOT; };
 		703FDEB72132E3CB006218D0 /* AssetTitleButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AssetTitleButton.m; path = PictureStudio/View/AssetTitleButton.m; sourceTree = SOURCE_ROOT; };
-		7042145921343F7B0005AB2F /* AssetTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AssetTableViewCell.h; path = PictureStudio/View/AssetTableViewCell.h; sourceTree = SOURCE_ROOT; };
-		7042145A21343F7B0005AB2F /* AssetTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AssetTableViewCell.m; path = PictureStudio/View/AssetTableViewCell.m; sourceTree = SOURCE_ROOT; };
+		7042145921343F7B0005AB2F /* AssetTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AssetTableViewCell.h; path = "PictureStudio/view/old view/AssetTableViewCell.h"; sourceTree = SOURCE_ROOT; };
+		7042145A21343F7B0005AB2F /* AssetTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AssetTableViewCell.m; path = "PictureStudio/view/old view/AssetTableViewCell.m"; sourceTree = SOURCE_ROOT; };
 		7042145D21344D100005AB2F /* UIViewController+Extensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "UIViewController+Extensions.h"; path = "PictureStudio/Category/UIViewController+Extensions.h"; sourceTree = SOURCE_ROOT; };
 		7042145E21344D100005AB2F /* UIViewController+Extensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+Extensions.m"; path = "PictureStudio/Category/UIViewController+Extensions.m"; sourceTree = SOURCE_ROOT; };
 		7042146021344FD10005AB2F /* ViewControllerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerExtensions.swift; sourceTree = "<group>"; };
@@ -205,8 +204,6 @@
 		937F74312084879800F56AFD /* HXPhotoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HXPhotoManager.h; sourceTree = "<group>"; };
 		937F74322084879800F56AFD /* HXPhotoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HXPhotoManager.m; sourceTree = "<group>"; };
 		937F743E20849DB100F56AFD /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = PictureStudio/opencv2.framework; sourceTree = "<group>"; };
-		937F74432084A4CB00F56AFD /* CombineIndicatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CombineIndicatorView.h; sourceTree = "<group>"; };
-		937F74442084A4CB00F56AFD /* CombineIndicatorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CombineIndicatorView.m; sourceTree = "<group>"; };
 		9389461320B7E3DC00BC62DA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		9389461520B7E42600BC62DA /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		9389461920B7E4BB00BC62DA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -328,6 +325,7 @@
 		708248F42078AE81000D60A3 /* view */ = {
 			isa = PBXGroup;
 			children = (
+				939F27132140C61900718374 /* old view */,
 				702C5FBE20D15DF000AA8CA5 /* XDProgressView.h */,
 				702C5FBF20D15DF000AA8CA5 /* XDProgressView.m */,
 				70BD41D9212AFA9A00CA0941 /* RecentScrollView.h */,
@@ -349,19 +347,8 @@
 				700E324E20A1C8A0007A23E0 /* AboutViewTableViewCell.h */,
 				700E324C20A1C89F007A23E0 /* AboutViewTableViewCell.m */,
 				700E324D20A1C8A0007A23E0 /* AboutViewTableViewCell.xib */,
-				70C5D189207926A400FE5B9A /* AssetTitleView.h */,
-				70C5D18A207926A400FE5B9A /* AssetTitleView.m */,
-				70C262F7207A72EF00F65EFD /* AHAssetGroupCell.h */,
-				70C262FA207A72EF00F65EFD /* AHAssetGroupCell.m */,
-				7042145921343F7B0005AB2F /* AssetTableViewCell.h */,
-				7042145A21343F7B0005AB2F /* AssetTableViewCell.m */,
-				70C262FF207A7C9100F65EFD /* AHAssetGroupCell.xib */,
-				70C262F8207A72EF00F65EFD /* AHAssetGroupsView.h */,
-				70C262F9207A72EF00F65EFD /* AHAssetGroupsView.m */,
 				707DBA8B20A0A14100F2FAFB /* ShareBoardView.h */,
 				707DBA8C20A0A14100F2FAFB /* ShareBoardView.m */,
-				937F74432084A4CB00F56AFD /* CombineIndicatorView.h */,
-				937F74442084A4CB00F56AFD /* CombineIndicatorView.m */,
 				700E325120A1E464007A23E0 /* WeiboTableViewCell.h */,
 				700E325320A1E464007A23E0 /* WeiboTableViewCell.m */,
 				700E325220A1E464007A23E0 /* WeiboTableViewCell.xib */,
@@ -478,6 +465,22 @@
 				939F2710213FCE9000718374 /* SwipeEdgeInteractionController.m */,
 			);
 			path = Helps;
+			sourceTree = "<group>";
+		};
+		939F27132140C61900718374 /* old view */ = {
+			isa = PBXGroup;
+			children = (
+				70C5D189207926A400FE5B9A /* AssetTitleView.h */,
+				70C5D18A207926A400FE5B9A /* AssetTitleView.m */,
+				70C262F7207A72EF00F65EFD /* AHAssetGroupCell.h */,
+				70C262FA207A72EF00F65EFD /* AHAssetGroupCell.m */,
+				7042145921343F7B0005AB2F /* AssetTableViewCell.h */,
+				7042145A21343F7B0005AB2F /* AssetTableViewCell.m */,
+				70C262FF207A7C9100F65EFD /* AHAssetGroupCell.xib */,
+				70C262F8207A72EF00F65EFD /* AHAssetGroupsView.h */,
+				70C262F9207A72EF00F65EFD /* AHAssetGroupsView.m */,
+			);
+			path = "old view";
 			sourceTree = "<group>";
 		};
 		F25F94BCEE068E820AFA5EA8 /* Frameworks */ = {
@@ -724,7 +727,6 @@
 				7082490620790F92000D60A3 /* PhotoCollectionReusableView.m in Sources */,
 				708248A2204EC6FC000D60A3 /* LongPictureViewController.m in Sources */,
 				70BD41DB212AFA9A00CA0941 /* RecentScrollView.m in Sources */,
-				937F74452084A4CB00F56AFD /* CombineIndicatorView.m in Sources */,
 				70711C9621359B4E008A6121 /* AssetGroupViewController.m in Sources */,
 				708248D0206A94E2000D60A3 /* UIFont+HXExtension.m in Sources */,
 				708248AE204ED48B000D60A3 /* FilePathUtils.m in Sources */,

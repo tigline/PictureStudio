@@ -49,6 +49,7 @@
                                             <constraint firstAttribute="width" constant="158" id="Jft-8X-5dG"/>
                                             <constraint firstAttribute="height" constant="34" id="jh7-3q-Xu8"/>
                                         </constraints>
+                                        <state key="normal" backgroundImage="nav_title"/>
                                         <connections>
                                             <action selector="assetButtonClicked:" destination="rFg-mA-rbD" eventType="touchUpInside" id="TpT-zH-4b4"/>
                                         </connections>
@@ -150,5 +151,6 @@
     </scenes>
     <resources>
         <image name="nav_about" width="24" height="24"/>
+        <image name="nav_title" width="162" height="38"/>
     </resources>
 </document>

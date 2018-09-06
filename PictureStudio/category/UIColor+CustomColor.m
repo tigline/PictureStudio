@@ -23,7 +23,11 @@
 }
 
 + (UIColor *)navShadowColor {
-    return [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+    return [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1];
+}
+
++ (UIColor *)settingBgShadowColor {
+    return [UIColor colorWithRed:68/255.0 green:159/255.0 blue:255/255.0 alpha:0.82];
 }
 
 + (UIColor *)backgroundColor {

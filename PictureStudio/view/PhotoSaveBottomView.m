@@ -50,6 +50,11 @@
     [self addSubview:self.shareBtn];
     [self addSubview:self.closeBtn];
     [self addSubview:self.progressView];
+    self.layer.shadowOpacity = 0.99;
+    self.layer.shadowColor = UIColor.navShadowColor.CGColor;
+    self.layer.shadowRadius = 4;
+    self.layer.shadowOffset = CGSizeMake(0, 0);
+    self.layer.masksToBounds = NO;
 }
 
 
@@ -68,6 +73,12 @@
 - (void)didSaveClick:(UIButton *)button {
     if ([self.delegate respondsToSelector:@selector(savePhotoBottomViewDidSaveBtn:)]) {
         [self.delegate savePhotoBottomViewDidSaveBtn:button];
+    }
+}
+
+- (void)didCloseClick {
+    if ([self.delegate respondsToSelector:@selector(savePhotoBottomViewDidCloseBtn)]) {
+        [self.delegate savePhotoBottomViewDidCloseBtn];
     }
 }
 
@@ -119,7 +130,6 @@
     
     self.progressView.frame = CGRectMake(0, 0, SCREEN_W, ViewHeight);
     self.progressView.hidden = YES;
-    
 
 }
 //- (UIToolbar *)bgView {
@@ -135,7 +145,7 @@
         _backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
 
         [_backBtn setImage:[UIImage imageNamed:@"tool_back"] forState:UIControlStateNormal];
-        [_backBtn setImage:[UIImage imageNamed:@"tool_back"] forState:UIControlStateSelected];
+        [_backBtn setImage:[UIImage imageNamed:@"tool_back_p"] forState:UIControlStateHighlighted];
         //_backBtn.imageView.contentMode = UIViewContentModeCenter;
         _backBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_backBtn addTarget:self action:@selector(didBackClick) forControlEvents:UIControlEventTouchUpInside];
@@ -148,7 +158,7 @@
     if (!_saveBtn) {
         _saveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_saveBtn setImage:[UIImage imageNamed:@"tool_save_u"] forState:UIControlStateNormal];
-        [_saveBtn setImage:[UIImage imageNamed:@"tool_save_p"] forState:UIControlStateSelected];
+        [_saveBtn setImage:[UIImage imageNamed:@"tool_save_p"] forState:UIControlStateHighlighted];
         //_saveBtn.imageView.contentMode = UIViewContentModeCenter;
 //        [_saveBtn setTitle:LocalString(@"save_image") forState:UIControlStateNormal];
 //        [_saveBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
@@ -169,7 +179,7 @@
         _shareBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         //[_shareBtn setTintColor:[UIColor clearColor]];
         [_shareBtn setImage:[UIImage imageNamed:@"tool_share"] forState:UIControlStateNormal];
-        [_shareBtn setImage:[UIImage imageNamed:@"tool_share_p"] forState:UIControlStateSelected];
+        [_shareBtn setImage:[UIImage imageNamed:@"tool_share_p"] forState:UIControlStateHighlighted];
         //_shareBtn.imageView.contentMode = UIViewContentModeCenter;
         _shareBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_shareBtn addTarget:self action:@selector(didShareClick) forControlEvents:UIControlEventTouchUpInside];
@@ -183,10 +193,10 @@
         _closeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         //[_shareBtn setTintColor:[UIColor clearColor]];
         [_closeBtn setImage:[UIImage imageNamed:@"tool_cancel"] forState:UIControlStateNormal];
-        [_closeBtn setImage:[UIImage imageNamed:@"tool_cancel_p"] forState:UIControlStateSelected];
+        [_closeBtn setImage:[UIImage imageNamed:@"tool_cancel_p"] forState:UIControlStateHighlighted];
         //_closeBtn.imageView.contentMode = UIViewContentModeCenter;
         _closeBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-        [_closeBtn addTarget:self action:@selector(didShareClick) forControlEvents:UIControlEventTouchUpInside];
+        [_closeBtn addTarget:self action:@selector(didCloseClick) forControlEvents:UIControlEventTouchUpInside];
         
     }
     return _closeBtn;

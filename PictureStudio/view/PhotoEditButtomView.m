@@ -47,6 +47,11 @@
     [self addSubview:self.combineBtn];
     [self addSubview:self.scrollBtn];
     [self addSubview:self.editBtn];
+    self.layer.shadowOpacity = 0.99;
+    self.layer.shadowColor = UIColor.navShadowColor.CGColor;
+    self.layer.shadowRadius = 4;
+    self.layer.shadowOffset = CGSizeMake(0, 0);
+    self.layer.masksToBounds = NO;
     
 }
 - (void)setManager:(HXPhotoManager *)manager {
@@ -132,7 +137,6 @@
         return;
     }
     
-
     CGFloat pointY = (self.hx_h - btnHeight)/2;
 
     self.clearBtn.frame = CGRectMake(22*ScreenWidthRatio, (self.hx_h - 22*ScreenWidthRatio)/2, 22*ScreenWidthRatio, 22*ScreenWidthRatio);
@@ -143,10 +147,7 @@
 
     self.editBtn.frame = CGRectMake(self.scrollBtn.rightBottom.x + 20*ScreenWidthRatio, pointY, btnWidth, btnHeight);
 
-    
 
-    
-    
 }
 //- (UIToolbar *)bgView {
 //    if (!_bgView) {
@@ -187,7 +188,7 @@
         _combineBtn = [UIButton buttonWithType:UIButtonTypeCustom];
 
         [_combineBtn setImage:[UIImage imageNamed:@"tool_combine_p"] forState:UIControlStateNormal];
-        [_combineBtn setImage:[UIImage imageNamed:@"tool_combine_l"] forState:UIControlStateSelected];
+        [_combineBtn setImage:[UIImage imageNamed:@"tool_combine_l"] forState:UIControlStateHighlighted];
         [_combineBtn setImage:[UIImage imageNamed:@"tool_combine_u"] forState:UIControlStateDisabled];
         _combineBtn.titleLabel.font = [UIFont systemFontOfSize:12];
 //        _combineBtn.imageEdgeInsets = UIEdgeInsetsMake(0, -10*ScreenWidthRatio, 0, 0);
@@ -204,7 +205,7 @@
     if (!_scrollBtn) {
         _scrollBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [_scrollBtn setImage:[UIImage imageNamed:@"tool_scroll_p"] forState:UIControlStateNormal];
-        [_scrollBtn setImage:[UIImage imageNamed:@"tool_scroll_l"] forState:UIControlStateSelected];
+        [_scrollBtn setImage:[UIImage imageNamed:@"tool_scroll_l"] forState:UIControlStateHighlighted];
         [_scrollBtn setImage:[UIImage imageNamed:@"tool_scroll_u"] forState:UIControlStateDisabled];
         _scrollBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_scrollBtn addTarget:self action:@selector(didScrollClick) forControlEvents:UIControlEventTouchUpInside];
@@ -218,7 +219,7 @@
         _editBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         //[_editBtn setTintColor:[UIColor clearColor]];
         [_editBtn setImage:[UIImage imageNamed:@"tool_edit_p"] forState:UIControlStateNormal];
-        [_editBtn setImage:[UIImage imageNamed:@"tool_edit_l"] forState:UIControlStateSelected];
+        [_editBtn setImage:[UIImage imageNamed:@"tool_edit_l"] forState:UIControlStateHighlighted];
         [_editBtn setImage:[UIImage imageNamed:@"tool_edit_u"] forState:UIControlStateDisabled];
         _editBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [_editBtn addTarget:self action:@selector(didEditClick) forControlEvents:UIControlEventTouchUpInside];

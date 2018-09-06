@@ -15,7 +15,6 @@
 #import "AssetTitleView.h"
 #import "AHAssetGroupsView.h"
 #import "UINavigationBar+Color.h"
-#import "CombineIndicatorView.h"
 #import "CombinePicture.h"
 #import "SharePictureViewController.h"
 #import "AboutViewController.h"
@@ -65,12 +64,9 @@ UIViewControllerTransitioningDelegate
 @property (assign, nonatomic) BOOL orientationDidChange;
 @property (strong, nonatomic) NSIndexPath *beforeOrientationIndexPath;
 @property (nonatomic, strong) UIViewController *assetPopoViewController;
-@property (nonatomic, strong) AHAssetGroupsView *assetGroupView;
 @property (nonatomic, assign) NSInteger currentSectionIndex;
 @property (strong, nonatomic) UIBarButtonItem *aboutMeBtn;
 @property (weak, nonatomic) UIActivityIndicatorView *combineIndicatorView;
-@property (nonatomic, strong) CombineIndicatorView* indicator;
-//@property (weak, nonatomic) PhotoCollectionReusableView *footerView;
 @property (assign, nonatomic) __block BOOL canDetectScroll;
 @property (assign, nonatomic) CGFloat lastContentOffset;
 @property (strong, nonatomic) AboutViewController *aboutViewController;
@@ -151,9 +147,7 @@ UIViewControllerTransitioningDelegate
     
     _preSwipeX = 0;
     _preSwipeY = 0;
-    
-    //_assetGroupViewController = [[AssetGroupViewController alloc] init];
-    //[self.tabelContaintView addSubview:_assetGroupViewController.view];
+
     self.tabelContaintView.hidden = YES;
     _isAssetViewShow = NO;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(whenBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
@@ -169,11 +163,6 @@ UIViewControllerTransitioningDelegate
     [gestureRecognizer setMinimumNumberOfTouches:1];
     [gestureRecognizer setMaximumNumberOfTouches:1];
 }
-
-//- (BOOL)prefersStatusBarHidden
-//{
-//    return _showStatusBar;
-//}
 
 - (void)viewDidDisappear:(BOOL)animated
 {
@@ -201,7 +190,6 @@ UIViewControllerTransitioningDelegate
             [self.manager getAllPhotoAndCurrentAlbums:^(HXAlbumModel *currentAlbumModel) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (currentAlbumModel) {
-                        weakSelf.assetGroupView.indexAssetsGroup = currentAlbumModel.index;
                         [weakSelf getPhotoListByAblumModel:currentAlbumModel];
                     }
                 });
@@ -307,7 +295,6 @@ UIViewControllerTransitioningDelegate
         [self.manager getAllPhotoAlbums:^(HXAlbumModel *firstAlbumModel) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (firstAlbumModel) {
-                    weakSelf.assetGroupView.indexAssetsGroup = firstAlbumModel.index;
                     [weakSelf getPhotoListByAblumModel:firstAlbumModel];
                 }
             });
@@ -402,6 +389,7 @@ UIViewControllerTransitioningDelegate
                 CGFloat width = [weakSelf.assetTitleView updateTitleConstraints:NO];
                 self.assetTitleView.size = CGSizeMake(width, self.assetTitleView.hx_h);
                 self.assetTitleView.center = CGPointMake(self.navView.center.x, self.navView.center.y + 10);
+                [weakSelf.imageCount setText:[NSString stringWithFormat:@"%ld 张照片", weakSelf.albumModel.count]];
 //                [CATransaction begin];
 //                [CATransaction setDisableActions:YES];
                 
@@ -458,15 +446,17 @@ UIViewControllerTransitioningDelegate
 }
 
 - (IBAction)assetButtonClicked:(id)sender {
-
+    UIButton *button = (UIButton *)sender;
     _isAssetViewShow = !_isAssetViewShow;
     if (_isAssetViewShow) {
         [self getAssetsGroup];
-        self.assetGroupView.indexAssetsGroup = self.currentSectionIndex;
-    } else {
+        button.selected = YES;
         
+    } else {
+        button.selected = NO;
         //[self hideAssetsGroupView];
         if (_assetGroupViewController != nil) {
+            
             [_assetGroupViewController moveCellToHide:self.albumModel];
         }
     }
@@ -479,29 +469,12 @@ UIViewControllerTransitioningDelegate
     
     
     self.currentSectionIndex = 0;
-    //__weak typeof(self) weakSelf = self;
-//    self.assetTitleView.titleViewDidClick = ^{
-//
-//    };
-    
-    _assetPopoViewController =  [self popoverViewController];
-//    UIButton *aboutButton = [[UIButton alloc] init];
-//    [aboutButton setImage:[UIImage imageNamed:@"about"] forState:UIControlStateNormal];
-//
-//    [aboutButton addTarget:self action:@selector(aboutMe:) forControlEvents:UIControlEventTouchDown];
-    
-//    _aboutMeBtn = [[UIBarButtonItem alloc] initWithCustomView:aboutButton];
-    
-//    _aboutMeBtn = [[UIBarButtonItem alloc] initWithImage:[[UIImage alloc]init] style:UIBarButtonItemStyleDone target:self action:@selector(aboutMe:)];
-//    [_aboutMeBtn setBackgroundImage:[UIImage imageNamed:@"about"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-//    [_aboutMeBtn setBackgroundImage:[UIImage imageNamed:@"about_pressed"] forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
+    //_assetPopoViewController =  [self popoverViewController];
     
     self.navigationItem.rightBarButtonItem = _aboutMeBtn;
 
     [self.view addSubview:self.collectionView];
     [self.view addSubview:self.bottomView];
-    
-    _indicator=[[CombineIndicatorView alloc]initWithFrame:CGRectMake(80, 120, 120, 120) superView:self.view];
     
     self.bottomView.delegate = self;
     [self changeSubviewFrame];
@@ -530,8 +503,8 @@ UIViewControllerTransitioningDelegate
 - (IBAction)aboutMeTouchTap:(id)sender {
     UIButton *button = (UIButton *)sender;
     //[button setImage:[UIImage imageNamed:@"about_pressed"] forState:UIControlStateNormal];
+    [button setImage:[UIImage imageNamed:@"nav_about_p"] forState:UIControlStateNormal];
     [UIView animateWithDuration:0.9 animations:^{
-        [button setImage:[UIImage imageNamed:@"nav_about_p"] forState:UIControlStateNormal];
     } completion:^(BOOL finished) {
         [button setImage:[UIImage imageNamed:@"nav_about"] forState:UIControlStateNormal];
         _aboutViewController = [[AboutViewController alloc] initWithNibName:@"AboutViewController" bundle:nil];
@@ -1070,9 +1043,9 @@ UIViewControllerTransitioningDelegate
     cell.model.tempImage = vc.imageView.image;
     NSInteger currentIndex = [self.previewArray indexOfObject:cell.model];
     previewVC.currentIndex = currentIndex;
-    self.navigationController.delegate = previewVC;
-    [self.navigationController pushViewController:previewVC animated:YES];
-    
+    self.delegate = previewVC.delegate;
+    //[self.navigationController pushViewController:previewVC animated:YES];
+    [self presentViewController:previewVC animated:NO completion:nil];
 //    HXPhotoModel *model;
 //    model = self.allArray[indexPath.item];
 //    PhotoPreviewController *photoPreviewVc = [[PhotoPreviewController alloc] init];
@@ -1189,8 +1162,14 @@ UIViewControllerTransitioningDelegate
 - (void)datePhotoBottomViewDidCombineBtn {
     
     self.manager.isCombineVertical = YES;
-    [self performSegueWithIdentifier:@"toLongPictureView" sender:nil];
-    
+    //[self performSegueWithIdentifier:@"toLongPictureView" sender:nil];
+    LongPictureViewController *longVc = [[LongPictureViewController alloc] init];
+    longVc.manager = self.manager;
+    //scrollVc.resultModels = resultModels;
+    BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:longVc];
+    [nav.view layoutIfNeeded];
+    nav.transitioningDelegate = self;
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)datePhotoBottomViewDidClearBtn {
@@ -1212,14 +1191,9 @@ UIViewControllerTransitioningDelegate
                 [self.allArray replaceObjectAtIndex:model.dateSection withObject:model];
 
                 [UIView performWithoutAnimation:^{
-                    
                     [self.collectionView reloadItemsAtIndexPaths: @[indexPath]];
-                    
                 }];
-                
             }
-            
-            
         }
     }
     [self.manager clearSelectedList];
@@ -1320,8 +1294,14 @@ UIViewControllerTransitioningDelegate
         });
         
         if (_manager.selectedCount > 3) {
-            
-            [self performSegueWithIdentifier:@"toSharePictureView" sender:nil];
+            SharePictureViewController *scrollVc = [[SharePictureViewController alloc] init];
+            scrollVc.manager = weakSelf.manager;
+            //scrollVc.resultModels = resultModels;
+            BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:scrollVc];
+            [nav.view layoutIfNeeded];
+            nav.transitioningDelegate = weakSelf;
+            [self presentViewController:nav animated:YES completion:nil];
+            //[self performSegueWithIdentifier:@"toSharePictureView" sender:nil];
         }
         
         
@@ -1337,16 +1317,20 @@ UIViewControllerTransitioningDelegate
 }
 - (void)datePhotoBottomViewDidcombineBtnH {
     self.manager.isCombineVertical = NO;
-    [self performSegueWithIdentifier:@"toLongPictureView" sender:nil];
+    //[self performSegueWithIdentifier:@"toLongPictureView" sender:nil];
+    LongPictureViewController *longVc = [[LongPictureViewController alloc] init];
+    longVc.manager = self.manager;
+    //scrollVc.resultModels = resultModels;
+    BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:longVc];
+    [nav.view layoutIfNeeded];
+    nav.transitioningDelegate = self;
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)datePhotoBottomSelectNotAllScreenShot {
     [self.view showImageHUDText:LocalString(@"right_operate_tips")];
 }
 
-- (void)hideAsetTabelView {
-    
-}
 
 
 - (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source {
@@ -1355,7 +1339,8 @@ UIViewControllerTransitioningDelegate
      
         UINavigationController *presentNav = (UINavigationController*)presented;
     
-        if ([presentNav.viewControllers.firstObject isKindOfClass:SharePictureViewController.class]) {
+        if ([presentNav.viewControllers.firstObject isKindOfClass:SharePictureViewController.class]
+            || [presentNav.viewControllers.firstObject isKindOfClass:LongPictureViewController.class]) {
             CustomTransitionPushSimilarHepler *pushTransition = [[CustomTransitionPushSimilarHepler alloc]init];
             pushTransition.isPush = YES;
             
@@ -1374,6 +1359,13 @@ UIViewControllerTransitioningDelegate
         
         if ([dismissNav.viewControllers.firstObject isKindOfClass:SharePictureViewController.class]) {
             SharePictureViewController *vc = (SharePictureViewController *)dismissNav.viewControllers.firstObject;
+            CustomTransitionPushSimilarHepler *popTransition = [[CustomTransitionPushSimilarHepler alloc]init];
+            popTransition.isPush = NO;
+            popTransition.interactionController =  vc.interactionController;
+            
+            return popTransition;
+        } else if ([dismissNav.viewControllers.firstObject isKindOfClass:LongPictureViewController.class]) {
+            LongPictureViewController *vc = (LongPictureViewController *)dismissNav.viewControllers.firstObject;
             CustomTransitionPushSimilarHepler *popTransition = [[CustomTransitionPushSimilarHepler alloc]init];
             popTransition.isPush = NO;
             popTransition.interactionController =  vc.interactionController;
@@ -1398,47 +1390,6 @@ UIViewControllerTransitioningDelegate
 
 
 #pragma mark - < 懒加载 >
-
--(UIViewController*)popoverViewController
-{
-    //创建弹窗所在的view controller
-    UIViewController* popoverVC = [[UIViewController alloc] init];
-    
-    popoverVC.modalPresentationStyle = UIModalPresentationPopover;
-    popoverVC.preferredContentSize = CGSizeMake(280*ScreenWidthRatio, 280*ScreenHeightRatio);
-//    UIToolbar *view = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 280*ScreenWidthRatio, 280*ScreenWidthRatio)];
-//    [popoverVC setView:view];
-    UIView *blackV = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 280*ScreenWidthRatio, 280*ScreenHeightRatio)];
-    blackV.backgroundColor = [UIColor colorWithRed:122/255.0 green:123/255.0 blue:234/255.0 alpha:0.7];
-    //[popoverVC.view addSubview:blackV];
-    
-
-    [popoverVC setView:self.assetGroupView];
-    //popoverVC.view.backgroundColor = [UIColor colorWithRed:249/255.0 green:249/255.0 blue:239/255.0 alpha:1.0];
-    
-    //
-    //[popoverVC.view setBackgroundColor:[[UIColor whiteColor]colorWithAlphaComponent:1]];
-    
-    return popoverVC;
-}
-
-
-- (AHAssetGroupsView *)assetGroupView
-{
-    if (_assetGroupView == nil) {
-        _assetGroupView = [[AHAssetGroupsView alloc] initWithFrame:CGRectMake(0, 0, 280*ScreenWidthRatio, 280*ScreenHeightRatio)];
-        _assetGroupView.backgroundColor = [UIColor colorWithRed:231/255.0 green:231/255.0 blue:231/255.0 alpha:1.0];
-        //_assetGroupView = [[ALiAssetGroupsView alloc] init];
-        //_assetGroupView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        [_assetGroupView.touchButton addTarget:self action:@selector(hideAssetsGroupView) forControlEvents:UIControlEventTouchUpInside];
-        WEAKSELF(weakSelf);
-//        _assetGroupView.groupSelectedBlock = ^(HXAlbumModel *selectedAlbumModel){
-//            [weakSelf groupViewDidSelected:selectedAlbumModel];
-//        };
-        //[self.view addSubview:_assetGroupView];
-    }
-    return _assetGroupView;
-}
 
 
 - (PhotoEditButtomView *)bottomView {
@@ -1604,10 +1555,11 @@ UIViewControllerTransitioningDelegate
             _assetGroupViewController = [[AssetGroupViewController alloc] initWithNibName:@"AssetGroupViewController" bundle:nil];
             _assetGroupViewController.groupSelectedBlock = ^(HXAlbumModel *selectedAlbumModel) {
                 [weakSelf groupViewDidSelected:selectedAlbumModel];
+                weakSelf.assetTitleView.selected = NO;
             };
             _assetGroupViewController.groupDismissBlock = ^{
                 weakSelf.collectionView.hidden = NO;
-                [self hideAssetsGroupView];
+                [weakSelf hideAssetsGroupView];
             };
             _assetGroupViewController.assetsGroups = albums;
             _assetGroupViewController.indexAssetsGroup = _currentSectionIndex;
@@ -1648,9 +1600,7 @@ UIViewControllerTransitioningDelegate
 
 - (void)hideAssetsGroupView
 {
-//    for (UIView *subView in self.tabelContaintView.subviews) {
-//        [subView removeFromSuperview];
-//    }
+    
     _isAssetViewShow = NO;
     self.tabelContaintView.hidden = YES;
     self.collectionView.alpha = 0;

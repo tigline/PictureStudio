@@ -18,17 +18,36 @@
     return self;
 }
 
+//- (void)setHighlighted:(BOOL)highlighted {
+//    if (highlighted) {
+//        [self setBackgroundImage:[UIImage imageNamed:@"nav_title_l"] forState:UIControlStateNormal];
+//    } else {
+//        [self setBackgroundImage:[UIImage imageNamed:@"nav_title"] forState:UIControlStateNormal];
+//    }
+//}
+
+//- (void)setSelected:(BOOL)selected {
+//    if (selected) {
+//        [self setBackgroundImage:[UIImage imageNamed:@"nav_title_l"] forState:UIControlStateNormal];
+//    } else {
+//        [self setBackgroundImage:[UIImage imageNamed:@"nav_title"] forState:UIControlStateNormal];
+//    }
+//}
+
+
 - (void)buildUI
 {
     [self setTitle:LocalString(@"all_photos") forState:UIControlStateNormal];
+    [self setBackgroundImage:[UIImage imageNamed:@"nav_title"] forState:UIControlStateNormal];
+    [self setBackgroundImage:[UIImage imageNamed:@"nav_title_p"] forState:UIControlStateSelected];
+    [self setBackgroundImage:[UIImage imageNamed:@"nav_title_l"] forState:UIControlStateHighlighted];
     //self.titleLabel.text = LocalString(@"all_photos");
     [self setTitleColor:UIColor.assetTitleColor forState:UIControlStateNormal];
+    [self setTitleColor:UIColor.cellTitleSelectedColor forState:UIControlStateSelected];
+    [self setTitleEdgeInsets:UIEdgeInsetsMake(0, 27, 0, 27)];
     [self.titleLabel setFont:[UIFont systemFontOfSize:16]];
-    self.titleLabel.contentMode = UIViewContentModeCenter;
-    self.layer.cornerRadius = 10;
-    self.layer.masksToBounds = YES;
-    self.layer.borderWidth = 1;
-    self.layer.borderColor = UIColor.assetBorderColor.CGColor;
+    self.titleLabel.contentMode = UIViewContentModeLeft;
+
 //    CGSize ysize = [self.titleLabel.text boundingRectWithSize:CGSizeMake(200,30000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16]}context:nil].size;
     //self.frame = CGSizeMake(ysize.width + 47, self.frame.size.height);
     //[self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(eventHandler)]];
@@ -36,8 +55,8 @@
 
 - (CGFloat)updateTitleConstraints:(BOOL)isFirst
 {
-    CGSize size = [self.titleLabel.text boundingRectWithSize:CGSizeMake(200,30000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16]}context:nil].size;
-    return 94 + size.width;
+    //CGSize size = [self.titleLabel.text boundingRectWithSize:CGSizeMake(200,30000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16]}context:nil].size;
+    return (94 + 64)*ScreenWidthRatio;
 }
 
 

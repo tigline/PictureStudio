@@ -14,7 +14,7 @@
 @interface SwipeEdgeInteractionController()
 
 @property (assign, nonatomic) BOOL shouldCompleteTransition;
-@property (strong, nonatomic) UIViewController *viewController;
+@property (weak, nonatomic) UIViewController *viewController;
 //@property (weak, nonatomic)
 
 
@@ -63,7 +63,7 @@
             break;
     }
     progress = fabs(progress);//(CGFloat)(fminf(fmaxf(Float(fabs(progress)), 0.0), 1.0));
-    NSLog(@"progress = %f ", progress);
+    //NSLog(@"progress = %f ", progress);
     
     switch (gestureRecognizer.state) {
         case UIGestureRecognizerStateBegan:

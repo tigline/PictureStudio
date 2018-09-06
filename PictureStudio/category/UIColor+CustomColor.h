@@ -15,7 +15,7 @@
 + (UIColor *)navShadowColor;
 + (UIColor *)backgroundColor;
 + (UIColor *)cellTitleNormalColor;
-
++ (UIColor *)settingBgShadowColor;
 + (UIColor *)cellTitleSelectedColor;
 
 + (UIColor *)cellCountColor;

@@ -9,13 +9,11 @@
 #import "CustomTransitionPushSimilarHepler.h"
 #import "ViewController.h"
 #import "SharePictureViewController.h"
-
+#import "LongPictureViewController.h"
 @implementation CustomTransitionPushSimilarHepler
 
 - (void)animateTransition:(nonnull id<UIViewControllerContextTransitioning>)transitionContext {
     UIView *containerView = transitionContext.containerView;
-//    let fromViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from) as! UINavigationController
-//    let toViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to) as! UINavigationController
     UINavigationController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     UINavigationController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     toViewController.view.frame = fromViewController.view.frame;
@@ -50,17 +48,16 @@
     
     ViewController *viewControllerOriginal; //= [[ViewController alloc] init];
     SharePictureViewController *scrollControllerOriginal; //= [[SharePictureViewController alloc] init];
+    LongPictureViewController *longControllerOriginal;
     
     if ([fromViewController isKindOfClass:UINavigationController.class]) {
         if ([fromViewController.topViewController isKindOfClass: SharePictureViewController.class]) {
             scrollControllerOriginal = (SharePictureViewController *)fromViewController.topViewController;
-        } else if ([fromViewController isKindOfClass: ViewController.class]) {
-            viewControllerOriginal = (ViewController *)fromViewController.topViewController;
+        } else if ([fromViewController.topViewController isKindOfClass: LongPictureViewController.class]) {
+            longControllerOriginal = (LongPictureViewController *)fromViewController.topViewController;
         }
     } else {
-        if ([fromViewController isKindOfClass: SharePictureViewController.class]) {
-            scrollControllerOriginal = (SharePictureViewController *)fromViewController;
-        } else if ([fromViewController isKindOfClass: ViewController.class]) {
+        if ([fromViewController isKindOfClass: ViewController.class]) {
             viewControllerOriginal = (ViewController *)fromViewController;
         }
     }
@@ -68,20 +65,18 @@
     if ([toViewController isKindOfClass:UINavigationController.class]) {
         if ([toViewController.topViewController isKindOfClass: SharePictureViewController.class]) {
             scrollControllerOriginal = (SharePictureViewController *)toViewController.topViewController;
-        } else if ([toViewController.topViewController isKindOfClass: ViewController.class]) {
-            viewControllerOriginal = (ViewController *)toViewController.topViewController;
+        } else if ([toViewController.topViewController isKindOfClass: LongPictureViewController.class]) {
+            longControllerOriginal = (LongPictureViewController *)toViewController.topViewController;
         }
     } else {
-        if ([toViewController isKindOfClass: SharePictureViewController.class]) {
-            scrollControllerOriginal = (SharePictureViewController *)toViewController;
-        } else if ([toViewController isKindOfClass: ViewController.class]) {
+        if ([toViewController isKindOfClass: ViewController.class]) {
             viewControllerOriginal = (ViewController *)toViewController;
         }
     }
     
     
     
-    if (viewControllerOriginal == nil && scrollControllerOriginal == nil) {
+    if (viewControllerOriginal == nil && scrollControllerOriginal == nil && longControllerOriginal == nil) {
         return;
     }
     

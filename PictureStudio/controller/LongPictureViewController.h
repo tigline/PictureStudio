@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "HXPhotoManager.h"
-
+@class SwipeEdgeInteractionController;
 @interface LongPictureViewController : UIViewController
 @property (nonatomic,strong) UIImage *resultImage;
 @property (nonatomic,strong) HXPhotoManager * manager;
+@property (strong, nonatomic) SwipeEdgeInteractionController *interactionController;
 @end
