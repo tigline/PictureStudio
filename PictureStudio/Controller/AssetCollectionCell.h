@@ -13,7 +13,4 @@
 @property (weak, nonatomic) IBOutlet UIImageView *bgImageView;
 @property (nonatomic, strong) NSDictionary *assetsGroup;
 @property (strong, nonatomic) HXAlbumModel *model;
-@property (nonatomic, assign) BOOL   isSelected;
-- (void)setSelectedImage:(NSInteger)index;
-- (void)setSelectedImagenil:(NSInteger)index;
 @end

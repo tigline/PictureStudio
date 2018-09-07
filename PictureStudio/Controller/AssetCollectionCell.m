@@ -47,40 +47,34 @@
     
 }
 
-- (void)setIsSelected:(BOOL)isSelected {
-    if (isSelected) {
-        
+
+- (void)setHighlighted:(BOOL)highlighted {
+    if (highlighted) {
+        self.titleLabel.textColor = UIColor.cellTitleSelectedColor;
+        self.countLabel.textColor = UIColor.cellCountColor;
+        self.timeLabel.textColor = UIColor.cellCountColor;
     } else {
-        
+        self.titleLabel.textColor = UIColor.cellTitleNormalColor;
+        self.countLabel.textColor = UIColor.cellTimeColor;
+        self.timeLabel.textColor = UIColor.cellTimeColor;
     }
 }
 
-- (void)setSelectedImage:(NSInteger)index {
-    if (index == 0) {
-        [self.bgImageView setImage:[UIImage imageNamed:@"album_list_top_p"]];
-    } else {
-        [self.bgImageView setImage:[UIImage imageNamed:@"album_list_p"]];
-    }
-    self.titleLabel.textColor = UIColor.cellTitleSelectedColor;
-    self.countLabel.textColor = UIColor.cellCountColor;
-    self.timeLabel.textColor = UIColor.cellCountColor;
-}
+//- (void)setSelected:(BOOL)selected {
+//    if (selected) {
+//        self.titleLabel.textColor = UIColor.cellTitleSelectedColor;
+//        self.countLabel.textColor = UIColor.cellCountColor;
+//        self.timeLabel.textColor = UIColor.cellCountColor;
+//    } else {
+//        self.titleLabel.textColor = UIColor.cellTitleNormalColor;
+//        self.countLabel.textColor = UIColor.cellTimeColor;
+//        self.timeLabel.textColor = UIColor.cellTimeColor;
+//    }
+//}
 
-- (void)setSelectedImagenil:(NSInteger)index {
-    if (index == 0) {
-        [self.bgImageView setImage:[UIImage imageNamed:@"album_list_top"]];
-    } else {
-        [self.bgImageView setImage:[UIImage imageNamed:@"album_list"]];
-    }
-    self.titleLabel.textColor = UIColor.cellTitleNormalColor;
-    self.countLabel.textColor = UIColor.cellTimeColor;
-    self.timeLabel.textColor = UIColor.cellTimeColor;
-}
 
 
 - (void)setModel:(HXAlbumModel *)model {
-    
-    
     _model = model;
     if (!model.asset) {
         model.asset = model.result.lastObject;

@@ -12,7 +12,7 @@
 #import "PhotoEditButtomView.h"
 #import "RecentScrollView.h"
 #import "BaseViewController.h"
-@class ViewController;
+@class AlbumViewController;
 
 @protocol DatePhotoViewControllerDelegate <NSObject>
 @optional
@@ -22,7 +22,7 @@
  
  @param datePhotoViewController self
  */
-- (void)datePhotoViewControllerDidCancel:(ViewController *)datePhotoViewController;
+- (void)datePhotoViewControllerDidCancel:(AlbumViewController *)datePhotoViewController;
 
 /**
  点击完成按钮
@@ -33,7 +33,7 @@
  @param videoList 已选的视频列表
  @param original 是否原图
  */
-- (void)datePhotoViewController:(ViewController *)datePhotoViewController didDoneAllList:(NSArray<HXPhotoModel *> *)allList photos:(NSArray<HXPhotoModel *> *)photoList videos:(NSArray<HXPhotoModel *> *)videoList original:(BOOL)original;
+- (void)datePhotoViewController:(AlbumViewController *)datePhotoViewController didDoneAllList:(NSArray<HXPhotoModel *> *)allList photos:(NSArray<HXPhotoModel *> *)photoList videos:(NSArray<HXPhotoModel *> *)videoList original:(BOOL)original;
 
 /**
  改变了选择
@@ -44,7 +44,7 @@
 - (void)datePhotoViewControllerDidChangeSelect:(HXPhotoModel *)model selected:(BOOL)selected;
 @end
 
-@interface ViewController : BaseViewController
+@interface AlbumViewController : BaseViewController
 {
     NSMutableArray *lastArray; //记录当前一次操作的所有cell
     NSMutableArray *currentArray;//通过currentcell于firstcell计算出的应该显示的cell

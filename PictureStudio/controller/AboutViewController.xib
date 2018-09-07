@@ -19,7 +19,6 @@
                 <outlet property="bgImageView" destination="o8v-Ya-RQh" id="2NP-YI-aUO"/>
                 <outlet property="bgImageViewHeight" destination="sdZ-l3-DbG" id="83d-jE-Zpg"/>
                 <outlet property="bgImageViewToTop" destination="8Sw-ax-cjn" id="Xf0-Iw-C9q"/>
-                <outlet property="bgImageViewWidth" destination="wgi-w1-o8h" id="T4X-Tk-gi7"/>
                 <outlet property="contactBtn" destination="wT1-5d-ixZ" id="p1j-im-aSv"/>
                 <outlet property="infoContantView" destination="LYj-xW-aQV" id="heL-JB-GsU"/>
                 <outlet property="likeBtn" destination="LVc-IK-Bwp" id="cCn-ms-09L"/>
@@ -36,12 +35,11 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="setting_banner" translatesAutoresizingMaskIntoConstraints="NO" id="o8v-Ya-RQh">
-                    <rect key="frame" x="17" y="33" width="340" height="200"/>
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="setting_banner" translatesAutoresizingMaskIntoConstraints="NO" id="o8v-Ya-RQh">
+                    <rect key="frame" x="16.5" y="33" width="342" height="200"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="200" id="sdZ-l3-DbG"/>
-                        <constraint firstAttribute="width" constant="340" id="wgi-w1-o8h"/>
                     </constraints>
                 </imageView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LYj-xW-aQV">
@@ -121,7 +119,8 @@
                 <constraint firstItem="LYj-xW-aQV" firstAttribute="top" secondItem="o8v-Ya-RQh" secondAttribute="bottom" constant="24" id="Fwq-Qq-6c2"/>
                 <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="LYj-xW-aQV" secondAttribute="trailing" constant="17" id="RdS-xs-z3a"/>
                 <constraint firstItem="LYj-xW-aQV" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="18" id="WFQ-nS-0ro"/>
-                <constraint firstItem="o8v-Ya-RQh" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="dTX-m0-Ggp"/>
+                <constraint firstItem="o8v-Ya-RQh" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="16.5" id="Yke-Ih-z5K"/>
+                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="o8v-Ya-RQh" secondAttribute="trailing" constant="16.5" id="hGV-kc-zBy"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <point key="canvasLocation" x="33.5" y="53.5"/>

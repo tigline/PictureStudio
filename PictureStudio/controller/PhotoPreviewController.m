@@ -9,7 +9,7 @@
 #import "PhotoPreviewController.h"
 #import "HXPhotoManager.h"
 #import "PhotoPreviewCell.h"
-#import "ViewController.h"
+#import "AlbumViewController.h"
 #import "UINavigationBar+Color.h"
 
 @interface PhotoPreviewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UIScrollViewDelegate,DatePhotoViewControllerDelegate> {

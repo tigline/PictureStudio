@@ -10,7 +10,7 @@
 #import "HXPhotoManager.h"
 #import "BaseViewController.h"
 @class SwipeEdgeInteractionController;
-@interface SharePictureViewController : BaseViewController
+@interface ScrollPictureViewController : BaseViewController
 @property (nonatomic,strong) NSArray *resultModels;
 @property (nonatomic,strong) UIImage *resultImage;
 @property (nonatomic,strong) HXPhotoManager * manager;

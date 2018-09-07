@@ -6,7 +6,7 @@
 //  Copyright © 2018 Aaron Hou. All rights reserved.
 //
 
-#import "LongPictureViewController.h"
+#import "CombinePictureViewController.h"
 #import <Photos/Photos.h>
 #import "HXPhotoDefine.h"
 #import "AppDelegate.h"
@@ -17,7 +17,7 @@
 #import "ShareBoardView.h"
 #import "SwipeEdgeInteractionController.h"
 
-@interface LongPictureViewController () <UIScrollViewDelegate,PhotoSaveBottomViewDelegate, ShareBoardViewDelegate>
+@interface CombinePictureViewController () <UIScrollViewDelegate,PhotoSaveBottomViewDelegate, ShareBoardViewDelegate>
 @property (strong, nonatomic)  UIScrollView *longPictureView;
 @property (strong, nonatomic) UIImageView *imageView;
 @property (strong, nonatomic) ShareBoardView *shareBoardView;
@@ -30,16 +30,15 @@
 @property (nonatomic, assign) BOOL isFromShare;
 @property (nonatomic, assign) NSInteger shareType;
 
-
-
 @end
 
-@implementation LongPictureViewController
+@implementation CombinePictureViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.fd_prefersNavigationBarHidden = YES;
+    self.view.backgroundColor = UIColor.backgroundColor;
+    self.navigationController.navigationBar.hidden = YES;
     [self createScrollView];
     _isShowShareBoardView = NO;
     [self.view addSubview:self.shareBoardView];
@@ -62,6 +61,7 @@
     _longPictureView.maximumZoomScale = 2.5;
     _longPictureView.minimumZoomScale = 1.0;
     _longPictureView.multipleTouchEnabled = YES;
+    _longPictureView.backgroundColor = UIColor.backgroundColor;
     _longPictureView.delegate = self;
     _longPictureView.scrollsToTop = NO;
     _longPictureView.showsHorizontalScrollIndicator = NO;

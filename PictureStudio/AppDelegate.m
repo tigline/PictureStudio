@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "ViewController.h"
+#import "AlbumViewController.h"
 //#import "WXApi.h"
 
 

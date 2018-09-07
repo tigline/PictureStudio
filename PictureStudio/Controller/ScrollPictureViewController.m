@@ -6,7 +6,7 @@
 //  Copyright © 2018年 Aaron Hou. All rights reserved.
 //
 
-#import "SharePictureViewController.h"
+#import "ScrollPictureViewController.h"
 #import <Photos/Photos.h>
 #import "HXPhotoDefine.h"
 #import "AppDelegate.h"
@@ -25,7 +25,7 @@
 //static CGFloat shareAreaViewHeight = 73;//定义分享区域的高度
 
 
-@interface SharePictureViewController ()<WXDelegate,PhotoSaveBottomViewDelegate,UIScrollViewDelegate,ShareBoardViewDelegate>
+@interface ScrollPictureViewController ()<WXDelegate,PhotoSaveBottomViewDelegate,UIScrollViewDelegate,ShareBoardViewDelegate>
 {
     AppDelegate *appdelegate;
 }
@@ -46,7 +46,7 @@
 
 @end
 
-@implementation SharePictureViewController
+@implementation ScrollPictureViewController
 #pragma mark - view life
 - (void)viewDidLoad
 {

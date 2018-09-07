@@ -7,9 +7,9 @@
 //
 
 #import "CustomTransitionPushSimilarHepler.h"
-#import "ViewController.h"
-#import "SharePictureViewController.h"
-#import "LongPictureViewController.h"
+#import "AlbumViewController.h"
+#import "ScrollPictureViewController.h"
+#import "CombinePictureViewController.h"
 @implementation CustomTransitionPushSimilarHepler
 
 - (void)animateTransition:(nonnull id<UIViewControllerContextTransitioning>)transitionContext {
@@ -46,31 +46,31 @@
         }];
     }
     
-    ViewController *viewControllerOriginal; //= [[ViewController alloc] init];
-    SharePictureViewController *scrollControllerOriginal; //= [[SharePictureViewController alloc] init];
-    LongPictureViewController *longControllerOriginal;
+    AlbumViewController *viewControllerOriginal; //= [[ViewController alloc] init];
+    ScrollPictureViewController *scrollControllerOriginal; //= [[SharePictureViewController alloc] init];
+    CombinePictureViewController *longControllerOriginal;
     
     if ([fromViewController isKindOfClass:UINavigationController.class]) {
-        if ([fromViewController.topViewController isKindOfClass: SharePictureViewController.class]) {
-            scrollControllerOriginal = (SharePictureViewController *)fromViewController.topViewController;
-        } else if ([fromViewController.topViewController isKindOfClass: LongPictureViewController.class]) {
-            longControllerOriginal = (LongPictureViewController *)fromViewController.topViewController;
+        if ([fromViewController.topViewController isKindOfClass: ScrollPictureViewController.class]) {
+            scrollControllerOriginal = (ScrollPictureViewController *)fromViewController.topViewController;
+        } else if ([fromViewController.topViewController isKindOfClass: CombinePictureViewController.class]) {
+            longControllerOriginal = (CombinePictureViewController *)fromViewController.topViewController;
         }
     } else {
-        if ([fromViewController isKindOfClass: ViewController.class]) {
-            viewControllerOriginal = (ViewController *)fromViewController;
+        if ([fromViewController isKindOfClass: AlbumViewController.class]) {
+            viewControllerOriginal = (AlbumViewController *)fromViewController;
         }
     }
     
     if ([toViewController isKindOfClass:UINavigationController.class]) {
-        if ([toViewController.topViewController isKindOfClass: SharePictureViewController.class]) {
-            scrollControllerOriginal = (SharePictureViewController *)toViewController.topViewController;
-        } else if ([toViewController.topViewController isKindOfClass: LongPictureViewController.class]) {
-            longControllerOriginal = (LongPictureViewController *)toViewController.topViewController;
+        if ([toViewController.topViewController isKindOfClass: ScrollPictureViewController.class]) {
+            scrollControllerOriginal = (ScrollPictureViewController *)toViewController.topViewController;
+        } else if ([toViewController.topViewController isKindOfClass: CombinePictureViewController.class]) {
+            longControllerOriginal = (CombinePictureViewController *)toViewController.topViewController;
         }
     } else {
-        if ([toViewController isKindOfClass: ViewController.class]) {
-            viewControllerOriginal = (ViewController *)toViewController;
+        if ([toViewController isKindOfClass: AlbumViewController.class]) {
+            viewControllerOriginal = (AlbumViewController *)toViewController;
         }
     }
     

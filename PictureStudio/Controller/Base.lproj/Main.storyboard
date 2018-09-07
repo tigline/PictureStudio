@@ -11,10 +11,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Album View Controller-->
         <scene sceneID="gwr-ul-4TX">
             <objects>
-                <viewController id="rFg-mA-rbD" customClass="ViewController" sceneMemberID="viewController">
+                <viewController id="rFg-mA-rbD" customClass="AlbumViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ntf-9y-MH6">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -110,18 +110,22 @@
                         <outlet property="collectionView" destination="Nqy-Hy-Mmg" id="3Tk-WF-Zzl"/>
                         <outlet property="imageCount" destination="Zl5-8r-H0C" id="mcx-xB-7C0"/>
                         <outlet property="navView" destination="dgd-E2-h5V" id="AfF-jP-vl5"/>
+                        <outlet property="navViewHeight" destination="4GW-H4-Zw7" id="zav-Vg-yTC"/>
                         <outlet property="noPhotoView" destination="fH4-U2-j1I" id="nmd-1u-T2q"/>
                         <outlet property="tabelContaintView" destination="W85-Mh-uIK" id="EbK-Q7-H2B"/>
+                        <outlet property="titleMaginButtom" destination="S29-1R-Twx" id="5aL-1e-OTN"/>
+                        <outlet property="titleViewHeight" destination="jh7-3q-Xu8" id="XDi-55-RNf"/>
+                        <outlet property="titleViewWidth" destination="Jft-8X-5dG" id="ZGl-YQ-QsQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yQH-pw-mgd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="293.60000000000002" y="112.89355322338831"/>
         </scene>
-        <!--Long Picture View Controller-->
+        <!--Combine Picture View Controller-->
         <scene sceneID="2hw-CB-gUS">
             <objects>
-                <viewController id="MBT-LT-jHU" customClass="LongPictureViewController" sceneMemberID="viewController">
+                <viewController id="MBT-LT-jHU" customClass="CombinePictureViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="jdG-ny-dTD">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -133,10 +137,10 @@
             </objects>
             <point key="canvasLocation" x="1306.875" y="-88.732394366197184"/>
         </scene>
-        <!--Share Picture View Controller-->
+        <!--Scroll Picture View Controller-->
         <scene sceneID="fID-t0-Qdf">
             <objects>
-                <viewController id="v3X-Pq-viG" customClass="SharePictureViewController" sceneMemberID="viewController">
+                <viewController id="v3X-Pq-viG" customClass="ScrollPictureViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Tg2-jT-TNY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

@@ -6,8 +6,8 @@
 //  Copyright © 2018 Aaron Hou. All rights reserved.
 //
 
-#import "ViewController.h"
-#import "LongPictureViewController.h"
+#import "AlbumViewController.h"
+#import "CombinePictureViewController.h"
 #import <Photos/Photos.h>
 #import "FilePathUtils.h"
 #import "ImgCollectionViewCell.h"
@@ -16,7 +16,7 @@
 #import "AHAssetGroupsView.h"
 #import "UINavigationBar+Color.h"
 #import "CombinePicture.h"
-#import "SharePictureViewController.h"
+#import "ScrollPictureViewController.h"
 #import "AboutViewController.h"
 #import "PhotoPreviewController.h"
 #import "UINavigationController+FDFullscreenPopGesture.h"
@@ -31,7 +31,7 @@
 #import "SwipeEdgeInteractionController.h"
 
 
-@interface ViewController ()<UICollectionViewDataSource,
+@interface AlbumViewController ()<UICollectionViewDataSource,
 UICollectionViewDelegate,
 UIScrollViewDelegate,
 PhotoEditBottomViewDelegate,
@@ -48,6 +48,10 @@ UIViewControllerTransitioningDelegate
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIView *tabelContaintView;
 @property (weak, nonatomic) IBOutlet UIView *noPhotoView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *navViewHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleViewHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleViewWidth;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleMaginButtom;
 
 @property (strong, nonatomic) UICollectionViewFlowLayout *flowLayout;
 //@property (strong, nonatomic) UICollectionView *collectionView;
@@ -101,22 +105,18 @@ UIViewControllerTransitioningDelegate
 
 
 
-@implementation ViewController
+@implementation AlbumViewController
 
 
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-//    [self.navigationController.navigationBar setBackgroundColor:UIColor.barColor];
-//    [self.view setBackgroundColor:[UIColor colorWithRed:238/255.0 green:238/255.0 blue:238/255.0 alpha:1.0]];
-//    self.fd_prefersNavigationBarHidden = NO;
-
-//    self.navigationItem.titleView = self.groupTitleView;
-    
     [self.view setBackgroundColor: UIColor.backgroundColor];
     
     [self initCollectionView];
+    [self setScreenSizeFit];
+    
     self.navView.backgroundColor = UIColor.barColor;
     self.navView.layer.shadowColor = UIColor.navShadowColor.CGColor;
     self.navView.layer.shadowOpacity = 0.8f;
@@ -124,45 +124,51 @@ UIViewControllerTransitioningDelegate
     self.navView.layer.shadowOffset = CGSizeMake(0, 6);
     
     [self.view bringSubviewToFront:self.navView];
-    //self.noPhotoView.layer.cornerRadius = 4;
-    self.noPhotoView.layer.shadowRadius = 8;
-    self.noPhotoView.layer.shadowOpacity = 0.99;
-    self.noPhotoView.layer.shadowColor = UIColor.navShadowColor.CGColor;
-    self.noPhotoView.layer.shadowOffset = CGSizeMake(0, 0);
-    _noPhotoView.backgroundColor = UIColor.whiteColor;
-    CGRect contentBound = _noPhotoView.bounds;
-    CAShapeLayer * maskLayer = [CAShapeLayer layer];
-    maskLayer.path = [UIBezierPath bezierPathWithRoundedRect:contentBound byRoundingCorners: UIRectCornerBottomLeft | UIRectCornerBottomRight cornerRadii: (CGSize){4.0, 4.0}].CGPath;
-    _noPhotoView.layer.mask = maskLayer;
+    self.noPhotoView.hidden = YES;
     
     [self.assetTitleView buildUI];
-    CGFloat width = [self.assetTitleView updateTitleConstraints:YES];
-    self.assetTitleView.size = CGSizeMake(width, self.assetTitleView.hx_h);
-    self.assetTitleView.center = CGPointMake(self.navView.center.x, self.navView.center.y + 10);
-    
-    [self askForAuthorize];
-    _canDetectScroll = NO;
+
     _swipeSelectArray = [[NSMutableArray alloc] init];
     _finalselectArray = [[NSMutableArray alloc] init];
     
     _preSwipeX = 0;
     _preSwipeY = 0;
 
-    self.tabelContaintView.hidden = YES;
+    _tabelContaintView.hidden = YES;
     _isAssetViewShow = NO;
+    _canDetectScroll = NO;
+    
+    [self askForAuthorize];
+    _interactionController = [[SwipeEdgeInteractionController alloc] initWithViewController:self interationDirection:left completion:nil];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(whenBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userDidTakeScreenshot:)name:UIApplicationUserDidTakeScreenshotNotification object:nil];
-    
-    _interactionController = [[SwipeEdgeInteractionController alloc] initWithViewController:self interationDirection:left completion:^{
-        
-    }];
-    
+
     UIPanGestureRecognizer *gestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
     [self.view addGestureRecognizer:gestureRecognizer];
     [gestureRecognizer setMinimumNumberOfTouches:1];
     [gestureRecognizer setMaximumNumberOfTouches:1];
 }
+
+- (void)setScreenSizeFit {
+    _navViewHeight.constant = 84*ScreenHeightRatio;
+    _titleViewHeight.constant = 34*ScreenHeightRatio;
+    _titleViewWidth.constant = 158*ScreenWidthRatio;
+    _titleMaginButtom.constant = 15*ScreenHeightRatio;
+}
+
+- (void)setupUI {
+
+    self.currentSectionIndex = 0;
+    self.navigationItem.rightBarButtonItem = _aboutMeBtn;
+    [self.view addSubview:self.collectionView];
+    [self.view addSubview:self.bottomView];
+    CGFloat bottomViewY = SCREEN_H - ButtomViewHeight - kBottomMargin;
+    self.bottomView.frame = CGRectMake(0, bottomViewY, SCREEN_W, ButtomViewHeight + kBottomMargin);
+
+}
+
 
 - (void)viewDidDisappear:(BOOL)animated
 {
@@ -231,6 +237,18 @@ UIViewControllerTransitioningDelegate
 
 - (void)buildRestrictedUI
 {
+    //self.noPhotoView.layer.cornerRadius = 4;
+    self.noPhotoView.hidden = NO;
+    self.noPhotoView.layer.shadowRadius = 8;
+    self.noPhotoView.layer.shadowOpacity = 0.99;
+    self.noPhotoView.layer.shadowColor = UIColor.navShadowColor.CGColor;
+    self.noPhotoView.layer.shadowOffset = CGSizeMake(0, 0);
+    CGRect contentBound = _noPhotoView.bounds;
+    CAShapeLayer * maskLayer = [CAShapeLayer layer];
+    maskLayer.path = [UIBezierPath bezierPathWithRoundedRect:contentBound byRoundingCorners: UIRectCornerBottomLeft | UIRectCornerBottomRight cornerRadii: (CGSize){4.0, 4.0}].CGPath;
+    self.noPhotoView.layer.mask = maskLayer;
+    
+    
     UIButton *tipBtn  = [UIButton buttonWithType:UIButtonTypeCustom];
     [tipBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
     tipBtn.titleLabel.font = [UIFont systemFontOfSize:13];
@@ -267,17 +285,6 @@ UIViewControllerTransitioningDelegate
 {
     [super viewWillAppear:animated];
     //_showStatusBar = YES;
-    
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    //_showStatusBar = NO;
-
-}
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
     
 }
 
@@ -323,54 +330,54 @@ UIViewControllerTransitioningDelegate
             
             #pragma mark - 开发最近长截图
  //----------------------------------------------------------------------------------
-            for (int i = 0; i < [weakSelf.allArray count]; i++)
-            {
-                mHXPhotoModel = [weakSelf.allArray objectAtIndex:i];
-                NSDate *sendDate=[NSDate date];
-                NSDateFormatter* formatter = [[NSDateFormatter alloc]init];
-                [formatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
-                if (mHXPhotoModel.isScreenShot)
-                {
-                    if ([self dateTimeDifferenceWithStartTime:[formatter stringFromDate:mHXPhotoModel.creationDate] endTime: [formatter stringFromDate:sendDate]] < 121)
-                    {
-                        [weakSelf.allScreenShotArray addObject:mHXPhotoModel];
-                    }
-                }
-            }
-            
-            if ([weakSelf.allScreenShotArray count] > 1)
-            {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    _mRecentScrollView = [[RecentScrollView alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 49.5*2)/2,self.bottomView.frame.origin.y - 64.5*2, 49.5*2, 64.5*2)];
-                    
-                    
-                    UITapGestureRecognizer *tapGesturRecognizer=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(RecentScrollViewClick:)];
-
-                    [_mRecentScrollView addGestureRecognizer:tapGesturRecognizer];
-                });
-                mHXPhotoModel = [weakSelf.allScreenShotArray objectAtIndex:0];
-                if ( mHXPhotoModel.type == HXPhotoModelMediaTypeCameraPhoto)
-                {
-                    _mRecentScrollView.image = mHXPhotoModel.thumbPhoto;
-                }
-                else
-                {
-                    [HXPhotoTools getImageWithModel:mHXPhotoModel completion:^(UIImage *image, HXPhotoModel *model) {
-                        _mRecentScrollView.image = image;
-                    }];
-                }
-            }
-            else
-            {
-                if (_mRecentScrollView != nil)
-                {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [UIView animateWithDuration:1.0f animations:^{
-                            _mRecentScrollView.alpha = 0.0f;
-                        }];
-                    });
-                }
-            }
+//            for (int i = 0; i < [weakSelf.allArray count]; i++)
+//            {
+//                mHXPhotoModel = [weakSelf.allArray objectAtIndex:i];
+//                NSDate *sendDate=[NSDate date];
+//                NSDateFormatter* formatter = [[NSDateFormatter alloc]init];
+//                [formatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+//                if (mHXPhotoModel.isScreenShot)
+//                {
+//                    if ([self dateTimeDifferenceWithStartTime:[formatter stringFromDate:mHXPhotoModel.creationDate] endTime: [formatter stringFromDate:sendDate]] < 121)
+//                    {
+//                        [weakSelf.allScreenShotArray addObject:mHXPhotoModel];
+//                    }
+//                }
+//            }
+//
+//            if ([weakSelf.allScreenShotArray count] > 1)
+//            {
+//                dispatch_async(dispatch_get_main_queue(), ^{
+//                    _mRecentScrollView = [[RecentScrollView alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 49.5*2)/2,self.bottomView.frame.origin.y - 64.5*2, 49.5*2, 64.5*2)];
+//
+//
+//                    UITapGestureRecognizer *tapGesturRecognizer=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(RecentScrollViewClick:)];
+//
+//                    [_mRecentScrollView addGestureRecognizer:tapGesturRecognizer];
+//                });
+//                mHXPhotoModel = [weakSelf.allScreenShotArray objectAtIndex:0];
+//                if ( mHXPhotoModel.type == HXPhotoModelMediaTypeCameraPhoto)
+//                {
+//                    _mRecentScrollView.image = mHXPhotoModel.thumbPhoto;
+//                }
+//                else
+//                {
+//                    [HXPhotoTools getImageWithModel:mHXPhotoModel completion:^(UIImage *image, HXPhotoModel *model) {
+//                        _mRecentScrollView.image = image;
+//                    }];
+//                }
+//            }
+//            else
+//            {
+//                if (_mRecentScrollView != nil)
+//                {
+//                    dispatch_async(dispatch_get_main_queue(), ^{
+//                        [UIView animateWithDuration:1.0f animations:^{
+//                            _mRecentScrollView.alpha = 0.0f;
+//                        }];
+//                    });
+//                }
+//            }
 //----------------------------------------------------------------------------------
             
             
@@ -382,46 +389,39 @@ UIViewControllerTransitioningDelegate
                 } else {
                     bottomMargin = ButtomViewHeight;
                 }
-
-                //weakSelf.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84, AblumViewWidth, SCREEN_H - bottomMargin - 20);
  
                 [weakSelf.assetTitleView setTitle:weakSelf.albumModel.albumName forState:UIControlStateNormal];
-                CGFloat width = [weakSelf.assetTitleView updateTitleConstraints:NO];
-                self.assetTitleView.size = CGSizeMake(width, self.assetTitleView.hx_h);
-                self.assetTitleView.center = CGPointMake(self.navView.center.x, self.navView.center.y + 10);
+                
                 [weakSelf.imageCount setText:[NSString stringWithFormat:@"%ld 张照片", weakSelf.albumModel.count]];
-//                [CATransaction begin];
-//                [CATransaction setDisableActions:YES];
                 
-                [UIView animateWithDuration:0.25 animations:^{
-                    [weakSelf.collectionView reloadData];
-                    if (_isScreenshotNotification || _shouldReloadAsset) {
-                        _isScreenshotNotification = NO;
-                        _shouldReloadAsset = NO;
-                    } else {
-                        if (_mRecentScrollView == nil)
-                        {
-                             [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
-                        }
-                        else
-                        {
-                            [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
-                        }
-                    }
-                    if (_mRecentScrollView != nil)
-                    {
-                        [self.view addSubview:_mRecentScrollView];
-                    }
-                }];
-                
+                [weakSelf.collectionView reloadData];
 //                if (_isScreenshotNotification || _shouldReloadAsset) {
 //                    _isScreenshotNotification = NO;
 //                    _shouldReloadAsset = NO;
 //                } else {
-//                    [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+//                    if (_mRecentScrollView == nil)
+//                    {
+//                         [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+//                    }
+//                    else
+//                    {
+//                        [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
+//                    }
 //                }
-//                [weakSelf.view layoutIfNeeded];
-//                [CATransaction commit];
+//                if (_mRecentScrollView != nil)
+//                {
+//                    [self.view addSubview:_mRecentScrollView];
+//                }
+                
+                
+                if (_isScreenshotNotification || _shouldReloadAsset) {
+                    _isScreenshotNotification = NO;
+                    _shouldReloadAsset = NO;
+                } else {
+                    [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+                }
+                [weakSelf.view layoutIfNeeded];
+
                 
                 _canDetectScroll = YES;
                 //[weakSelf.view handleLoading];
@@ -460,49 +460,11 @@ UIViewControllerTransitioningDelegate
             [_assetGroupViewController moveCellToHide:self.albumModel];
         }
     }
-    
-    
-}
 
-
-- (void)setupUI {
-    
-    
-    self.currentSectionIndex = 0;
-    //_assetPopoViewController =  [self popoverViewController];
-    
-    self.navigationItem.rightBarButtonItem = _aboutMeBtn;
-
-    [self.view addSubview:self.collectionView];
-    [self.view addSubview:self.bottomView];
-    
-    self.bottomView.delegate = self;
-    [self changeSubviewFrame];
-}
-
-- (void)changeSubviewFrame {
-    
-    CGFloat bottomMargin = kBottomMargin;
-    CGFloat leftMargin = 0;
-    CGFloat rightMargin = 0;
-    CGFloat width = [UIScreen mainScreen].bounds.size.width;
-    CGFloat height = [UIScreen mainScreen].bounds.size.height;
-    CGFloat viewWidth = [UIScreen mainScreen].bounds.size.width;
-    //self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84, AblumViewWidth, height - ButtomViewHeight - 10);
-    
-    if (kDevice_Is_iPhoneX) {
-        bottomMargin = 21;
-        leftMargin = 35;
-        rightMargin = 35;
-        width = [UIScreen mainScreen].bounds.size.width - 70;
-    }
-    CGFloat bottomViewY = height - ButtomViewHeight - bottomMargin;
-    self.bottomView.frame = CGRectMake(0, bottomViewY, viewWidth, ButtomViewHeight + bottomMargin);
 }
 
 - (IBAction)aboutMeTouchTap:(id)sender {
     UIButton *button = (UIButton *)sender;
-    //[button setImage:[UIImage imageNamed:@"about_pressed"] forState:UIControlStateNormal];
     [button setImage:[UIImage imageNamed:@"nav_about_p"] forState:UIControlStateNormal];
     [UIView animateWithDuration:0.9 animations:^{
     } completion:^(BOOL finished) {
@@ -513,33 +475,14 @@ UIViewControllerTransitioningDelegate
 }
 
 
-- (void)aboutMe:(id)sender {
-    UIButton *button = (UIButton *)sender;
-    //[button setImage:[UIImage imageNamed:@"about_pressed"] forState:UIControlStateNormal];
-    [UIView animateWithDuration:0.9 animations:^{
-        [button setImage:[UIImage imageNamed:@"about_pressed"] forState:UIControlStateNormal];
-    } completion:^(BOOL finished) {
-        [button setImage:[UIImage imageNamed:@"about"] forState:UIControlStateNormal];
-        _aboutViewController = [[AboutViewController alloc] initWithNibName:@"AboutViewController" bundle:nil];
-        [self presentViewController:_aboutViewController animated:YES completion:nil];
-    }];
-}
-
-
 
 - (NSInteger)dateItem:(HXPhotoModel *)model {
     NSInteger dateItem = model.dateItem;
-    
     if (model.type == HXPhotoModelMediaTypeCameraPhoto) {
-        
         dateItem = [self.allArray indexOfObject:model];
-        
     }else {
-        
         dateItem = [self.allArray indexOfObject:model];
-        
     }
-    
     return dateItem;
 }
 
@@ -568,15 +511,15 @@ UIViewControllerTransitioningDelegate
 
     if (contentOffsetY < contentHeight && contentOffsetY > (contentHeight - 73*ScreenHeightRatio)) {
         
-        self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84, AblumViewWidth, self.view.hx_h - 217*ScreenHeightRatio + (contentHeight - contentOffsetY));
+        self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84*ScreenHeightRatio, AblumViewWidth, self.view.hx_h - 217*ScreenHeightRatio + (contentHeight - contentOffsetY));
         
         //[self.navigationController setNavigationBarHidden:NO animated:YES];
         
     } else if (contentOffsetY <= (contentHeight - 73*ScreenHeightRatio)) {
-        self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84, AblumViewWidth, self.view.hx_h - 144*ScreenHeightRatio);
+        self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84*ScreenHeightRatio, AblumViewWidth, self.view.hx_h - 144*ScreenHeightRatio);
     } else if (contentOffsetY > contentHeight) {
         
-        self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84, AblumViewWidth, self.view.hx_h - 217*ScreenHeightRatio);
+        self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84*ScreenHeightRatio, AblumViewWidth, self.view.hx_h - 217*ScreenHeightRatio);
         
     }
 }
@@ -586,6 +529,7 @@ UIViewControllerTransitioningDelegate
 {
 
 }
+
 #pragma mark - UITouch Event
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
@@ -598,12 +542,8 @@ UIViewControllerTransitioningDelegate
 //    CGPoint touchPoint = [[touches anyObject] locationInView:self.collectionView];
 //
 //    for (ImgCollectionViewCell *cell in self.collectionView.visibleCells) {
-//
-//
-//
+
 //    }
-
-
 }
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
@@ -854,7 +794,7 @@ UIViewControllerTransitioningDelegate
 
 
 
-- (void) selectCellForCollectionView:(ImgCollectionViewCell *)cell
+- (void)selectCellForCollectionView:(ImgCollectionViewCell *)cell
 {
     [self.manager beforeSelectedListAddPhotoModel:cell.model];
     NSString *str = [self.manager maximumOfJudgment:cell.model];
@@ -876,7 +816,7 @@ UIViewControllerTransitioningDelegate
 }
 
 //- (void) deselectCellForCollectionView:(UICollectionView *)collection atIndexPath:(NSIndexPath *)indexPath
-- (void) deselectCellForCollectionView:(ImgCollectionViewCell *)cell
+- (void)deselectCellForCollectionView:(ImgCollectionViewCell *)cell
 {
 //    [collection deselectItemAtIndexPath:indexPath animated:YES];
 //    [self collectionView:collection didDeselectItemAtIndexPath:indexPath];
@@ -904,10 +844,7 @@ UIViewControllerTransitioningDelegate
     
     ImgCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"DateCellId" forIndexPath:indexPath];
     cell.collectionViewCelldelegate = self;
-    
     cell.model = model;
-    
-    
     if ([self respondsToSelector:@selector(traitCollection)]) {
         
         if ([self.traitCollection respondsToSelector:@selector(forceTouchCapability)]) {
@@ -918,8 +855,6 @@ UIViewControllerTransitioningDelegate
             }
         }
     }
-    
-
     //cell.singleSelected = self.manager.configuration.singleSelected;
     return cell;
     
@@ -1163,7 +1098,7 @@ UIViewControllerTransitioningDelegate
     
     self.manager.isCombineVertical = YES;
     //[self performSegueWithIdentifier:@"toLongPictureView" sender:nil];
-    LongPictureViewController *longVc = [[LongPictureViewController alloc] init];
+    CombinePictureViewController *longVc = [[CombinePictureViewController alloc] init];
     longVc.manager = self.manager;
     //scrollVc.resultModels = resultModels;
     BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:longVc];
@@ -1278,7 +1213,7 @@ UIViewControllerTransitioningDelegate
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollFinish" object:nil];
                 } else {
                     [weakSelf.manager setScrollResult:resultModels];
-                    SharePictureViewController *scrollVc = [[SharePictureViewController alloc] init];
+                    ScrollPictureViewController *scrollVc = [[ScrollPictureViewController alloc] init];
                     scrollVc.manager = weakSelf.manager;
                     scrollVc.resultModels = resultModels;
                     BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:scrollVc];
@@ -1294,7 +1229,7 @@ UIViewControllerTransitioningDelegate
         });
         
         if (_manager.selectedCount > 3) {
-            SharePictureViewController *scrollVc = [[SharePictureViewController alloc] init];
+            ScrollPictureViewController *scrollVc = [[ScrollPictureViewController alloc] init];
             scrollVc.manager = weakSelf.manager;
             //scrollVc.resultModels = resultModels;
             BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:scrollVc];
@@ -1318,7 +1253,7 @@ UIViewControllerTransitioningDelegate
 - (void)datePhotoBottomViewDidcombineBtnH {
     self.manager.isCombineVertical = NO;
     //[self performSegueWithIdentifier:@"toLongPictureView" sender:nil];
-    LongPictureViewController *longVc = [[LongPictureViewController alloc] init];
+    CombinePictureViewController *longVc = [[CombinePictureViewController alloc] init];
     longVc.manager = self.manager;
     //scrollVc.resultModels = resultModels;
     BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:longVc];
@@ -1339,8 +1274,8 @@ UIViewControllerTransitioningDelegate
      
         UINavigationController *presentNav = (UINavigationController*)presented;
     
-        if ([presentNav.viewControllers.firstObject isKindOfClass:SharePictureViewController.class]
-            || [presentNav.viewControllers.firstObject isKindOfClass:LongPictureViewController.class]) {
+        if ([presentNav.viewControllers.firstObject isKindOfClass:ScrollPictureViewController.class]
+            || [presentNav.viewControllers.firstObject isKindOfClass:CombinePictureViewController.class]) {
             CustomTransitionPushSimilarHepler *pushTransition = [[CustomTransitionPushSimilarHepler alloc]init];
             pushTransition.isPush = YES;
             
@@ -1357,15 +1292,15 @@ UIViewControllerTransitioningDelegate
         UINavigationController *dismissNav = (UINavigationController*)dismissed;
         
         
-        if ([dismissNav.viewControllers.firstObject isKindOfClass:SharePictureViewController.class]) {
-            SharePictureViewController *vc = (SharePictureViewController *)dismissNav.viewControllers.firstObject;
+        if ([dismissNav.viewControllers.firstObject isKindOfClass:ScrollPictureViewController.class]) {
+            ScrollPictureViewController *vc = (ScrollPictureViewController *)dismissNav.viewControllers.firstObject;
             CustomTransitionPushSimilarHepler *popTransition = [[CustomTransitionPushSimilarHepler alloc]init];
             popTransition.isPush = NO;
             popTransition.interactionController =  vc.interactionController;
             
             return popTransition;
-        } else if ([dismissNav.viewControllers.firstObject isKindOfClass:LongPictureViewController.class]) {
-            LongPictureViewController *vc = (LongPictureViewController *)dismissNav.viewControllers.firstObject;
+        } else if ([dismissNav.viewControllers.firstObject isKindOfClass:CombinePictureViewController.class]) {
+            CombinePictureViewController *vc = (CombinePictureViewController *)dismissNav.viewControllers.firstObject;
             CustomTransitionPushSimilarHepler *popTransition = [[CustomTransitionPushSimilarHepler alloc]init];
             popTransition.isPush = NO;
             popTransition.interactionController =  vc.interactionController;
@@ -1442,9 +1377,6 @@ UIViewControllerTransitioningDelegate
                 }
             }
         }
-    
-
-
     }
 
 - (void)handleGesture {
@@ -1462,21 +1394,6 @@ UIViewControllerTransitioningDelegate
     }
     return _flowLayout;
 }
-
-//- (AssetTitleView *)groupTitleView
-//{
-//    if (_groupTitleView == nil) {
-//        _groupTitleView = [[AssetTitleView alloc] init];
-//        _groupTitleView.layer.borderWidth = 1;
-//        _groupTitleView.layer.borderColor = UIColor.lightGrayColor.CGColor;
-//        _groupTitleView.layer.cornerRadius = 13*ScreenHeightRatio;
-//        _groupTitleView.layer.masksToBounds = YES;
-//        
-//    }
-//    return _groupTitleView;
-//}
-
-
 
 - (NSMutableArray *)allArray {
     if (!_allArray) {
@@ -1529,9 +1446,6 @@ UIViewControllerTransitioningDelegate
         _shouldShowIndicator = YES;
         self.currentSectionIndex = selectedAlbumModel.index;
         [self.assetTitleView setTitle:selectedAlbumModel.albumName forState:UIControlStateNormal];
-        CGFloat width = [self.assetTitleView updateTitleConstraints:NO];
-        self.assetTitleView.size = CGSizeMake(width, self.assetTitleView.hx_h);
-        self.assetTitleView.center = CGPointMake(self.navView.center.x, self.navView.center.y + 10);
         [self getPhotoListByAblumModel:selectedAlbumModel];
     }
     
@@ -1658,11 +1572,11 @@ UIViewControllerTransitioningDelegate
     // Pass the selected object to the new view controller.
     if ([[segue identifier] isEqualToString:@"toSharePictureView"]) {
         NSArray *modelArray = (NSArray *)sender;
-        ((SharePictureViewController *)(segue.destinationViewController)).manager = self.manager;
-        ((SharePictureViewController *)(segue.destinationViewController)).resultModels = modelArray;
+        ((ScrollPictureViewController *)(segue.destinationViewController)).manager = self.manager;
+        ((ScrollPictureViewController *)(segue.destinationViewController)).resultModels = modelArray;
     } else if ([[segue identifier] isEqualToString:@"toLongPictureView"]) {
         //UIImage *image = (UIImage *)sender;
-        ((LongPictureViewController *)(segue.destinationViewController)).manager = self.manager;
+        ((CombinePictureViewController *)(segue.destinationViewController)).manager = self.manager;
     }
 }
 

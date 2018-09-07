@@ -30,9 +30,9 @@ static NSString * const reuseIdentifier = @"Cell";
     
     [self.collectionView registerNib:itemCellNib forCellWithReuseIdentifier:reuseIdentifier];
 //    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
-    _flowLayout.minimumLineSpacing = 16;
+    _flowLayout.minimumLineSpacing = 16*ScreenHeightRatio;
     _flowLayout.minimumInteritemSpacing = 1;
-    _flowLayout.sectionInset = UIEdgeInsetsMake(11, 11, 11, 11);
+    _flowLayout.sectionInset = UIEdgeInsetsMake(12.6*ScreenHeightRatio, 11*ScreenWidthRatio, 11*ScreenHeightRatio, 11*ScreenWidthRatio);
     // Do any additional setup after loading the view.
 }
 
@@ -60,13 +60,11 @@ static NSString * const reuseIdentifier = @"Cell";
 #pragma mark <UICollectionViewDataSource>
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-
     return 1;
 }
 
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-
     return self.assetsGroups.count;
 }
 
@@ -76,25 +74,28 @@ static NSString * const reuseIdentifier = @"Cell";
     if (indexPath.row == 0) {
         [cell.bgImageView setImage:[UIImage imageNamed:@"album_list_top"]];
         [cell.bgImageView setHighlightedImage:[UIImage imageNamed:@"album_list_top_p"]];
-    }
-    if (_indexAssetsGroup == indexPath.row) {
-        cell.isSelected = YES;
-        [cell setSelectedImage:indexPath.row];
     } else {
-        cell.isSelected = NO;
-        [cell setSelectedImagenil:indexPath.row];
+        [cell.bgImageView setImage:[UIImage imageNamed:@"album_list"]];
+        [cell.bgImageView setHighlightedImage:[UIImage imageNamed:@"album_list_p"]];
     }
+//    if (_indexAssetsGroup == indexPath.row) {
+//        cell.isSelected = YES;
+//        [cell setSelectedImage:indexPath.row];
+//    } else {
+//        cell.isSelected = NO;
+//        [cell setSelectedImagenil:indexPath.row];
+//    }
     return cell;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     CGFloat itemHeight;
     if (indexPath.item == 0) {
-        itemHeight = 87.4;
+        itemHeight = 87.4*ScreenHeightRatio;
     } else {
-        itemHeight = 80;
+        itemHeight = 80*ScreenHeightRatio;
     }
-    CGSize size = CGSizeMake(SCREEN_W - 22, itemHeight);
+    CGSize size = CGSizeMake(SCREEN_W - 22*ScreenWidthRatio, itemHeight);
     return size;
 }
 
