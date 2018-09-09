@@ -51,6 +51,7 @@
 		70925B5C213578A800AE9373 /* AssetCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 70925B5B213578A800AE9373 /* AssetCollectionCell.m */; };
 		70B3080D20E27D6100FFF131 /* PhotoCutModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 70B3080C20E27D6100FFF131 /* PhotoCutModel.m */; };
 		70BD41DB212AFA9A00CA0941 /* RecentScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70BD41DA212AFA9A00CA0941 /* RecentScrollView.m */; };
+		70BF0AFD2144CE6C000AAE53 /* ModifyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 70BF0AFC2144CE6C000AAE53 /* ModifyViewController.m */; };
 		70C262FB207A72EF00F65EFD /* AHAssetGroupsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70C262F9207A72EF00F65EFD /* AHAssetGroupsView.m */; };
 		70C262FC207A72EF00F65EFD /* AHAssetGroupCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 70C262FA207A72EF00F65EFD /* AHAssetGroupCell.m */; };
 		70C26300207A7C9100F65EFD /* AHAssetGroupCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 70C262FF207A7C9100F65EFD /* AHAssetGroupCell.xib */; };
@@ -173,6 +174,8 @@
 		70B3080C20E27D6100FFF131 /* PhotoCutModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PhotoCutModel.m; path = PictureStudio/Model/PhotoCutModel.m; sourceTree = SOURCE_ROOT; };
 		70BD41D9212AFA9A00CA0941 /* RecentScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RecentScrollView.h; path = PictureStudio/View/RecentScrollView.h; sourceTree = SOURCE_ROOT; };
 		70BD41DA212AFA9A00CA0941 /* RecentScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RecentScrollView.m; path = PictureStudio/View/RecentScrollView.m; sourceTree = SOURCE_ROOT; };
+		70BF0AFB2144CE6C000AAE53 /* ModifyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModifyViewController.h; sourceTree = "<group>"; };
+		70BF0AFC2144CE6C000AAE53 /* ModifyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModifyViewController.m; sourceTree = "<group>"; };
 		70C262F7207A72EF00F65EFD /* AHAssetGroupCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AHAssetGroupCell.h; sourceTree = "<group>"; };
 		70C262F8207A72EF00F65EFD /* AHAssetGroupsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AHAssetGroupsView.h; sourceTree = "<group>"; };
 		70C262F9207A72EF00F65EFD /* AHAssetGroupsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AHAssetGroupsView.m; sourceTree = "<group>"; };
@@ -283,6 +286,8 @@
 				70711C9321359B4E008A6121 /* AssetGroupViewController.h */,
 				70711C9421359B4E008A6121 /* AssetGroupViewController.m */,
 				70711C9521359B4E008A6121 /* AssetGroupViewController.xib */,
+				70BF0AFB2144CE6C000AAE53 /* ModifyViewController.h */,
+				70BF0AFC2144CE6C000AAE53 /* ModifyViewController.m */,
 				7060808120BEF56A0045F49E /* HXPhoto3DTouchViewController.h */,
 				7060808020BEF56A0045F49E /* HXPhoto3DTouchViewController.m */,
 			);
@@ -727,6 +732,7 @@
 				7082490620790F92000D60A3 /* PhotoCollectionReusableView.m in Sources */,
 				708248A2204EC6FC000D60A3 /* CombinePictureViewController.m in Sources */,
 				70BD41DB212AFA9A00CA0941 /* RecentScrollView.m in Sources */,
+				70BF0AFD2144CE6C000AAE53 /* ModifyViewController.m in Sources */,
 				70711C9621359B4E008A6121 /* AssetGroupViewController.m in Sources */,
 				708248D0206A94E2000D60A3 /* UIFont+HXExtension.m in Sources */,
 				708248AE204ED48B000D60A3 /* FilePathUtils.m in Sources */,

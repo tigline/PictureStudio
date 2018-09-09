@@ -219,7 +219,8 @@
             }
             
             _containImageView.size = CGSizeMake(cgpos.size.width, _containImageView.hx_h + lastOffset);
-            
+            //itemView.contentSize = CGSizeMake(_showImageScrollView.hx_w - 20, itemView.contentSize.height*1.5);
+
             imageView.size = CGSizeMake(_showImageScrollView.hx_w - 20, itemView.contentSize.height);
             [itemView addSubview:imageView];
             [self addLayerBorder:imageView count:count index:i direction:YES];
