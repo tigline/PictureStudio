@@ -16,7 +16,7 @@
 #import "AHAssetGroupsView.h"
 #import "UINavigationBar+Color.h"
 #import "CombinePicture.h"
-#import "ScrollPictureViewController.h"
+#import "ModifyViewController.h"
 #import "AboutViewController.h"
 #import "PhotoPreviewController.h"
 #import "UINavigationController+FDFullscreenPopGesture.h"
@@ -1213,7 +1213,11 @@ UIViewControllerTransitioningDelegate
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollFinish" object:nil];
                 } else {
                     [weakSelf.manager setScrollResult:resultModels];
-                    ScrollPictureViewController *scrollVc = [[ScrollPictureViewController alloc] init];
+                    //ModifyViewController *scrollVc = [[ModifyViewController alloc] init];
+                    
+                    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                    NSString * className = [NSStringFromClass([ModifyViewController classForCoder]) componentsSeparatedByString:@","].lastObject;
+                    ModifyViewController *scrollVc = (ModifyViewController *)[storyBoard instantiateViewControllerWithIdentifier:className];
                     scrollVc.manager = weakSelf.manager;
                     scrollVc.resultModels = resultModels;
                     BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:scrollVc];
@@ -1229,7 +1233,7 @@ UIViewControllerTransitioningDelegate
         });
         
         if (_manager.selectedCount > 3) {
-            ScrollPictureViewController *scrollVc = [[ScrollPictureViewController alloc] init];
+            ModifyViewController *scrollVc = [[ModifyViewController alloc] init];
             scrollVc.manager = weakSelf.manager;
             //scrollVc.resultModels = resultModels;
             BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:scrollVc];
@@ -1274,7 +1278,7 @@ UIViewControllerTransitioningDelegate
      
         UINavigationController *presentNav = (UINavigationController*)presented;
     
-        if ([presentNav.viewControllers.firstObject isKindOfClass:ScrollPictureViewController.class]
+        if ([presentNav.viewControllers.firstObject isKindOfClass:ModifyViewController.class]
             || [presentNav.viewControllers.firstObject isKindOfClass:CombinePictureViewController.class]) {
             CustomTransitionPushSimilarHepler *pushTransition = [[CustomTransitionPushSimilarHepler alloc]init];
             pushTransition.isPush = YES;
@@ -1292,8 +1296,8 @@ UIViewControllerTransitioningDelegate
         UINavigationController *dismissNav = (UINavigationController*)dismissed;
         
         
-        if ([dismissNav.viewControllers.firstObject isKindOfClass:ScrollPictureViewController.class]) {
-            ScrollPictureViewController *vc = (ScrollPictureViewController *)dismissNav.viewControllers.firstObject;
+        if ([dismissNav.viewControllers.firstObject isKindOfClass:ModifyViewController.class]) {
+            ModifyViewController *vc = (ModifyViewController *)dismissNav.viewControllers.firstObject;
             CustomTransitionPushSimilarHepler *popTransition = [[CustomTransitionPushSimilarHepler alloc]init];
             popTransition.isPush = NO;
             popTransition.interactionController =  vc.interactionController;
@@ -1572,8 +1576,8 @@ UIViewControllerTransitioningDelegate
     // Pass the selected object to the new view controller.
     if ([[segue identifier] isEqualToString:@"toSharePictureView"]) {
         NSArray *modelArray = (NSArray *)sender;
-        ((ScrollPictureViewController *)(segue.destinationViewController)).manager = self.manager;
-        ((ScrollPictureViewController *)(segue.destinationViewController)).resultModels = modelArray;
+        ((ModifyViewController *)(segue.destinationViewController)).manager = self.manager;
+        ((ModifyViewController *)(segue.destinationViewController)).resultModels = modelArray;
     } else if ([[segue identifier] isEqualToString:@"toLongPictureView"]) {
         //UIImage *image = (UIImage *)sender;
         ((CombinePictureViewController *)(segue.destinationViewController)).manager = self.manager;

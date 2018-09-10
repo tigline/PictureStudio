@@ -17,8 +17,28 @@
 #import "ShareBoardView.h"
 #import "PhotoCutModel.h"
 #import "SwipeEdgeInteractionController.h"
+#import "HXPhotoManager.h"
 
 @interface ModifyViewController () <UIScrollViewDelegate>
+
+@property (weak, nonatomic) IBOutlet UIView *bottomView;
+@property (weak, nonatomic) IBOutlet UIButton *backBtn;
+@property (weak, nonatomic) IBOutlet UIButton *nextBtn;
+@property (weak, nonatomic) IBOutlet UIButton *moveBtn;
+@property (weak, nonatomic) IBOutlet UIButton *borderBtn;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *backBtnWidth;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *nextBtnWidth;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *moveBtnHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *moveBtnWidth;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *backBtnMaginLeft;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *nextBtnMaginRight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *moveBtnMaginLeft;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *borderBtnMaginRight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *borderBtnHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *borderBtnWidth;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomViewHeight;
+
+
 @property (strong, nonatomic) UIScrollView *showImageScrollView;
 @property (strong, nonatomic) UIScrollView *shareScrollView;
 @property (strong, nonatomic) PhotoSaveBottomView *toolBarView;
@@ -32,13 +52,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self initView];
     [self createScrollView];
     
     if (_resultModels) {
         [self CreateShowImgaeView:_resultModels];//创建图片显示区域
-        _isShowShareBoardView = NO;
-        [self.view addSubview:self.shareBoardView];
-        [self.view addSubview:self.toolBarView];//创建保存图片区域
+        //[self.view addSubview:self.toolBarView];//创建保存图片区域
         
     }
     self.view.backgroundColor = UIColor.backgroundColor;
@@ -78,7 +98,6 @@
     _isFinish = YES;
     [self.view handleLoading];
     [self CreateShowImgaeView:[self.manager getScrollResult]];
-    [self.view addSubview:self.shareBoardView];
     [self.view addSubview:self.toolBarView];
 }
 
@@ -94,8 +113,44 @@
     
 }
 
+- (void)initView {
+    
+    _bottomViewHeight.constant = 60*ScreenHeightRatio;
+    _backBtnWidth.constant = 34*ScreenWidthRatio;
+    _backBtnMaginLeft.constant = 20*ScreenWidthRatio;
+    
+    _nextBtnWidth.constant = 34*ScreenWidthRatio;
+    _nextBtnMaginRight.constant = 20*ScreenWidthRatio;
+    
+    _moveBtnWidth.constant = 72*ScreenWidthRatio;
+    _moveBtnHeight.constant = 34*ScreenHeightRatio;
+    _borderBtnWidth.constant = 72*ScreenWidthRatio;
+    _borderBtnHeight.constant = 34*ScreenHeightRatio;
+    
+    _moveBtnMaginLeft.constant = 106*ScreenWidthRatio;
+    _borderBtnMaginRight.constant = 106*ScreenWidthRatio;
+    
+    _bottomView.layer.shadowOpacity = 0.99;
+    _bottomView.layer.shadowColor = UIColor.navShadowColor.CGColor;
+    _bottomView.layer.shadowRadius = 4;
+    _bottomView.layer.shadowOffset = CGSizeMake(0, 0);
+    _bottomView.layer.masksToBounds = NO;
+    
+    [_backBtn setImage:[UIImage imageNamed:@"tool_back"] forState:UIControlStateNormal];
+    [_backBtn setImage:[UIImage imageNamed:@"tool_back_p"] forState:UIControlStateHighlighted];
+    
+    [_nextBtn setImage:[UIImage imageNamed:@"tool_forward"] forState:UIControlStateNormal];
+    [_nextBtn setImage:[UIImage imageNamed:@"tool_forward_p"] forState:UIControlStateHighlighted];
+    
+    [_moveBtn setImage:[UIImage imageNamed:@"tool_move"] forState:UIControlStateNormal];
+    [_moveBtn setImage:[UIImage imageNamed:@"tool_move_l"] forState:UIControlStateHighlighted];
+    
+    [_borderBtn setImage:[UIImage imageNamed:@"tool_border"] forState:UIControlStateNormal];
+    [_borderBtn setImage:[UIImage imageNamed:@"tool_border_l"] forState:UIControlStateHighlighted];
+}
+
 - (void)createScrollView {
-    _showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h - kBottomMargin - kTopMargin)];
+    _showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h - kBottomMargin - kTopMargin - ButtomViewHeight)];
     _showImageScrollView.delegate = self;
     [self.view addSubview:_showImageScrollView];
     _showImageScrollView.backgroundColor = [UIColor backgroundColor];
@@ -237,42 +292,42 @@
 }
 
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    CGFloat contentHeight = scrollView.contentSize.height - self.view.hx_h;
-    CGFloat contentOffsetY = scrollView.contentOffset.y;
-    
-    if (contentOffsetY < 0) {
-        //self.showImageScrollView.frame = CGRectMake(0, kTopMargin + contentOffsetY, self.view.hx_w, self.view.hx_h);
-    } else if (contentOffsetY < kTopMargin && contentOffsetY > 0) {
-        self.showImageScrollView.frame = CGRectMake(0, kTopMargin - contentOffsetY, self.view.hx_w, self.view.hx_h - self.toolBarView.hx_h);
-    } else if (contentOffsetY < contentHeight && contentOffsetY > kTopMargin) {
-        //向下
-        //if (_canDetectScroll) {
-        
-        
-        self.showImageScrollView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h - self.toolBarView.hx_h);
-        
-        //}
-        //[self.navigationController setNavigationBarHidden:NO animated:YES];
-        
-    } else if (scrollView.contentOffset.y > contentHeight) {
-        
-        
-        //向上
-        CGFloat bottomMargin = 0.0;
-        if (kDevice_Is_iPhoneX) {
-            bottomMargin = self.toolBarView.hx_h;
-        } else {
-            bottomMargin = ButtomViewHeight;
-        }
-        if (contentOffsetY > contentHeight && contentOffsetY < contentHeight+bottomMargin) {
-            self.showImageScrollView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h - bottomMargin);
-        }
-        //[self.navigationController setNavigationBarHidden:YES animated:YES];
-        
-    }
-}
+//- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+//{
+//    CGFloat contentHeight = scrollView.contentSize.height - self.view.hx_h;
+//    CGFloat contentOffsetY = scrollView.contentOffset.y;
+//
+//    if (contentOffsetY < 0) {
+//        //self.showImageScrollView.frame = CGRectMake(0, kTopMargin + contentOffsetY, self.view.hx_w, self.view.hx_h);
+//    } else if (contentOffsetY < kTopMargin && contentOffsetY > 0) {
+//        self.showImageScrollView.frame = CGRectMake(0, kTopMargin - contentOffsetY, self.view.hx_w, self.view.hx_h - ButtomViewHeight);
+//    } else if (contentOffsetY < contentHeight && contentOffsetY > kTopMargin) {
+//        //向下
+//        //if (_canDetectScroll) {
+//
+//
+//        self.showImageScrollView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h - self.toolBarView.hx_h);
+//
+//        //}
+//        //[self.navigationController setNavigationBarHidden:NO animated:YES];
+//
+//    } else if (scrollView.contentOffset.y > contentHeight) {
+//
+//
+//        //向上
+//        CGFloat bottomMargin = 0.0;
+//        if (kDevice_Is_iPhoneX) {
+//            bottomMargin = self.toolBarView.hx_h;
+//        } else {
+//            bottomMargin = ButtomViewHeight;
+//        }
+//        if (contentOffsetY > contentHeight && contentOffsetY < contentHeight+bottomMargin) {
+//            self.showImageScrollView.frame = CGRectMake(0, 0, self.view.hx_w, self.view.hx_h - bottomMargin - ButtomViewHeight);
+//        }
+//        //[self.navigationController setNavigationBarHidden:YES animated:YES];
+//
+//    }
+//}
 - (void)showScrollError
 {
     NSString *strTitle = LocalString(@"scroll_error");
@@ -306,6 +361,24 @@
     //        self.singleTapGestureBlock();
     //    }
 }
+
+#pragma mark - Buttom Action
+
+- (IBAction)onMoveBtnTap:(id)sender {
+}
+
+- (IBAction)onBorderBtnTap:(id)sender {
+}
+
+
+- (IBAction)onBackBtnTap:(id)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+- (IBAction)onNextBtnTap:(id)sender {
+    
+}
+
+
 
 #pragma mark - UIScrollViewDelegate
 

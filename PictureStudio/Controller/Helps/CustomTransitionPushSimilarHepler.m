@@ -8,8 +8,8 @@
 
 #import "CustomTransitionPushSimilarHepler.h"
 #import "AlbumViewController.h"
-#import "ScrollPictureViewController.h"
 #import "CombinePictureViewController.h"
+#import "ModifyViewController.h"
 @implementation CustomTransitionPushSimilarHepler
 
 - (void)animateTransition:(nonnull id<UIViewControllerContextTransitioning>)transitionContext {
@@ -47,12 +47,12 @@
     }
     
     AlbumViewController *viewControllerOriginal; //= [[ViewController alloc] init];
-    ScrollPictureViewController *scrollControllerOriginal; //= [[SharePictureViewController alloc] init];
+    ModifyViewController *scrollControllerOriginal; //= [[SharePictureViewController alloc] init];
     CombinePictureViewController *longControllerOriginal;
     
     if ([fromViewController isKindOfClass:UINavigationController.class]) {
-        if ([fromViewController.topViewController isKindOfClass: ScrollPictureViewController.class]) {
-            scrollControllerOriginal = (ScrollPictureViewController *)fromViewController.topViewController;
+        if ([fromViewController.topViewController isKindOfClass: ModifyViewController.class]) {
+            scrollControllerOriginal = (ModifyViewController *)fromViewController.topViewController;
         } else if ([fromViewController.topViewController isKindOfClass: CombinePictureViewController.class]) {
             longControllerOriginal = (CombinePictureViewController *)fromViewController.topViewController;
         }
@@ -63,8 +63,8 @@
     }
     
     if ([toViewController isKindOfClass:UINavigationController.class]) {
-        if ([toViewController.topViewController isKindOfClass: ScrollPictureViewController.class]) {
-            scrollControllerOriginal = (ScrollPictureViewController *)toViewController.topViewController;
+        if ([toViewController.topViewController isKindOfClass: ModifyViewController.class]) {
+            scrollControllerOriginal = (ModifyViewController *)toViewController.topViewController;
         } else if ([toViewController.topViewController isKindOfClass: CombinePictureViewController.class]) {
             longControllerOriginal = (CombinePictureViewController *)toViewController.topViewController;
         }
