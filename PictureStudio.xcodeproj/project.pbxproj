@@ -263,6 +263,23 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		707E8805214946DD009954E1 /* ModifyViewController */ = {
+			isa = PBXGroup;
+			children = (
+				70BF0AFB2144CE6C000AAE53 /* ModifyViewController.h */,
+				70BF0AFC2144CE6C000AAE53 /* ModifyViewController.m */,
+				707E88062149470B009954E1 /* MoveItemView */,
+			);
+			path = ModifyViewController;
+			sourceTree = "<group>";
+		};
+		707E88062149470B009954E1 /* MoveItemView */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = MoveItemView;
+			sourceTree = "<group>";
+		};
 		7082489F204EC6FC000D60A3 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
@@ -286,8 +303,7 @@
 				70711C9321359B4E008A6121 /* AssetGroupViewController.h */,
 				70711C9421359B4E008A6121 /* AssetGroupViewController.m */,
 				70711C9521359B4E008A6121 /* AssetGroupViewController.xib */,
-				70BF0AFB2144CE6C000AAE53 /* ModifyViewController.h */,
-				70BF0AFC2144CE6C000AAE53 /* ModifyViewController.m */,
+				707E8805214946DD009954E1 /* ModifyViewController */,
 				7060808120BEF56A0045F49E /* HXPhoto3DTouchViewController.h */,
 				7060808020BEF56A0045F49E /* HXPhoto3DTouchViewController.m */,
 			);

@@ -206,10 +206,20 @@
                                     <constraint firstAttribute="height" constant="60" id="t0d-sv-5g8"/>
                                 </constraints>
                             </view>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lHq-Ia-KiD">
+                                <rect key="frame" x="10" y="10" width="355" height="597"/>
+                                <connections>
+                                    <outlet property="delegate" destination="QG2-ct-aNx" id="OPk-p7-rQP"/>
+                                </connections>
+                            </scrollView>
                         </subviews>
                         <color key="backgroundColor" red="0.93333333333333335" green="0.93333333333333335" blue="0.93333333333333335" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="a6i-fI-lp2" firstAttribute="bottom" secondItem="9F0-WK-FiS" secondAttribute="bottom" id="1UB-Lk-sJs"/>
+                            <constraint firstItem="9F0-WK-FiS" firstAttribute="trailing" secondItem="lHq-Ia-KiD" secondAttribute="trailing" constant="10" id="EHm-Gi-qqJ"/>
+                            <constraint firstItem="lHq-Ia-KiD" firstAttribute="top" secondItem="tk4-8S-V2t" secondAttribute="top" constant="10" id="IBT-P5-0k6"/>
+                            <constraint firstItem="9F0-WK-FiS" firstAttribute="bottom" secondItem="lHq-Ia-KiD" secondAttribute="bottom" constant="60" id="Nf1-2e-pGO"/>
+                            <constraint firstItem="lHq-Ia-KiD" firstAttribute="leading" secondItem="9F0-WK-FiS" secondAttribute="leading" constant="10" id="P6u-uA-yeI"/>
                             <constraint firstItem="a6i-fI-lp2" firstAttribute="trailing" secondItem="9F0-WK-FiS" secondAttribute="trailing" id="PWe-uZ-XOj"/>
                             <constraint firstItem="a6i-fI-lp2" firstAttribute="leading" secondItem="9F0-WK-FiS" secondAttribute="leading" id="h0v-6G-rZ3"/>
                         </constraints>
@@ -232,6 +242,7 @@
                         <outlet property="nextBtn" destination="sQ4-ub-fUu" id="J0z-wZ-Cj6"/>
                         <outlet property="nextBtnMaginRight" destination="c7n-hG-gaL" id="V73-3O-AZL"/>
                         <outlet property="nextBtnWidth" destination="JXg-fZ-5O6" id="fvv-og-YpQ"/>
+                        <outlet property="showImageScrollView" destination="lHq-Ia-KiD" id="zU9-T0-hHW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UTJ-5j-TTK" userLabel="First Responder" sceneMemberID="firstResponder"/>

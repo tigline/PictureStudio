@@ -39,11 +39,17 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomViewHeight;
 
 
-@property (strong, nonatomic) UIScrollView *showImageScrollView;
+@property (weak, nonatomic) IBOutlet UIScrollView *showImageScrollView;
+//@property (strong, nonatomic) UIScrollView *showImageScrollView;
 @property (strong, nonatomic) UIScrollView *shareScrollView;
 @property (strong, nonatomic) PhotoSaveBottomView *toolBarView;
 @property (assign, nonatomic) CGFloat lastContentOffset;
 @property (assign, nonatomic) BOOL isFinish;
+
+@property (strong, nonatomic) UIScrollView *moveItemUpView;
+@property (strong, nonatomic) UIScrollView *moveItemDownView;
+@property (strong, nonatomic) NSArray *upImagesArray;
+@property (strong, nonatomic) NSArray *downImagesArray;
 
 @property (strong, nonatomic) UIView *containImageView;
 @end
@@ -54,12 +60,13 @@
     [super viewDidLoad];
     
     [self initView];
+    
     [self createScrollView];
     
     if (_resultModels) {
-        [self CreateShowImgaeView:_resultModels];//创建图片显示区域
+        //[self CreateShowImgaeView:_resultModels];//创建图片显示区域
         //[self.view addSubview:self.toolBarView];//创建保存图片区域
-        
+        [self setInMoveState:300 index:0];
     }
     self.view.backgroundColor = UIColor.backgroundColor;
     __weak typeof(self) weakSelf = self;
@@ -83,7 +90,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     if (!_manager.isScrollSuccess) {
-        [self showScrollError];
+        //[self showScrollError];
     }
 }
 
@@ -97,8 +104,14 @@
 - (void)scrollFinish {
     _isFinish = YES;
     [self.view handleLoading];
-    [self CreateShowImgaeView:[self.manager getScrollResult]];
-    [self.view addSubview:self.toolBarView];
+    //[self CreateShowImgaeView:[self.manager getScrollResult]];
+    _resultModels = [self.manager getScrollResult];
+    
+    
+    
+    [self setInMoveState:300 index:0];
+    
+    
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -150,14 +163,14 @@
 }
 
 - (void)createScrollView {
-    _showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h - kBottomMargin - kTopMargin - ButtomViewHeight)];
-    _showImageScrollView.delegate = self;
-    [self.view addSubview:_showImageScrollView];
+    //_showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h - kBottomMargin - kTopMargin - ButtomViewHeight)];
+    //_showImageScrollView.delegate = self;
+    //[self.view addSubview:_showImageScrollView];
     _showImageScrollView.backgroundColor = [UIColor backgroundColor];
     _showImageScrollView.bouncesZoom = YES;
     _showImageScrollView.maximumZoomScale = 2.5;
     _showImageScrollView.minimumZoomScale = 1.0;
-    _showImageScrollView.multipleTouchEnabled = YES;
+    //_showImageScrollView.multipleTouchEnabled = YES;
     _showImageScrollView.scrollsToTop = NO;
     _showImageScrollView.showsHorizontalScrollIndicator = NO;
     _showImageScrollView.showsVerticalScrollIndicator = NO;
@@ -165,7 +178,7 @@
     _showImageScrollView.delaysContentTouches = NO;
     _showImageScrollView.canCancelContentTouches = YES;
     _showImageScrollView.alwaysBounceVertical = NO;
-    _shareScrollView.userInteractionEnabled = YES;
+    _showImageScrollView.userInteractionEnabled = YES;
     
     _containImageView = [[UIView alloc] init];
     _containImageView.clipsToBounds = YES;
@@ -246,8 +259,6 @@
         
         //        _containImageView.layer.borderWidth = 1*ScreenWidthRatio;
         //        _containImageView.layer.borderColor = [[UIColor blackColor] colorWithAlphaComponent:0.1].CGColor;
-        
-        
         [_showImageScrollView setContentSize:CGSizeMake(_showImageScrollView.hx_w, _containImageView.hx_h)];
     }
 }
@@ -285,12 +296,103 @@
     
 }
 
+- (void)setInMoveState:(CGFloat)borderY index:(NSInteger)index {
+    
+    _upImagesArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, index + 1)]];
+    _downImagesArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index + 1, _resultModels.count - index - 1)]];
+    
+    CGRect upFrame = CGRectMake(0, 0, _showImageScrollView.hx_w, borderY);
+    _moveItemUpView = [self createMoveItemViewWithFrame:upFrame itemArray:_upImagesArray toBottom:YES];
+    _moveItemUpView.delegate = self;
+    [_showImageScrollView addSubview:_moveItemUpView];
+    
+    CGRect downFrame = CGRectMake(0, borderY, _showImageScrollView.hx_w, _showImageScrollView.hx_h - borderY);
+    _moveItemDownView = [self createMoveItemViewWithFrame:downFrame itemArray:_downImagesArray toBottom:NO];
+    [_showImageScrollView addSubview:_moveItemDownView];
+    
+}
+
+- (UIScrollView *)createMoveItemViewWithFrame:(CGRect )frame itemArray:(NSArray *)itemArray toBottom:(BOOL)toBottom {
+    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:frame];
+    UIView *containView = [[UIView alloc] init];
+    containView.clipsToBounds = YES;
+    [scrollView addSubview:containView];
+    
+    
+    CGRect cgpos;
+    NSInteger count = itemArray.count;
+    for (int i = 0; i < count; i++) {
+        PhotoCutModel *mode = [itemArray objectAtIndex:i];
+        UIImage *image = mode.originPhoto;
+        UIImageView *imageView = [[UIImageView alloc]initWithImage:image];
+        CGFloat itemHeight = (mode.endY - mode.beginY);
+        UIScrollView *itemView = [[UIScrollView alloc]initWithFrame:CGRectZero];
+        
+        CGFloat contentViewOffset;
+        if(i == 0) {
+            contentViewOffset = 0;
+        } else {
+            contentViewOffset = containView.hx_h;
+        }
+        
+        CGFloat ratio = (_showImageScrollView.hx_w)/imageView.hx_w;
+        
+        cgpos.origin.x = 0;
+        cgpos.origin.y = contentViewOffset;
+        cgpos.size.width = _showImageScrollView.hx_w;
+        cgpos.size.height = itemHeight*ratio;
+        itemView.frame = cgpos;
+        
+        
+        [containView addSubview:itemView];
+        itemView.contentSize = CGSizeMake(_showImageScrollView.hx_w, imageView.hx_h*ratio);
+        itemView.contentOffset = CGPointMake(0, mode.beginY*ratio);
+        itemView.scrollEnabled = NO;
+        
+        CGFloat lastOffset;
+        if (i == itemArray.count - 1 || i == 0) {
+            lastOffset = cgpos.size.height;
+        } else {
+            lastOffset = cgpos.size.height;
+        }
+        
+        containView.size = CGSizeMake(cgpos.size.width, containView.hx_h + lastOffset);
+        //itemView.contentSize = CGSizeMake(_showImageScrollView.hx_w - 20, itemView.contentSize.height*1.5);
+        
+        imageView.size = CGSizeMake(_showImageScrollView.hx_w, itemView.contentSize.height);
+        [itemView addSubview:imageView];
+        [self addLayerBorder:imageView count:count index:i direction:YES];
+        //[self addLayerBorder:imageView count:count index:i direction:isCombineVertical];
+        
+    }
+    containView.frame = CGRectMake(0, 0, _showImageScrollView.hx_w, containView.hx_h);
+    [scrollView setContentSize:CGSizeMake(_showImageScrollView.hx_w, containView.hx_h)];
+    if (toBottom) {
+        CGPoint bottomOffset = CGPointMake(0, scrollView.contentSize.height - scrollView.bounds.size.height);
+        [scrollView setContentOffset:bottomOffset animated:NO];
+        //[scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+    } else {
+        
+    }
+    return scrollView;
+}
+
 #pragma mark scrollView delegate
 
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     _lastContentOffset = scrollView.contentOffset.y;
+    
 }
-
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    CGFloat contentHeight = scrollView.contentSize.height - scrollView.bounds.size.height;
+    CGFloat contentOffsetY = scrollView.contentOffset.y;
+    
+    if (contentOffsetY < 0) {
+        _moveItemUpView.frame = CGRectMake(0, _moveItemUpView.originY-contentOffsetY, _moveItemUpView.hx_w, _moveItemUpView.hx_h+contentOffsetY);
+    } else {
+        
+    }
+}
 
 //- (void)scrollViewDidScroll:(UIScrollView *)scrollView
 //{

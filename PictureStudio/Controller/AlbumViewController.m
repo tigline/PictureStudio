@@ -1233,12 +1233,14 @@ UIViewControllerTransitioningDelegate
         });
         
         if (_manager.selectedCount > 3) {
-            ModifyViewController *scrollVc = [[ModifyViewController alloc] init];
-            scrollVc.manager = weakSelf.manager;
+            UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            NSString * className = [NSStringFromClass([ModifyViewController classForCoder]) componentsSeparatedByString:@","].lastObject;
+            ModifyViewController *scrollVc = (ModifyViewController *)[storyBoard instantiateViewControllerWithIdentifier:className];
+            scrollVc.manager = self.manager;
             //scrollVc.resultModels = resultModels;
             BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:scrollVc];
             [nav.view layoutIfNeeded];
-            nav.transitioningDelegate = weakSelf;
+            nav.transitioningDelegate = self;
             [self presentViewController:nav animated:YES completion:nil];
             //[self performSegueWithIdentifier:@"toSharePictureView" sender:nil];
         }
