@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="rFg-mA-rbD">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="rFg-mA-rbD">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fH4-U2-j1I">
-                                <rect key="frame" x="11" y="84" width="353" height="450"/>
+                                <rect key="frame" x="10" y="84" width="355" height="450"/>
                                 <color key="backgroundColor" red="0.94509803921568625" green="0.94509803921568625" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="520 张照片" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zl5-8r-H0C">
@@ -30,7 +29,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Nqy-Hy-Mmg">
-                                <rect key="frame" x="11" y="84" width="353" height="450"/>
+                                <rect key="frame" x="10" y="84" width="355" height="450"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="SCa-DJ-mNy">
                                     <size key="itemSize" width="50" height="50"/>
@@ -44,7 +43,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="84"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Faw-N5-XNl" customClass="AssetTitleButton">
-                                        <rect key="frame" x="109" y="35" width="158" height="34"/>
+                                        <rect key="frame" x="108.5" y="35" width="158" height="34"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="158" id="Jft-8X-5dG"/>
                                             <constraint firstAttribute="height" constant="34" id="jh7-3q-Xu8"/>
@@ -86,19 +85,19 @@
                             <constraint firstItem="dgd-E2-h5V" firstAttribute="trailing" secondItem="sCQ-Dc-i6Z" secondAttribute="trailing" id="246-kM-OFh"/>
                             <constraint firstItem="sCQ-Dc-i6Z" firstAttribute="bottom" secondItem="Zl5-8r-H0C" secondAttribute="bottom" constant="84" id="2E1-hC-QkJ"/>
                             <constraint firstItem="sCQ-Dc-i6Z" firstAttribute="bottom" secondItem="fH4-U2-j1I" secondAttribute="bottom" constant="133" id="2yr-00-v5d"/>
-                            <constraint firstItem="Nqy-Hy-Mmg" firstAttribute="leading" secondItem="sCQ-Dc-i6Z" secondAttribute="leading" constant="11" id="BYm-x9-XAx"/>
+                            <constraint firstItem="Nqy-Hy-Mmg" firstAttribute="leading" secondItem="sCQ-Dc-i6Z" secondAttribute="leading" constant="10" id="BYm-x9-XAx"/>
                             <constraint firstItem="W85-Mh-uIK" firstAttribute="top" secondItem="dgd-E2-h5V" secondAttribute="bottom" id="ChF-ah-3VP"/>
                             <constraint firstItem="sCQ-Dc-i6Z" firstAttribute="bottom" secondItem="W85-Mh-uIK" secondAttribute="bottom" constant="60" id="DEf-Sg-Oem"/>
                             <constraint firstItem="fH4-U2-j1I" firstAttribute="top" secondItem="dgd-E2-h5V" secondAttribute="bottom" id="EP5-3u-TDh"/>
                             <constraint firstItem="dgd-E2-h5V" firstAttribute="leading" secondItem="sCQ-Dc-i6Z" secondAttribute="leading" id="Izv-89-Nv1"/>
-                            <constraint firstItem="Nqy-Hy-Mmg" firstAttribute="trailing" secondItem="sCQ-Dc-i6Z" secondAttribute="trailing" constant="-11" id="K45-3d-pS7"/>
+                            <constraint firstItem="Nqy-Hy-Mmg" firstAttribute="trailing" secondItem="sCQ-Dc-i6Z" secondAttribute="trailing" constant="-10" id="K45-3d-pS7"/>
                             <constraint firstItem="Nqy-Hy-Mmg" firstAttribute="top" secondItem="dgd-E2-h5V" secondAttribute="bottom" id="OhB-3D-eJZ"/>
                             <constraint firstItem="Nqy-Hy-Mmg" firstAttribute="centerX" secondItem="ntf-9y-MH6" secondAttribute="centerX" id="PxL-OZ-Lta"/>
                             <constraint firstItem="sCQ-Dc-i6Z" firstAttribute="bottom" secondItem="Nqy-Hy-Mmg" secondAttribute="bottom" constant="133" id="R8N-cN-CTV"/>
-                            <constraint firstItem="sCQ-Dc-i6Z" firstAttribute="trailing" secondItem="fH4-U2-j1I" secondAttribute="trailing" constant="11" id="Zl3-dw-0d2"/>
+                            <constraint firstItem="sCQ-Dc-i6Z" firstAttribute="trailing" secondItem="fH4-U2-j1I" secondAttribute="trailing" constant="10" id="Zl3-dw-0d2"/>
                             <constraint firstItem="sCQ-Dc-i6Z" firstAttribute="trailing" secondItem="W85-Mh-uIK" secondAttribute="trailing" id="bLr-nW-6dX"/>
                             <constraint firstItem="Zl5-8r-H0C" firstAttribute="centerX" secondItem="sCQ-Dc-i6Z" secondAttribute="centerX" id="c1M-Oo-QaO"/>
-                            <constraint firstItem="fH4-U2-j1I" firstAttribute="leading" secondItem="sCQ-Dc-i6Z" secondAttribute="leading" constant="11" id="mfu-kh-TUS"/>
+                            <constraint firstItem="fH4-U2-j1I" firstAttribute="leading" secondItem="sCQ-Dc-i6Z" secondAttribute="leading" constant="10" id="mfu-kh-TUS"/>
                             <constraint firstItem="dgd-E2-h5V" firstAttribute="top" secondItem="ntf-9y-MH6" secondAttribute="top" id="xqe-RG-TYD"/>
                             <constraint firstItem="W85-Mh-uIK" firstAttribute="leading" secondItem="sCQ-Dc-i6Z" secondAttribute="leading" id="ydR-1R-74y"/>
                         </constraints>
@@ -108,6 +107,8 @@
                     <connections>
                         <outlet property="assetTitleView" destination="Faw-N5-XNl" id="QkL-lW-lGA"/>
                         <outlet property="collectionView" destination="Nqy-Hy-Mmg" id="3Tk-WF-Zzl"/>
+                        <outlet property="collectionViewLeft" destination="BYm-x9-XAx" id="i6A-WG-Yha"/>
+                        <outlet property="collectionViewRight" destination="K45-3d-pS7" id="2oQ-8G-IcW"/>
                         <outlet property="imageCount" destination="Zl5-8r-H0C" id="mcx-xB-7C0"/>
                         <outlet property="navView" destination="dgd-E2-h5V" id="AfF-jP-vl5"/>
                         <outlet property="navViewHeight" destination="4GW-H4-Zw7" id="zav-Vg-yTC"/>

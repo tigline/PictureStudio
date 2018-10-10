@@ -58,6 +58,7 @@
 		70C4DCB22107666D00857F65 /* ImageIOModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 70C4DCB12107666C00857F65 /* ImageIOModel.m */; };
 		70C5D18B207926A400FE5B9A /* AssetTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70C5D18A207926A400FE5B9A /* AssetTitleView.m */; };
 		70D24BBD207FA9CA003430BA /* UINavigationBar+Color.m in Sources */ = {isa = PBXBuildFile; fileRef = 70D24BBC207FA9CA003430BA /* UINavigationBar+Color.m */; };
+		70F89A5921514A4100B203E9 /* MoveItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70F89A5821514A4100B203E9 /* MoveItemView.m */; };
 		9338E54F20A577A10059D58E /* PhotoPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9338E54E20A577A10059D58E /* PhotoPreviewController.m */; };
 		9338E55220A57A760059D58E /* PhotoPreviewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9338E55120A57A760059D58E /* PhotoPreviewCell.m */; };
 		93539C6E20808EFB00B7D29C /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 708248A9204ECD4C000D60A3 /* libjpeg.a */; };
@@ -187,6 +188,8 @@
 		70C5D18A207926A400FE5B9A /* AssetTitleView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AssetTitleView.m; sourceTree = "<group>"; };
 		70D24BBB207FA9CA003430BA /* UINavigationBar+Color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UINavigationBar+Color.h"; sourceTree = "<group>"; };
 		70D24BBC207FA9CA003430BA /* UINavigationBar+Color.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UINavigationBar+Color.m"; sourceTree = "<group>"; };
+		70F89A5721514A4100B203E9 /* MoveItemView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoveItemView.h; sourceTree = "<group>"; };
+		70F89A5821514A4100B203E9 /* MoveItemView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoveItemView.m; sourceTree = "<group>"; };
 		9338E54D20A577A10059D58E /* PhotoPreviewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoPreviewController.h; sourceTree = "<group>"; };
 		9338E54E20A577A10059D58E /* PhotoPreviewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoPreviewController.m; sourceTree = "<group>"; };
 		9338E55020A57A760059D58E /* PhotoPreviewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoPreviewCell.h; sourceTree = "<group>"; };
@@ -276,6 +279,8 @@
 		707E88062149470B009954E1 /* MoveItemView */ = {
 			isa = PBXGroup;
 			children = (
+				70F89A5721514A4100B203E9 /* MoveItemView.h */,
+				70F89A5821514A4100B203E9 /* MoveItemView.m */,
 			);
 			path = MoveItemView;
 			sourceTree = "<group>";
@@ -789,6 +794,7 @@
 				70C262FB207A72EF00F65EFD /* AHAssetGroupsView.m in Sources */,
 				7042146121344FD10005AB2F /* ViewControllerExtensions.swift in Sources */,
 				939F2709213FBB2E00718374 /* BaseViewController.m in Sources */,
+				70F89A5921514A4100B203E9 /* MoveItemView.m in Sources */,
 				708248C7206A9182000D60A3 /* NSDate+HXExtension.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -18,6 +18,7 @@
 #import "PhotoCutModel.h"
 #import "SwipeEdgeInteractionController.h"
 #import "HXPhotoManager.h"
+#import "MoveItemView.h"
 
 @interface ModifyViewController () <UIScrollViewDelegate>
 
@@ -201,6 +202,8 @@
     [tap1 requireGestureRecognizerToFail:tap2];
     [self.view addGestureRecognizer:tap2];
 }
+
+
 
 - (void)CreateShowImgaeView:(NSArray *)resultArray
 {

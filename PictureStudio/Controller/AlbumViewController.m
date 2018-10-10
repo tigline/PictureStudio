@@ -52,6 +52,8 @@ UIViewControllerTransitioningDelegate
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleViewHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleViewWidth;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleMaginButtom;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *collectionViewLeft;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *collectionViewRight;
 
 @property (strong, nonatomic) UICollectionViewFlowLayout *flowLayout;
 //@property (strong, nonatomic) UICollectionView *collectionView;
@@ -156,6 +158,8 @@ UIViewControllerTransitioningDelegate
     _titleViewHeight.constant = 34*ScreenHeightRatio;
     _titleViewWidth.constant = 158*ScreenWidthRatio;
     _titleMaginButtom.constant = 15*ScreenHeightRatio;
+    _collectionViewLeft.constant = 10*ScreenWidthRatio;
+    _collectionViewRight.constant = -10*ScreenWidthRatio;
 }
 
 - (void)setupUI {
@@ -913,7 +917,7 @@ UIViewControllerTransitioningDelegate
 
 //设置每个Cell的大小
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    CGSize size = CGSizeMake((AblumViewWidth - 20*ScreenWidthRatio)/3,(AblumViewWidth - 20*ScreenWidthRatio)/3);
+    CGSize size = CGSizeMake((AblumViewWidth - 20*ScreenWidthRatio)/3-1,(AblumViewWidth - 20*ScreenWidthRatio)/3-1);
     return size;
 }
 
