@@ -23,7 +23,7 @@
                                 <color key="backgroundColor" red="0.94509803921568625" green="0.94509803921568625" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="520 张照片" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zl5-8r-H0C">
-                                <rect key="frame" x="144" y="559" width="87.5" height="24"/>
+                                <rect key="frame" x="144" y="559" width="87" height="24"/>
                                 <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="17"/>
                                 <color key="textColor" red="0.74509803921568629" green="0.74509803921568629" blue="0.74509803921568629" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -243,6 +243,7 @@
                         <outlet property="nextBtn" destination="sQ4-ub-fUu" id="J0z-wZ-Cj6"/>
                         <outlet property="nextBtnMaginRight" destination="c7n-hG-gaL" id="V73-3O-AZL"/>
                         <outlet property="nextBtnWidth" destination="JXg-fZ-5O6" id="fvv-og-YpQ"/>
+                        <outlet property="scrollViewMaginTop" destination="IBT-P5-0k6" id="cas-59-TdA"/>
                         <outlet property="showImageScrollView" destination="lHq-Ia-KiD" id="zU9-T0-hHW"/>
                     </connections>
                 </viewController>

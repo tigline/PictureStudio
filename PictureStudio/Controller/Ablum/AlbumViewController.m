@@ -26,8 +26,8 @@
 #import "AssetGroupViewController.h"
 #import "PictureStudio_Bridging_Header.h"
 #import "AssetGroupViewController.h"
-#import "Base/BaseNavigationController.h"
-#import "Helps/CustomTransitionPushSimilarHepler.h"
+#import "BaseNavigationController.h"
+#import "CustomTransitionPushSimilarHepler.h"
 #import "SwipeEdgeInteractionController.h"
 
 
@@ -334,54 +334,54 @@ UIViewControllerTransitioningDelegate
             
             #pragma mark - 开发最近长截图
  //----------------------------------------------------------------------------------
-//            for (int i = 0; i < [weakSelf.allArray count]; i++)
-//            {
-//                mHXPhotoModel = [weakSelf.allArray objectAtIndex:i];
-//                NSDate *sendDate=[NSDate date];
-//                NSDateFormatter* formatter = [[NSDateFormatter alloc]init];
-//                [formatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
-//                if (mHXPhotoModel.isScreenShot)
-//                {
-//                    if ([self dateTimeDifferenceWithStartTime:[formatter stringFromDate:mHXPhotoModel.creationDate] endTime: [formatter stringFromDate:sendDate]] < 121)
-//                    {
-//                        [weakSelf.allScreenShotArray addObject:mHXPhotoModel];
-//                    }
-//                }
-//            }
-//
-//            if ([weakSelf.allScreenShotArray count] > 1)
-//            {
-//                dispatch_async(dispatch_get_main_queue(), ^{
-//                    _mRecentScrollView = [[RecentScrollView alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 49.5*2)/2,self.bottomView.frame.origin.y - 64.5*2, 49.5*2, 64.5*2)];
-//
-//
-//                    UITapGestureRecognizer *tapGesturRecognizer=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(RecentScrollViewClick:)];
-//
-//                    [_mRecentScrollView addGestureRecognizer:tapGesturRecognizer];
-//                });
-//                mHXPhotoModel = [weakSelf.allScreenShotArray objectAtIndex:0];
-//                if ( mHXPhotoModel.type == HXPhotoModelMediaTypeCameraPhoto)
-//                {
-//                    _mRecentScrollView.image = mHXPhotoModel.thumbPhoto;
-//                }
-//                else
-//                {
-//                    [HXPhotoTools getImageWithModel:mHXPhotoModel completion:^(UIImage *image, HXPhotoModel *model) {
-//                        _mRecentScrollView.image = image;
-//                    }];
-//                }
-//            }
-//            else
-//            {
-//                if (_mRecentScrollView != nil)
-//                {
-//                    dispatch_async(dispatch_get_main_queue(), ^{
-//                        [UIView animateWithDuration:1.0f animations:^{
-//                            _mRecentScrollView.alpha = 0.0f;
-//                        }];
-//                    });
-//                }
-//            }
+            for (int i = 0; i < [weakSelf.allArray count]; i++)
+            {
+                mHXPhotoModel = [weakSelf.allArray objectAtIndex:i];
+                NSDate *sendDate=[NSDate date];
+                NSDateFormatter* formatter = [[NSDateFormatter alloc]init];
+                [formatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+                if (mHXPhotoModel.isScreenShot)
+                {
+                    if ([self dateTimeDifferenceWithStartTime:[formatter stringFromDate:mHXPhotoModel.creationDate] endTime: [formatter stringFromDate:sendDate]] < 121)
+                    {
+                        [weakSelf.allScreenShotArray addObject:mHXPhotoModel];
+                    }
+                }
+            }
+
+            if ([weakSelf.allScreenShotArray count] > 1)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    weakSelf.mRecentScrollView = [[RecentScrollView alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 49.5*2)/2,self.bottomView.frame.origin.y - 64.5*2, 49.5*2, 64.5*2)];
+
+
+                    UITapGestureRecognizer *tapGesturRecognizer=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(RecentScrollViewClick:)];
+
+                    [weakSelf.mRecentScrollView addGestureRecognizer:tapGesturRecognizer];
+                });
+                mHXPhotoModel = [weakSelf.allScreenShotArray objectAtIndex:0];
+                if ( mHXPhotoModel.type == HXPhotoModelMediaTypeCameraPhoto)
+                {
+                    weakSelf.mRecentScrollView.image = mHXPhotoModel.thumbPhoto;
+                }
+                else
+                {
+                    [HXPhotoTools getImageWithModel:mHXPhotoModel completion:^(UIImage *image, HXPhotoModel *model) {
+                        weakSelf.mRecentScrollView.image = image;
+                    }];
+                }
+            }
+            else
+            {
+                if (weakSelf.mRecentScrollView != nil)
+                {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [UIView animateWithDuration:1.0f animations:^{
+                            weakSelf.mRecentScrollView.alpha = 0.0f;
+                        }];
+                    });
+                }
+            }
 //----------------------------------------------------------------------------------
             
             
@@ -399,42 +399,40 @@ UIViewControllerTransitioningDelegate
                 [weakSelf.imageCount setText:[NSString stringWithFormat:@"%ld 张照片", weakSelf.albumModel.count]];
                 
                 [weakSelf.collectionView reloadData];
-//                if (_isScreenshotNotification || _shouldReloadAsset) {
-//                    _isScreenshotNotification = NO;
-//                    _shouldReloadAsset = NO;
-//                } else {
-//                    if (_mRecentScrollView == nil)
-//                    {
-//                         [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
-//                    }
-//                    else
-//                    {
-//                        [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
-//                    }
-//                }
-//                if (_mRecentScrollView != nil)
-//                {
-//                    [self.view addSubview:_mRecentScrollView];
-//                }
-                
-                
-                if (_isScreenshotNotification || _shouldReloadAsset) {
-                    _isScreenshotNotification = NO;
-                    _shouldReloadAsset = NO;
+                if (weakSelf.isScreenshotNotification || weakSelf.shouldReloadAsset) {
+                    weakSelf.isScreenshotNotification = NO;
+                    weakSelf.shouldReloadAsset = NO;
                 } else {
-                    [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+                    if (weakSelf.mRecentScrollView == nil)
+                    {
+                         [weakSelf.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:weakSelf.allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+                    }
+                    else
+                    {
+                        [weakSelf.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:weakSelf.allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
+                    }
                 }
-                [weakSelf.view layoutIfNeeded];
+                if (weakSelf.mRecentScrollView != nil)
+                {
+                    [self.view addSubview:weakSelf.mRecentScrollView];
+                }
 
-                
-                _canDetectScroll = YES;
+//                if (weakSelf.isScreenshotNotification || weakSelf.shouldReloadAsset) {
+//                    weakSelf.isScreenshotNotification = NO;
+//                    weakSelf.shouldReloadAsset = NO;
+//                } else {
+//                    [weakSelf.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:weakSelf.allArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+//
+//                }
+                //[weakSelf.view layoutIfNeeded];
+
+                weakSelf.canDetectScroll = YES;
                 //[weakSelf.view handleLoading];
 //                if (weakSelf.isLaunch && [weakSelf.manager shouldShowTipView]) {
 //                    [weakSelf showTipView];
 //                    weakSelf.isLaunch = NO;
 //                }
-                
-                
+
             });
         }];
     });
@@ -510,22 +508,25 @@ UIViewControllerTransitioningDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    CGFloat contentHeight = scrollView.contentSize.height - (self.view.hx_h - 217*ScreenHeightRatio);
-    CGFloat contentOffsetY = scrollView.contentOffset.y;
-
-    if (contentOffsetY < contentHeight && contentOffsetY > (contentHeight - 73*ScreenHeightRatio)) {
+    if (self.canDetectScroll) {
+        CGFloat contentHeight = scrollView.contentSize.height - (self.view.hx_h - 217*ScreenHeightRatio);
+        CGFloat contentOffsetY = scrollView.contentOffset.y;
         
-        self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84*ScreenHeightRatio, AblumViewWidth, self.view.hx_h - 217*ScreenHeightRatio + (contentHeight - contentOffsetY));
-        
-        //[self.navigationController setNavigationBarHidden:NO animated:YES];
-        
-    } else if (contentOffsetY <= (contentHeight - 73*ScreenHeightRatio)) {
-        self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84*ScreenHeightRatio, AblumViewWidth, self.view.hx_h - 144*ScreenHeightRatio);
-    } else if (contentOffsetY > contentHeight) {
-        
-        self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84*ScreenHeightRatio, AblumViewWidth, self.view.hx_h - 217*ScreenHeightRatio);
-        
+        if (contentOffsetY < contentHeight && contentOffsetY > (contentHeight - 73*ScreenHeightRatio)) {
+            
+            self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84*ScreenHeightRatio, AblumViewWidth, self.view.hx_h - 217*ScreenHeightRatio + (contentHeight - contentOffsetY));
+            
+            //[self.navigationController setNavigationBarHidden:NO animated:YES];
+            
+        } else if (contentOffsetY <= (contentHeight - 73*ScreenHeightRatio)) {
+            self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84*ScreenHeightRatio, AblumViewWidth, self.view.hx_h - 144*ScreenHeightRatio);
+        } else if (contentOffsetY > contentHeight) {
+            
+            self.collectionView.frame = CGRectMake(11*ScreenWidthRatio, 84*ScreenHeightRatio, AblumViewWidth, self.view.hx_h - 217*ScreenHeightRatio);
+            
+        }
     }
+    
 }
 
 
@@ -1377,6 +1378,7 @@ UIViewControllerTransitioningDelegate
         _collectionView.delegate = self;
         _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _collectionView.alwaysBounceVertical = YES;
+        _collectionView.showsVerticalScrollIndicator = NO;
         [_collectionView registerClass:[ImgCollectionViewCell class] forCellWithReuseIdentifier:@"DateCellId"];
         //[_collectionView registerClass:[PhotoCollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"sectionFooterId"];
         //_collectionView.allowsMultipleSelection = YES;
@@ -1498,9 +1500,6 @@ UIViewControllerTransitioningDelegate
             _assetGroupViewController.needRunAnimation = YES;
             [_assetGroupViewController.collectionView reloadData];
         }
-        
-        
-        
         
     } isFirst:NO];
 }

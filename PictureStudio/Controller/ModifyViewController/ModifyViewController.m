@@ -38,6 +38,7 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *borderBtnHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *borderBtnWidth;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomViewHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *scrollViewMaginTop;
 
 
 @property (weak, nonatomic) IBOutlet UIScrollView *showImageScrollView;
@@ -67,7 +68,7 @@
     if (_resultModels) {
         //[self CreateShowImgaeView:_resultModels];//创建图片显示区域
         //[self.view addSubview:self.toolBarView];//创建保存图片区域
-        [self setInMoveState:300 index:0];
+        [self setInMoveState:0 index:0];
     }
     self.view.backgroundColor = UIColor.backgroundColor;
     __weak typeof(self) weakSelf = self;
@@ -107,12 +108,8 @@
     [self.view handleLoading];
     //[self CreateShowImgaeView:[self.manager getScrollResult]];
     _resultModels = [self.manager getScrollResult];
-    
-    
-    
-    [self setInMoveState:300 index:0];
-    
-    
+    [self setInMoveState:0 index:0];
+
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -129,6 +126,7 @@
 
 - (void)initView {
     
+    _scrollViewMaginTop.constant = 10*ScreenHeightRatio + kTopMargin;
     _bottomViewHeight.constant = 60*ScreenHeightRatio;
     _backBtnWidth.constant = 34*ScreenWidthRatio;
     _backBtnMaginLeft.constant = 20*ScreenWidthRatio;
@@ -175,7 +173,7 @@
     _showImageScrollView.scrollsToTop = NO;
     _showImageScrollView.showsHorizontalScrollIndicator = NO;
     _showImageScrollView.showsVerticalScrollIndicator = NO;
-    _showImageScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+//    _showImageScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _showImageScrollView.delaysContentTouches = NO;
     _showImageScrollView.canCancelContentTouches = YES;
     _showImageScrollView.alwaysBounceVertical = NO;
@@ -187,13 +185,13 @@
     _containImageView.contentMode = UIViewContentModeScaleAspectFit;
     [_showImageScrollView addSubview:_containImageView];
     
-    if (@available(iOS 11.0, *)) {
-        _showImageScrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-    } else {
-        
-    }
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(touchOnImage:)];
-    [_showImageScrollView addGestureRecognizer:tapGesture];
+//    if (@available(iOS 11.0, *)) {
+//        _showImageScrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+//    } else {
+//
+//    }
+//    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(touchOnImage:)];
+//    [_showImageScrollView addGestureRecognizer:tapGesture];
     
     UITapGestureRecognizer *tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTap:)];
     [self.view addGestureRecognizer:tap1];
@@ -329,7 +327,7 @@
         UIImage *image = mode.originPhoto;
         UIImageView *imageView = [[UIImageView alloc]initWithImage:image];
         CGFloat itemHeight = (mode.endY - mode.beginY);
-        UIScrollView *itemView = [[UIScrollView alloc]initWithFrame:CGRectZero];
+        //MoveItemView *itemView = [[MoveItemView alloc]initWithFrame:CGRectZero];
         
         CGFloat contentViewOffset;
         if(i == 0) {
@@ -344,8 +342,9 @@
         cgpos.origin.y = contentViewOffset;
         cgpos.size.width = _showImageScrollView.hx_w;
         cgpos.size.height = itemHeight*ratio;
-        itemView.frame = cgpos;
-        
+        //itemView.frame = cgpos;
+        //MoveItemView *itemView = [[MoveItemView alloc]initWithFrame:cgpos model:mode];
+        MoveItemView *itemView = [[MoveItemView alloc]initWithFrame:cgpos];
         
         [containView addSubview:itemView];
         itemView.contentSize = CGSizeMake(_showImageScrollView.hx_w, imageView.hx_h*ratio);
@@ -364,6 +363,7 @@
         
         imageView.size = CGSizeMake(_showImageScrollView.hx_w, itemView.contentSize.height);
         [itemView addSubview:imageView];
+        [itemView setNewModel:mode];
         [self addLayerBorder:imageView count:count index:i direction:YES];
         //[self addLayerBorder:imageView count:count index:i direction:isCombineVertical];
         

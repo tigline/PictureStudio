@@ -137,9 +137,9 @@
         return;
     }
     
-    CGFloat pointY = (self.hx_h - btnHeight)/2;
+    CGFloat pointY = 13*ScreenHeightRatio;//(self.hx_h - btnHeight)/2;
 
-    self.clearBtn.frame = CGRectMake(22*ScreenWidthRatio, (self.hx_h - 22*ScreenWidthRatio)/2, 22*ScreenWidthRatio, 22*ScreenWidthRatio);
+    self.clearBtn.frame = CGRectMake(22*ScreenWidthRatio, 19*ScreenHeightRatio, 22*ScreenWidthRatio, 22*ScreenWidthRatio);
     
     self.combineBtn.frame = CGRectMake(self.clearBtn.rightBottom.x + 42*ScreenWidthRatio, pointY, btnWidth, btnHeight);
     

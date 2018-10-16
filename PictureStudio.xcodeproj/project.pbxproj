@@ -95,12 +95,12 @@
 		0FBE47B7FBE857DD390CAF1A /* libPods-PictureStudioTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PictureStudioTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		68AFF48AE0E9AFCEE83E38DA /* Pods-PictureStudioTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PictureStudioTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PictureStudioTests/Pods-PictureStudioTests.debug.xcconfig"; sourceTree = "<group>"; };
 		700E324A20A1C779007A23E0 /* teamWeiboInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = teamWeiboInfo.plist; sourceTree = "<group>"; };
-		700E324C20A1C89F007A23E0 /* AboutViewTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AboutViewTableViewCell.m; path = PictureStudio/View/AboutViewTableViewCell.m; sourceTree = SOURCE_ROOT; };
-		700E324D20A1C8A0007A23E0 /* AboutViewTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = AboutViewTableViewCell.xib; path = ../View/AboutViewTableViewCell.xib; sourceTree = "<group>"; };
-		700E324E20A1C8A0007A23E0 /* AboutViewTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AboutViewTableViewCell.h; path = PictureStudio/View/AboutViewTableViewCell.h; sourceTree = SOURCE_ROOT; };
-		700E325120A1E464007A23E0 /* WeiboTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeiboTableViewCell.h; path = PictureStudio/View/WeiboTableViewCell.h; sourceTree = SOURCE_ROOT; };
-		700E325220A1E464007A23E0 /* WeiboTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = WeiboTableViewCell.xib; path = PictureStudio/View/WeiboTableViewCell.xib; sourceTree = SOURCE_ROOT; };
-		700E325320A1E464007A23E0 /* WeiboTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeiboTableViewCell.m; path = PictureStudio/View/WeiboTableViewCell.m; sourceTree = SOURCE_ROOT; };
+		700E324C20A1C89F007A23E0 /* AboutViewTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AboutViewTableViewCell.m; path = PictureStudio/Controller/About/AboutCell/AboutViewTableViewCell.m; sourceTree = SOURCE_ROOT; };
+		700E324D20A1C8A0007A23E0 /* AboutViewTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AboutViewTableViewCell.xib; sourceTree = "<group>"; };
+		700E324E20A1C8A0007A23E0 /* AboutViewTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AboutViewTableViewCell.h; path = PictureStudio/Controller/About/AboutCell/AboutViewTableViewCell.h; sourceTree = SOURCE_ROOT; };
+		700E325120A1E464007A23E0 /* WeiboTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeiboTableViewCell.h; path = PictureStudio/Controller/About/WeiboTableViewCell.h; sourceTree = SOURCE_ROOT; };
+		700E325220A1E464007A23E0 /* WeiboTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = WeiboTableViewCell.xib; path = PictureStudio/Controller/About/WeiboTableViewCell.xib; sourceTree = SOURCE_ROOT; };
+		700E325320A1E464007A23E0 /* WeiboTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeiboTableViewCell.m; path = PictureStudio/Controller/About/WeiboTableViewCell.m; sourceTree = SOURCE_ROOT; };
 		702C5FBB20CACEEE00AA8CA5 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		702C5FBE20D15DF000AA8CA5 /* XDProgressView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XDProgressView.h; sourceTree = "<group>"; };
 		702C5FBF20D15DF000AA8CA5 /* XDProgressView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XDProgressView.m; sourceTree = "<group>"; };
@@ -114,8 +114,8 @@
 		7042145E21344D100005AB2F /* UIViewController+Extensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+Extensions.m"; path = "PictureStudio/Category/UIViewController+Extensions.m"; sourceTree = SOURCE_ROOT; };
 		7042146021344FD10005AB2F /* ViewControllerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerExtensions.swift; sourceTree = "<group>"; };
 		7042146C213453290005AB2F /* PictureStudio_Bridging_Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PictureStudio_Bridging_Header.h; sourceTree = "<group>"; };
-		7060808020BEF56A0045F49E /* HXPhoto3DTouchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HXPhoto3DTouchViewController.m; path = PictureStudio/Controller/HXPhoto3DTouchViewController.m; sourceTree = SOURCE_ROOT; };
-		7060808120BEF56A0045F49E /* HXPhoto3DTouchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HXPhoto3DTouchViewController.h; path = PictureStudio/Controller/HXPhoto3DTouchViewController.h; sourceTree = SOURCE_ROOT; };
+		7060808020BEF56A0045F49E /* HXPhoto3DTouchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HXPhoto3DTouchViewController.m; path = PictureStudio/Controller/Ablum/HXPhoto3DTouchViewController.m; sourceTree = SOURCE_ROOT; };
+		7060808120BEF56A0045F49E /* HXPhoto3DTouchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HXPhoto3DTouchViewController.h; path = PictureStudio/Controller/Ablum/HXPhoto3DTouchViewController.h; sourceTree = SOURCE_ROOT; };
 		7060808320C58A2C0045F49E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		70711C9321359B4E008A6121 /* AssetGroupViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AssetGroupViewController.h; sourceTree = "<group>"; };
 		70711C9421359B4E008A6121 /* AssetGroupViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AssetGroupViewController.m; sourceTree = "<group>"; };
@@ -126,9 +126,9 @@
 		707DBA7B209EC52700F2FAFB /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		707DBA7D209ED61100F2FAFB /* PhotoSaveBottomView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoSaveBottomView.h; sourceTree = "<group>"; };
 		707DBA7E209ED61100F2FAFB /* PhotoSaveBottomView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoSaveBottomView.m; sourceTree = "<group>"; };
-		707DBA85209EDBAC00F2FAFB /* AboutViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AboutViewController.h; path = PictureStudio/Controller/AboutViewController.h; sourceTree = SOURCE_ROOT; };
-		707DBA86209EDBAC00F2FAFB /* AboutViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AboutViewController.m; path = PictureStudio/Controller/AboutViewController.m; sourceTree = SOURCE_ROOT; };
-		707DBA87209EDBAC00F2FAFB /* AboutViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = AboutViewController.xib; path = PictureStudio/Controller/AboutViewController.xib; sourceTree = SOURCE_ROOT; };
+		707DBA85209EDBAC00F2FAFB /* AboutViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AboutViewController.h; path = PictureStudio/Controller/About/AboutViewController.h; sourceTree = SOURCE_ROOT; };
+		707DBA86209EDBAC00F2FAFB /* AboutViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AboutViewController.m; path = PictureStudio/Controller/About/AboutViewController.m; sourceTree = SOURCE_ROOT; };
+		707DBA87209EDBAC00F2FAFB /* AboutViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = AboutViewController.xib; path = PictureStudio/Controller/About/AboutViewController.xib; sourceTree = SOURCE_ROOT; };
 		707DBA8A209EF19400F2FAFB /* PrefixHeader-PictureStudio.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PrefixHeader-PictureStudio.pch"; sourceTree = "<group>"; };
 		707DBA8B20A0A14100F2FAFB /* ShareBoardView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShareBoardView.h; path = PictureStudio/View/ShareBoardView.h; sourceTree = SOURCE_ROOT; };
 		707DBA8C20A0A14100F2FAFB /* ShareBoardView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ShareBoardView.m; path = PictureStudio/View/ShareBoardView.m; sourceTree = SOURCE_ROOT; };
@@ -271,6 +271,8 @@
 			children = (
 				70BF0AFB2144CE6C000AAE53 /* ModifyViewController.h */,
 				70BF0AFC2144CE6C000AAE53 /* ModifyViewController.m */,
+				707DBA7D209ED61100F2FAFB /* PhotoSaveBottomView.h */,
+				707DBA7E209ED61100F2FAFB /* PhotoSaveBottomView.m */,
 				707E88062149470B009954E1 /* MoveItemView */,
 			);
 			path = ModifyViewController;
@@ -288,29 +290,16 @@
 		7082489F204EC6FC000D60A3 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				70EEBEEA217630CE004DB6BC /* Preview */,
+				70EEBEE721763021004DB6BC /* About */,
+				70EEBEE621762FEE004DB6BC /* Combine */,
+				70EEBEE421762FB4004DB6BC /* Ablum */,
 				939F2700213FACF900718374 /* Base */,
 				939F270B213FBF4600718374 /* Helps */,
 				936FAC2F20200B9A00F80BCF /* Main.storyboard */,
-				936FAC2C20200B9A00F80BCF /* AlbumViewController.h */,
-				936FAC2D20200B9A00F80BCF /* AlbumViewController.m */,
-				9338E54D20A577A10059D58E /* PhotoPreviewController.h */,
-				9338E54E20A577A10059D58E /* PhotoPreviewController.m */,
 				707DBA79209EC4BE00F2FAFB /* ScrollPictureViewController.h */,
 				707DBA78209EC4BE00F2FAFB /* ScrollPictureViewController.m */,
-				708248A1204EC6FC000D60A3 /* CombinePictureViewController.h */,
-				708248A0204EC6FC000D60A3 /* CombinePictureViewController.m */,
-				707DBA85209EDBAC00F2FAFB /* AboutViewController.h */,
-				707DBA86209EDBAC00F2FAFB /* AboutViewController.m */,
-				707DBA87209EDBAC00F2FAFB /* AboutViewController.xib */,
-				70925B5A213578A800AE9373 /* AssetCollectionCell.h */,
-				70925B5B213578A800AE9373 /* AssetCollectionCell.m */,
-				70711C982135A0E2008A6121 /* AssetCollectionCell.xib */,
-				70711C9321359B4E008A6121 /* AssetGroupViewController.h */,
-				70711C9421359B4E008A6121 /* AssetGroupViewController.m */,
-				70711C9521359B4E008A6121 /* AssetGroupViewController.xib */,
 				707E8805214946DD009954E1 /* ModifyViewController */,
-				7060808120BEF56A0045F49E /* HXPhoto3DTouchViewController.h */,
-				7060808020BEF56A0045F49E /* HXPhoto3DTouchViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -361,24 +350,12 @@
 				703FDEB72132E3CB006218D0 /* AssetTitleButton.m */,
 				9399E81E20D23D5400791E92 /* ToastView.h */,
 				9399E81F20D23D5400791E92 /* ToastView.m */,
-				9338E55020A57A760059D58E /* PhotoPreviewCell.h */,
-				9338E55120A57A760059D58E /* PhotoPreviewCell.m */,
 				7082490420790F92000D60A3 /* PhotoCollectionReusableView.h */,
 				7082490520790F92000D60A3 /* PhotoCollectionReusableView.m */,
 				708248F52078AFAF000D60A3 /* ImgCollectionViewCell.h */,
 				708248F62078AFAF000D60A3 /* ImgCollectionViewCell.m */,
-				708248FE2078E510000D60A3 /* PhotoEditButtomView.h */,
-				708248FF2078E510000D60A3 /* PhotoEditButtomView.m */,
-				707DBA7D209ED61100F2FAFB /* PhotoSaveBottomView.h */,
-				707DBA7E209ED61100F2FAFB /* PhotoSaveBottomView.m */,
-				700E324E20A1C8A0007A23E0 /* AboutViewTableViewCell.h */,
-				700E324C20A1C89F007A23E0 /* AboutViewTableViewCell.m */,
-				700E324D20A1C8A0007A23E0 /* AboutViewTableViewCell.xib */,
 				707DBA8B20A0A14100F2FAFB /* ShareBoardView.h */,
 				707DBA8C20A0A14100F2FAFB /* ShareBoardView.m */,
-				700E325120A1E464007A23E0 /* WeiboTableViewCell.h */,
-				700E325320A1E464007A23E0 /* WeiboTableViewCell.m */,
-				700E325220A1E464007A23E0 /* WeiboTableViewCell.xib */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -409,6 +386,85 @@
 				7042146021344FD10005AB2F /* ViewControllerExtensions.swift */,
 			);
 			path = category;
+			sourceTree = "<group>";
+		};
+		70EEBEE421762FB4004DB6BC /* Ablum */ = {
+			isa = PBXGroup;
+			children = (
+				936FAC2C20200B9A00F80BCF /* AlbumViewController.h */,
+				936FAC2D20200B9A00F80BCF /* AlbumViewController.m */,
+				708248FE2078E510000D60A3 /* PhotoEditButtomView.h */,
+				708248FF2078E510000D60A3 /* PhotoEditButtomView.m */,
+				7060808120BEF56A0045F49E /* HXPhoto3DTouchViewController.h */,
+				7060808020BEF56A0045F49E /* HXPhoto3DTouchViewController.m */,
+				70EEBEE821763042004DB6BC /* AssetGroup */,
+			);
+			path = Ablum;
+			sourceTree = "<group>";
+		};
+		70EEBEE621762FEE004DB6BC /* Combine */ = {
+			isa = PBXGroup;
+			children = (
+				708248A1204EC6FC000D60A3 /* CombinePictureViewController.h */,
+				708248A0204EC6FC000D60A3 /* CombinePictureViewController.m */,
+			);
+			path = Combine;
+			sourceTree = "<group>";
+		};
+		70EEBEE721763021004DB6BC /* About */ = {
+			isa = PBXGroup;
+			children = (
+				70EEBEEB21763163004DB6BC /* AboutCell */,
+				707DBA85209EDBAC00F2FAFB /* AboutViewController.h */,
+				707DBA86209EDBAC00F2FAFB /* AboutViewController.m */,
+				707DBA87209EDBAC00F2FAFB /* AboutViewController.xib */,
+				700E325120A1E464007A23E0 /* WeiboTableViewCell.h */,
+				700E325320A1E464007A23E0 /* WeiboTableViewCell.m */,
+				700E325220A1E464007A23E0 /* WeiboTableViewCell.xib */,
+			);
+			path = About;
+			sourceTree = "<group>";
+		};
+		70EEBEE821763042004DB6BC /* AssetGroup */ = {
+			isa = PBXGroup;
+			children = (
+				70EEBEE921763090004DB6BC /* AssetCell */,
+				70711C9321359B4E008A6121 /* AssetGroupViewController.h */,
+				70711C9421359B4E008A6121 /* AssetGroupViewController.m */,
+				70711C9521359B4E008A6121 /* AssetGroupViewController.xib */,
+			);
+			path = AssetGroup;
+			sourceTree = "<group>";
+		};
+		70EEBEE921763090004DB6BC /* AssetCell */ = {
+			isa = PBXGroup;
+			children = (
+				70925B5A213578A800AE9373 /* AssetCollectionCell.h */,
+				70925B5B213578A800AE9373 /* AssetCollectionCell.m */,
+				70711C982135A0E2008A6121 /* AssetCollectionCell.xib */,
+			);
+			path = AssetCell;
+			sourceTree = "<group>";
+		};
+		70EEBEEA217630CE004DB6BC /* Preview */ = {
+			isa = PBXGroup;
+			children = (
+				9338E54D20A577A10059D58E /* PhotoPreviewController.h */,
+				9338E54E20A577A10059D58E /* PhotoPreviewController.m */,
+				9338E55020A57A760059D58E /* PhotoPreviewCell.h */,
+				9338E55120A57A760059D58E /* PhotoPreviewCell.m */,
+			);
+			path = Preview;
+			sourceTree = "<group>";
+		};
+		70EEBEEB21763163004DB6BC /* AboutCell */ = {
+			isa = PBXGroup;
+			children = (
+				700E324E20A1C8A0007A23E0 /* AboutViewTableViewCell.h */,
+				700E324C20A1C89F007A23E0 /* AboutViewTableViewCell.m */,
+				700E324D20A1C8A0007A23E0 /* AboutViewTableViewCell.xib */,
+			);
+			path = AboutCell;
 			sourceTree = "<group>";
 		};
 		936FAC1D20200B9A00F80BCF = {

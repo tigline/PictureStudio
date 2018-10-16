@@ -26,6 +26,8 @@ typedef enum : NSUInteger {
 - (void)setDragButtomHidden:(BOOL)hidden;
 
 - (void)setMoveState:(moveState)state;
+
+- (instancetype)initWithFrame:(CGRect)frame model:(PhotoCutModel *)model;
 @end
 
 NS_ASSUME_NONNULL_END
