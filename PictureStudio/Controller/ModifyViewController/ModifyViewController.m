@@ -39,6 +39,7 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *borderBtnWidth;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomViewHeight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *scrollViewMaginTop;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomBtnToTop;
 
 
 @property (weak, nonatomic) IBOutlet UIScrollView *showImageScrollView;
@@ -65,11 +66,7 @@
     
     [self createScrollView];
     
-    if (_resultModels) {
-        //[self CreateShowImgaeView:_resultModels];//创建图片显示区域
-        //[self.view addSubview:self.toolBarView];//创建保存图片区域
-        [self setInMoveState:0 index:0];
-    }
+    
     self.view.backgroundColor = UIColor.backgroundColor;
     __weak typeof(self) weakSelf = self;
     _interactionController = [[SwipeEdgeInteractionController alloc] initWithViewController:self interationDirection:left completion:^{
@@ -81,6 +78,11 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    if (_resultModels) {
+        //[self CreateShowImgaeView:_resultModels];//创建图片显示区域
+        //[self.view addSubview:self.toolBarView];//创建保存图片区域
+        [self setInMoveState:50 index:0];
+    }
     if (_manager.selectedCount > 3 && !_isFinish) {
         [self.view showLoadingHUDText:LocalString(@"scroll_ing")];
     }
@@ -91,6 +93,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
     if (!_manager.isScrollSuccess) {
         //[self showScrollError];
     }
@@ -108,7 +111,7 @@
     [self.view handleLoading];
     //[self CreateShowImgaeView:[self.manager getScrollResult]];
     _resultModels = [self.manager getScrollResult];
-    [self setInMoveState:0 index:0];
+    [self setInMoveState:200 index:0];
 
 }
 
@@ -127,7 +130,7 @@
 - (void)initView {
     
     _scrollViewMaginTop.constant = 10*ScreenHeightRatio + kTopMargin;
-    _bottomViewHeight.constant = 60*ScreenHeightRatio;
+    _bottomViewHeight.constant = ButtomViewHeight + kBottomMargin;
     _backBtnWidth.constant = 34*ScreenWidthRatio;
     _backBtnMaginLeft.constant = 20*ScreenWidthRatio;
     
@@ -142,6 +145,7 @@
     _moveBtnMaginLeft.constant = 106*ScreenWidthRatio;
     _borderBtnMaginRight.constant = 106*ScreenWidthRatio;
     
+    _bottomBtnToTop.constant = 13*ScreenHeightRatio;
     _bottomView.layer.shadowOpacity = 0.99;
     _bottomView.layer.shadowColor = UIColor.navShadowColor.CGColor;
     _bottomView.layer.shadowRadius = 4;
@@ -165,24 +169,24 @@
     //_showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTopMargin, self.view.hx_w, self.view.hx_h - kBottomMargin - kTopMargin - ButtomViewHeight)];
     //_showImageScrollView.delegate = self;
     //[self.view addSubview:_showImageScrollView];
-    _showImageScrollView.backgroundColor = [UIColor backgroundColor];
+    //_showImageScrollView.backgroundColor = [UIColor backgroundColor];
     _showImageScrollView.bouncesZoom = YES;
     _showImageScrollView.maximumZoomScale = 2.5;
     _showImageScrollView.minimumZoomScale = 1.0;
     //_showImageScrollView.multipleTouchEnabled = YES;
-    _showImageScrollView.scrollsToTop = NO;
+    //_showImageScrollView.scrollsToTop = NO;
     _showImageScrollView.showsHorizontalScrollIndicator = NO;
     _showImageScrollView.showsVerticalScrollIndicator = NO;
 //    _showImageScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _showImageScrollView.delaysContentTouches = NO;
     _showImageScrollView.canCancelContentTouches = YES;
     _showImageScrollView.alwaysBounceVertical = NO;
-    _showImageScrollView.userInteractionEnabled = YES;
+    //_showImageScrollView.userInteractionEnabled = YES;
     
     _containImageView = [[UIView alloc] init];
     _containImageView.clipsToBounds = YES;
     
-    _containImageView.contentMode = UIViewContentModeScaleAspectFit;
+    //_containImageView.contentMode = UIViewContentModeScaleAspectFit;
     [_showImageScrollView addSubview:_containImageView];
     
 //    if (@available(iOS 11.0, *)) {

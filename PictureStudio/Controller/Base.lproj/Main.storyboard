@@ -146,6 +146,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lHq-Ia-KiD">
+                                <rect key="frame" x="10" y="10" width="355" height="597"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <connections>
+                                    <outlet property="delegate" destination="QG2-ct-aNx" id="OPk-p7-rQP"/>
+                                </connections>
+                            </scrollView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="a6i-fI-lp2">
                                 <rect key="frame" x="0.0" y="607" width="375" height="60"/>
                                 <subviews>
@@ -198,25 +205,19 @@
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="wvR-9K-TLa" secondAttribute="trailing" constant="106" id="9pz-u6-vQw"/>
                                     <constraint firstItem="QsV-ZA-Tqv" firstAttribute="leading" secondItem="a6i-fI-lp2" secondAttribute="leading" constant="20" id="GN6-qE-PFX"/>
-                                    <constraint firstItem="QsV-ZA-Tqv" firstAttribute="centerY" secondItem="a6i-fI-lp2" secondAttribute="centerY" id="HFE-iz-mr9"/>
-                                    <constraint firstItem="wvR-9K-TLa" firstAttribute="centerY" secondItem="a6i-fI-lp2" secondAttribute="centerY" id="L59-Gu-eP1"/>
-                                    <constraint firstItem="sQ4-ub-fUu" firstAttribute="centerY" secondItem="a6i-fI-lp2" secondAttribute="centerY" id="N58-7W-Okt"/>
                                     <constraint firstItem="h3m-CK-6ny" firstAttribute="leading" secondItem="a6i-fI-lp2" secondAttribute="leading" constant="106" id="OjO-jK-hwd"/>
+                                    <constraint firstItem="sQ4-ub-fUu" firstAttribute="centerY" secondItem="wvR-9K-TLa" secondAttribute="centerY" id="PVw-zl-jto"/>
+                                    <constraint firstItem="QsV-ZA-Tqv" firstAttribute="centerY" secondItem="h3m-CK-6ny" secondAttribute="centerY" id="RMY-ZG-8VQ"/>
                                     <constraint firstAttribute="trailing" secondItem="sQ4-ub-fUu" secondAttribute="trailing" constant="19" id="c7n-hG-gaL"/>
-                                    <constraint firstItem="h3m-CK-6ny" firstAttribute="centerY" secondItem="a6i-fI-lp2" secondAttribute="centerY" id="mdz-KP-0Jg"/>
+                                    <constraint firstItem="h3m-CK-6ny" firstAttribute="top" secondItem="a6i-fI-lp2" secondAttribute="top" constant="13" id="mT3-vp-l8r"/>
+                                    <constraint firstItem="wvR-9K-TLa" firstAttribute="centerY" secondItem="h3m-CK-6ny" secondAttribute="centerY" id="o2n-lL-rKb"/>
                                     <constraint firstAttribute="height" constant="60" id="t0d-sv-5g8"/>
                                 </constraints>
                             </view>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lHq-Ia-KiD">
-                                <rect key="frame" x="10" y="10" width="355" height="597"/>
-                                <connections>
-                                    <outlet property="delegate" destination="QG2-ct-aNx" id="OPk-p7-rQP"/>
-                                </connections>
-                            </scrollView>
                         </subviews>
                         <color key="backgroundColor" red="0.93333333333333335" green="0.93333333333333335" blue="0.93333333333333335" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="a6i-fI-lp2" firstAttribute="bottom" secondItem="9F0-WK-FiS" secondAttribute="bottom" id="1UB-Lk-sJs"/>
+                            <constraint firstItem="a6i-fI-lp2" firstAttribute="bottom" secondItem="tk4-8S-V2t" secondAttribute="bottom" id="1UB-Lk-sJs"/>
                             <constraint firstItem="9F0-WK-FiS" firstAttribute="trailing" secondItem="lHq-Ia-KiD" secondAttribute="trailing" constant="10" id="EHm-Gi-qqJ"/>
                             <constraint firstItem="lHq-Ia-KiD" firstAttribute="top" secondItem="tk4-8S-V2t" secondAttribute="top" constant="10" id="IBT-P5-0k6"/>
                             <constraint firstItem="9F0-WK-FiS" firstAttribute="bottom" secondItem="lHq-Ia-KiD" secondAttribute="bottom" constant="60" id="Nf1-2e-pGO"/>
@@ -234,6 +235,7 @@
                         <outlet property="borderBtnHeight" destination="pgD-uE-Tul" id="4w5-cO-VhB"/>
                         <outlet property="borderBtnMaginRight" destination="9pz-u6-vQw" id="GTk-ea-kds"/>
                         <outlet property="borderBtnWidth" destination="7Ti-0v-brz" id="2Gf-Fy-uE2"/>
+                        <outlet property="bottomBtnToTop" destination="mT3-vp-l8r" id="xUW-uo-T6Y"/>
                         <outlet property="bottomView" destination="a6i-fI-lp2" id="wl6-qt-KjP"/>
                         <outlet property="bottomViewHeight" destination="t0d-sv-5g8" id="ioe-OE-43S"/>
                         <outlet property="moveBtn" destination="h3m-CK-6ny" id="3Ph-wU-Yb6"/>
