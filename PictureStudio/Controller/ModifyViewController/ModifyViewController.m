@@ -19,8 +19,9 @@
 #import "SwipeEdgeInteractionController.h"
 #import "HXPhotoManager.h"
 #import "MoveItemView.h"
+#import "ModifyCollectionViewCell.h"
 
-@interface ModifyViewController () <UIScrollViewDelegate>
+@interface ModifyViewController () <UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
 @property (weak, nonatomic) IBOutlet UIButton *backBtn;
@@ -43,6 +44,8 @@
 
 
 @property (weak, nonatomic) IBOutlet UIScrollView *showImageScrollView;
+@property (weak, nonatomic) IBOutlet UICollectionView *showImageCollectionView;
+
 //@property (strong, nonatomic) UIScrollView *showImageScrollView;
 @property (strong, nonatomic) UIScrollView *shareScrollView;
 @property (strong, nonatomic) PhotoSaveBottomView *toolBarView;
@@ -66,8 +69,8 @@
     
     [self createScrollView];
     
-    
-    self.view.backgroundColor = UIColor.backgroundColor;
+    _showImageScrollView.hidden = YES;
+    //self.view.backgroundColor = UIColor.backgroundColor;
     __weak typeof(self) weakSelf = self;
     _interactionController = [[SwipeEdgeInteractionController alloc] initWithViewController:self interationDirection:left completion:^{
         [weakSelf dismissViewControllerAnimated:YES completion:nil];
@@ -79,9 +82,10 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     if (_resultModels) {
+        [self.showImageCollectionView reloadData];
         //[self CreateShowImgaeView:_resultModels];//创建图片显示区域
         //[self.view addSubview:self.toolBarView];//创建保存图片区域
-        [self setInMoveState:50 index:0];
+        //[self setInMoveState:50 index:0];
     }
     if (_manager.selectedCount > 3 && !_isFinish) {
         [self.view showLoadingHUDText:LocalString(@"scroll_ing")];
@@ -111,7 +115,8 @@
     [self.view handleLoading];
     //[self CreateShowImgaeView:[self.manager getScrollResult]];
     _resultModels = [self.manager getScrollResult];
-    [self setInMoveState:200 index:0];
+    [self.showImageCollectionView reloadData];
+    //[self setInMoveState:200 index:0];
 
 }
 
@@ -206,7 +211,6 @@
 }
 
 
-
 - (void)CreateShowImgaeView:(NSArray *)resultArray
 {
     //    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10*ScreenWidthRatio, kTopMargin + 10*ScreenHeightRatio, 355*ScreenWidthRatio, 517*ScreenHeightRatio)];
@@ -221,7 +225,7 @@
             UIImage *image = mode.originPhoto;
             UIImageView *imageView = [[UIImageView alloc]initWithImage:image];
             CGFloat itemHeight = (mode.endY - mode.beginY);
-            UIScrollView *itemView = [[UIScrollView alloc]initWithFrame:CGRectZero];
+            //UIScrollView *itemView = [[UIScrollView alloc]initWithFrame:CGRectZero];
             
             CGFloat contentViewOffset;
             if(i == 0) {
@@ -231,18 +235,19 @@
             }
             
             CGFloat ratio = (_showImageScrollView.hx_w - 20)/imageView.hx_w;
-            
+            mode.scaleRatio = ratio;
             cgpos.origin.x = 10;
             cgpos.origin.y = contentViewOffset;
             cgpos.size.width = _showImageScrollView.hx_w - 20;
             cgpos.size.height = itemHeight*ratio;
-            itemView.frame = cgpos;
-            
+            //itemView.frame = cgpos;
+            MoveItemView *itemView = [[MoveItemView alloc]initWithFrame:cgpos];
             
             [_containImageView addSubview:itemView];
+            //[itemView setNewModel:mode];
             itemView.contentSize = CGSizeMake(_showImageScrollView.hx_w - 20, imageView.hx_h*ratio);
             itemView.contentOffset = CGPointMake(0, mode.beginY*ratio);
-            itemView.scrollEnabled = NO;
+            //itemView.scrollEnabled = YES;
             
             CGFloat lastOffset;
             if (i == _manager.selectedArray.count - 1 || i == 0) {
@@ -253,17 +258,17 @@
             
             _containImageView.size = CGSizeMake(cgpos.size.width, _containImageView.hx_h + lastOffset);
             //itemView.contentSize = CGSizeMake(_showImageScrollView.hx_w - 20, itemView.contentSize.height*1.5);
-            
-            imageView.size = CGSizeMake(_showImageScrollView.hx_w - 20, itemView.contentSize.height);
-            [itemView addSubview:imageView];
-            [self addLayerBorder:imageView count:count index:i direction:YES];
+            [itemView setNewModel:mode];
+            //imageView.size = CGSizeMake(_showImageScrollView.hx_w - 20, itemView.contentSize.height);
+            //[itemView addSubview:imageView];
+            //[self addLayerBorder:imageView count:count index:i direction:YES];
             //[self addLayerBorder:imageView count:count index:i direction:isCombineVertical];
             
         }
         _containImageView.frame = CGRectMake(0, 0, _showImageScrollView.hx_w, _containImageView.hx_h);
         
-        //        _containImageView.layer.borderWidth = 1*ScreenWidthRatio;
-        //        _containImageView.layer.borderColor = [[UIColor blackColor] colorWithAlphaComponent:0.1].CGColor;
+        //_containImageView.layer.borderWidth = 1*ScreenWidthRatio;
+        //_containImageView.layer.borderColor = [[UIColor blackColor] colorWithAlphaComponent:0.1].CGColor;
         [_showImageScrollView setContentSize:CGSizeMake(_showImageScrollView.hx_w, _containImageView.hx_h)];
     }
 }
@@ -525,5 +530,54 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return 1;
+}
+
+- (nonnull __kindof UICollectionViewCell *)collectionView:(nonnull UICollectionView *)collectionView cellForItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
+    
+    ModifyCollectionViewCell *cell = [self.showImageCollectionView dequeueReusableCellWithReuseIdentifier:@"modifyCollectionCell" forIndexPath:indexPath];
+    PhotoCutModel *model = [self.resultModels objectAtIndex:indexPath.row];
+    [cell configCell:model];
+    return cell;
+    
+}
+
+- (NSInteger)collectionView:(nonnull UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return self.resultModels.count;
+}
+
+//设置每个Cell的大小
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    PhotoCutModel *model = [self.resultModels objectAtIndex:indexPath.row];
+    CGFloat imageCutHeight = (model.endY - model.beginY);
+    CGFloat ratio = (collectionView.hx_w)/model.originPhoto.size.width;
+    CGFloat cellHeight = imageCutHeight*ratio;
+    CGSize size = CGSizeMake(collectionView.hx_w-1,cellHeight-1);
+    return size;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+    
+    return CGSizeZero;
+}
+
+-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+{
+    return UIEdgeInsetsMake(0, 0, 0, 0);//分别为上、左、下、右
+}
+//这个是两行cell之间的间距（上下行cell的间距）
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
+{
+    return 10;
+}
+//两个cell之间的间距（同一行的cell的间距）
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
+{
+    return 0;
+}
+
+
 
 @end

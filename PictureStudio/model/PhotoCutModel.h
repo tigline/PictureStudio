@@ -15,5 +15,6 @@
 @property (strong, nonatomic) UIImage *cutPhoto;
 @property (assign, nonatomic) CGFloat beginY;
 @property (assign, nonatomic) CGFloat endY;
+@property (assign, nonatomic) CGFloat scaleRatio;
 
 @end
