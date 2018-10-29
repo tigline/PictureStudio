@@ -14,6 +14,7 @@
 + (UIColor *)assetBorderColor;
 + (UIColor *)navShadowColor;
 + (UIColor *)backgroundColor;
++ (UIColor *)moveBackgroundColor;
 + (UIColor *)cellTitleNormalColor;
 + (UIColor *)settingBgShadowColor;
 + (UIColor *)cellTitleSelectedColor;

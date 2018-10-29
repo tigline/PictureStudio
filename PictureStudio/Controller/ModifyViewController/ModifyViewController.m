@@ -20,8 +20,9 @@
 #import "HXPhotoManager.h"
 #import "MoveItemView.h"
 #import "ModifyCollectionViewCell.h"
+#import "MoveItemView/MoveItemCell.h"
 
-@interface ModifyViewController () <UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource>
+@interface ModifyViewController () <UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, ModifyCellDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
 @property (weak, nonatomic) IBOutlet UIButton *backBtn;
@@ -60,17 +61,19 @@
 @property (strong, nonatomic) UIView *containImageView;
 @end
 
+static NSString * const identifier = @"moveCell";
+
 @implementation ModifyViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.showImageCollectionView.hidden = YES;
     [self initView];
     
     [self createScrollView];
     
-    _showImageScrollView.hidden = YES;
-    //self.view.backgroundColor = UIColor.backgroundColor;
+
+    self.view.backgroundColor = UIColor.backgroundColor;
     __weak typeof(self) weakSelf = self;
     _interactionController = [[SwipeEdgeInteractionController alloc] initWithViewController:self interationDirection:left completion:^{
         [weakSelf dismissViewControllerAnimated:YES completion:nil];
@@ -82,8 +85,13 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     if (_resultModels) {
-        [self.showImageCollectionView reloadData];
-        //[self CreateShowImgaeView:_resultModels];//创建图片显示区域
+        //
+        [self CreateShowImgaeView:_resultModels];//创建图片显示区域
+        __weak typeof(self) weakSelf = self;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.showImageCollectionView reloadData];
+        });
+        
         //[self.view addSubview:self.toolBarView];//创建保存图片区域
         //[self setInMoveState:50 index:0];
     }
@@ -113,9 +121,13 @@
 - (void)scrollFinish {
     _isFinish = YES;
     [self.view handleLoading];
-    //[self CreateShowImgaeView:[self.manager getScrollResult]];
+    [self CreateShowImgaeView:[self.manager getScrollResult]];
     _resultModels = [self.manager getScrollResult];
-    [self.showImageCollectionView reloadData];
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [weakSelf.showImageCollectionView reloadData];
+    });
+    //[self.showImageCollectionView reloadData];
     //[self setInMoveState:200 index:0];
 
 }
@@ -164,10 +176,11 @@
     [_nextBtn setImage:[UIImage imageNamed:@"tool_forward_p"] forState:UIControlStateHighlighted];
     
     [_moveBtn setImage:[UIImage imageNamed:@"tool_move"] forState:UIControlStateNormal];
-    [_moveBtn setImage:[UIImage imageNamed:@"tool_move_l"] forState:UIControlStateHighlighted];
+    [_moveBtn setImage:[UIImage imageNamed:@"tool_move_l"] forState:UIControlStateSelected];
     
     [_borderBtn setImage:[UIImage imageNamed:@"tool_border"] forState:UIControlStateNormal];
     [_borderBtn setImage:[UIImage imageNamed:@"tool_border_l"] forState:UIControlStateHighlighted];
+
 }
 
 - (void)createScrollView {
@@ -216,7 +229,11 @@
     //    self.showImageScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(10*ScreenWidthRatio, kTopMargin + 10*ScreenHeightRatio, 355*ScreenWidthRatio, 517*ScreenHeightRatio)];
     
     //CGFloat maginTop = kDevice_Is_iPhoneX ? 10 : 10;
+    _containImageView = [[UIView alloc] init];
+    //_containImageView.clipsToBounds = YES;
     
+    //_containImageView.contentMode = UIViewContentModeScaleAspectFit;
+    [_showImageScrollView addSubview:_containImageView];
     if (resultArray != nil ){
         CGRect cgpos;
         NSInteger count = resultArray.count;
@@ -225,43 +242,42 @@
             UIImage *image = mode.originPhoto;
             UIImageView *imageView = [[UIImageView alloc]initWithImage:image];
             CGFloat itemHeight = (mode.endY - mode.beginY);
-            //UIScrollView *itemView = [[UIScrollView alloc]initWithFrame:CGRectZero];
+            UIScrollView *itemView = [[UIScrollView alloc]init];
             
             CGFloat contentViewOffset;
             if(i == 0) {
-                contentViewOffset = 10;
+                contentViewOffset = 0;
             } else {
                 contentViewOffset = _containImageView.hx_h;
             }
             
-            CGFloat ratio = (_showImageScrollView.hx_w - 20)/imageView.hx_w;
-            mode.scaleRatio = ratio;
-            cgpos.origin.x = 10;
+            CGFloat ratio = (_showImageScrollView.hx_w)/imageView.hx_w;
+            
+            cgpos.origin.x = 0;
             cgpos.origin.y = contentViewOffset;
-            cgpos.size.width = _showImageScrollView.hx_w - 20;
+            cgpos.size.width = _showImageScrollView.hx_w;
             cgpos.size.height = itemHeight*ratio;
-            //itemView.frame = cgpos;
-            MoveItemView *itemView = [[MoveItemView alloc]initWithFrame:cgpos];
+            itemView.frame = cgpos;
             
             [_containImageView addSubview:itemView];
-            //[itemView setNewModel:mode];
-            itemView.contentSize = CGSizeMake(_showImageScrollView.hx_w - 20, imageView.hx_h*ratio);
+            itemView.contentSize = CGSizeMake(_showImageScrollView.hx_w, imageView.hx_h*ratio);
             itemView.contentOffset = CGPointMake(0, mode.beginY*ratio);
-            //itemView.scrollEnabled = YES;
+            itemView.scrollEnabled = NO;
             
             CGFloat lastOffset;
-            if (i == _manager.selectedArray.count - 1 || i == 0) {
-                lastOffset = cgpos.size.height + 10;
+            if (i == resultArray.count - 1 || i == 0) {
+                lastOffset = cgpos.size.height;
             } else {
                 lastOffset = cgpos.size.height;
             }
             
             _containImageView.size = CGSizeMake(cgpos.size.width, _containImageView.hx_h + lastOffset);
             //itemView.contentSize = CGSizeMake(_showImageScrollView.hx_w - 20, itemView.contentSize.height*1.5);
-            [itemView setNewModel:mode];
-            //imageView.size = CGSizeMake(_showImageScrollView.hx_w - 20, itemView.contentSize.height);
-            //[itemView addSubview:imageView];
-            //[self addLayerBorder:imageView count:count index:i direction:YES];
+            
+            imageView.size = CGSizeMake(_showImageScrollView.hx_w, itemView.contentSize.height);
+            [itemView addSubview:imageView];
+
+            [self addLayerBorder:imageView count:count index:i direction:YES];
             //[self addLayerBorder:imageView count:count index:i direction:isCombineVertical];
             
         }
@@ -308,6 +324,14 @@
 
 - (void)setInMoveState:(CGFloat)borderY index:(NSInteger)index {
     
+//    for (UIView *subview in self.containImageView.subviews) {
+//        [subview removeFromSuperview];
+//    }
+//    self.containImageView = nil;
+//    _containImageView = [[UIView alloc] init];
+//    _containImageView.clipsToBounds = YES;
+//
+//    [_showImageScrollView addSubview:_containImageView];
     _upImagesArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, index + 1)]];
     _downImagesArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index + 1, _resultModels.count - index - 1)]];
     
@@ -353,7 +377,7 @@
         cgpos.size.height = itemHeight*ratio;
         //itemView.frame = cgpos;
         //MoveItemView *itemView = [[MoveItemView alloc]initWithFrame:cgpos model:mode];
-        MoveItemView *itemView = [[MoveItemView alloc]initWithFrame:cgpos];
+        UIScrollView *itemView = [[UIScrollView alloc]initWithFrame:cgpos];
         
         [containView addSubview:itemView];
         itemView.contentSize = CGSizeMake(_showImageScrollView.hx_w, imageView.hx_h*ratio);
@@ -372,7 +396,6 @@
         
         imageView.size = CGSizeMake(_showImageScrollView.hx_w, itemView.contentSize.height);
         [itemView addSubview:imageView];
-        [itemView setNewModel:mode];
         [self addLayerBorder:imageView count:count index:i direction:YES];
         //[self addLayerBorder:imageView count:count index:i direction:isCombineVertical];
         
@@ -388,6 +411,20 @@
     }
     return scrollView;
 }
+
+#pragma mark ModifyCellDelegate
+- (void)onUpDragItemTap:(NSInteger)index {
+    self.showImageCollectionView.hidden = YES;
+    self.showImageScrollView.hidden = NO;
+    [self setInMoveState:400 index:index];
+}
+
+- (void)onDownDragItemTap:(NSInteger)index{
+    self.showImageCollectionView.hidden = YES;
+    self.showImageScrollView.hidden = NO;
+    [self setInMoveState:400 index:index];
+}
+
 
 #pragma mark scrollView delegate
 
@@ -479,9 +516,27 @@
 #pragma mark - Buttom Action
 
 - (IBAction)onMoveBtnTap:(id)sender {
+    UIButton *moveBtn = (UIButton*)sender;
+    moveBtn.selected = !moveBtn.selected;
+    if (moveBtn.selected == YES) {
+        self.view.backgroundColor = UIColor.grayColor;
+        for (UIView *subview in self.containImageView.subviews) {
+            [subview removeFromSuperview];
+        }
+        self.containImageView = nil;
+        _showImageScrollView.hidden = YES;
+        self.showImageCollectionView.hidden = NO;
+        [self.showImageCollectionView reloadData];
+    } else {
+        self.view.backgroundColor = UIColor.backgroundColor;
+        _showImageScrollView.hidden = NO;
+        self.showImageCollectionView.hidden = YES;
+        [self CreateShowImgaeView:self.resultModels];
+    }
 }
 
 - (IBAction)onBorderBtnTap:(id)sender {
+    
 }
 
 
@@ -539,6 +594,7 @@
     
     ModifyCollectionViewCell *cell = [self.showImageCollectionView dequeueReusableCellWithReuseIdentifier:@"modifyCollectionCell" forIndexPath:indexPath];
     PhotoCutModel *model = [self.resultModels objectAtIndex:indexPath.row];
+    cell.modifyDelegate = self;
     [cell configCell:model];
     return cell;
     
@@ -554,14 +610,14 @@
     CGFloat imageCutHeight = (model.endY - model.beginY);
     CGFloat ratio = (collectionView.hx_w)/model.originPhoto.size.width;
     CGFloat cellHeight = imageCutHeight*ratio;
-    CGSize size = CGSizeMake(collectionView.hx_w-1,cellHeight-1);
+    CGSize size = CGSizeMake(collectionView.hx_w,cellHeight);
     return size;
 }
 
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
-    
-    return CGSizeZero;
-}
+//- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+//
+//    return CGSizeZero;
+//}
 
 -(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
 {

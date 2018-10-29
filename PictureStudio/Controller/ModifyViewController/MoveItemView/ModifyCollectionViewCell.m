@@ -17,18 +17,29 @@
 
 @implementation ModifyCollectionViewCell
 
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        
+    }
+    return self;
+}
+
 - (void)configCell:(PhotoCutModel *)model {
-    
-//    CGRect cgpos;
+    self.model = model;
+    UIGestureRecognizer *upItemTouch = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onUpItemTouch)];
+    [_moveUpItem addGestureRecognizer:upItemTouch];
+    UIGestureRecognizer *downItemTouch = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onDownItemTouch)];
+    [_moveDownItem addGestureRecognizer:downItemTouch];
+    for (UIImageView *imageView in _imageScrollView.subviews) {
+        [imageView removeFromSuperview];
+        
+    }
     UIImage *image = model.originPhoto;
     UIImageView *imageView = [[UIImageView alloc]initWithImage:image];
-//    CGFloat itemHeight = (model.endY - model.beginY);
+
     CGFloat ratio = self.hx_w/imageView.hx_w;
-    
-//    cgpos.origin.x = 0;
-//    cgpos.origin.y = 0;
-//    cgpos.size.width = self.hx_w;
-//    cgpos.size.height = itemHeight*ratio;
+
     _imageScrollView.frame = self.frame;
  
     _imageScrollView.contentSize = CGSizeMake(self.hx_w, imageView.hx_h*ratio);
@@ -37,6 +48,16 @@
 
     imageView.size = CGSizeMake(self.hx_w, _imageScrollView.contentSize.height);
     [_imageScrollView addSubview:imageView];
+}
+
+- (void)onUpItemTouch {
+    NSLog(@"beginY   %f", _model.beginY);
+    [self.modifyDelegate onUpDragItemTap:_model.index];
+}
+
+- (void)onDownItemTouch {
+    NSLog(@"endY   %f", _model.endY);
+    [self.modifyDelegate onDownDragItemTap:_model.index];
 }
 
 @end

@@ -173,14 +173,14 @@
                                                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NQa-Uu-iSj">
                                                     <rect key="frame" x="0.0" y="0.0" width="355" height="214"/>
                                                 </scrollView>
-                                                <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="move_drag_bottom" highlightedImage="move_drag_bottom_p" translatesAutoresizingMaskIntoConstraints="NO" id="fBw-oO-I0w">
+                                                <imageView contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="move_drag_bottom" highlightedImage="move_drag_bottom_p" translatesAutoresizingMaskIntoConstraints="NO" id="fBw-oO-I0w">
                                                     <rect key="frame" x="145" y="192" width="65" height="22"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="22" id="fkb-Vm-Ayk"/>
                                                         <constraint firstAttribute="width" constant="65" id="prP-Ms-cGz"/>
                                                     </constraints>
                                                 </imageView>
-                                                <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="move_drag_top" highlightedImage="move_drag_top_p" translatesAutoresizingMaskIntoConstraints="NO" id="VpU-ST-Lw2">
+                                                <imageView contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="move_drag_top" highlightedImage="move_drag_top_p" translatesAutoresizingMaskIntoConstraints="NO" id="VpU-ST-Lw2">
                                                     <rect key="frame" x="145" y="0.0" width="65" height="22"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="22" id="Apf-2m-G0i"/>
@@ -274,7 +274,7 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="0.19879928691275167" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.19633494127516779" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="a6i-fI-lp2" firstAttribute="bottom" secondItem="tk4-8S-V2t" secondAttribute="bottom" id="1UB-Lk-sJs"/>
                             <constraint firstItem="NXD-6R-CoT" firstAttribute="centerY" secondItem="lHq-Ia-KiD" secondAttribute="centerY" id="3Ed-Ao-84i"/>

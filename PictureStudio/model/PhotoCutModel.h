@@ -16,5 +16,5 @@
 @property (assign, nonatomic) CGFloat beginY;
 @property (assign, nonatomic) CGFloat endY;
 @property (assign, nonatomic) CGFloat scaleRatio;
-
+@property (assign, nonatomic) NSInteger index;
 @end

@@ -34,6 +34,10 @@
     return [UIColor colorWithRed:238/255.0 green:238/255.0 blue:238/255.0 alpha:1.0];
 }
 
++ (UIColor *)moveBackgroundColor {
+    return [UIColor colorWithRed:0 green:0 blue:238/255.0 alpha:0.2];
+}
+
 + (UIColor *)cellTitleNormalColor {
     return [UIColor colorWithRed:0 green:0 blue:0 alpha:0.68];
 }

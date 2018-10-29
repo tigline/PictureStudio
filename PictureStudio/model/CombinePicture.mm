@@ -49,11 +49,13 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             //NSString *path = [images objectAtIndex:i];
             //imageUpCut = imread([path UTF8String]);
             model.originPhoto = [images objectAtIndex:i];
+            model.index = i;
             model.beginY = 0;
             imageUpCut = imageUpOrigin(cv::Rect(cv::Point(imageUpOrigin.cols*cutLeftX, navigationHeight),cv::Point(imageUpOrigin.cols*cutRightX, imageUpOrigin.rows)));
             curUseHeight = imageUpCut.rows;
         } else {
             model.originPhoto = [images objectAtIndex:i];
+            model.index = i;
             imageUpOrigin = [self cvMatFromUIImage:model.originPhoto];
             model.beginY = preCutupY;
             //previewMat = resultMat;
@@ -211,6 +213,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             //imageUpResult = previewMat(cv::Rect(cv::Point(0,preCutupY), cv::Point(imageUpOrigin.cols, originalLinkPoint.y + preCutupY)));
             model.endY = originalLinkPoint.y + preCutupY;
         }
+        model.index = i;
         [resultModels addObject:model];
         preCutupY = basedImagePoint.y;
         //Mat imageDownResult=imageDownOrigin(cv::Rect(cv::Point(0,basedImagePoint.y),cv::Point(imageDownOrigin.cols, imageDownOrigin.rows)));
@@ -220,6 +223,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
             endModel.originPhoto = [images objectAtIndex:i+1];
             endModel.beginY = basedImagePoint.y;
             endModel.endY = imageDownOrigin.rows;
+            endModel.index = i + 1;
             [resultModels addObject:endModel];
         }
         
