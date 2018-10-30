@@ -63,6 +63,10 @@
 		9338E54F20A577A10059D58E /* PhotoPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9338E54E20A577A10059D58E /* PhotoPreviewController.m */; };
 		9338E55220A57A760059D58E /* PhotoPreviewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9338E55120A57A760059D58E /* PhotoPreviewCell.m */; };
 		93539C6E20808EFB00B7D29C /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 708248A9204ECD4C000D60A3 /* libjpeg.a */; };
+		935B5D232188362700EB12E2 /* MoveCellViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 935B5D212188362700EB12E2 /* MoveCellViewController.m */; };
+		935B5D242188362700EB12E2 /* MoveCellViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 935B5D222188362700EB12E2 /* MoveCellViewController.xib */; };
+		935B5D2721883B3300EB12E2 /* MoveItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 935B5D2621883B3300EB12E2 /* MoveItemCell.m */; };
+		935B5D2A218847D400EB12E2 /* MoveInfoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 935B5D29218847D400EB12E2 /* MoveInfoModel.m */; };
 		936FAC2B20200B9A00F80BCF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 936FAC2A20200B9A00F80BCF /* AppDelegate.m */; };
 		936FAC2E20200B9A00F80BCF /* AlbumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 936FAC2D20200B9A00F80BCF /* AlbumViewController.m */; };
 		936FAC3120200B9A00F80BCF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 936FAC2F20200B9A00F80BCF /* Main.storyboard */; };
@@ -197,6 +201,13 @@
 		9338E54E20A577A10059D58E /* PhotoPreviewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoPreviewController.m; sourceTree = "<group>"; };
 		9338E55020A57A760059D58E /* PhotoPreviewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoPreviewCell.h; sourceTree = "<group>"; };
 		9338E55120A57A760059D58E /* PhotoPreviewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoPreviewCell.m; sourceTree = "<group>"; };
+		935B5D202188362700EB12E2 /* MoveCellViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoveCellViewController.h; sourceTree = "<group>"; };
+		935B5D212188362700EB12E2 /* MoveCellViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoveCellViewController.m; sourceTree = "<group>"; };
+		935B5D222188362700EB12E2 /* MoveCellViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MoveCellViewController.xib; sourceTree = "<group>"; };
+		935B5D2521883B3300EB12E2 /* MoveItemCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoveItemCell.h; sourceTree = "<group>"; };
+		935B5D2621883B3300EB12E2 /* MoveItemCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoveItemCell.m; sourceTree = "<group>"; };
+		935B5D28218847D400EB12E2 /* MoveInfoModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoveInfoModel.h; sourceTree = "<group>"; };
+		935B5D29218847D400EB12E2 /* MoveInfoModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoveInfoModel.m; sourceTree = "<group>"; };
 		936FAC2620200B9A00F80BCF /* PictureStudio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PictureStudio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		936FAC2920200B9A00F80BCF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		936FAC2A20200B9A00F80BCF /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -285,9 +296,14 @@
 			isa = PBXGroup;
 			children = (
 				70F89A5721514A4100B203E9 /* MoveItemView.h */,
+				935B5D202188362700EB12E2 /* MoveCellViewController.h */,
+				935B5D212188362700EB12E2 /* MoveCellViewController.m */,
+				935B5D222188362700EB12E2 /* MoveCellViewController.xib */,
 				70F89A5821514A4100B203E9 /* MoveItemView.m */,
 				70EEBEED2180B832004DB6BC /* ModifyCollectionViewCell.h */,
 				70EEBEEE2180B832004DB6BC /* ModifyCollectionViewCell.m */,
+				935B5D2521883B3300EB12E2 /* MoveItemCell.h */,
+				935B5D2621883B3300EB12E2 /* MoveItemCell.m */,
 			);
 			path = MoveItemView;
 			sourceTree = "<group>";
@@ -330,6 +346,8 @@
 				708248D2206A957B000D60A3 /* HXPhotoPicker.h */,
 				708248D3206A959D000D60A3 /* HXPhotoConfiguration.h */,
 				708248D4206A959D000D60A3 /* HXPhotoConfiguration.m */,
+				935B5D28218847D400EB12E2 /* MoveInfoModel.h */,
+				935B5D29218847D400EB12E2 /* MoveInfoModel.m */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -681,6 +699,7 @@
 				70711C992135A0E2008A6121 /* AssetCollectionCell.xib in Resources */,
 				700E325420A1E464007A23E0 /* WeiboTableViewCell.xib in Resources */,
 				936FAC3320200B9A00F80BCF /* Assets.xcassets in Resources */,
+				935B5D242188362700EB12E2 /* MoveCellViewController.xib in Resources */,
 				9389461820B7E4BB00BC62DA /* Localizable.strings in Resources */,
 				936FAC3120200B9A00F80BCF /* Main.storyboard in Resources */,
 				700E324B20A1C779007A23E0 /* teamWeiboInfo.plist in Resources */,
@@ -811,6 +830,7 @@
 				70EEBEEF2180B832004DB6BC /* ModifyCollectionViewCell.m in Sources */,
 				700E324F20A1C8A0007A23E0 /* AboutViewTableViewCell.m in Sources */,
 				936FAC2E20200B9A00F80BCF /* AlbumViewController.m in Sources */,
+				935B5D2A218847D400EB12E2 /* MoveInfoModel.m in Sources */,
 				708248C3206A9153000D60A3 /* HXAlbumModel.m in Sources */,
 				7082490620790F92000D60A3 /* PhotoCollectionReusableView.m in Sources */,
 				708248A2204EC6FC000D60A3 /* CombinePictureViewController.m in Sources */,
@@ -828,6 +848,7 @@
 				708248BE206A9103000D60A3 /* HXPhotoModel.m in Sources */,
 				707DBA7A209EC4BF00F2FAFB /* ScrollPictureViewController.m in Sources */,
 				939F2703213FAD4B00718374 /* BaseNavigationController.m in Sources */,
+				935B5D232188362700EB12E2 /* MoveCellViewController.m in Sources */,
 				703FDEB4212C5FE1006218D0 /* UIColor+CustomColor.m in Sources */,
 				70D24BBD207FA9CA003430BA /* UINavigationBar+Color.m in Sources */,
 				70925B5C213578A800AE9373 /* AssetCollectionCell.m in Sources */,
@@ -845,6 +866,7 @@
 				936FAC3920200B9A00F80BCF /* main.m in Sources */,
 				936FAC2B20200B9A00F80BCF /* AppDelegate.m in Sources */,
 				702C5FC020D15DF100AA8CA5 /* XDProgressView.m in Sources */,
+				935B5D2721883B3300EB12E2 /* MoveItemCell.m in Sources */,
 				708811072099FDE1003A1CF4 /* CombinePicture.mm in Sources */,
 				7042145F21344D100005AB2F /* UIViewController+Extensions.m in Sources */,
 				708248C4206A9153000D60A3 /* HXPhotoTools.m in Sources */,

@@ -18,9 +18,10 @@
 #import "PhotoCutModel.h"
 #import "SwipeEdgeInteractionController.h"
 #import "HXPhotoManager.h"
-#import "MoveItemView.h"
+#import "MoveItemCell.h"
 #import "ModifyCollectionViewCell.h"
 #import "MoveItemView/MoveItemCell.h"
+#import "MoveInfoModel.h"
 
 @interface ModifyViewController () <UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, ModifyCellDelegate>
 
@@ -52,13 +53,17 @@
 @property (strong, nonatomic) PhotoSaveBottomView *toolBarView;
 @property (assign, nonatomic) CGFloat lastContentOffset;
 @property (assign, nonatomic) BOOL isFinish;
+@property (assign, nonatomic) BOOL isEdittMove;
+@property (assign, nonatomic) NSInteger movePartCount;
 
 @property (strong, nonatomic) UIScrollView *moveItemUpView;
 @property (strong, nonatomic) UIScrollView *moveItemDownView;
 @property (strong, nonatomic) NSArray *upImagesArray;
 @property (strong, nonatomic) NSArray *downImagesArray;
+@property (strong, nonatomic) NSMutableArray *moveItemArray;
 
 @property (strong, nonatomic) UIView *containImageView;
+
 @end
 
 static NSString * const identifier = @"moveCell";
@@ -71,7 +76,7 @@ static NSString * const identifier = @"moveCell";
     [self initView];
     
     [self createScrollView];
-    
+    self.moveItemArray = [[NSMutableArray alloc] init];
 
     self.view.backgroundColor = UIColor.backgroundColor;
     __weak typeof(self) weakSelf = self;
@@ -414,15 +419,86 @@ static NSString * const identifier = @"moveCell";
 
 #pragma mark ModifyCellDelegate
 - (void)onUpDragItemTap:(NSInteger)index {
-    self.showImageCollectionView.hidden = YES;
-    self.showImageScrollView.hidden = NO;
-    [self setInMoveState:400 index:index];
+    self.isEdittMove = YES;
+    self.showImageCollectionView.scrollEnabled = NO;
+    if (index == 0) {
+        _movePartCount = 1;
+        MoveInfoModel * model = [[MoveInfoModel alloc] init];
+        model.index = index;
+        model.isMoveUp = YES;
+        model.photoArray = self.resultModels;
+        PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index];
+        model.canMoveHeight = cutModel.beginY - cutModel.endY;
+        model.itemHeight = [self getMoveItemHeight:model.photoArray];
+        [_moveItemArray addObject:model];
+        
+    } else {
+        _movePartCount = 2;
+        for (int i = 0; i < 2; i++) {
+            MoveInfoModel * model = [[MoveInfoModel alloc] init];
+            model.index = index + i;
+            model.isMoveUp = YES;
+            if (i == 0) {
+                model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, index)]];
+            } else {
+                model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index, _resultModels.count - index)]];
+            }
+            
+            PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index + i];
+            model.canMoveHeight = cutModel.beginY - cutModel.endY;
+            model.itemHeight = [self getMoveItemHeight:model.photoArray];
+            [_moveItemArray addObject:model];
+        }
+    }
+    
+    [self.showImageCollectionView reloadData];
 }
 
 - (void)onDownDragItemTap:(NSInteger)index{
-    self.showImageCollectionView.hidden = YES;
-    self.showImageScrollView.hidden = NO;
-    [self setInMoveState:400 index:index];
+    self.isEdittMove = YES;
+    self.showImageCollectionView.scrollEnabled = NO;
+    if (index == self.resultModels.count - 1) {
+        _movePartCount = 1;
+        MoveInfoModel * model = [[MoveInfoModel alloc] init];
+        model.index = index;
+        model.isMoveUp = NO;
+        model.photoArray = self.resultModels;
+        PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index];
+        model.canMoveHeight = cutModel.endY - cutModel.beginY;
+        model.itemHeight = [self getMoveItemHeight:model.photoArray];
+        [_moveItemArray addObject:model];
+    } else {
+        _movePartCount = 2;
+        for (int i = 0; i < 2; i++) {
+            MoveInfoModel * model = [[MoveInfoModel alloc] init];
+            model.index = index + i;
+            model.isMoveUp = YES;
+            if (i == 0) {
+                model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, index + 1)]];
+            } else {
+                model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index + 1, _resultModels.count - index - 1)]];
+            }
+            
+            PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index + i];
+            model.canMoveHeight = cutModel.endY - cutModel.beginY;
+            model.itemHeight = [self getMoveItemHeight:model.photoArray];
+            [_moveItemArray addObject:model];
+        }
+    }
+    [self.showImageCollectionView reloadData];
+}
+
+- (CGFloat)getMoveItemHeight:(NSArray *)modelArray {
+    CGFloat height = 0;
+    for (int i = 0; i < modelArray.count; i ++) {
+        PhotoCutModel *cutModel = [modelArray objectAtIndex:i];
+        CGFloat cutHeight = cutModel.endY - cutModel.beginY;
+        CGFloat ratio = (_showImageCollectionView.hx_w)/cutModel.originPhoto.size.width;
+        CGFloat addHeight = cutHeight*ratio;
+        height += addHeight;
+    }
+    return height;
+    
 }
 
 
@@ -592,25 +668,51 @@ static NSString * const identifier = @"moveCell";
 
 - (nonnull __kindof UICollectionViewCell *)collectionView:(nonnull UICollectionView *)collectionView cellForItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
     
-    ModifyCollectionViewCell *cell = [self.showImageCollectionView dequeueReusableCellWithReuseIdentifier:@"modifyCollectionCell" forIndexPath:indexPath];
-    PhotoCutModel *model = [self.resultModels objectAtIndex:indexPath.row];
-    cell.modifyDelegate = self;
-    [cell configCell:model];
-    return cell;
+    if (_isEdittMove) {
+        MoveItemCell *cell = [self.showImageCollectionView dequeueReusableCellWithReuseIdentifier:@"moveCollectionCell" forIndexPath:indexPath];
+        MoveInfoModel *model = [_moveItemArray objectAtIndex:indexPath.row];
+        [cell configCell:model];
+        return cell;
+    } else {
+        ModifyCollectionViewCell *cell = [self.showImageCollectionView dequeueReusableCellWithReuseIdentifier:@"modifyCollectionCell" forIndexPath:indexPath];
+        PhotoCutModel *model = [self.resultModels objectAtIndex:indexPath.row];
+        cell.modifyDelegate = self;
+        [cell configCell:model];
+        return cell;
+    }
+    
+    
     
 }
 
 - (NSInteger)collectionView:(nonnull UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.resultModels.count;
+    if (_isEdittMove) {
+        return _movePartCount;
+    } else {
+        return self.resultModels.count;
+    }
+    
 }
 
 //设置每个Cell的大小
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    PhotoCutModel *model = [self.resultModels objectAtIndex:indexPath.row];
-    CGFloat imageCutHeight = (model.endY - model.beginY);
-    CGFloat ratio = (collectionView.hx_w)/model.originPhoto.size.width;
-    CGFloat cellHeight = imageCutHeight*ratio;
-    CGSize size = CGSizeMake(collectionView.hx_w,cellHeight);
+    CGSize size;
+    if (_isEdittMove) {
+        MoveInfoModel *model = [self.moveItemArray objectAtIndex:indexPath.row];
+        if (model.index == 0 || model.index == self.resultModels.count - 1) {
+            size = CGSizeMake(collectionView.hx_w,collectionView.hx_h);
+        } else {
+            size = CGSizeMake(collectionView.hx_w,collectionView.hx_h/2);
+        }
+    } else {
+        PhotoCutModel *model = [self.resultModels objectAtIndex:indexPath.row];
+        CGFloat imageCutHeight = (model.endY - model.beginY);
+        CGFloat ratio = (collectionView.hx_w)/model.originPhoto.size.width;
+        CGFloat cellHeight = imageCutHeight*ratio;
+        size = CGSizeMake(collectionView.hx_w,cellHeight);
+    }
+    
+    
     return size;
 }
 
@@ -626,7 +728,12 @@ static NSString * const identifier = @"moveCell";
 //这个是两行cell之间的间距（上下行cell的间距）
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
 {
-    return 10;
+    if (_isEdittMove) {
+        return 0;
+    } else {
+        return 10;
+    }
+    
 }
 //两个cell之间的间距（同一行的cell的间距）
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
