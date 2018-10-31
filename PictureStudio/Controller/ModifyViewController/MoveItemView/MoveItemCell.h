@@ -11,7 +11,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MoveItemCell : UICollectionViewCell
+@property (strong, nonatomic) MoveInfoModel *moveModel;
 - (void)configCell:(MoveInfoModel *)model;
+
 @end
 
 NS_ASSUME_NONNULL_END

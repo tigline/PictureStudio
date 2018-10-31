@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (assign, nonatomic) NSInteger index;
 @property (assign, nonatomic) BOOL isMoveUp;
+@property (assign, nonatomic) BOOL isMoveDown;
 @property (assign, nonatomic) CGFloat canMoveHeight;
 @property (strong, nonatomic) NSArray* photoArray;
 @property (assign, nonatomic) CGFloat itemHeight;

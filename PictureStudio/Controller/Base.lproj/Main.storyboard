@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="rFg-mA-rbD">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="rFg-mA-rbD">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -170,18 +170,18 @@
                                             <rect key="frame" x="0.0" y="0.0" width="355" height="214"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GPp-ML-pbI">
+                                                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GPp-ML-pbI">
                                                     <rect key="frame" x="0.0" y="0.0" width="355" height="214"/>
                                                 </scrollView>
-                                                <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="move_drag_top_p" translatesAutoresizingMaskIntoConstraints="NO" id="ya2-X7-SgI">
-                                                    <rect key="frame" x="144" y="0.0" width="65" height="22"/>
+                                                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="move_drag_top_p" translatesAutoresizingMaskIntoConstraints="NO" id="ya2-X7-SgI">
+                                                    <rect key="frame" x="145" y="0.0" width="65" height="22"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="22" id="1UV-XB-bC8"/>
                                                         <constraint firstAttribute="width" constant="65" id="Dxb-GV-8xE"/>
                                                     </constraints>
                                                 </imageView>
-                                                <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="move_drag_bottom_p" translatesAutoresizingMaskIntoConstraints="NO" id="uDL-j2-Rfr">
-                                                    <rect key="frame" x="145" y="190" width="65" height="22"/>
+                                                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="move_drag_bottom_p" translatesAutoresizingMaskIntoConstraints="NO" id="uDL-j2-Rfr">
+                                                    <rect key="frame" x="145" y="192" width="65" height="22"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="22" id="Aqr-6l-56a"/>
                                                         <constraint firstAttribute="width" constant="65" id="tqj-jI-4h9"/>
@@ -191,9 +191,9 @@
                                         </view>
                                         <constraints>
                                             <constraint firstItem="GPp-ML-pbI" firstAttribute="top" secondItem="Pg5-XE-Kyb" secondAttribute="top" id="FZw-Nj-Rwa"/>
-                                            <constraint firstItem="ya2-X7-SgI" firstAttribute="centerX" secondItem="Pg5-XE-Kyb" secondAttribute="centerX" constant="-1" id="Lav-vi-JKl"/>
+                                            <constraint firstItem="ya2-X7-SgI" firstAttribute="centerX" secondItem="Pg5-XE-Kyb" secondAttribute="centerX" id="Lav-vi-JKl"/>
                                             <constraint firstAttribute="trailing" secondItem="GPp-ML-pbI" secondAttribute="trailing" id="Wj1-Pi-BHu"/>
-                                            <constraint firstAttribute="bottom" secondItem="uDL-j2-Rfr" secondAttribute="bottom" constant="2" id="gHD-XR-Nno"/>
+                                            <constraint firstAttribute="bottom" secondItem="uDL-j2-Rfr" secondAttribute="bottom" id="gHD-XR-Nno"/>
                                             <constraint firstItem="ya2-X7-SgI" firstAttribute="top" secondItem="Pg5-XE-Kyb" secondAttribute="top" id="hJb-Gd-nfx"/>
                                             <constraint firstItem="uDL-j2-Rfr" firstAttribute="centerX" secondItem="Pg5-XE-Kyb" secondAttribute="centerX" id="kgR-BK-Ixh"/>
                                             <constraint firstItem="GPp-ML-pbI" firstAttribute="leading" secondItem="Pg5-XE-Kyb" secondAttribute="leading" id="lkp-d7-hyj"/>
@@ -296,7 +296,7 @@
                                             <constraint firstAttribute="width" constant="34" id="JXg-fZ-5O6"/>
                                             <constraint firstAttribute="width" secondItem="sQ4-ub-fUu" secondAttribute="height" multiplier="1:1" id="cXo-Jv-Ff7"/>
                                         </constraints>
-                                        <state key="normal" image="tool_forward"/>
+                                        <state key="normal" image="certain_p"/>
                                         <connections>
                                             <action selector="onNextBtnTap:" destination="QG2-ct-aNx" eventType="touchUpInside" id="Yrs-AG-4OT"/>
                                         </connections>
@@ -376,6 +376,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="certain_p" width="26" height="26"/>
         <image name="move_drag_bottom" width="165" height="22"/>
         <image name="move_drag_bottom_p" width="165" height="22"/>
         <image name="move_drag_top" width="165" height="22"/>
@@ -384,7 +385,6 @@
         <image name="nav_title" width="162" height="38"/>
         <image name="tool_back" width="24" height="24"/>
         <image name="tool_border" width="74" height="36"/>
-        <image name="tool_forward" width="24" height="24"/>
         <image name="tool_move" width="74" height="36"/>
     </resources>
 </document>

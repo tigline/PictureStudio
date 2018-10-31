@@ -426,6 +426,7 @@ static NSString * const identifier = @"moveCell";
         MoveInfoModel * model = [[MoveInfoModel alloc] init];
         model.index = index;
         model.isMoveUp = YES;
+        model.isMoveDown = NO;
         model.photoArray = self.resultModels;
         PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index];
         model.canMoveHeight = cutModel.beginY - cutModel.endY;
@@ -434,17 +435,21 @@ static NSString * const identifier = @"moveCell";
         
     } else {
         _movePartCount = 2;
-        for (int i = 0; i < 2; i++) {
+        for (int i = 1; i >= 0; i--) {
             MoveInfoModel * model = [[MoveInfoModel alloc] init];
-            model.index = index + i;
+            model.index = index - i;
             model.isMoveUp = YES;
-            if (i == 0) {
+            if (i == 1) {
+                model.isMoveUp = NO;
+                model.isMoveDown = YES;
                 model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, index)]];
             } else {
+                model.isMoveUp = YES;
+                model.isMoveDown = NO;
                 model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index, _resultModels.count - index)]];
             }
             
-            PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index + i];
+            PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index - i];
             model.canMoveHeight = cutModel.beginY - cutModel.endY;
             model.itemHeight = [self getMoveItemHeight:model.photoArray];
             [_moveItemArray addObject:model];
@@ -462,6 +467,7 @@ static NSString * const identifier = @"moveCell";
         MoveInfoModel * model = [[MoveInfoModel alloc] init];
         model.index = index;
         model.isMoveUp = NO;
+        model.isMoveDown = YES;
         model.photoArray = self.resultModels;
         PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index];
         model.canMoveHeight = cutModel.endY - cutModel.beginY;
@@ -472,10 +478,14 @@ static NSString * const identifier = @"moveCell";
         for (int i = 0; i < 2; i++) {
             MoveInfoModel * model = [[MoveInfoModel alloc] init];
             model.index = index + i;
-            model.isMoveUp = YES;
+            
             if (i == 0) {
+                model.isMoveUp = NO;
+                model.isMoveDown = YES;
                 model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, index + 1)]];
             } else {
+                model.isMoveUp = YES;
+                model.isMoveDown = NO;
                 model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index + 1, _resultModels.count - index - 1)]];
             }
             

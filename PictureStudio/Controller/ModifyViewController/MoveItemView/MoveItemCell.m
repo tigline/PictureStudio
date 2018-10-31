@@ -23,7 +23,14 @@
 
 - (void)configCell:(MoveInfoModel *)model {
     _moveItemScrollView.delegate = self;
-    
+    _moveModel = model;
+    if (model.isMoveUp) {
+        _showToUpImageView.hidden = NO;
+        _showToDownImageView.hidden = YES;
+    } else if(model.isMoveDown) {
+        _showToUpImageView.hidden = YES;
+        _showToDownImageView.hidden = NO;
+    }
     [self createShowView:model.photoArray];
 
 }
@@ -77,12 +84,25 @@
 
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    
+    if (_moveModel.isMoveUp) {
+        _showToUpImageView.hidden = YES;
+    } else if(_moveModel.isMoveDown) {
+        _showToDownImageView.hidden = YES;
+    }
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
 }
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (_moveModel.isMoveUp) {
+        _showToUpImageView.hidden = NO;
+    } else if(_moveModel.isMoveDown) {
+        _showToDownImageView.hidden = NO;
+    }
+}
+
 
 
 @end
