@@ -419,6 +419,13 @@ static NSString * const identifier = @"moveCell";
 
 #pragma mark ModifyCellDelegate
 - (void)onUpDragItemTap:(NSInteger)index {
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+    UICollectionViewLayoutAttributes *attributes = [self.showImageCollectionView layoutAttributesForItemAtIndexPath:indexPath];
+    CGRect cellRect = attributes.frame;
+    CGRect rectInCollectionView = [self.showImageCollectionView convertRect:cellRect toView:self.showImageCollectionView];
+    CGRect rectInWindow = [self.showImageCollectionView convertRect:rectInCollectionView toView:[self.showImageCollectionView superview]];
+    
     self.isEdittMove = YES;
     self.showImageCollectionView.scrollEnabled = NO;
     if (index == 0) {
@@ -460,6 +467,13 @@ static NSString * const identifier = @"moveCell";
 }
 
 - (void)onDownDragItemTap:(NSInteger)index{
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+    UICollectionViewLayoutAttributes *attributes = [self.showImageCollectionView layoutAttributesForItemAtIndexPath:indexPath];
+    CGRect cellRect = attributes.frame;
+    CGRect rectInCollectionView = [self.showImageCollectionView convertRect:cellRect toView:self.showImageCollectionView];
+    CGRect rectInWindow = [self.showImageCollectionView convertRect:rectInCollectionView toView:[self.showImageCollectionView superview]];
+    
     self.isEdittMove = YES;
     self.showImageCollectionView.scrollEnabled = NO;
     if (index == self.resultModels.count - 1) {
@@ -712,6 +726,7 @@ static NSString * const identifier = @"moveCell";
         if (model.index == 0 || model.index == self.resultModels.count - 1) {
             size = CGSizeMake(collectionView.hx_w,collectionView.hx_h);
         } else {
+            
             size = CGSizeMake(collectionView.hx_w,collectionView.hx_h/2);
         }
     } else {
