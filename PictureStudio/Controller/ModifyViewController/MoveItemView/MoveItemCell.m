@@ -23,6 +23,7 @@
 
 - (void)configCell:(MoveInfoModel *)model {
     _moveItemScrollView.delegate = self;
+    _moveItemScrollView.frame = self.frame;
     _moveModel = model;
     if (model.isMoveUp) {
         _showToUpImageView.hidden = NO;
@@ -78,8 +79,11 @@
         imageView.size = CGSizeMake(self.hx_w, itemView.contentSize.height);
         [itemView addSubview:imageView];
     }
-    containView.frame = CGRectMake(0, 0, self.hx_w, containView.hx_h);
+    //containView.frame = CGRectMake(0, 0, self.hx_w, containView.hx_h);
     [_moveItemScrollView setContentSize:CGSizeMake(self.hx_w, containView.hx_h)];
+    if (_moveModel.isMoveDown) {
+        [_moveItemScrollView setContentOffset:CGPointMake(0, _moveItemScrollView.contentSize.height - _moveItemScrollView.hx_h)];
+    }
 }
 
 

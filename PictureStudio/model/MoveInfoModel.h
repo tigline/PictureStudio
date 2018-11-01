@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (assign, nonatomic) CGFloat canMoveHeight;
 @property (strong, nonatomic) NSArray* photoArray;
 @property (assign, nonatomic) CGFloat itemHeight;
+@property (assign, nonatomic) CGFloat itemFrameHeight;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -425,13 +425,13 @@ static NSString * const identifier = @"moveCell";
     CGRect cellRect = attributes.frame;
     CGRect rectInCollectionView = [self.showImageCollectionView convertRect:cellRect toView:self.showImageCollectionView];
     CGRect rectInWindow = [self.showImageCollectionView convertRect:rectInCollectionView toView:[self.showImageCollectionView superview]];
-    
     self.isEdittMove = YES;
     self.showImageCollectionView.scrollEnabled = NO;
     if (index == 0) {
         _movePartCount = 1;
         MoveInfoModel * model = [[MoveInfoModel alloc] init];
         model.index = index;
+        model.itemFrameHeight = _showImageCollectionView.hx_h;
         model.isMoveUp = YES;
         model.isMoveDown = NO;
         model.photoArray = self.resultModels;
@@ -447,10 +447,12 @@ static NSString * const identifier = @"moveCell";
             model.index = index - i;
             model.isMoveUp = YES;
             if (i == 1) {
+                model.itemFrameHeight = rectInWindow.origin.y - _showImageCollectionView.frame.origin.y;
                 model.isMoveUp = NO;
                 model.isMoveDown = YES;
                 model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, index)]];
             } else {
+                model.itemFrameHeight = _showImageCollectionView.hx_h - rectInWindow.origin.y + _showImageCollectionView.frame.origin.y;
                 model.isMoveUp = YES;
                 model.isMoveDown = NO;
                 model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index, _resultModels.count - index)]];
@@ -480,6 +482,7 @@ static NSString * const identifier = @"moveCell";
         _movePartCount = 1;
         MoveInfoModel * model = [[MoveInfoModel alloc] init];
         model.index = index;
+        model.itemFrameHeight = _showImageScrollView.hx_h;
         model.isMoveUp = NO;
         model.isMoveDown = YES;
         model.photoArray = self.resultModels;
@@ -494,10 +497,12 @@ static NSString * const identifier = @"moveCell";
             model.index = index + i;
             
             if (i == 0) {
+                model.itemFrameHeight = rectInWindow.size.height - _showImageCollectionView.frame.origin.y + rectInWindow.origin.y;
                 model.isMoveUp = NO;
                 model.isMoveDown = YES;
                 model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, index + 1)]];
             } else {
+                model.itemFrameHeight = _showImageCollectionView.hx_h - cellRect.size.height + _showImageCollectionView.frame.origin.y - rectInWindow.origin.y;
                 model.isMoveUp = YES;
                 model.isMoveDown = NO;
                 model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index + 1, _resultModels.count - index - 1)]];
@@ -727,7 +732,7 @@ static NSString * const identifier = @"moveCell";
             size = CGSizeMake(collectionView.hx_w,collectionView.hx_h);
         } else {
             
-            size = CGSizeMake(collectionView.hx_w,collectionView.hx_h/2);
+            size = CGSizeMake(collectionView.hx_w,model.itemFrameHeight);
         }
     } else {
         PhotoCutModel *model = [self.resultModels objectAtIndex:indexPath.row];
