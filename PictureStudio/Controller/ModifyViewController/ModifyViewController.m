@@ -436,7 +436,7 @@ static NSString * const identifier = @"moveCell";
         model.isMoveDown = NO;
         model.photoArray = self.resultModels;
         PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index];
-        model.canMoveHeight = cutModel.beginY - cutModel.endY;
+        model.canMoveHeight = cutModel.endY - cutModel.beginY;
         model.itemHeight = [self getMoveItemHeight:model.photoArray];
         [_moveItemArray addObject:model];
         
@@ -459,7 +459,7 @@ static NSString * const identifier = @"moveCell";
             }
             
             PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index - i];
-            model.canMoveHeight = cutModel.beginY - cutModel.endY;
+            model.canMoveHeight = cutModel.endY - cutModel.beginY;
             model.itemHeight = [self getMoveItemHeight:model.photoArray];
             [_moveItemArray addObject:model];
         }
@@ -728,12 +728,9 @@ static NSString * const identifier = @"moveCell";
     CGSize size;
     if (_isEdittMove) {
         MoveInfoModel *model = [self.moveItemArray objectAtIndex:indexPath.row];
-        if (model.index == 0 || model.index == self.resultModels.count - 1) {
-            size = CGSizeMake(collectionView.hx_w,collectionView.hx_h);
-        } else {
-            
-            size = CGSizeMake(collectionView.hx_w,model.itemFrameHeight);
-        }
+
+        size = CGSizeMake(collectionView.hx_w,model.itemFrameHeight);
+        
     } else {
         PhotoCutModel *model = [self.resultModels objectAtIndex:indexPath.row];
         CGFloat imageCutHeight = (model.endY - model.beginY);

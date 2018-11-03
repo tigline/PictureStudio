@@ -121,6 +121,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
                         endModel.originPhoto = [images objectAtIndex:i+1];
                         endModel.beginY = 0;
                         endModel.endY = imageDownOrigin.rows;
+                        endModel.index = i + 1;
                         [resultModels addObject:endModel];
                     }
                     curUseHeight = imageDownCut.rows;
@@ -176,6 +177,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
                 endModel.originPhoto = [images objectAtIndex:i+1];
                 endModel.beginY = 0;
                 endModel.endY = imageDownOrigin.rows;
+                endModel.index = i + 1;
                 [resultModels addObject:endModel];
             }
             preCutupY = navigationHeight;
@@ -199,6 +201,7 @@ Point2f getTransformPoint(const Point2f originalPoint,const Mat &transformMaxtri
                 endModel.originPhoto = [images objectAtIndex:i+1];
                 endModel.beginY = 0;
                 endModel.endY = imageDownOrigin.rows;
+                endModel.index = i + 1;
                 [resultModels addObject:endModel];
             }
             continue;
