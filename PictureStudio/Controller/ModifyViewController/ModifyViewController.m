@@ -538,14 +538,7 @@ static NSString * const identifier = @"moveCell";
     
 }
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    CGFloat contentHeight = scrollView.contentSize.height - scrollView.bounds.size.height;
-    CGFloat contentOffsetY = scrollView.contentOffset.y;
-    
-    if (contentOffsetY < 0) {
-        _moveItemUpView.frame = CGRectMake(0, _moveItemUpView.originY-contentOffsetY, _moveItemUpView.hx_w, _moveItemUpView.hx_h+contentOffsetY);
-    } else {
-        
-    }
+
 }
 
 //- (void)scrollViewDidScroll:(UIScrollView *)scrollView

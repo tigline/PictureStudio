@@ -200,7 +200,8 @@
                                             <constraint firstAttribute="bottom" secondItem="GPp-ML-pbI" secondAttribute="bottom" id="qcL-92-leG"/>
                                         </constraints>
                                         <connections>
-                                            <outlet property="moveItemScrollView" destination="GPp-ML-pbI" id="GoN-dM-52X"/>
+                                            <outlet property="moveItemScrollView" destination="GPp-ML-pbI" id="y3v-3y-aGb"/>
+                                            <outlet property="scrollViewTopContaints" destination="FZw-Nj-Rwa" id="IBm-dn-k6f"/>
                                             <outlet property="showToDownImageView" destination="uDL-j2-Rfr" id="wsB-Uh-5PZ"/>
                                             <outlet property="showToUpImageView" destination="ya2-X7-SgI" id="Nai-L9-yMf"/>
                                         </connections>
