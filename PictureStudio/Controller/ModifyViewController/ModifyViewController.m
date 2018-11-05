@@ -667,6 +667,21 @@ static NSString * const identifier = @"moveCell";
     //[_showImageScrollView setContentSize:CGSizeMake(_showImageScrollView.frame.size.width, _showImageScrollView.contentSize.height)];
 }
 
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    CGPoint touchPoint = [[touches anyObject] locationInView:self.view];
+
+}
+
+- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    CGPoint preTouchPoint = [[touches anyObject] previousLocationInView:self.view];
+    CGPoint curTouchPoint = [[touches anyObject] locationInView:self.view];
+    CGFloat touchOffset = curTouchPoint.y - preTouchPoint.y;
+ 
+    //CGRectS(self.originX, self.originY + touchOffset, self.hx_w, self.hx_h+touchOffset);
+    
+    
+}
+
 #pragma mark - Private
 
 - (void)refreshImageContainerViewCenter {

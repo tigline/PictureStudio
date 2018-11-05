@@ -23,6 +23,8 @@
 @property (assign, nonatomic) BOOL canScroll;
 @property (assign, nonatomic) CGFloat lastContentOffset;
 @property (assign, nonatomic) CGFloat canMoveHeight;
+@property (assign, nonatomic) CGFloat beginLocationY;
+@property (assign, nonatomic) CGFloat touchDistance;
 //@property (strong, nonatomic) UIScrollView *moveItemScrollView;
 @end
 
@@ -205,6 +207,31 @@
     [self.moveDelegate beginMoveCellAt:_moveModel moveDistance:_lastContentOffset];
 }
 
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    CGPoint touchPoint = [[touches anyObject] locationInView:self];
+    _beginLocationY = touchPoint.y;
+}
+
+- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    CGPoint preTouchPoint = [[touches anyObject] previousLocationInView:self];
+    CGPoint curTouchPoint = [[touches anyObject] locationInView:self];
+    CGFloat touchOffset = curTouchPoint.y - preTouchPoint.y;
+    _touchDistance = curTouchPoint.y - _beginLocationY;
+    
+    self.size = CGSizeMake(self.hx_w, self.hx_h+touchOffset);
+    //Block or Delegate
+    //CGRectS(self.originX, self.originY + touchOffset, self.hx_w, self.hx_h+touchOffset);
+    
+    
+}
+
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    
+}
+
+- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    
+}
 
 
 @end
