@@ -13,6 +13,7 @@
 		700E325020A1C8A0007A23E0 /* AboutViewTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 700E324D20A1C8A0007A23E0 /* AboutViewTableViewCell.xib */; };
 		700E325420A1E464007A23E0 /* WeiboTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 700E325220A1E464007A23E0 /* WeiboTableViewCell.xib */; };
 		700E325520A1E464007A23E0 /* WeiboTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 700E325320A1E464007A23E0 /* WeiboTableViewCell.m */; };
+		701CD46621932E0C00A645C4 /* MoveCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 701CD46521932E0C00A645C4 /* MoveCollectionViewFlowLayout.m */; };
 		702C5FBC20CACEEE00AA8CA5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 702C5FBB20CACEEE00AA8CA5 /* StoreKit.framework */; };
 		702C5FC020D15DF100AA8CA5 /* XDProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 702C5FBF20D15DF000AA8CA5 /* XDProgressView.m */; };
 		703FDEB4212C5FE1006218D0 /* UIColor+CustomColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 703FDEB3212C5FE1006218D0 /* UIColor+CustomColor.m */; };
@@ -106,6 +107,8 @@
 		700E325120A1E464007A23E0 /* WeiboTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeiboTableViewCell.h; path = PictureStudio/Controller/About/WeiboTableViewCell.h; sourceTree = SOURCE_ROOT; };
 		700E325220A1E464007A23E0 /* WeiboTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = WeiboTableViewCell.xib; path = PictureStudio/Controller/About/WeiboTableViewCell.xib; sourceTree = SOURCE_ROOT; };
 		700E325320A1E464007A23E0 /* WeiboTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeiboTableViewCell.m; path = PictureStudio/Controller/About/WeiboTableViewCell.m; sourceTree = SOURCE_ROOT; };
+		701CD46421932E0C00A645C4 /* MoveCollectionViewFlowLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoveCollectionViewFlowLayout.h; sourceTree = "<group>"; };
+		701CD46521932E0C00A645C4 /* MoveCollectionViewFlowLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoveCollectionViewFlowLayout.m; sourceTree = "<group>"; };
 		702C5FBB20CACEEE00AA8CA5 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		702C5FBE20D15DF000AA8CA5 /* XDProgressView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XDProgressView.h; sourceTree = "<group>"; };
 		702C5FBF20D15DF000AA8CA5 /* XDProgressView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XDProgressView.m; sourceTree = "<group>"; };
@@ -287,6 +290,8 @@
 				70BF0AFC2144CE6C000AAE53 /* ModifyViewController.m */,
 				707DBA7D209ED61100F2FAFB /* PhotoSaveBottomView.h */,
 				707DBA7E209ED61100F2FAFB /* PhotoSaveBottomView.m */,
+				701CD46421932E0C00A645C4 /* MoveCollectionViewFlowLayout.h */,
+				701CD46521932E0C00A645C4 /* MoveCollectionViewFlowLayout.m */,
 				707E88062149470B009954E1 /* MoveItemView */,
 			);
 			path = ModifyViewController;
@@ -856,6 +861,7 @@
 				939F270E213FBF6600718374 /* CustomTransitionPushSimilarHepler.m in Sources */,
 				937F74332084879800F56AFD /* HXPhotoManager.m in Sources */,
 				708249002078E510000D60A3 /* PhotoEditButtomView.m in Sources */,
+				701CD46621932E0C00A645C4 /* MoveCollectionViewFlowLayout.m in Sources */,
 				9399E82020D23D5400791E92 /* ToastView.m in Sources */,
 				703FDEB82132E3CB006218D0 /* AssetTitleButton.m in Sources */,
 				9338E54F20A577A10059D58E /* PhotoPreviewController.m in Sources */,

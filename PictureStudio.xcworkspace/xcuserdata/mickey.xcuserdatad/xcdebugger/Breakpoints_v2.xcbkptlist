@@ -234,7 +234,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PictureStudio/Controller/ModifyViewController/ModifyViewController.m"
-            timestampString = "563040399.819922"
+            timestampString = "563118324.655021"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "338"
@@ -282,7 +282,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PictureStudio/Controller/ModifyViewController/ModifyViewController.m"
-            timestampString = "563040399.820043"
+            timestampString = "563118324.655529"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "335"
@@ -298,12 +298,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PictureStudio/Controller/ModifyViewController/ModifyViewController.m"
-            timestampString = "563040399.820107"
+            timestampString = "563118324.655853"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "451"
             endingLineNumber = "451"
             landmarkName = "-onUpDragItemTap:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PictureStudio/Controller/ModifyViewController/ModifyViewController.m"
+            timestampString = "563118324.6561379"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "706"
+            endingLineNumber = "706"
+            landmarkName = "-updateMoveOffset:moveOffset:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

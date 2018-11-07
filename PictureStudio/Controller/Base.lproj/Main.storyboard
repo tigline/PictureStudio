@@ -156,7 +156,7 @@
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="NXD-6R-CoT">
                                 <rect key="frame" x="10" y="10" width="355" height="597"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="eh0-Pk-tGN">
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="eh0-Pk-tGN" customClass="MoveCollectionViewFlowLayout">
                                     <size key="itemSize" width="355" height="214"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -348,6 +348,7 @@
                         <outlet property="moveBtnHeight" destination="0ky-H4-4iv" id="RgZ-3S-H2o"/>
                         <outlet property="moveBtnMaginLeft" destination="OjO-jK-hwd" id="y0M-GQ-pJF"/>
                         <outlet property="moveBtnWidth" destination="2lQ-Hs-ZNt" id="Tfj-H3-3Bf"/>
+                        <outlet property="moveCollectionViewLayout" destination="eh0-Pk-tGN" id="Ohh-I2-l38"/>
                         <outlet property="nextBtn" destination="sQ4-ub-fUu" id="J0z-wZ-Cj6"/>
                         <outlet property="nextBtnMaginRight" destination="c7n-hG-gaL" id="V73-3O-AZL"/>
                         <outlet property="nextBtnWidth" destination="JXg-fZ-5O6" id="fvv-og-YpQ"/>

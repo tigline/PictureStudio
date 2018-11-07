@@ -220,6 +220,9 @@
     
     self.size = CGSizeMake(self.hx_w, self.hx_h+touchOffset);
     //Block or Delegate
+    self.moveOffsetBlock(touchOffset);
+    //_moveModel.itemFrameHeight += touchOffset
+    [self.moveDelegate updateMoveOffset:_moveModel moveOffset:touchOffset];
     //CGRectS(self.originX, self.originY + touchOffset, self.hx_w, self.hx_h+touchOffset);
     
     

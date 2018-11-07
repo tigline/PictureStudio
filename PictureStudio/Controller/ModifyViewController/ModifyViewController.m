@@ -23,7 +23,7 @@
 #import "MoveItemView/MoveItemCell.h"
 #import "MoveInfoModel.h"
 
-@interface ModifyViewController () <UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, ModifyCellDelegate>
+@interface ModifyViewController () <UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ModifyCellDelegate, MoveCellDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
 @property (weak, nonatomic) IBOutlet UIButton *backBtn;
@@ -47,6 +47,7 @@
 
 @property (weak, nonatomic) IBOutlet UIScrollView *showImageScrollView;
 @property (weak, nonatomic) IBOutlet UICollectionView *showImageCollectionView;
+@property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *moveCollectionViewLayout;
 
 //@property (strong, nonatomic) UIScrollView *showImageScrollView;
 @property (strong, nonatomic) UIScrollView *shareScrollView;
@@ -682,6 +683,7 @@ static NSString * const identifier = @"moveCell";
     
 }
 
+
 #pragma mark - Private
 
 - (void)refreshImageContainerViewCenter {
@@ -699,6 +701,20 @@ static NSString * const identifier = @"moveCell";
 }
 */
 
+#pragma mark - MoveCellDelegate
+
+- (void)updateMoveOffset:(MoveInfoModel *)model moveOffset:(CGFloat)offset {
+    model.itemFrameHeight += offset;
+    [self.moveItemArray replaceObjectAtIndex:model.index withObject:model];
+    _isEdittMove = YES;
+    [self.showImageCollectionView reloadData];
+}
+
+#pragma mark - UICollectionViewDelegateFlowLayout
+
+
+#pragma mark - UICollectionViewDelegate
+
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
 }
@@ -709,6 +725,10 @@ static NSString * const identifier = @"moveCell";
         MoveItemCell *cell = [self.showImageCollectionView dequeueReusableCellWithReuseIdentifier:@"moveCollectionCell" forIndexPath:indexPath];
         MoveInfoModel *model = [_moveItemArray objectAtIndex:indexPath.row];
         [cell configCell:model];
+        cell.moveDelegate = self;
+        cell.moveOffsetBlock = ^(CGFloat offset) {
+            
+        };
         return cell;
     } else {
         ModifyCollectionViewCell *cell = [self.showImageCollectionView dequeueReusableCellWithReuseIdentifier:@"modifyCollectionCell" forIndexPath:indexPath];
