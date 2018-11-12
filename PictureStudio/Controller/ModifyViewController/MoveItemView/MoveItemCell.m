@@ -206,6 +206,14 @@
     
     [self.moveDelegate beginMoveCellAt:_moveModel moveDistance:_lastContentOffset];
 }
+- (void)setDragItemHidden:(BOOL)hidden {
+    if (_moveModel.isMoveDown) {
+        self.showToDownImageView.hidden = hidden;
+    } else {
+        self.showToUpImageView.hidden = hidden;
+    }
+    
+}
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     CGPoint touchPoint = [[touches anyObject] locationInView:self];
@@ -218,7 +226,13 @@
     CGFloat touchOffset = curTouchPoint.y - preTouchPoint.y;
     _touchDistance = curTouchPoint.y - _beginLocationY;
     
-    self.size = CGSizeMake(self.hx_w, self.hx_h+touchOffset);
+    if (_moveModel.isMoveDown) {
+        self.size = CGSizeMake(self.hx_w, self.hx_h+touchOffset);
+    } else {
+        self.frame = CGRectMake(self.originX, self.originY+touchOffset, self.hx_w, self.hx_h-touchOffset);
+        [self.moveItemScrollView setContentOffset:CGPointMake(0, self.moveItemScrollView.contentOffset.y +touchOffset)];
+    }
+    
     //Block or Delegate
     self.moveOffsetBlock(touchOffset);
     //_moveModel.itemFrameHeight += touchOffset

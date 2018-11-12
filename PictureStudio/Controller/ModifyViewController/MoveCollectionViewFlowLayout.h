@@ -10,7 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MoveCollectionViewFlowLayout : UICollectionViewFlowLayout<UIGestureRecognizerDelegate>
+
+
+@interface MoveCollectionViewFlowLayout : UICollectionViewFlowLayout
 
 @end
 

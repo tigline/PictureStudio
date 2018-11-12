@@ -328,195 +328,6 @@ static NSString * const identifier = @"moveCell";
     
 }
 
-- (void)setInMoveState:(CGFloat)borderY index:(NSInteger)index {
-    
-//    for (UIView *subview in self.containImageView.subviews) {
-//        [subview removeFromSuperview];
-//    }
-//    self.containImageView = nil;
-//    _containImageView = [[UIView alloc] init];
-//    _containImageView.clipsToBounds = YES;
-//
-//    [_showImageScrollView addSubview:_containImageView];
-    _upImagesArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, index + 1)]];
-    _downImagesArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index + 1, _resultModels.count - index - 1)]];
-    
-    CGRect upFrame = CGRectMake(0, 0, _showImageScrollView.hx_w, borderY);
-    _moveItemUpView = [self createMoveItemViewWithFrame:upFrame itemArray:_upImagesArray toBottom:YES];
-    _moveItemUpView.delegate = self;
-    [_showImageScrollView addSubview:_moveItemUpView];
-    
-    CGRect downFrame = CGRectMake(0, borderY, _showImageScrollView.hx_w, _showImageScrollView.hx_h - borderY);
-    _moveItemDownView = [self createMoveItemViewWithFrame:downFrame itemArray:_downImagesArray toBottom:NO];
-    [_showImageScrollView addSubview:_moveItemDownView];
-    
-}
-
-- (UIScrollView *)createMoveItemViewWithFrame:(CGRect )frame itemArray:(NSArray *)itemArray toBottom:(BOOL)toBottom {
-    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:frame];
-    UIView *containView = [[UIView alloc] init];
-    containView.clipsToBounds = YES;
-    [scrollView addSubview:containView];
-    
-    
-    CGRect cgpos;
-    NSInteger count = itemArray.count;
-    for (int i = 0; i < count; i++) {
-        PhotoCutModel *mode = [itemArray objectAtIndex:i];
-        UIImage *image = mode.originPhoto;
-        UIImageView *imageView = [[UIImageView alloc]initWithImage:image];
-        CGFloat itemHeight = (mode.endY - mode.beginY);
-        //MoveItemView *itemView = [[MoveItemView alloc]initWithFrame:CGRectZero];
-        
-        CGFloat contentViewOffset;
-        if(i == 0) {
-            contentViewOffset = 0;
-        } else {
-            contentViewOffset = containView.hx_h;
-        }
-        
-        CGFloat ratio = (_showImageScrollView.hx_w)/imageView.hx_w;
-        
-        cgpos.origin.x = 0;
-        cgpos.origin.y = contentViewOffset;
-        cgpos.size.width = _showImageScrollView.hx_w;
-        cgpos.size.height = itemHeight*ratio;
-        //itemView.frame = cgpos;
-        //MoveItemView *itemView = [[MoveItemView alloc]initWithFrame:cgpos model:mode];
-        UIScrollView *itemView = [[UIScrollView alloc]initWithFrame:cgpos];
-        
-        [containView addSubview:itemView];
-        itemView.contentSize = CGSizeMake(_showImageScrollView.hx_w, imageView.hx_h*ratio);
-        itemView.contentOffset = CGPointMake(0, mode.beginY*ratio);
-        itemView.scrollEnabled = NO;
-        
-        CGFloat lastOffset;
-        if (i == itemArray.count - 1 || i == 0) {
-            lastOffset = cgpos.size.height;
-        } else {
-            lastOffset = cgpos.size.height;
-        }
-        
-        containView.size = CGSizeMake(cgpos.size.width, containView.hx_h + lastOffset);
-        //itemView.contentSize = CGSizeMake(_showImageScrollView.hx_w - 20, itemView.contentSize.height*1.5);
-        
-        imageView.size = CGSizeMake(_showImageScrollView.hx_w, itemView.contentSize.height);
-        [itemView addSubview:imageView];
-        [self addLayerBorder:imageView count:count index:i direction:YES];
-        //[self addLayerBorder:imageView count:count index:i direction:isCombineVertical];
-        
-    }
-    containView.frame = CGRectMake(0, 0, _showImageScrollView.hx_w, containView.hx_h);
-    [scrollView setContentSize:CGSizeMake(_showImageScrollView.hx_w, containView.hx_h)];
-    if (toBottom) {
-        CGPoint bottomOffset = CGPointMake(0, scrollView.contentSize.height - scrollView.bounds.size.height);
-        [scrollView setContentOffset:bottomOffset animated:NO];
-        //[scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
-    } else {
-        
-    }
-    return scrollView;
-}
-
-#pragma mark ModifyCellDelegate
-- (void)onUpDragItemTap:(NSInteger)index {
-    
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-    UICollectionViewLayoutAttributes *attributes = [self.showImageCollectionView layoutAttributesForItemAtIndexPath:indexPath];
-    CGRect cellRect = attributes.frame;
-    CGRect rectInCollectionView = [self.showImageCollectionView convertRect:cellRect toView:self.showImageCollectionView];
-    CGRect rectInWindow = [self.showImageCollectionView convertRect:rectInCollectionView toView:[self.showImageCollectionView superview]];
-    self.isEdittMove = YES;
-    self.showImageCollectionView.scrollEnabled = NO;
-    if (index == 0) {
-        _movePartCount = 1;
-        MoveInfoModel * model = [[MoveInfoModel alloc] init];
-        model.index = index;
-        model.itemFrameHeight = _showImageCollectionView.hx_h;
-        model.isMoveUp = YES;
-        model.isMoveDown = NO;
-        model.photoArray = self.resultModels;
-        PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index];
-        model.canMoveHeight = cutModel.endY - cutModel.beginY;
-        model.itemHeight = [self getMoveItemHeight:model.photoArray];
-        [_moveItemArray addObject:model];
-        
-    } else {
-        _movePartCount = 2;
-        for (int i = 1; i >= 0; i--) {
-            MoveInfoModel * model = [[MoveInfoModel alloc] init];
-            model.index = index - i;
-            model.isMoveUp = YES;
-            if (i == 1) {
-                model.itemFrameHeight = rectInWindow.origin.y - _showImageCollectionView.frame.origin.y;
-                model.isMoveUp = NO;
-                model.isMoveDown = YES;
-                model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, index)]];
-            } else {
-                model.itemFrameHeight = _showImageCollectionView.hx_h - rectInWindow.origin.y + _showImageCollectionView.frame.origin.y;
-                model.isMoveUp = YES;
-                model.isMoveDown = NO;
-                model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index, _resultModels.count - index)]];
-            }
-            
-            PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index - i];
-            model.canMoveHeight = cutModel.endY - cutModel.beginY;
-            model.itemHeight = [self getMoveItemHeight:model.photoArray];
-            [_moveItemArray addObject:model];
-        }
-    }
-    
-    [self.showImageCollectionView reloadData];
-}
-
-- (void)onDownDragItemTap:(NSInteger)index{
-    
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-    UICollectionViewLayoutAttributes *attributes = [self.showImageCollectionView layoutAttributesForItemAtIndexPath:indexPath];
-    CGRect cellRect = attributes.frame;
-    CGRect rectInCollectionView = [self.showImageCollectionView convertRect:cellRect toView:self.showImageCollectionView];
-    CGRect rectInWindow = [self.showImageCollectionView convertRect:rectInCollectionView toView:[self.showImageCollectionView superview]];
-    
-    self.isEdittMove = YES;
-    self.showImageCollectionView.scrollEnabled = NO;
-    if (index == self.resultModels.count - 1) {
-        _movePartCount = 1;
-        MoveInfoModel * model = [[MoveInfoModel alloc] init];
-        model.index = index;
-        model.itemFrameHeight = _showImageScrollView.hx_h;
-        model.isMoveUp = NO;
-        model.isMoveDown = YES;
-        model.photoArray = self.resultModels;
-        PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index];
-        model.canMoveHeight = cutModel.endY - cutModel.beginY;
-        model.itemHeight = [self getMoveItemHeight:model.photoArray];
-        [_moveItemArray addObject:model];
-    } else {
-        _movePartCount = 2;
-        for (int i = 0; i < 2; i++) {
-            MoveInfoModel * model = [[MoveInfoModel alloc] init];
-            model.index = index + i;
-            
-            if (i == 0) {
-                model.itemFrameHeight = rectInWindow.size.height - _showImageCollectionView.frame.origin.y + rectInWindow.origin.y;
-                model.isMoveUp = NO;
-                model.isMoveDown = YES;
-                model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, index + 1)]];
-            } else {
-                model.itemFrameHeight = _showImageCollectionView.hx_h - cellRect.size.height + _showImageCollectionView.frame.origin.y - rectInWindow.origin.y;
-                model.isMoveUp = YES;
-                model.isMoveDown = NO;
-                model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index + 1, _resultModels.count - index - 1)]];
-            }
-            
-            PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index + i];
-            model.canMoveHeight = cutModel.endY - cutModel.beginY;
-            model.itemHeight = [self getMoveItemHeight:model.photoArray];
-            [_moveItemArray addObject:model];
-        }
-    }
-    [self.showImageCollectionView reloadData];
-}
 
 - (CGFloat)getMoveItemHeight:(NSArray *)modelArray {
     CGFloat height = 0;
@@ -645,6 +456,105 @@ static NSString * const identifier = @"moveCell";
 - (IBAction)onNextBtnTap:(id)sender {
     
 }
+#pragma mark ModifyCellDelegate
+- (void)onUpDragItemTap:(NSInteger)index {
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+    UICollectionViewLayoutAttributes *attributes = [self.showImageCollectionView layoutAttributesForItemAtIndexPath:indexPath];
+    CGRect cellRect = attributes.frame;
+    CGRect rectInCollectionView = [self.showImageCollectionView convertRect:cellRect toView:self.showImageCollectionView];
+    CGRect rectInWindow = [self.showImageCollectionView convertRect:rectInCollectionView toView:[self.showImageCollectionView superview]];
+    self.isEdittMove = YES;
+    self.showImageCollectionView.scrollEnabled = NO;
+    if (index == 0) {
+        _movePartCount = 1;
+        MoveInfoModel * model = [[MoveInfoModel alloc] init];
+        model.index = index;
+        model.itemFrameHeight = _showImageCollectionView.hx_h;
+        model.isMoveUp = YES;
+        model.isMoveDown = NO;
+        model.photoArray = self.resultModels;
+        PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index];
+        model.canMoveHeight = cutModel.endY - cutModel.beginY;
+        model.itemHeight = [self getMoveItemHeight:model.photoArray];
+        [_moveItemArray addObject:model];
+        
+    } else {
+        _movePartCount = 2;
+        for (int i = 1; i >= 0; i--) {
+            MoveInfoModel * model = [[MoveInfoModel alloc] init];
+            model.index = index - i;
+            model.isMoveUp = YES;
+            if (i == 1) {
+                model.itemFrameHeight = rectInWindow.origin.y - _showImageCollectionView.frame.origin.y;
+                model.isMoveUp = NO;
+                model.isMoveDown = YES;
+                model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, index)]];
+            } else {
+                model.itemFrameHeight = _showImageCollectionView.hx_h - rectInWindow.origin.y + _showImageCollectionView.frame.origin.y;
+                model.isMoveUp = YES;
+                model.isMoveDown = NO;
+                model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index, _resultModels.count - index)]];
+            }
+            
+            PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index - i];
+            model.canMoveHeight = cutModel.endY - cutModel.beginY;
+            model.itemHeight = [self getMoveItemHeight:model.photoArray];
+            [_moveItemArray addObject:model];
+        }
+    }
+    
+    [self.showImageCollectionView reloadData];
+}
+
+- (void)onDownDragItemTap:(NSInteger)index{
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+    UICollectionViewLayoutAttributes *attributes = [self.showImageCollectionView layoutAttributesForItemAtIndexPath:indexPath];
+    CGRect cellRect = attributes.frame;
+    CGRect rectInCollectionView = [self.showImageCollectionView convertRect:cellRect toView:self.showImageCollectionView];
+    CGRect rectInWindow = [self.showImageCollectionView convertRect:rectInCollectionView toView:[self.showImageCollectionView superview]];
+    
+    self.isEdittMove = YES;
+    self.showImageCollectionView.scrollEnabled = NO;
+    if (index == self.resultModels.count - 1) {
+        _movePartCount = 1;
+        MoveInfoModel * model = [[MoveInfoModel alloc] init];
+        model.index = index;
+        model.itemFrameHeight = _showImageScrollView.hx_h;
+        model.isMoveUp = NO;
+        model.isMoveDown = YES;
+        model.photoArray = self.resultModels;
+        PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index];
+        model.canMoveHeight = cutModel.endY - cutModel.beginY;
+        model.itemHeight = [self getMoveItemHeight:model.photoArray];
+        [_moveItemArray addObject:model];
+    } else {
+        _movePartCount = 2;
+        for (int i = 0; i < 2; i++) {
+            MoveInfoModel * model = [[MoveInfoModel alloc] init];
+            model.index = index + i;
+            
+            if (i == 0) {
+                model.itemFrameHeight = rectInWindow.size.height - _showImageCollectionView.frame.origin.y + rectInWindow.origin.y;
+                model.isMoveUp = NO;
+                model.isMoveDown = YES;
+                model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, index + 1)]];
+            } else {
+                model.itemFrameHeight = _showImageCollectionView.hx_h - cellRect.size.height + _showImageCollectionView.frame.origin.y - rectInWindow.origin.y;
+                model.isMoveUp = YES;
+                model.isMoveDown = NO;
+                model.photoArray = [_resultModels objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(index + 1, _resultModels.count - index - 1)]];
+            }
+            
+            PhotoCutModel *cutModel = [self.resultModels objectAtIndex:index + i];
+            model.canMoveHeight = cutModel.endY - cutModel.beginY;
+            model.itemHeight = [self getMoveItemHeight:model.photoArray];
+            [_moveItemArray addObject:model];
+        }
+    }
+    [self.showImageCollectionView reloadData];
+}
 
 
 
@@ -704,11 +614,44 @@ static NSString * const identifier = @"moveCell";
 #pragma mark - MoveCellDelegate
 
 - (void)updateMoveOffset:(MoveInfoModel *)model moveOffset:(CGFloat)offset {
-    model.itemFrameHeight += offset;
-    [self.moveItemArray replaceObjectAtIndex:model.index withObject:model];
-    _isEdittMove = YES;
-    [self.showImageCollectionView reloadData];
+//    model.itemFrameHeight += offset;
+//    [self.moveItemArray replaceObjectAtIndex:model.index withObject:model];
+//    _isEdittMove = YES;
+//    [self.showImageCollectionView reloadData];
+    MoveItemCell *cell;
+    if (model.index == 0) {
+        
+        if (model.isMoveDown) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:model.index + 1 inSection:0];
+            cell = (MoveItemCell *)[self.showImageCollectionView cellForItemAtIndexPath:indexPath];
+            cell.frame = CGRectMake(cell.originX, cell.originY + offset, cell.hx_w, cell.hx_h - offset);
+            [cell setDragItemHidden:YES];
+        } else {
+            
+        }
+    } else {
+        if (model.isMoveDown) {
+            
+        } else {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:model.index - 1 inSection:0];
+            cell = (MoveItemCell *)[self.showImageCollectionView cellForItemAtIndexPath:indexPath];
+            cell.frame = CGRectMake(cell.originX, cell.originY, cell.hx_w, cell.hx_h + offset);
+            [cell setDragItemHidden:YES];
+        }
+        
+    }
+    
 }
+
+- (void)beginMoveCellAt:(nonnull MoveInfoModel *)model moveDistance:(CGFloat)distance {
+    
+}
+
+
+- (void)endMoveCellAt:(nonnull MoveInfoModel *)model moveDistance:(CGFloat)distance {
+    
+}
+
 
 #pragma mark - UICollectionViewDelegateFlowLayout
 
@@ -756,7 +699,7 @@ static NSString * const identifier = @"moveCell";
     CGSize size;
     if (_isEdittMove) {
         MoveInfoModel *model = [self.moveItemArray objectAtIndex:indexPath.row];
-
+        
         size = CGSizeMake(collectionView.hx_w,model.itemFrameHeight);
         
     } else {
@@ -795,6 +738,8 @@ static NSString * const identifier = @"moveCell";
 {
     return 0;
 }
+
+
 
 
 

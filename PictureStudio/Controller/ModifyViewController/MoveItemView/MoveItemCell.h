@@ -24,7 +24,7 @@ typedef void (^MoveOffset)(CGFloat offset);
 @property (strong, nonatomic) MoveInfoModel *moveModel;
 @property (copy, nonatomic) MoveOffset moveOffsetBlock;
 - (void)configCell:(MoveInfoModel *)model;
-
+- (void)setDragItemHidden:(BOOL)hidden;
 @end
 
 NS_ASSUME_NONNULL_END
