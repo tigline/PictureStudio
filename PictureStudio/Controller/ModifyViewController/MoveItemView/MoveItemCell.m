@@ -51,7 +51,7 @@
         _showToDownImageView.hidden = NO;
     }
     [self createShowView:model.photoArray];
-
+    
 }
 
 - (void)createShowView:(NSArray *)photoArray {
@@ -140,6 +140,7 @@
         [_moveItemScrollView setContentOffset:CGPointMake(0, offset)];
        // _canScroll = true;
     }
+    _moveItemScrollView.userInteractionEnabled = NO;
     
 }
 
@@ -215,39 +216,94 @@
     
 }
 
+- (CGFloat)getContentOffset {
+    return self.moveItemScrollView.contentOffset.y;
+};
+
+
+- (void)setContentOffset:(CGFloat)offset {
+    //_moveItemScrollView.scrollEnabled = YES;
+    [self.moveItemScrollView setContentOffset:CGPointMake(0, self.moveItemScrollView.contentOffset.y + offset)];
+}
+
+
+
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    //_moveItemScrollView.scrollEnabled = YES;
+    UIView *touchView;
+    if (_moveModel.isMoveDown) {
+        touchView = self.showToDownImageView;
+    } else {
+        touchView = self.showToUpImageView;
+    }
     CGPoint touchPoint = [[touches anyObject] locationInView:self];
-    _beginLocationY = touchPoint.y;
+    touchPoint = [touchView.layer convertPoint:touchPoint fromLayer:self.layer];
+    if ([touchView.layer containsPoint:touchPoint]) {
+        _beginLocationY = touchPoint.y;
+    } else {
+        
+    }
+    
 }
 
 - (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    UIView *touchView;
     CGPoint preTouchPoint = [[touches anyObject] previousLocationInView:self];
     CGPoint curTouchPoint = [[touches anyObject] locationInView:self];
+    //CGPoint touchPoint = [[touches anyObject] locationInView:self];
+    
     CGFloat touchOffset = curTouchPoint.y - preTouchPoint.y;
     _touchDistance = curTouchPoint.y - _beginLocationY;
+    CGFloat contentHeight = _moveItemScrollView.contentSize.height - _moveItemScrollView.hx_h;
+    
     
     if (_moveModel.isMoveDown) {
-        self.size = CGSizeMake(self.hx_w, self.hx_h+touchOffset);
+        touchView = self.showToDownImageView;
+    
     } else {
-        self.frame = CGRectMake(self.originX, self.originY+touchOffset, self.hx_w, self.hx_h-touchOffset);
-        [self.moveItemScrollView setContentOffset:CGPointMake(0, self.moveItemScrollView.contentOffset.y +touchOffset)];
+        touchView = self.showToUpImageView;
+    }
+    CGFloat contentOffsetY = fabs(_moveItemScrollView.contentOffset.y);
+    curTouchPoint = [touchView.layer convertPoint:curTouchPoint fromLayer:self.layer];
+    if ([touchView.layer containsPoint:curTouchPoint]) {
+        if (_moveModel.isMoveDown && (contentOffsetY + touchOffset < contentHeight)) {
+            self.size = CGSizeMake(self.hx_w, self.hx_h+touchOffset);
+            //Block or Delegate
+            self.moveOffsetBlock(touchOffset);
+            //_moveModel.itemFrameHeight += touchOffset
+            
+            [self.moveDelegate updateMoveOffset:_moveModel moveOffset:touchOffset];
+        } else if (_moveModel.isMoveUp && contentOffsetY > 0) {
+            self.frame = CGRectMake(self.originX, self.originY+touchOffset, self.hx_w, self.hx_h-touchOffset);
+            [self.moveItemScrollView setContentOffset:CGPointMake(0, self.moveItemScrollView.contentOffset.y + touchOffset)];
+            //Block or Delegate
+            self.moveOffsetBlock(touchOffset);
+            //_moveModel.itemFrameHeight += touchOffset
+            
+            [self.moveDelegate updateMoveOffset:_moveModel moveOffset:touchOffset];
+        }
+        
+        
+     
+     
+        
+        //CGRectS(self.originX, self.originY + touchOffset, self.hx_w, self.hx_h+touchOffset);
+    } else {
+        
     }
     
-    //Block or Delegate
-    self.moveOffsetBlock(touchOffset);
-    //_moveModel.itemFrameHeight += touchOffset
-    [self.moveDelegate updateMoveOffset:_moveModel moveOffset:touchOffset];
-    //CGRectS(self.originX, self.originY + touchOffset, self.hx_w, self.hx_h+touchOffset);
     
     
 }
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    
+    //_moveItemScrollView.scrollEnabled = NO;
+    [self.moveDelegate updateCellState:_moveModel];
 }
 
 - (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    
+    //_moveItemScrollView.scrollEnabled = NO;
+    [self.moveDelegate updateCellState:_moveModel];
 }
 
 

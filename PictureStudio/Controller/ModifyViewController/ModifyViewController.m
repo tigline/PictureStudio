@@ -505,6 +505,7 @@ static NSString * const identifier = @"moveCell";
     }
     
     [self.showImageCollectionView reloadData];
+    self.showImageCollectionView.scrollEnabled = false;
 }
 
 - (void)onDownDragItemTap:(NSInteger)index{
@@ -554,6 +555,7 @@ static NSString * const identifier = @"moveCell";
         }
     }
     [self.showImageCollectionView reloadData];
+    self.showImageCollectionView.scrollEnabled = false;
 }
 
 
@@ -635,12 +637,46 @@ static NSString * const identifier = @"moveCell";
         } else {
             NSIndexPath *indexPath = [NSIndexPath indexPathForItem:model.index - 1 inSection:0];
             cell = (MoveItemCell *)[self.showImageCollectionView cellForItemAtIndexPath:indexPath];
-            cell.frame = CGRectMake(cell.originX, cell.originY, cell.hx_w, cell.hx_h + offset);
+            if ([cell getContentOffset] > 0) {
+                cell.frame = CGRectMake(cell.originX, cell.originY, cell.hx_w, cell.hx_h + offset);
+                [cell setContentOffset:-offset];
+            } else {
+                cell.frame = CGRectMake(cell.originX, cell.originY + offset, cell.hx_w, cell.hx_h);
+            }
+            
+                
+        
+            
+            
             [cell setDragItemHidden:YES];
         }
         
     }
     
+}
+
+- (void)updateCellState:(MoveInfoModel *)model {
+    MoveItemCell *cell;
+    if (model.index == 0) {
+        
+        if (model.isMoveDown) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:model.index + 1 inSection:0];
+            cell = (MoveItemCell *)[self.showImageCollectionView cellForItemAtIndexPath:indexPath];
+
+            [cell setDragItemHidden:NO];
+        } else {
+            
+        }
+    } else {
+        if (model.isMoveDown) {
+            
+        } else {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:model.index - 1 inSection:0];
+            cell = (MoveItemCell *)[self.showImageCollectionView cellForItemAtIndexPath:indexPath];
+            [cell setDragItemHidden:NO];
+        }
+        
+    }
 }
 
 - (void)beginMoveCellAt:(nonnull MoveInfoModel *)model moveDistance:(CGFloat)distance {

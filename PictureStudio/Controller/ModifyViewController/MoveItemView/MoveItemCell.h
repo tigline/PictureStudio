@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)beginMoveCellAt:(MoveInfoModel *)model moveDistance:(CGFloat)distance;
 - (void)endMoveCellAt:(MoveInfoModel *)model moveDistance:(CGFloat)distance;
 - (void)updateMoveOffset:(MoveInfoModel *)model moveOffset:(CGFloat)offset;
+- (void)updateCellState:(MoveInfoModel *)model;
 @end
 
 typedef void (^MoveOffset)(CGFloat offset);
@@ -25,6 +26,8 @@ typedef void (^MoveOffset)(CGFloat offset);
 @property (copy, nonatomic) MoveOffset moveOffsetBlock;
 - (void)configCell:(MoveInfoModel *)model;
 - (void)setDragItemHidden:(BOOL)hidden;
+- (void)setContentOffset:(CGFloat)offset;
+- (CGFloat)getContentOffset;
 @end
 
 NS_ASSUME_NONNULL_END
