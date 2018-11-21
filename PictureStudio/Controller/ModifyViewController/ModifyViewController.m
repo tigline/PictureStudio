@@ -22,8 +22,9 @@
 #import "ModifyCollectionViewCell.h"
 #import "MoveItemView/MoveItemCell.h"
 #import "MoveInfoModel.h"
+#import "MoveCollectionViewFlowLayout.h"
 
-@interface ModifyViewController () <UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ModifyCellDelegate, MoveCellDelegate>
+@interface ModifyViewController () <UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, ModifyCellDelegate, MoveCellDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
 @property (weak, nonatomic) IBOutlet UIButton *backBtn;
@@ -47,7 +48,8 @@
 
 @property (weak, nonatomic) IBOutlet UIScrollView *showImageScrollView;
 @property (weak, nonatomic) IBOutlet UICollectionView *showImageCollectionView;
-@property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *moveCollectionViewLayout;
+@property (weak, nonatomic) IBOutlet MoveCollectionViewFlowLayout *moveCollectionViewLayout;
+
 
 //@property (strong, nonatomic) UIScrollView *showImageScrollView;
 @property (strong, nonatomic) UIScrollView *shareScrollView;
@@ -84,6 +86,8 @@ static NSString * const identifier = @"moveCell";
     _interactionController = [[SwipeEdgeInteractionController alloc] initWithViewController:self interationDirection:left completion:^{
         [weakSelf dismissViewControllerAnimated:YES completion:nil];
     }];
+    
+    
     //self.fd_prefersNavigationBarHidden = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollFinish) name:@"scrollFinish" object:nil];
 }
@@ -186,6 +190,8 @@ static NSString * const identifier = @"moveCell";
     
     [_borderBtn setImage:[UIImage imageNamed:@"tool_border"] forState:UIControlStateNormal];
     [_borderBtn setImage:[UIImage imageNamed:@"tool_border_l"] forState:UIControlStateHighlighted];
+    
+    
 
 }
 
@@ -458,7 +464,11 @@ static NSString * const identifier = @"moveCell";
 }
 #pragma mark ModifyCellDelegate
 - (void)onUpDragItemTap:(NSInteger)index {
+    UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.moveCollectionViewLayout;
+    //flowLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    flowLayout.minimumLineSpacing = 0;
     
+    /*
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
     UICollectionViewLayoutAttributes *attributes = [self.showImageCollectionView layoutAttributesForItemAtIndexPath:indexPath];
     CGRect cellRect = attributes.frame;
@@ -506,10 +516,15 @@ static NSString * const identifier = @"moveCell";
     
     [self.showImageCollectionView reloadData];
     self.showImageCollectionView.scrollEnabled = false;
+     */
 }
 
 - (void)onDownDragItemTap:(NSInteger)index{
+    UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.moveCollectionViewLayout;
+    //flowLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    flowLayout.minimumLineSpacing = 10;
     
+    /*
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
     UICollectionViewLayoutAttributes *attributes = [self.showImageCollectionView layoutAttributesForItemAtIndexPath:indexPath];
     CGRect cellRect = attributes.frame;
@@ -556,6 +571,7 @@ static NSString * const identifier = @"moveCell";
     }
     [self.showImageCollectionView reloadData];
     self.showImageCollectionView.scrollEnabled = false;
+     */
 }
 
 
@@ -755,25 +771,25 @@ static NSString * const identifier = @"moveCell";
 //    return CGSizeZero;
 //}
 
--(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
-{
-    return UIEdgeInsetsMake(0, 0, 0, 0);//分别为上、左、下、右
-}
-//这个是两行cell之间的间距（上下行cell的间距）
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
-{
-    if (_isEdittMove) {
-        return 0;
-    } else {
-        return 10;
-    }
-    
-}
-//两个cell之间的间距（同一行的cell的间距）
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
-{
-    return 0;
-}
+//-(UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+//{
+//    return UIEdgeInsetsMake(0, 0, 0, 0);//分别为上、左、下、右
+//}
+////这个是两行cell之间的间距（上下行cell的间距）
+//- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
+//{
+//    if (_isEdittMove) {
+//        return 0;
+//    } else {
+//        return 10;
+//    }
+//
+//}
+////两个cell之间的间距（同一行的cell的间距）
+//- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
+//{
+//    return 0;
+//}
 
 
 

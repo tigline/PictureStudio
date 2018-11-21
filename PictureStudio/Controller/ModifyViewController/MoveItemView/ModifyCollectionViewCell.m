@@ -27,9 +27,9 @@
 
 - (void)configCell:(PhotoCutModel *)model {
     self.model = model;
-    UIGestureRecognizer *upItemTouch = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onUpItemTouch)];
+    UILongPressGestureRecognizer *upItemTouch = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(onUpItemTouch:)];
     [_moveUpItem addGestureRecognizer:upItemTouch];
-    UIGestureRecognizer *downItemTouch = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onDownItemTouch)];
+    UILongPressGestureRecognizer *downItemTouch = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(onDownItemTouch:)];
     [_moveDownItem addGestureRecognizer:downItemTouch];
     for (UIImageView *imageView in _imageScrollView.subviews) {
         [imageView removeFromSuperview];
@@ -50,14 +50,46 @@
     [_imageScrollView addSubview:imageView];
 }
 
-- (void)onUpItemTouch {
+- (void)onUpItemTouch:(UIGestureRecognizer*)gesture {
     NSLog(@"beginY   %f", _model.beginY);
-    [self.modifyDelegate onUpDragItemTap:_model.index];
+    switch (gesture.state) {
+        case UIGestureRecognizerStateBegan:
+            [self.modifyDelegate onUpDragItemTap:_model.index];
+            break;
+        case UIGestureRecognizerStateChanged:
+            
+            break;
+        case UIGestureRecognizerStateCancelled:
+            
+            break;
+        case UIGestureRecognizerStateEnded:
+            [self.modifyDelegate onDownDragItemTap:_model.index];
+            break;
+        default:
+            break;
+    }
+    
 }
 
-- (void)onDownItemTouch {
+- (void)onDownItemTouch:(UIGestureRecognizer*)gesture {
     NSLog(@"endY   %f", _model.endY);
-    [self.modifyDelegate onDownDragItemTap:_model.index];
+    switch (gesture.state) {
+        case UIGestureRecognizerStateBegan:
+            [self.modifyDelegate onUpDragItemTap:_model.index];
+            break;
+        case UIGestureRecognizerStateChanged:
+            
+            break;
+        case UIGestureRecognizerStateCancelled:
+            
+            break;
+        case UIGestureRecognizerStateEnded:
+            [self.modifyDelegate onDownDragItemTap:_model.index];
+            break;
+        default:
+            break;
+    }
+    
 }
 
 @end

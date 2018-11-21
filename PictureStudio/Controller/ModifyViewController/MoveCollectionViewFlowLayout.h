@@ -13,7 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @interface MoveCollectionViewFlowLayout : UICollectionViewFlowLayout
-
+@property (assign, nonatomic) BOOL canPress;
+- (void)setup;
 @end
 
 NS_ASSUME_NONNULL_END

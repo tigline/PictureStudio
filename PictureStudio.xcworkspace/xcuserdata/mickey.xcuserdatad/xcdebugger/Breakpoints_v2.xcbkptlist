@@ -234,7 +234,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PictureStudio/Controller/ModifyViewController/MoveItemView/ModifyCollectionViewCell.m"
-            timestampString = "562522994.762419"
+            timestampString = "564508794.574067"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "23"
@@ -250,7 +250,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PictureStudio/Controller/ModifyViewController/MoveItemView/ModifyCollectionViewCell.m"
-            timestampString = "562522994.762478"
+            timestampString = "564508794.5747581"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "20"
@@ -266,11 +266,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PictureStudio/Controller/ModifyViewController/ModifyViewController.m"
-            timestampString = "563988370.904834"
+            timestampString = "564508794.575152"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "618"
-            endingLineNumber = "618"
+            startingLineNumber = "634"
+            endingLineNumber = "634"
             landmarkName = "-updateMoveOffset:moveOffset:"
             landmarkType = "7">
          </BreakpointContent>
@@ -329,13 +329,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "PictureStudio/Controller/ModifyViewController/MoveItemView/MoveItemCell.m"
-            timestampString = "563988493.176495"
+            filePath = "PictureStudio/Controller/ModifyViewController/MoveCollectionViewFlowLayout.m"
+            timestampString = "564508794.575475"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "276"
-            endingLineNumber = "276"
-            landmarkName = "-touchesMoved:withEvent:"
+            startingLineNumber = "86"
+            endingLineNumber = "86"
+            landmarkName = "-gestureRecognizerShouldBegin:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -345,13 +345,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "PictureStudio/Controller/ModifyViewController/MoveItemView/MoveItemCell.m"
-            timestampString = "563988509.2083319"
+            filePath = "PictureStudio/Controller/ModifyViewController/MoveCollectionViewFlowLayout.m"
+            timestampString = "564508794.5755531"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "249"
-            endingLineNumber = "249"
-            landmarkName = "-touchesMoved:withEvent:"
+            startingLineNumber = "91"
+            endingLineNumber = "91"
+            landmarkName = "-gestureRecognizerShouldBegin:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -361,13 +361,93 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "PictureStudio/Controller/ModifyViewController/MoveItemView/MoveItemCell.m"
-            timestampString = "563988550.619873"
+            filePath = "PictureStudio/Controller/ModifyViewController/MoveCollectionViewFlowLayout.m"
+            timestampString = "564508794.575603"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "268"
-            endingLineNumber = "268"
-            landmarkName = "-touchesMoved:withEvent:"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
+            landmarkName = "-gestureRecognizerShouldBegin:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PictureStudio/Controller/ModifyViewController/MoveCollectionViewFlowLayout.m"
+            timestampString = "564508794.5756691"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "46"
+            endingLineNumber = "46"
+            landmarkName = "-setup"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PictureStudio/Controller/ModifyViewController/MoveCollectionViewFlowLayout.m"
+            timestampString = "564508794.575716"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "37"
+            endingLineNumber = "37"
+            landmarkName = "-initWithCoder:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PictureStudio/Controller/ModifyViewController/MoveCollectionViewFlowLayout.m"
+            timestampString = "564508794.5757639"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "101"
+            endingLineNumber = "101"
+            landmarkName = "-handleGesture:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PictureStudio/Controller/ModifyViewController/ModifyViewController.m"
+            timestampString = "564508794.575822"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "525"
+            endingLineNumber = "525"
+            landmarkName = "-onDownDragItemTap:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PictureStudio/Controller/ModifyViewController/ModifyViewController.m"
+            timestampString = "564508794.575878"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "469"
+            endingLineNumber = "469"
+            landmarkName = "-onUpDragItemTap:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

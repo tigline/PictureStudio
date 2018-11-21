@@ -7,6 +7,7 @@
 //
 
 #import "MoveCollectionViewFlowLayout.h"
+#import "ModifyCollectionViewCell.h"
 
 
 typedef struct {
@@ -23,7 +24,7 @@ typedef struct {
     CGRect collectionViewFrameInCanvas;
     Bundle bundle;
     UIView *canvas;
-    
+    UILongPressGestureRecognizer *longGesture;
 }
 
 @end
@@ -46,6 +47,8 @@ typedef struct {
     animation = NO;
     draggable = YES;
     bundle.offset = CGPointZero;
+    longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+    [self.collectionView addGestureRecognizer:longGesture];
     [self calculateBorders];
 }
 
@@ -71,12 +74,48 @@ typedef struct {
         return NO;
     }
     CGPoint pointPressedInCanvas = [gestureRecognizer locationInView:canvas];
-//
-//    for (UICollectionViewCell *cell in collectionView.visibleCells) {
-//        NSIndexPath *indexPath = [collectionView indexPathForCell:cell];
-//
-//    }
-    return true;
+    
+    for (UICollectionViewCell *cell in collectionView.visibleCells) {
+        //NSIndexPath *indexPath = [collectionView indexPathForCell:cell];
+        CGPoint pointInCell = [cell.layer convertPoint:pointPressedInCanvas fromLayer:self.collectionView.layer];
+        if ([cell.layer containsPoint:pointInCell]) {
+            ModifyCollectionViewCell *moveCell = (ModifyCollectionViewCell*)cell;
+            CGPoint pointInUpView = [moveCell.moveUpItem.layer convertPoint:pointInCell fromLayer:cell.layer];
+            if ([moveCell.moveUpItem.layer containsPoint:pointInUpView]) {
+                [moveCell.moveUpItem addGestureRecognizer:longGesture];
+                return YES;
+            }
+            CGPoint pointInDownView = [moveCell.moveDownItem.layer convertPoint:pointInCell fromLayer:cell.layer];
+            if ([moveCell.moveDownItem.layer containsPoint:pointInDownView]) {
+                [moveCell.moveDownItem addGestureRecognizer:longGesture];
+                return YES;
+            }
+        }
+        
+    }
+    return NO;
 }
+
+
+- (void)handleGesture:(UIGestureRecognizer *)gesture {
+    switch (gesture.state) {
+        case UIGestureRecognizerStateBegan:
+            
+            break;
+        case UIGestureRecognizerStateChanged:
+            
+            break;
+        case UIGestureRecognizerStateCancelled:
+            
+            break;
+        case UIGestureRecognizerStateEnded:
+            
+            break;
+        default:
+            break;
+    }
+}
+
+
 
 @end

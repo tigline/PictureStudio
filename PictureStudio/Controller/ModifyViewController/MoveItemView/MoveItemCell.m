@@ -13,18 +13,17 @@
 
 
 
-@interface MoveItemCell()<UIScrollViewDelegate>
+@interface MoveItemCell()<UIScrollViewDelegate,UIGestureRecognizerDelegate>
 
 
-@property (weak, nonatomic) IBOutlet UIScrollView *moveItemScrollView;
-@property (weak, nonatomic) IBOutlet UIImageView *showToUpImageView;
-@property (weak, nonatomic) IBOutlet UIImageView *showToDownImageView;
+
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *scrollViewTopContaints;
 @property (assign, nonatomic) BOOL canScroll;
 @property (assign, nonatomic) CGFloat lastContentOffset;
 @property (assign, nonatomic) CGFloat canMoveHeight;
 @property (assign, nonatomic) CGFloat beginLocationY;
 @property (assign, nonatomic) CGFloat touchDistance;
+@property (assign, nonatomic) CGPoint lastPoint;
 //@property (strong, nonatomic) UIScrollView *moveItemScrollView;
 @end
 
@@ -41,15 +40,20 @@
         _moveItemScrollView.frame = CGRectMake(_moveItemScrollView.originX, _moveItemScrollView.originY, self.hx_w, self.hx_h + model.canMoveHeight);
     }
     
+    UIGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureView:)];
+    
     _canScroll = false;
     _moveModel = model;
     if (model.isMoveUp) {
         _showToUpImageView.hidden = NO;
         _showToDownImageView.hidden = YES;
+        [_showToUpImageView addGestureRecognizer:panGesture];
     } else if(model.isMoveDown) {
         _showToUpImageView.hidden = YES;
         _showToDownImageView.hidden = NO;
+        [_showToDownImageView addGestureRecognizer:panGesture];
     }
+    
     [self createShowView:model.photoArray];
     
 }
@@ -144,69 +148,72 @@
     
 }
 
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-
-    _showToUpImageView.hidden = YES;
-    _showToDownImageView.hidden = YES;
-    _lastContentOffset = scrollView.contentOffset.y;
-    _moveModel.moveDistance = _lastContentOffset;
-    [self.moveDelegate beginMoveCellAt:_moveModel moveDistance:_lastContentOffset];
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (_canScroll) {
-        CGFloat contentHeight = scrollView.contentSize.height - self.hx_h;
-        CGFloat contentOffsetY = scrollView.contentOffset.y;
-        CGFloat lastOffset = scrollView.contentOffset.y - _lastContentOffset;
-        CGFloat moveOffset = scrollView.contentSize.height - scrollView.hx_h - contentOffsetY;
-        
-        if (_moveModel.isMoveDown) {
-            if (moveOffset < _canMoveHeight - 22) {
-                if (contentOffsetY > contentHeight) {
-                    self.moveItemScrollView.frame = self.frame;
-                }else if (contentOffsetY < 0 && scrollView.hx_h > 22) {
-                    self.moveItemScrollView.frame = CGRectMake(_moveItemScrollView.originX, _moveItemScrollView.originY - contentOffsetY, _moveItemScrollView.hx_w, _moveItemScrollView.hx_h + contentOffsetY);
-                } else if (contentOffsetY > 0 && (scrollView.hx_h < self.hx_h)) {
-                    self.moveItemScrollView.frame = CGRectMake(_moveItemScrollView.originX, _moveItemScrollView.originY - lastOffset, _moveItemScrollView.hx_w, _moveItemScrollView.hx_h + lastOffset);
-                    [_moveItemScrollView setContentOffset:CGPointMake(0, 0)];
-                } else if (scrollView.hx_h <= 22){
-                    self.moveItemScrollView.frame = CGRectMake(_moveItemScrollView.originX, self.hx_h - 22, _moveItemScrollView.hx_w, 22);
-                }
-            } else if (moveOffset >= _canMoveHeight - 22){
-//                self.moveItemScrollView.frame = CGRectMake(_moveItemScrollView.originX, self.hx_h - 22, _moveItemScrollView.hx_w, _canMoveHeight - );
-//                CGPoint offset = scrollView.contentOffset;
-//                [scrollView setContentOffset:offset animated:NO];
-//                scrollView.scrollEnabled = NO;
-            }
-            
-        } else {
-            if((contentOffsetY - contentHeight) > self.hx_h - 22) {
-                self.moveItemScrollView.frame = CGRectMake(_moveItemScrollView.originX, _moveItemScrollView.originY, _moveItemScrollView.hx_w, 22);
-            }else if (contentOffsetY > contentHeight && (contentOffsetY - contentHeight) < self.hx_h - 22) {
-                self.moveItemScrollView.frame = CGRectMake(_moveItemScrollView.originX, _moveItemScrollView.originY, _moveItemScrollView.hx_w, self.hx_h - contentOffsetY + contentHeight);
-
-            } else if(contentOffsetY < 0) {
-                self.moveItemScrollView.frame = CGRectMake(_moveItemScrollView.originX, _moveItemScrollView.originY, _moveItemScrollView.hx_w, self.hx_h);
-            }
-        }
-
-    }
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    CGPoint gesturePoint = [gestureRecognizer locationInView:self];
     
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (_moveModel.isMoveUp) {
-        _showToUpImageView.hidden = NO;
-        _canScroll = true;
+        CGPoint inPoint = [_showToUpImageView convertPoint:gesturePoint fromView:self];
+        if ([_showToUpImageView.layer containsPoint:inPoint]) {
+            return YES;
+        }
     } else {
-        _showToDownImageView.hidden = NO;
-        _canScroll = true;
-        //scrollView.scrollEnabled = YES;
+        CGPoint inPoint = [_showToDownImageView convertPoint:gesturePoint fromView:self];
+        if ([_showToDownImageView.layer containsPoint:inPoint]) {
+            return YES;
+        }
     }
     
-    [self.moveDelegate beginMoveCellAt:_moveModel moveDistance:_lastContentOffset];
+    return NO;
 }
+
+
+- (void)gestureView:(UIPanGestureRecognizer *)gesture {
+    CGPoint point = [gesture locationInView:self];
+    
+    switch (gesture.state) {
+        case UIGestureRecognizerStateBegan:
+            _lastPoint = point;
+            break;
+        case UIGestureRecognizerStateChanged:
+            {
+                
+                CGFloat touchOffset = point.y - _lastPoint.y;
+                CGFloat contentHeight = _moveItemScrollView.contentSize.height - _moveItemScrollView.hx_h;
+                CGFloat contentOffsetY = fabs(_moveItemScrollView.contentOffset.y);
+                if (_moveModel.isMoveDown && (contentOffsetY + touchOffset < contentHeight)) {
+                    self.size = CGSizeMake(self.hx_w, self.hx_h+touchOffset);
+                    //Block or Delegate
+                    self.moveOffsetBlock(touchOffset);
+                    //_moveModel.itemFrameHeight += touchOffset
+                    
+                    [self.moveDelegate updateMoveOffset:_moveModel moveOffset:touchOffset];
+                } else if (_moveModel.isMoveUp && contentOffsetY + touchOffset > 0) {
+                    self.frame = CGRectMake(self.originX, self.originY+touchOffset, self.hx_w, self.hx_h-touchOffset);
+                    [self.moveItemScrollView setContentOffset:CGPointMake(0, self.moveItemScrollView.contentOffset.y + touchOffset)];
+                    //Block or Delegate
+                    //self.moveOffsetBlock(touchOffset);
+                    //_moveModel.itemFrameHeight += touchOffset
+                    
+                    [self.moveDelegate updateMoveOffset:_moveModel moveOffset:touchOffset];
+                }
+                _lastPoint = point;
+                
+            }
+            break;
+        case UIGestureRecognizerStateEnded:
+            [self.moveDelegate updateCellState:_moveModel];
+            break;
+        case UIGestureRecognizerStateCancelled:
+            [self.moveDelegate updateCellState:_moveModel];
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
+
 - (void)setDragItemHidden:(BOOL)hidden {
     if (_moveModel.isMoveDown) {
         self.showToDownImageView.hidden = hidden;
@@ -228,83 +235,141 @@
 
 
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    //_moveItemScrollView.scrollEnabled = YES;
-    UIView *touchView;
-    if (_moveModel.isMoveDown) {
-        touchView = self.showToDownImageView;
-    } else {
-        touchView = self.showToUpImageView;
-    }
-    CGPoint touchPoint = [[touches anyObject] locationInView:self];
-    touchPoint = [touchView.layer convertPoint:touchPoint fromLayer:self.layer];
-    if ([touchView.layer containsPoint:touchPoint]) {
-        _beginLocationY = touchPoint.y;
-    } else {
-        
-    }
-    
-}
+//- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+//    //_moveItemScrollView.scrollEnabled = YES;
+//    UIView *touchView;
+//    if (_moveModel.isMoveDown) {
+//        touchView = self.showToDownImageView;
+//    } else {
+//        touchView = self.showToUpImageView;
+//    }
+//    CGPoint touchPoint = [[touches anyObject] locationInView:self];
+//    touchPoint = [touchView.layer convertPoint:touchPoint fromLayer:self.layer];
+//    if ([touchView.layer containsPoint:touchPoint]) {
+//        _beginLocationY = touchPoint.y;
+//    } else {
+//
+//    }
+//
+//}
+//
+//- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+//    UIView *touchView;
+//    CGPoint preTouchPoint = [[touches anyObject] previousLocationInView:self];
+//    CGPoint curTouchPoint = [[touches anyObject] locationInView:self];
+//    //CGPoint touchPoint = [[touches anyObject] locationInView:self];
+//
+//    CGFloat touchOffset = curTouchPoint.y - preTouchPoint.y;
+//    _touchDistance = curTouchPoint.y - _beginLocationY;
+//    CGFloat contentHeight = _moveItemScrollView.contentSize.height - _moveItemScrollView.hx_h;
+//
+//
+//    if (_moveModel.isMoveDown) {
+//        touchView = self.showToDownImageView;
+//
+//    } else {
+//        touchView = self.showToUpImageView;
+//    }
+//    CGFloat contentOffsetY = fabs(_moveItemScrollView.contentOffset.y);
+//    curTouchPoint = [touchView.layer convertPoint:curTouchPoint fromLayer:self.layer];
+//    if ([touchView.layer containsPoint:curTouchPoint]) {
+//        if (_moveModel.isMoveDown && (contentOffsetY + touchOffset < contentHeight)) {
+//            self.size = CGSizeMake(self.hx_w, self.hx_h+touchOffset);
+//            //Block or Delegate
+//            self.moveOffsetBlock(touchOffset);
+//            //_moveModel.itemFrameHeight += touchOffset
+//
+//            [self.moveDelegate updateMoveOffset:_moveModel moveOffset:touchOffset];
+//        } else if (_moveModel.isMoveUp && contentOffsetY + touchOffset > 0) {
+//            self.frame = CGRectMake(self.originX, self.originY+touchOffset, self.hx_w, self.hx_h-touchOffset);
+//            [self.moveItemScrollView setContentOffset:CGPointMake(0, self.moveItemScrollView.contentOffset.y + touchOffset)];
+//            //Block or Delegate
+//            self.moveOffsetBlock(touchOffset);
+//            //_moveModel.itemFrameHeight += touchOffset
+//
+//            [self.moveDelegate updateMoveOffset:_moveModel moveOffset:touchOffset];
+//        }
+//        //CGRectS(self.originX, self.originY + touchOffset, self.hx_w, self.hx_h+touchOffset);
+//    } else {
+//
+//    }
+//
+//
+//
+//}
 
-- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    UIView *touchView;
-    CGPoint preTouchPoint = [[touches anyObject] previousLocationInView:self];
-    CGPoint curTouchPoint = [[touches anyObject] locationInView:self];
-    //CGPoint touchPoint = [[touches anyObject] locationInView:self];
-    
-    CGFloat touchOffset = curTouchPoint.y - preTouchPoint.y;
-    _touchDistance = curTouchPoint.y - _beginLocationY;
-    CGFloat contentHeight = _moveItemScrollView.contentSize.height - _moveItemScrollView.hx_h;
-    
-    
-    if (_moveModel.isMoveDown) {
-        touchView = self.showToDownImageView;
-    
-    } else {
-        touchView = self.showToUpImageView;
-    }
-    CGFloat contentOffsetY = fabs(_moveItemScrollView.contentOffset.y);
-    curTouchPoint = [touchView.layer convertPoint:curTouchPoint fromLayer:self.layer];
-    if ([touchView.layer containsPoint:curTouchPoint]) {
-        if (_moveModel.isMoveDown && (contentOffsetY + touchOffset < contentHeight)) {
-            self.size = CGSizeMake(self.hx_w, self.hx_h+touchOffset);
-            //Block or Delegate
-            self.moveOffsetBlock(touchOffset);
-            //_moveModel.itemFrameHeight += touchOffset
-            
-            [self.moveDelegate updateMoveOffset:_moveModel moveOffset:touchOffset];
-        } else if (_moveModel.isMoveUp && contentOffsetY > 0) {
-            self.frame = CGRectMake(self.originX, self.originY+touchOffset, self.hx_w, self.hx_h-touchOffset);
-            [self.moveItemScrollView setContentOffset:CGPointMake(0, self.moveItemScrollView.contentOffset.y + touchOffset)];
-            //Block or Delegate
-            self.moveOffsetBlock(touchOffset);
-            //_moveModel.itemFrameHeight += touchOffset
-            
-            [self.moveDelegate updateMoveOffset:_moveModel moveOffset:touchOffset];
-        }
-        
-        
-     
-     
-        
-        //CGRectS(self.originX, self.originY + touchOffset, self.hx_w, self.hx_h+touchOffset);
-    } else {
-        
-    }
-    
-    
-    
-}
+//- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+//    //_moveItemScrollView.scrollEnabled = NO;
+//    [self.moveDelegate updateCellState:_moveModel];
+//}
+//
+//- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+//    //_moveItemScrollView.scrollEnabled = NO;
+//    [self.moveDelegate updateCellState:_moveModel];
+//}
 
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    //_moveItemScrollView.scrollEnabled = NO;
-    [self.moveDelegate updateCellState:_moveModel];
-}
-
-- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    //_moveItemScrollView.scrollEnabled = NO;
-    [self.moveDelegate updateCellState:_moveModel];
-}
+//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+//
+//    _showToUpImageView.hidden = YES;
+//    _showToDownImageView.hidden = YES;
+//    _lastContentOffset = scrollView.contentOffset.y;
+//    _moveModel.moveDistance = _lastContentOffset;
+//    [self.moveDelegate beginMoveCellAt:_moveModel moveDistance:_lastContentOffset];
+//}
+//
+//- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+//    if (_canScroll) {
+//        CGFloat contentHeight = scrollView.contentSize.height - self.hx_h;
+//        CGFloat contentOffsetY = scrollView.contentOffset.y;
+//        CGFloat lastOffset = scrollView.contentOffset.y - _lastContentOffset;
+//        CGFloat moveOffset = scrollView.contentSize.height - scrollView.hx_h - contentOffsetY;
+//
+//        if (_moveModel.isMoveDown) {
+//            if (moveOffset < _canMoveHeight - 22) {
+//                if (contentOffsetY > contentHeight) {
+//                    self.moveItemScrollView.frame = self.frame;
+//                }else if (contentOffsetY < 0 && scrollView.hx_h > 22) {
+//                    self.moveItemScrollView.frame = CGRectMake(_moveItemScrollView.originX, _moveItemScrollView.originY - contentOffsetY, _moveItemScrollView.hx_w, _moveItemScrollView.hx_h + contentOffsetY);
+//                } else if (contentOffsetY > 0 && (scrollView.hx_h < self.hx_h)) {
+//                    self.moveItemScrollView.frame = CGRectMake(_moveItemScrollView.originX, _moveItemScrollView.originY - lastOffset, _moveItemScrollView.hx_w, _moveItemScrollView.hx_h + lastOffset);
+//                    [_moveItemScrollView setContentOffset:CGPointMake(0, 0)];
+//                } else if (scrollView.hx_h <= 22){
+//                    self.moveItemScrollView.frame = CGRectMake(_moveItemScrollView.originX, self.hx_h - 22, _moveItemScrollView.hx_w, 22);
+//                }
+//            } else if (moveOffset >= _canMoveHeight - 22){
+//                //                self.moveItemScrollView.frame = CGRectMake(_moveItemScrollView.originX, self.hx_h - 22, _moveItemScrollView.hx_w, _canMoveHeight - );
+//                //                CGPoint offset = scrollView.contentOffset;
+//                //                [scrollView setContentOffset:offset animated:NO];
+//                //                scrollView.scrollEnabled = NO;
+//            }
+//
+//        } else {
+//            if((contentOffsetY - contentHeight) > self.hx_h - 22) {
+//                self.moveItemScrollView.frame = CGRectMake(_moveItemScrollView.originX, _moveItemScrollView.originY, _moveItemScrollView.hx_w, 22);
+//            }else if (contentOffsetY > contentHeight && (contentOffsetY - contentHeight) < self.hx_h - 22) {
+//                self.moveItemScrollView.frame = CGRectMake(_moveItemScrollView.originX, _moveItemScrollView.originY, _moveItemScrollView.hx_w, self.hx_h - contentOffsetY + contentHeight);
+//
+//            } else if(contentOffsetY < 0) {
+//                self.moveItemScrollView.frame = CGRectMake(_moveItemScrollView.originX, _moveItemScrollView.originY, _moveItemScrollView.hx_w, self.hx_h);
+//            }
+//        }
+//
+//    }
+//
+//}
+//
+//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+//    if (_moveModel.isMoveUp) {
+//        _showToUpImageView.hidden = NO;
+//        _canScroll = true;
+//    } else {
+//        _showToDownImageView.hidden = NO;
+//        _canScroll = true;
+//        //scrollView.scrollEnabled = YES;
+//    }
+//
+//    [self.moveDelegate beginMoveCellAt:_moveModel moveDistance:_lastContentOffset];
+//}
 
 
 @end
