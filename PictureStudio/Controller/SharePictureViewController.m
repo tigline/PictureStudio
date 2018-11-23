@@ -263,6 +263,30 @@
 
 - (void)shareImageToPlatformType:(UMSocialPlatformType)platformType
 {
+    
+    NSURL *url;
+    switch (platformType) {
+        case UMSocialPlatformType_Sina://新浪  判断手机是否安装新浪
+            url = [NSURL URLWithString:@"sinaweibo://"];
+            if (![[UIApplication sharedApplication] canOpenURL:url])
+            {
+                [self showAlertView:@"请先安装微博"];
+                return;
+            }
+            break;
+        case UMSocialPlatformType_WechatSession://微信聊天 判断手机是否安装微信
+        case UMSocialPlatformType_WechatTimeLine://微信朋友圈
+            url = [NSURL URLWithString:@"weixin://"];
+            if (![[UIApplication sharedApplication] canOpenURL:url])
+            {
+                [self showAlertView:@"请先安装微信"];
+                return;
+            }
+            break;
+        default:
+            break;
+    }
+    
     //创建分享消息对象
     UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
     //创建图片内容对象
@@ -288,6 +312,16 @@
             [self shareReturnByCode:0];
         }
     }];
+}
+
+-(void)showAlertView:(NSString*)title{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:nil preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *open = [UIAlertAction actionWithTitle:@"好" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [alert addAction:open];
+    [self.navigationController presentViewController:alert animated:YES completion:nil];
 }
 
 

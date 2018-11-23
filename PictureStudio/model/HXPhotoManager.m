@@ -10,7 +10,7 @@
 #import <mach/mach_time.h>
 #import <AssetsLibrary/ALAsset.h>
 #import <AssetsLibrary/ALAssetRepresentation.h>
-
+#import "ImageIOModel.h"
 
 @interface HXPhotoManager ()<PHPhotoLibraryChangeObserver>
 @property (strong, nonatomic) NSMutableArray *allPhotos;
@@ -547,31 +547,110 @@
 
 - (void)combineScrollPhotos:(NSArray*)imagesArray resultImage:(void(^)(UIImage *combineImage))combineImage completeIndex:(void(^)(NSInteger index))completeIndex {
     
-    UIImage *masterImage = [imagesArray objectAtIndex:0];
+    if ([imagesArray count] == 0)
+    {
+        combineImage(nil);
+    }
     
-    for (int i = 1; i < imagesArray.count; i ++) {
+    CGFloat combineValueSize;
+    
+    combineValueSize = [self getSelectPhotosMinWidth];
+    
+    float multiple = 1.0;
+    if ([imagesArray count] > 14)
+    {
+        multiple = 1.5;
+    }
+    else if ([imagesArray count] > 6 && [imagesArray count] < 15)
+    {
+        multiple = 1.0;
+    }
+    else
+    {
+        multiple = 0.5;
+    }
+    
+    if (combineValueSize > [UIScreen mainScreen].bounds.size.width/multiple)
+    {
+        combineValueSize = [UIScreen mainScreen].bounds.size.width/multiple;
+    }
+    NSMutableArray *currentArrayImage = [[NSMutableArray alloc] initWithCapacity:[imagesArray count]];
+    UIImage *currentImage;
+    ImageIOModel *mImageIOModel;
+    for (int i = 0; i < imagesArray.count; i ++) {
+        currentImage = [imagesArray objectAtIndex:i];
+        mImageIOModel = [[ImageIOModel alloc] init];
+        //当前图片的尺寸于combineValueSize相等时 不压缩。
+        if (currentImage.size.width != combineValueSize)
+        {
+            NSLog(@"被压缩的图片  ----%d",i);
+            int maxPixelSize;
+            if (currentImage.size.width < currentImage.size.height)
+            {
+                maxPixelSize = combineValueSize*currentImage.size.height/currentImage.size.width;
+            }
+            else
+            {
+                maxPixelSize = combineValueSize;
+            }
+            mImageIOModel.image = [self getThumImgOfImgIOWithData:UIImagePNGRepresentation(currentImage) withMaxPixelSize:maxPixelSize];
+            mImageIOModel.imageIOType = 1;
+        }
+        else
+        {
+            mImageIOModel.image = currentImage;
+            mImageIOModel.imageIOType = 2;
+        }
+        [currentArrayImage addObject:mImageIOModel];
         
-        UIImage *slaveImage = [imagesArray objectAtIndex:i];
-        CGSize size;
-        size.width = masterImage.size.width;
-        CGFloat masterHeight = masterImage.size.height;
-        CGFloat slaveHeight = slaveImage.size.height;
-        size.height = masterHeight + slaveHeight;
-        
-        UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
-        //Draw masterImage
-        [masterImage drawInRect:CGRectMake(0, 0, size.width, masterHeight)];
-        //Draw slaveImage
-        [slaveImage drawInRect:CGRectMake(0, masterHeight, size.width, slaveHeight)];
-        UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
-        masterImage = nil;
-        masterImage = resultImage;
-        UIGraphicsEndImageContext();
-        completeIndex(i);
-        
+        if (i != (imagesArray.count - 1))
+        {
+            completeIndex(i);//进度条放在这里的目的，图片只要被压缩为小于屏幕的尺寸，拼接就很快了。
+        }
+    }
+    
+    imagesArray = nil;
+    UIImage *masterImage;
+    if ([currentArrayImage count] != 0)
+    {
+        masterImage = [(ImageIOModel*)[currentArrayImage objectAtIndex:0] image];
+    }
+    CGSize size;
+    size.width = combineValueSize;
+    for (int i = 1; i < currentArrayImage.count; i ++)
+    {
+        @autoreleasepool{
+            UIImage *slaveImage = [(ImageIOModel*)[currentArrayImage objectAtIndex:i] image];
+            UIImage *slaveImage1;
+            if (i+1 < currentArrayImage.count)
+            {
+                slaveImage1 = [(ImageIOModel*)[currentArrayImage objectAtIndex:i+1] image];
+                size.height = masterImage.size.height + slaveImage.size.height + slaveImage1.size.height;
+            }
+            else
+            {
+                size.height = masterImage.size.height + slaveImage.size.height;
+            }
+            
+            UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
+            //Draw masterImage
+            [masterImage drawInRect:CGRectMake(0, 0, combineValueSize, masterImage.size.height)];
+            //Draw slaveImage
+            [slaveImage drawInRect:CGRectMake(0, masterImage.size.height, combineValueSize,slaveImage.size.height)];
+            if (i+1 < currentArrayImage.count)
+            {
+                [slaveImage1 drawInRect:CGRectMake(0, masterImage.size.height + slaveImage.size.height, combineValueSize, slaveImage1.size.height)];
+            }
+            
+            slaveImage = nil;
+            slaveImage1 = nil;
+            masterImage = nil;
+            masterImage = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+            i++;
+        }
     }
     combineImage(masterImage);
-    
 }
 
 - (void)combinePhotosWithDirection:(BOOL)isVertical resultImage:(void(^)(UIImage *combineImage))combineImage completeIndex:(void(^)(NSInteger index))completeIndex {
@@ -579,83 +658,359 @@
     CGFloat combineValueSize;
     
     NSArray *imagesArray = [self getSelectImages];
+    
+    if ([imagesArray count] == 0)
+    {
+        combineImage(nil);
+    }
+    
+    float multiple = 1.0;
+    if ([imagesArray count] > 14)
+    {
+        multiple = 1.5;
+    }
+    else if ([imagesArray count] > 6 && [imagesArray count] < 15)
+    {
+        multiple = 1.0;
+    }
+    else
+    {
+        multiple = 0.5;
+    }
+    
     if (isVertical)
     {
         combineValueSize = [self getSelectPhotosMinWidth];
-        //        if (combineValueSize > 800) {
-        //            combineValueSize = 800;
-        //        }
-        UIImage *masterImage = [imagesArray objectAtIndex:0];
-        for (int i = 1; i < imagesArray.count; i ++) {
-            
-            UIImage *slaveImage = [imagesArray objectAtIndex:i];
-            CGSize size;
-            size.width = combineValueSize;
-            CGFloat masterHeight;
-            if (masterImage.size.width > combineValueSize) {
-                masterHeight = (combineValueSize/masterImage.size.width) * masterImage.size.height;
-            } else {
-                masterHeight = masterImage.size.height;
+        
+        if (combineValueSize > [UIScreen mainScreen].bounds.size.width/multiple)
+        {
+            combineValueSize = [UIScreen mainScreen].bounds.size.width/multiple;
+        }
+        NSMutableArray *currentArrayImage = [[NSMutableArray alloc] initWithCapacity:[imagesArray count]];
+        UIImage *currentImage;
+        ImageIOModel *mImageIOModel;
+        for (int i = 0; i < imagesArray.count; i ++) {
+            currentImage = [imagesArray objectAtIndex:i];
+            mImageIOModel = [[ImageIOModel alloc] init];
+            //当前图片的尺寸于combineValueSize相等时 不压缩。
+             NSLog(@"--------原图 ----- %f---%f",currentImage.size.width,currentImage.size.height);
+            if (currentImage.size.width != combineValueSize)
+            {
+                NSLog(@"被压缩的图片  ----%d",i);
+                int maxPixelSize;
+                if (currentImage.size.width < currentImage.size.height)
+                {
+                    maxPixelSize = combineValueSize*currentImage.size.height/currentImage.size.width;
+                }
+                else
+                {
+                    maxPixelSize = combineValueSize;
+                }
+                mImageIOModel.image = [self getThumImgOfImgIOWithData:UIImagePNGRepresentation(currentImage) withMaxPixelSize:maxPixelSize];
+                mImageIOModel.imageIOType = 1;
             }
-            CGFloat slaveHeight = (combineValueSize/slaveImage.size.width) * slaveImage.size.height;
-            size.height = masterHeight + slaveHeight;
+            else
+            {
+                mImageIOModel.image = currentImage;
+                mImageIOModel.imageIOType = 2;
+            }
+            [currentArrayImage addObject:mImageIOModel];
             
-            UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
-            //Draw masterImage
-            [masterImage drawInRect:CGRectMake(0, 0, combineValueSize, masterHeight)];
-            //Draw slaveImage
-            
-            [slaveImage drawInRect:CGRectMake(0, masterHeight, combineValueSize, slaveHeight)];
-            UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
-            
-            
-            //此部分 待考虑
-            resultImage = [self compressImageQuality:resultImage toByte:20*1024*1024];
-            masterImage = nil;
-            masterImage = resultImage;
-            UIGraphicsEndImageContext();
-            completeIndex(i);
-            
+            if (i != (imagesArray.count - 1))
+            {
+                completeIndex(i);//进度条放在这里的目的，图片只要被压缩为小于屏幕的尺寸，拼接就很快了。
+            }
+        }
+        
+        imagesArray = nil;
+        UIImage *masterImage;
+        if ([currentArrayImage count] != 0)
+        {
+            masterImage = [(ImageIOModel*)[currentArrayImage objectAtIndex:0] image];
+        }
+        CGSize size;
+        size.width = combineValueSize;
+        for (int i = 1; i < currentArrayImage.count; i ++)
+        {
+            @autoreleasepool{
+                UIImage *slaveImage = [(ImageIOModel*)[currentArrayImage objectAtIndex:i] image];
+                UIImage *slaveImage1;
+                if (i+1 < currentArrayImage.count)
+                {
+                    slaveImage1 = [(ImageIOModel*)[currentArrayImage objectAtIndex:i+1] image];
+                    size.height = masterImage.size.height + slaveImage.size.height + slaveImage1.size.height;
+                }
+                else
+                {
+                    size.height = masterImage.size.height + slaveImage.size.height;
+                }
+                
+                UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
+                //Draw masterImage
+                [masterImage drawInRect:CGRectMake(0, 0, combineValueSize, masterImage.size.height)];
+                //Draw slaveImage
+                [slaveImage drawInRect:CGRectMake(0, masterImage.size.height, combineValueSize,slaveImage.size.height)];
+                if (i+1 < currentArrayImage.count)
+                {
+                    [slaveImage1 drawInRect:CGRectMake(0, masterImage.size.height + slaveImage.size.height, combineValueSize, slaveImage1.size.height)];
+                }
+                
+                slaveImage = nil;
+                slaveImage1 = nil;
+                masterImage = nil;
+                masterImage = UIGraphicsGetImageFromCurrentImageContext();
+                UIGraphicsEndImageContext();
+                i++;
+            }
         }
         combineImage(masterImage);
-        
-        
     } else {
+        //计算出 最小的高度
         combineValueSize = [self getSelectPhotosMinHeight];
-        //        if (combineValueSize > 1600) {
-        //            combineValueSize = 1600;
-        //        }
-        UIImage *masterImage = [imagesArray objectAtIndex:0];
-        for (int i = 1; i < imagesArray.count; i ++) {
+        if (combineValueSize > [UIScreen mainScreen].bounds.size.height/multiple)
+        {
+            combineValueSize = [UIScreen mainScreen].bounds.size.height/multiple;
+        }
+        NSMutableArray *currentArrayImage = [[NSMutableArray alloc] initWithCapacity:[imagesArray count]];
+        UIImage *currentImage;
+        ImageIOModel *mImageIOModel;
+        for (int i = 0; i < imagesArray.count; i ++) {
+            currentImage = [imagesArray objectAtIndex:i];
+            mImageIOModel = [[ImageIOModel alloc] init];
+            //当前图片的尺寸于combineValueSize相等时 不压缩。
             
-            UIImage *slaveImage = [imagesArray objectAtIndex:i];
-            CGSize size;
-            CGFloat masterWidth;
-            if (masterImage.size.height > combineValueSize) {
-                masterWidth = (combineValueSize/masterImage.size.height) * masterImage.size.width;
-            } else {
-                masterWidth = masterImage.size.width;
+            NSLog(@"%f---%f",currentImage.size.width,currentImage.size.height);
+            
+            
+            if (currentImage.size.width != combineValueSize)
+            {
+                NSLog(@"被压缩的图片  ----%d",i);
+                int maxPixelSize;
+                if (currentImage.size.width > currentImage.size.height)
+                {
+                    maxPixelSize = combineValueSize*currentImage.size.width/currentImage.size.height;
+                }
+                else
+                {
+                    maxPixelSize = combineValueSize;
+                }
+                mImageIOModel.image = [self getThumImgOfImgIOWithData:UIImagePNGRepresentation(currentImage) withMaxPixelSize:maxPixelSize];
+                mImageIOModel.imageIOType = 1;
             }
-            CGFloat slaveWidth = (combineValueSize/slaveImage.size.height) * slaveImage.size.width;
-            size.width = masterWidth + slaveWidth;
-            size.height = combineValueSize;
-            
-            UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
-            //Draw masterImage
-            [masterImage drawInRect:CGRectMake(0, 0, masterWidth, combineValueSize)];
-            //Draw slaveImage
-            [slaveImage drawInRect:CGRectMake(masterWidth, 0, slaveWidth, combineValueSize)];
-            UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
-            //此部分 待考虑
-            resultImage = [self compressImageQuality:resultImage toByte:20*1024*1024];
-            masterImage = nil;
-            masterImage = resultImage;
-            UIGraphicsEndImageContext();
-            completeIndex(i);
+            else
+            {
+                mImageIOModel.image = currentImage;
+                mImageIOModel.imageIOType = 2;
+            }
+            [currentArrayImage addObject:mImageIOModel];
+            if (i != (imagesArray.count - 1))
+            {
+                completeIndex(i);//进度条放在这里的目的，图片只要被压缩为小于屏幕的尺寸，拼接就很快了。
+            }
+        }
+        
+        imagesArray = nil;
+        
+        UIImage *masterImage;
+        if ([currentArrayImage count] != 0)
+        {
+            masterImage = [(ImageIOModel*)[currentArrayImage objectAtIndex:0] image];
+        }
+        CGSize size;
+        size.height = combineValueSize;
+        for (int i = 1; i < currentArrayImage.count; i ++)
+        {
+            @autoreleasepool{
+                NSLog(@"图片准备完成 开始拼接第 ---%d----张图",i);
+                UIImage *slaveImage = [(ImageIOModel*)[currentArrayImage objectAtIndex:i] image];
+                UIImage *slaveImage1;
+                if (i+1 < currentArrayImage.count)
+                {
+                    slaveImage1 = [(ImageIOModel*)[currentArrayImage objectAtIndex:i+1] image];
+                    size.width = masterImage.size.width + slaveImage.size.width + slaveImage1.size.width;
+                }
+                else
+                {
+                    size.width = masterImage.size.width + slaveImage.size.width;
+                }
+                UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
+
+                //Draw masterImage
+                [masterImage drawInRect:CGRectMake(0, 0, masterImage.size.width, combineValueSize)];
+                //Draw slaveImage
+                [slaveImage drawInRect:CGRectMake(masterImage.size.width, 0, slaveImage.size.width , combineValueSize)];
+                if (i+1 < currentArrayImage.count)
+                {
+                    [slaveImage1 drawInRect:CGRectMake(masterImage.size.width + slaveImage.size.width, 0, slaveImage1.size.width, combineValueSize)];
+                }
+                slaveImage = nil;
+                slaveImage1 = nil;
+                masterImage = nil;
+                masterImage = UIGraphicsGetImageFromCurrentImageContext();
+                UIGraphicsEndImageContext();
+                i++;
+            }
         }
         combineImage(masterImage);
     }
 }
+
+-(void)test{
+    
+    /**
+     
+     //        //计算出 最大的宽度
+     //        UIImage *resImage;
+     //        CGFloat combineValueSizeWidth = 0.0f;
+     //        UIImage *currentImage;
+     //        for (int i = 1; i < imagesArray.count; i ++) {
+     //            currentImage = [imagesArray objectAtIndex:i];
+     //            combineValueSizeWidth =combineValueSizeWidth + currentImage.size.height > combineValueSize?(combineValueSize/currentImage.size.height) * currentImage.size.width:currentImage.size.width;
+     //        }
+     
+     //        UIGraphicsBeginImageContextWithOptions(CGSizeMake(combineValueSizeWidth, combineValueSize), YES, 0.0);
+     //
+     //        for (int i = 1; i < imagesArray.count; i ++) {
+     //            currentImage = [imagesArray objectAtIndex:i];
+     //            [currentImage drawInRect:CGRectMake(0, 0, currentImage.size.height > combineValueSize?(combineValueSize/currentImage.size.height) * currentImage.size.width:currentImage.size.width, combineValueSize)];
+     //        }
+     //        resImage = UIGraphicsGetImageFromCurrentImageContext();
+     //        UIGraphicsEndImageContext();
+     
+     */
+    
+    
+    
+    
+    
+    
+    /**
+     //test 674
+     
+     //分组来拼接照片，分别为4拼接一次，如果照片数量大于了
+     //定义一次拼接图片的数量
+     NSLog(@"图片总数 ---- %d",(int)currentArrayImage.count);
+     NSMutableArray * slaveArray = [[NSMutableArray alloc] initWithCapacity:7];
+     int imgnum = 4;
+     int num = (int)currentArrayImage.count/imgnum;
+     for (int i = 0; i < currentArrayImage.count; i=i+imgnum)
+     {
+     UIImage *slaveImage;
+     CGSize size;
+     size.height = combineValueSize;
+     int maxNum = 0;
+     if (num * imgnum == i)//也就是拼接到了最后一组，如果可以进入，说明最后一组不是4张
+     {
+     maxNum = (int)currentArrayImage.count;
+     NSLog(@"---也就是拼接到了最后一组，如果可以进入，说明最后一组不是4张");
+     }
+     else
+     {
+     maxNum = i+imgnum;
+     }
+     NSLog(@"-------maxNum == %d------",maxNum);
+     for (int j = i; j < maxNum; j++)
+     {
+     NSLog(@"图片准备完成 开始拼接第 ---%d----张图",j);
+     slaveImage = [currentArrayImage objectAtIndex:j];
+     size.width = size.width + slaveImage.size.width;
+     }
+     
+     @autoreleasepool{
+     UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
+     float widthNum = 0;
+     for (int k = i; k < maxNum; k++)
+     {
+     slaveImage = [currentArrayImage objectAtIndex:k];
+     [slaveImage drawInRect:CGRectMake(widthNum, 0, slaveImage.size.width, combineValueSize)];
+     slaveImage = nil;
+     widthNum =  widthNum + slaveImage.size.width;
+     }
+     UIImage *tmpImage = UIGraphicsGetImageFromCurrentImageContext();
+     if (tmpImage == nil)
+     {
+     NSLog(@"tmpImage == nil");
+     }
+     else
+     {
+     [slaveArray addObject:tmpImage];
+     }
+     tmpImage = nil;
+     UIGraphicsEndImageContext();
+     }
+     }
+     
+     currentArrayImage = nil;
+     UIImage *masterImage = [slaveArray objectAtIndex:0];
+     for (int i = 1; i < slaveArray.count; i ++)
+     {
+     @autoreleasepool{
+     NSLog(@"图片准备完成 开始拼接第 ---%d----张图",i);
+     UIImage *slaveImage = [slaveArray objectAtIndex:i];
+     UIImage *slaveImage1;
+     if (i+1 < slaveArray.count)
+     {
+     slaveImage1 = [slaveArray objectAtIndex:i+1];
+     i++;
+     }
+     
+     CGSize size;
+     size.width = masterImage.size.width + slaveImage.size.width + slaveImage1.size.width;
+     size.height = combineValueSize;
+     UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
+     
+     //Draw masterImage
+     [masterImage drawInRect:CGRectMake(0, 0, masterImage.size.width, combineValueSize)];
+     //Draw slaveImage
+     [slaveImage drawInRect:CGRectMake(masterImage.size.width, 0, slaveImage.size.width , combineValueSize)];
+     if (i+1 < slaveArray.count)
+     {
+     [slaveImage1 drawInRect:CGRectMake(masterImage.size.width + slaveImage.size.width, 0, slaveImage1.size.width, combineValueSize)];
+     }
+     slaveImage = nil;
+     slaveImage1 = nil;
+     masterImage = nil;
+     
+     masterImage = UIGraphicsGetImageFromCurrentImageContext();
+     UIGraphicsEndImageContext();
+     }
+     }
+     combineImage(masterImage);
+     
+     */
+}
+
+
+
+- (UIImage*) getThumImgOfImgIOWithData:(NSData*)data withMaxPixelSize:(int)maxPixelSize
+{
+    UIImage *imgResult = nil;
+    if(data == nil)         { return imgResult; }
+    if(data.length <= 0)    { return imgResult; }
+    if(maxPixelSize <= 0)   { return imgResult; }
+
+    CFDataRef dataRef = (__bridge CFDataRef)data;
+    
+    /* CGImageSource的键值说明
+     kCGImageSourceCreateThumbnailWithTransform - 设置缩略图是否进行Transfrom变换
+     kCGImageSourceCreateThumbnailFromImageAlways - 设置是否创建缩略图，无论原图像有没有包含缩略图，默认kCFBooleanFalse，影响 CGImageSourceCreateThumbnailAtIndex 方法
+     kCGImageSourceCreateThumbnailFromImageIfAbsent - 设置是否创建缩略图，如果原图像有没有包含缩略图，则创建缩略图，默认kCFBooleanFalse，影响 CGImageSourceCreateThumbnailAtIndex 方法
+     kCGImageSourceThumbnailMaxPixelSize - 设置缩略图的最大宽/高尺寸 需要设置为CFNumber值，设置后图片会根据最大宽/高 来等比例缩放图片
+     kCGImageSourceShouldCache - 设置是否以解码的方式读取图片数据 默认为kCFBooleanTrue，如果设置为true，在读取数据时就进行解码 如果为false 则在渲染时才进行解码 */
+    CFDictionaryRef dicOptionsRef = (__bridge CFDictionaryRef) @{(id)kCGImageSourceCreateThumbnailFromImageIfAbsent : @(YES),(id)kCGImageSourceThumbnailMaxPixelSize : [NSNumber numberWithInt:maxPixelSize],(id)kCGImageSourceShouldCache : @(YES),};
+    CGImageSourceRef src = CGImageSourceCreateWithData(dataRef, nil);
+    CGImageRef thumImg = CGImageSourceCreateThumbnailAtIndex(src, 0, dicOptionsRef); //注意：如果设置 kCGImageSourceCreateThumbnailFromImageIfAbsent为 NO，那么 CGImageSourceCreateThumbnailAtIndex 会返回nil
+//    NSLog(@"--%zu-------%zu",CGImageGetWidth(thumImg),CGImageGetHeight(thumImg));
+//
+    CFRelease(src); // 注意释放对象，否则会产生内存泄露
+    imgResult = [UIImage imageWithCGImage:thumImg scale:1 orientation:UIImageOrientationUp];
+    if(thumImg != nil){
+        CFRelease(thumImg); // 注意释放对象，否则会产生内存泄露
+    }
+    NSLog(@"%f --- %f",imgResult.size.width,imgResult.size.height);
+    return imgResult;
+}
+
 
 
 - (UIImage *)compressImageQuality:(UIImage *)image toByte:(NSInteger)maxLength {
@@ -693,6 +1048,9 @@
     }
     NSLog(@"image = %.3f %@",dataLength,typeArray[index]);
 }
+
+
+
 - (NSArray *)getCutImagesWithModels:(NSArray *)modelArray {
     NSMutableArray *imageList = [[NSMutableArray alloc] init];
     
@@ -720,15 +1078,17 @@
         PHImageRequestOptions * options=[[PHImageRequestOptions alloc]init];
         options.resizeMode = PHImageRequestOptionsResizeModeFast;
         options.synchronous=YES;
-    
+        options.deliveryMode = PHImageRequestOptionsDeliveryModeOpportunistic;
         [imageManager requestImageForAsset:phAsset targetSize:PHImageManagerMaximumSize
                                contentMode:PHImageContentModeDefault
                                    options:options
                              resultHandler:^(UIImage *result, NSDictionary *info)
          {
-             [photoArray addObject:result];
+             if (result != nil)//调试过程中发现 result 数据为nil的情况。
+             {
+                 [photoArray addObject:result];
+             }
          }];
-        
     }
     return photoArray;
 }
@@ -738,10 +1098,12 @@
     
     HXPhotoModel *mode = [self.selectedList objectAtIndex:0];
     UIImage *image =  mode.previewPhoto;
+    NSLog(@"%f ----- %f",image.size.width,image.size.height);
     CGFloat minWidth = image.size.width;
     for (int i = 1; i <_selectedList.count; i++) {
         HXPhotoModel *mode = [self.selectedList objectAtIndex:i];
         UIImage *image =  mode.previewPhoto;
+        NSLog(@"%f ----- %f",image.size.width,image.size.height);
         if (image.size.width < minWidth) {
             minWidth = image.size.width;
         }
@@ -757,6 +1119,7 @@
     for (int i = 1; i <_selectedList.count; i++) {
         HXPhotoModel *mode = [self.selectedList objectAtIndex:i];
         UIImage *image =  mode.previewPhoto;
+        NSLog(@"%f ----- %f",image.size.width,image.size.height);
         if (image.size.height < minHeight) {
             minHeight = image.size.height;
         }
@@ -794,7 +1157,7 @@
         HXPhotoModel *photoModel = [[HXPhotoModel alloc] init];
         photoModel.asset = asset;
         photoModel.clarityScale = self.configuration.clarityScale;
-
+        photoModel.creationDate =[asset valueForKey:@"creationDate"];
         if (selectList.count > 0) {
             NSString *property = @"asset";
             NSPredicate *pred = [NSPredicate predicateWithFormat:@"%K = %@", property, asset];
@@ -814,6 +1177,8 @@
                 photoModel.thumbPhoto = model.thumbPhoto;
                 photoModel.previewPhoto = model.previewPhoto;
                 photoModel.selectIndexStr = model.selectIndexStr;
+                photoModel.creationDate = model.creationDate;
+                photoModel.modificationDate = model.modificationDate;
                 if (!firstSelectModel) {
                     firstSelectModel = photoModel;
                 }

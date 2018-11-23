@@ -138,8 +138,6 @@
             imageView.frame = cgpos;
             [self addLayerBorder:imageView count:count index:i direction:isCombineVertical];
             [_imageContainerView addSubview:imageView];
-            
-            
         }
         
         if (_imageContainerView.hx_h < _longPictureView.hx_h - ButtomViewHeight) {
@@ -335,6 +333,31 @@
         [self savePhotoBottomViewDidSaveBtn:nil];
         
     } else {
+        NSLog(@"11111");
+        NSURL *url;
+        switch (platformType) {
+            case UMSocialPlatformType_Sina://新浪  判断手机是否安装新浪
+                url = [NSURL URLWithString:@"sinaweibo://"];
+                if (![[UIApplication sharedApplication] canOpenURL:url])
+                {
+                    [self showAlertView:@"请先安装微博"];
+                    return;
+                }
+                break;
+            case UMSocialPlatformType_WechatSession://微信聊天 判断手机是否安装微信
+            case UMSocialPlatformType_WechatTimeLine://微信朋友圈
+                url = [NSURL URLWithString:@"weixin://"];
+                if (![[UIApplication sharedApplication] canOpenURL:url])
+                {
+                    [self showAlertView:@"请先安装微信"];
+                    return;
+                }
+                break;
+            default:
+                break;
+        }
+
+        
         //创建分享消息对象
         UMSocialMessageObject *messageObject = [UMSocialMessageObject messageObject];
         //创建图片内容对象
@@ -359,7 +382,16 @@
             }
         }];
     }
+}
+
+-(void)showAlertView:(NSString*)title{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:nil preferredStyle:UIAlertControllerStyleAlert];
     
+    UIAlertAction *open = [UIAlertAction actionWithTitle:@"好" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    [alert addAction:open];
+    [self.navigationController presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark delegate 监听微信分享是否成功
@@ -407,12 +439,13 @@
 }
 
 - (void)showShareBoard {
+    
     [_shareBoardView setHidden:NO];
     [UIView animateWithDuration:0.3f
                      animations:^{
                          
                          [_shareBoardView setFrame:CGRectMake(_shareBoardView.originX, _shareBoardView.originY - ShareBoardHeight+1, _shareBoardView.size.width, _shareBoardView.size.height)];
-                         
+        
                      }completion:^(BOOL finished) {
                          _isShowShareBoardView = YES;
                          
@@ -516,11 +549,24 @@
             [self.toolBarView setSaveText:LocalString(@"save_ing")];
         }
         //});
-        
-        
         __weak typeof(self) weakSelf = self;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.manager combinePhotosWithDirection:_manager.isCombineVertical resultImage:^(UIImage *combineImage) {
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.manager combinePhotosWithDirection:weakSelf.manager.isCombineVertical resultImage:^(UIImage *combineImage) {
+                if (combineImage == nil)
+                {
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"资源受限，拼图失败" message:nil preferredStyle:UIAlertControllerStyleAlert];
+                    
+                    UIAlertAction *open = [UIAlertAction actionWithTitle:@"好" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                        [weakSelf.toolBarView setSaveBtnsHiddenValue:NO];
+                        [weakSelf.toolBarView setSaveLabelHidden:YES];
+//                        [weakSelf.view showImageHUDText:LocalString(@"save_success")];
+                         [button setTitle:LocalString(@"save_failed") forState:UIControlStateNormal];
+                    }];
+                    [alert addAction:open];
+                    [self.navigationController presentViewController:alert animated:YES completion:nil];
+                }
+                
                 weakSelf.resultImage = combineImage;
                 if(weakSelf.isFromShare) {
                     weakSelf.isFromShare = NO;
@@ -528,41 +574,41 @@
                     [weakSelf.toolBarView setSaveLabelHidden:YES];
                     [weakSelf savePhotoBottomViewDidShareBtn];
                 } else {
-                
-                [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
-                    [PHAssetChangeRequest creationRequestForAssetFromImage:combineImage];
-                } completionHandler:^(BOOL success, NSError * _Nullable error) {
-                    NSLog(@"success = %d, error = %@", success, error);
                     
-                    if (success) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [weakSelf.toolBarView setSaveBtnsHiddenValue:NO];
-                            [weakSelf.toolBarView setSaveLabelHidden:YES];
-                            [weakSelf.view showImageHUDText:LocalString(@"save_success")];
-                            [button setTitle:LocalString(@"open_ablum") forState:UIControlStateNormal];
-                        });
+                    NSLog(@"11111");
+                    
+                    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+                        [PHAssetChangeRequest creationRequestForAssetFromImage:combineImage];
+                    } completionHandler:^(BOOL success, NSError * _Nullable error) {
+                        NSLog(@"success = %d, error = %@", success, error);
                         
-                    } else {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [weakSelf.view handleLoading];
-                            //[weakSelf.view showImageHUDText:LocalString(@"save_failed")];
-                            [button setTitle:LocalString(@"save_failed") forState:UIControlStateNormal];
-                        });
-                        
-                    }
-                }];
+                        if (success) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [weakSelf.toolBarView setSaveBtnsHiddenValue:NO];
+                                [weakSelf.toolBarView setSaveLabelHidden:YES];
+                                [weakSelf.view showImageHUDText:LocalString(@"save_success")];
+                                [button setTitle:LocalString(@"open_ablum") forState:UIControlStateNormal];
+                            });
+                            
+                        } else {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [weakSelf.view handleLoading];
+                                //[weakSelf.view showImageHUDText:LocalString(@"save_failed")];
+                                [button setTitle:LocalString(@"save_failed") forState:UIControlStateNormal];
+                            });
+                            
+                        }
+                    }];
                 }
             } completeIndex:^(NSInteger index) {
-                //dispatch_async(dispatch_get_main_queue(), ^{
+//                dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf.toolBarView setProgressViewValue:index];
-                //});
+//                });
             }];
-            
         });
-            
+        
         
     }
-                       
 }
 
 - (void)showTips

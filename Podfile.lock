@@ -24,6 +24,14 @@ DEPENDENCIES:
   - UMCShare/Social/ReducedWeChat
   - UMCShare/UI
 
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - FDFullscreenPopGesture
+    - PopoverObjC
+    - UMCCommon
+    - UMCSecurityPlugins
+    - UMCShare
+
 SPEC CHECKSUMS:
   FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
   PopoverObjC: 4fcb42cc5eda4a86cbbfb0daec540484c7e9fdea
@@ -33,4 +41,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: bde798d8b7e62480286d52dfd75561738a66b539
 
-COCOAPODS: 1.4.0.rc.1
+COCOAPODS: 1.5.0
