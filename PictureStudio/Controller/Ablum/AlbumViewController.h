@@ -13,7 +13,7 @@
 #import "RecentScrollView.h"
 #import "BaseViewController.h"
 @class AlbumViewController;
-
+@class SwipeEdgeInteractionController;
 @protocol DatePhotoViewControllerDelegate <NSObject>
 @optional
 
@@ -62,6 +62,7 @@
 @property (strong, nonatomic) HXPhotoManager *manager;
 @property (strong, nonatomic) PhotoEditButtomView *bottomView;
 @property (strong, nonatomic) HXAlbumModel *albumModel;
+@property (strong, nonatomic) SwipeEdgeInteractionController *interactionController;
 @property (strong, nonatomic) RecentScrollView *mRecentScrollView;
 
 @end

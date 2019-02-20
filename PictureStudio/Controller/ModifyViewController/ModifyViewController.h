@@ -12,8 +12,9 @@
 @class SwipeEdgeInteractionController;
 
 @interface ModifyViewController : BaseViewController
-@property (nonatomic,strong) NSArray *resultModels;
+@property (nonatomic,strong) NSMutableArray *resultModels;
 @property (nonatomic,strong) UIImage *resultImage;
 @property (nonatomic,strong) HXPhotoManager * manager;
 @property (strong, nonatomic) SwipeEdgeInteractionController *interactionController;
+@property (assign, nonatomic) BOOL isCombineView;
 @end

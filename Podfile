@@ -14,6 +14,7 @@ target 'PictureStudio' do
   pod 'UMCShare/Social/ReducedSina'
   pod 'FDFullscreenPopGesture', '1.1'
   pod 'PopoverObjC'
+  pod 'Firebase/Core'
   
   target 'PictureStudioTests' do
     inherit! :search_paths

@@ -17,4 +17,8 @@
 @property (assign, nonatomic) CGFloat endY;
 @property (assign, nonatomic) CGFloat scaleRatio;
 @property (assign, nonatomic) NSInteger index;
+@property (assign, nonatomic) BOOL editBorder;
+@property (assign, nonatomic) CGFloat borderWidth;
+@property (strong, nonatomic) UIColor *borderColor;
+@property (assign, nonatomic) BOOL isEND;
 @end

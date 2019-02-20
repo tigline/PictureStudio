@@ -132,6 +132,7 @@
         
         containView.size = CGSizeMake(cgpos.size.width, containView.hx_h + lastOffset);
         imageView.size = CGSizeMake(self.hx_w, itemView.contentSize.height);
+        
         [itemView addSubview:imageView];
     }
     
@@ -167,51 +168,51 @@
 }
 
 
-- (void)gestureView:(UIPanGestureRecognizer *)gesture {
-    CGPoint point = [gesture locationInView:self];
-    
-    switch (gesture.state) {
-        case UIGestureRecognizerStateBegan:
-            _lastPoint = point;
-            break;
-        case UIGestureRecognizerStateChanged:
-            {
-                
-                CGFloat touchOffset = point.y - _lastPoint.y;
-                CGFloat contentHeight = _moveItemScrollView.contentSize.height - _moveItemScrollView.hx_h;
-                CGFloat contentOffsetY = fabs(_moveItemScrollView.contentOffset.y);
-                if (_moveModel.isMoveDown && (contentOffsetY + touchOffset < contentHeight)) {
-                    self.size = CGSizeMake(self.hx_w, self.hx_h+touchOffset);
-                    //Block or Delegate
-                    self.moveOffsetBlock(touchOffset);
-                    //_moveModel.itemFrameHeight += touchOffset
-                    
-                    [self.moveDelegate updateMoveOffset:_moveModel moveOffset:touchOffset];
-                } else if (_moveModel.isMoveUp && contentOffsetY + touchOffset > 0) {
-                    self.frame = CGRectMake(self.originX, self.originY+touchOffset, self.hx_w, self.hx_h-touchOffset);
-                    [self.moveItemScrollView setContentOffset:CGPointMake(0, self.moveItemScrollView.contentOffset.y + touchOffset)];
-                    //Block or Delegate
-                    //self.moveOffsetBlock(touchOffset);
-                    //_moveModel.itemFrameHeight += touchOffset
-                    
-                    [self.moveDelegate updateMoveOffset:_moveModel moveOffset:touchOffset];
-                }
-                _lastPoint = point;
-                
-            }
-            break;
-        case UIGestureRecognizerStateEnded:
-            [self.moveDelegate updateCellState:_moveModel];
-            break;
-        case UIGestureRecognizerStateCancelled:
-            [self.moveDelegate updateCellState:_moveModel];
-            break;
-            
-        default:
-            break;
-    }
-    
-}
+//- (void)gestureView:(UIPanGestureRecognizer *)gesture {
+//    CGPoint point = [gesture locationInView:self];
+//
+//    switch (gesture.state) {
+//        case UIGestureRecognizerStateBegan:
+//            _lastPoint = point;
+//            break;
+//        case UIGestureRecognizerStateChanged:
+//            {
+//
+//                CGFloat touchOffset = point.y - _lastPoint.y;
+//                CGFloat contentHeight = _moveItemScrollView.contentSize.height - _moveItemScrollView.hx_h;
+//                CGFloat contentOffsetY = fabs(_moveItemScrollView.contentOffset.y);
+//                if (_moveModel.isMoveDown && (contentOffsetY + touchOffset < contentHeight)) {
+//                    self.size = CGSizeMake(self.hx_w, self.hx_h+touchOffset);
+//                    //Block or Delegate
+//                    self.moveOffsetBlock(touchOffset);
+//                    //_moveModel.itemFrameHeight += touchOffset
+//
+//                    [self.moveDelegate updateMoveOffset:_moveModel moveOffset:touchOffset];
+//                } else if (_moveModel.isMoveUp && contentOffsetY + touchOffset > 0) {
+//                    self.frame = CGRectMake(self.originX, self.originY+touchOffset, self.hx_w, self.hx_h-touchOffset);
+//                    [self.moveItemScrollView setContentOffset:CGPointMake(0, self.moveItemScrollView.contentOffset.y + touchOffset)];
+//                    //Block or Delegate
+//                    //self.moveOffsetBlock(touchOffset);
+//                    //_moveModel.itemFrameHeight += touchOffset
+//
+//                    [self.moveDelegate updateMoveOffset:_moveModel moveOffset:touchOffset];
+//                }
+//                _lastPoint = point;
+//
+//            }
+//            break;
+//        case UIGestureRecognizerStateEnded:
+//            [self.moveDelegate updateCellState:_moveModel];
+//            break;
+//        case UIGestureRecognizerStateCancelled:
+//            [self.moveDelegate updateCellState:_moveModel];
+//            break;
+//
+//        default:
+//            break;
+//    }
+//    
+//}
 
 
 - (void)setDragItemHidden:(BOOL)hidden {

@@ -13,7 +13,7 @@
 #import "PhotoSaveBottomView.h"
 #import "UIView+HXExtension.h"
 #import "HXPhotoDefine.h"
-#import "UINavigationController+FDFullscreenPopGesture.h"
+//#import "UINavigationController+FDFullscreenPopGesture.h"
 #import "ToastView.h"
 #import "ShareBoardView.h"
 #import "PhotoCutModel.h"

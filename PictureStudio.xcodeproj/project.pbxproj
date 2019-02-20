@@ -30,7 +30,6 @@
 		707DBA7C209EC52700F2FAFB /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707DBA7B209EC52700F2FAFB /* Photos.framework */; };
 		707DBA7F209ED61100F2FAFB /* PhotoSaveBottomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 707DBA7E209ED61100F2FAFB /* PhotoSaveBottomView.m */; };
 		707DBA88209EDBAC00F2FAFB /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 707DBA86209EDBAC00F2FAFB /* AboutViewController.m */; };
-		707DBA89209EDBAC00F2FAFB /* AboutViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 707DBA87209EDBAC00F2FAFB /* AboutViewController.xib */; };
 		707DBA8D20A0A14100F2FAFB /* ShareBoardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 707DBA8C20A0A14100F2FAFB /* ShareBoardView.m */; };
 		708248A2204EC6FC000D60A3 /* CombinePictureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248A0204EC6FC000D60A3 /* CombinePictureViewController.m */; };
 		708248AE204ED48B000D60A3 /* FilePathUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 708248AD204ED48B000D60A3 /* FilePathUtils.m */; };
@@ -50,6 +49,12 @@
 		7082490620790F92000D60A3 /* PhotoCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7082490520790F92000D60A3 /* PhotoCollectionReusableView.m */; };
 		708811072099FDE1003A1CF4 /* CombinePicture.mm in Sources */ = {isa = PBXBuildFile; fileRef = 708811062099FDE1003A1CF4 /* CombinePicture.mm */; };
 		70925B5C213578A800AE9373 /* AssetCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 70925B5B213578A800AE9373 /* AssetCollectionCell.m */; };
+		7097BA4921D2770F0089046F /* BorderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7097BA4821D2770F0089046F /* BorderViewController.m */; };
+		7097BA4C21D28BA40089046F /* borderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7097BA4B21D28BA40089046F /* borderView.m */; };
+		70A298B021F617A10007D7DF /* deleteSourceTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 70A298AF21F617A10007D7DF /* deleteSourceTableCell.m */; };
+		70A298B321F617C50007D7DF /* ReplyTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 70A298B221F617C40007D7DF /* ReplyTableCell.m */; };
+		70A298B621F617DB0007D7DF /* InfoTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 70A298B521F617DB0007D7DF /* InfoTableCell.m */; };
+		70A431D021E63792006B63DE /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 70A431CF21E63792006B63DE /* GoogleService-Info.plist */; };
 		70B3080D20E27D6100FFF131 /* PhotoCutModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 70B3080C20E27D6100FFF131 /* PhotoCutModel.m */; };
 		70BD41DB212AFA9A00CA0941 /* RecentScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 70BD41DA212AFA9A00CA0941 /* RecentScrollView.m */; };
 		70BF0AFD2144CE6C000AAE53 /* ModifyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 70BF0AFC2144CE6C000AAE53 /* ModifyViewController.m */; };
@@ -136,7 +141,6 @@
 		707DBA7E209ED61100F2FAFB /* PhotoSaveBottomView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PhotoSaveBottomView.m; sourceTree = "<group>"; };
 		707DBA85209EDBAC00F2FAFB /* AboutViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AboutViewController.h; path = PictureStudio/Controller/About/AboutViewController.h; sourceTree = SOURCE_ROOT; };
 		707DBA86209EDBAC00F2FAFB /* AboutViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AboutViewController.m; path = PictureStudio/Controller/About/AboutViewController.m; sourceTree = SOURCE_ROOT; };
-		707DBA87209EDBAC00F2FAFB /* AboutViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = AboutViewController.xib; path = PictureStudio/Controller/About/AboutViewController.xib; sourceTree = SOURCE_ROOT; };
 		707DBA8A209EF19400F2FAFB /* PrefixHeader-PictureStudio.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PrefixHeader-PictureStudio.pch"; sourceTree = "<group>"; };
 		707DBA8B20A0A14100F2FAFB /* ShareBoardView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShareBoardView.h; path = PictureStudio/View/ShareBoardView.h; sourceTree = SOURCE_ROOT; };
 		707DBA8C20A0A14100F2FAFB /* ShareBoardView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ShareBoardView.m; path = PictureStudio/View/ShareBoardView.m; sourceTree = SOURCE_ROOT; };
@@ -179,6 +183,18 @@
 		708811062099FDE1003A1CF4 /* CombinePicture.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CombinePicture.mm; path = PictureStudio/Model/CombinePicture.mm; sourceTree = SOURCE_ROOT; };
 		70925B5A213578A800AE9373 /* AssetCollectionCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AssetCollectionCell.h; sourceTree = "<group>"; };
 		70925B5B213578A800AE9373 /* AssetCollectionCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AssetCollectionCell.m; sourceTree = "<group>"; };
+		7097BA4721D2770F0089046F /* BorderViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BorderViewController.h; sourceTree = "<group>"; };
+		7097BA4821D2770F0089046F /* BorderViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BorderViewController.m; sourceTree = "<group>"; };
+		7097BA4A21D28BA40089046F /* borderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = borderView.h; sourceTree = "<group>"; };
+		7097BA4B21D28BA40089046F /* borderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = borderView.m; sourceTree = "<group>"; };
+		70A298AE21F617A10007D7DF /* deleteSourceTableCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = deleteSourceTableCell.h; sourceTree = "<group>"; };
+		70A298AF21F617A10007D7DF /* deleteSourceTableCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = deleteSourceTableCell.m; sourceTree = "<group>"; };
+		70A298B121F617C40007D7DF /* ReplyTableCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReplyTableCell.h; sourceTree = "<group>"; };
+		70A298B221F617C40007D7DF /* ReplyTableCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReplyTableCell.m; sourceTree = "<group>"; };
+		70A298B421F617DB0007D7DF /* InfoTableCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InfoTableCell.h; sourceTree = "<group>"; };
+		70A298B521F617DB0007D7DF /* InfoTableCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InfoTableCell.m; sourceTree = "<group>"; };
+		70A431CE21E6363C006B63DE /* PictureStudio.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PictureStudio.entitlements; sourceTree = "<group>"; };
+		70A431CF21E63792006B63DE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		70B3080B20E27D6100FFF131 /* PhotoCutModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PhotoCutModel.h; path = PictureStudio/Model/PhotoCutModel.h; sourceTree = SOURCE_ROOT; };
 		70B3080C20E27D6100FFF131 /* PhotoCutModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PhotoCutModel.m; path = PictureStudio/Model/PhotoCutModel.m; sourceTree = SOURCE_ROOT; };
 		70BD41D9212AFA9A00CA0941 /* RecentScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RecentScrollView.h; path = PictureStudio/View/RecentScrollView.h; sourceTree = SOURCE_ROOT; };
@@ -292,6 +308,8 @@
 				707DBA7E209ED61100F2FAFB /* PhotoSaveBottomView.m */,
 				701CD46421932E0C00A645C4 /* MoveCollectionViewFlowLayout.h */,
 				701CD46521932E0C00A645C4 /* MoveCollectionViewFlowLayout.m */,
+				7097BA4A21D28BA40089046F /* borderView.h */,
+				7097BA4B21D28BA40089046F /* borderView.m */,
 				707E88062149470B009954E1 /* MoveItemView */,
 			);
 			path = ModifyViewController;
@@ -323,9 +341,10 @@
 				939F2700213FACF900718374 /* Base */,
 				939F270B213FBF4600718374 /* Helps */,
 				707E8805214946DD009954E1 /* ModifyViewController */,
-				936FAC2F20200B9A00F80BCF /* Main.storyboard */,
+				7097BA4621D276BE0089046F /* Border */,
 				707DBA79209EC4BE00F2FAFB /* ScrollPictureViewController.h */,
 				707DBA78209EC4BE00F2FAFB /* ScrollPictureViewController.m */,
+				936FAC2F20200B9A00F80BCF /* Main.storyboard */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -388,6 +407,15 @@
 			path = view;
 			sourceTree = "<group>";
 		};
+		7097BA4621D276BE0089046F /* Border */ = {
+			isa = PBXGroup;
+			children = (
+				7097BA4721D2770F0089046F /* BorderViewController.h */,
+				7097BA4821D2770F0089046F /* BorderViewController.m */,
+			);
+			path = Border;
+			sourceTree = "<group>";
+		};
 		70D24BBA207FA98C003430BA /* category */ = {
 			isa = PBXGroup;
 			children = (
@@ -445,7 +473,12 @@
 				70EEBEEB21763163004DB6BC /* AboutCell */,
 				707DBA85209EDBAC00F2FAFB /* AboutViewController.h */,
 				707DBA86209EDBAC00F2FAFB /* AboutViewController.m */,
-				707DBA87209EDBAC00F2FAFB /* AboutViewController.xib */,
+				70A298AE21F617A10007D7DF /* deleteSourceTableCell.h */,
+				70A298AF21F617A10007D7DF /* deleteSourceTableCell.m */,
+				70A298B121F617C40007D7DF /* ReplyTableCell.h */,
+				70A298B221F617C40007D7DF /* ReplyTableCell.m */,
+				70A298B421F617DB0007D7DF /* InfoTableCell.h */,
+				70A298B521F617DB0007D7DF /* InfoTableCell.m */,
 				700E325120A1E464007A23E0 /* WeiboTableViewCell.h */,
 				700E325320A1E464007A23E0 /* WeiboTableViewCell.m */,
 				700E325220A1E464007A23E0 /* WeiboTableViewCell.xib */,
@@ -518,6 +551,7 @@
 		936FAC2820200B9A00F80BCF /* PictureStudio */ = {
 			isa = PBXGroup;
 			children = (
+				70A431CE21E6363C006B63DE /* PictureStudio.entitlements */,
 				70D24BBA207FA98C003430BA /* category */,
 				708248AB204ED44B000D60A3 /* Utils */,
 				708248A3204EC70A000D60A3 /* model */,
@@ -531,6 +565,7 @@
 				936FAC3420200B9A00F80BCF /* LaunchScreen.storyboard */,
 				700E324A20A1C779007A23E0 /* teamWeiboInfo.plist */,
 				936FAC3720200B9A00F80BCF /* Info.plist */,
+				70A431CF21E63792006B63DE /* GoogleService-Info.plist */,
 				936FAC3820200B9A00F80BCF /* main.m */,
 				9389460F20B7E3A900BC62DA /* Supporting Files */,
 			);
@@ -664,6 +699,11 @@
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 0930;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					936FAC3D20200B9A00F80BCF = {
 						CreatedOnToolsVersion = 9.2;
@@ -709,7 +749,7 @@
 				936FAC3120200B9A00F80BCF /* Main.storyboard in Resources */,
 				700E324B20A1C779007A23E0 /* teamWeiboInfo.plist in Resources */,
 				9389461220B7E3DC00BC62DA /* InfoPlist.strings in Resources */,
-				707DBA89209EDBAC00F2FAFB /* AboutViewController.xib in Resources */,
+				70A431D021E63792006B63DE /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -833,6 +873,7 @@
 				707DBA8D20A0A14100F2FAFB /* ShareBoardView.m in Sources */,
 				70C4DCB22107666D00857F65 /* ImageIOModel.m in Sources */,
 				70EEBEEF2180B832004DB6BC /* ModifyCollectionViewCell.m in Sources */,
+				70A298B621F617DB0007D7DF /* InfoTableCell.m in Sources */,
 				700E324F20A1C8A0007A23E0 /* AboutViewTableViewCell.m in Sources */,
 				936FAC2E20200B9A00F80BCF /* AlbumViewController.m in Sources */,
 				935B5D2A218847D400EB12E2 /* MoveInfoModel.m in Sources */,
@@ -851,6 +892,8 @@
 				939F2711213FCE9000718374 /* SwipeEdgeInteractionController.m in Sources */,
 				9338E55220A57A760059D58E /* PhotoPreviewCell.m in Sources */,
 				708248BE206A9103000D60A3 /* HXPhotoModel.m in Sources */,
+				7097BA4921D2770F0089046F /* BorderViewController.m in Sources */,
+				70A298B321F617C50007D7DF /* ReplyTableCell.m in Sources */,
 				707DBA7A209EC4BF00F2FAFB /* ScrollPictureViewController.m in Sources */,
 				939F2703213FAD4B00718374 /* BaseNavigationController.m in Sources */,
 				935B5D232188362700EB12E2 /* MoveCellViewController.m in Sources */,
@@ -862,7 +905,9 @@
 				937F74332084879800F56AFD /* HXPhotoManager.m in Sources */,
 				708249002078E510000D60A3 /* PhotoEditButtomView.m in Sources */,
 				701CD46621932E0C00A645C4 /* MoveCollectionViewFlowLayout.m in Sources */,
+				70A298B021F617A10007D7DF /* deleteSourceTableCell.m in Sources */,
 				9399E82020D23D5400791E92 /* ToastView.m in Sources */,
+				7097BA4C21D28BA40089046F /* borderView.m in Sources */,
 				703FDEB82132E3CB006218D0 /* AssetTitleButton.m in Sources */,
 				9338E54F20A577A10059D58E /* PhotoPreviewController.m in Sources */,
 				70C262FC207A72EF00F65EFD /* AHAssetGroupCell.m in Sources */,
@@ -1058,6 +1103,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN__ARC_BRIDGE_CAST_NONARC = YES;
+				CODE_SIGN_ENTITLEMENTS = PictureStudio/PictureStudio.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LW67YFH2F2;
@@ -1092,6 +1138,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN__ARC_BRIDGE_CAST_NONARC = YES;
+				CODE_SIGN_ENTITLEMENTS = PictureStudio/PictureStudio.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LW67YFH2F2;

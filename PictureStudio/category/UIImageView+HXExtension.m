@@ -47,4 +47,18 @@
 //        }
 //    }];
 }
++ (UIImage *)addBorderForImage:(UIImage *)image borderWidth:(CGFloat)borderWidth borderColor:(UIColor *)borderColor beginY:(CGFloat)beginY bottomHeight:(CGFloat)bottomHeight {
+    CGSize size = CGSizeMake(image.size.width + 2 * borderWidth, image.size.height + beginY + bottomHeight);
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+    UIBezierPath *path = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, size.width, size.height)];
+    [borderColor set];
+    [path fill];
+    path = [UIBezierPath bezierPathWithRect:CGRectMake(borderWidth, beginY, image.size.width, image.size.height)];
+    [path addClip];
+    [image drawInRect:CGRectMake(borderWidth, beginY, image.size.width, image.size.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
 @end

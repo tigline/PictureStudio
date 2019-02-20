@@ -38,47 +38,52 @@
         fromViewController.view.frame = CGRectMake(0, 0, fromViewController.view.frame.size.width, fromViewController.view.frame.size.height);
         toViewController.view.frame = CGRectMake(-toViewController.view.frame.size.width, 0, toViewController.view.frame.size.width,  toViewController.view.frame.size.height);
         
-        [UIView animateWithDuration:duration animations:^{
+        [UIView animateWithDuration:duration delay:0.3 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             fromViewController.view.frame = CGRectMake(fromViewController.view.frame.size.width, 0, fromViewController.view.frame.size.width, fromViewController.view.frame.size.height);
             toViewController.view.frame = CGRectMake(0, 0, toViewController.view.frame.size.width, toViewController.view.frame.size.height);
         } completion:^(BOOL finished) {
             [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
         }];
+        
+//        [UIView animateWithDuration:duration animations:^{
+//            fromViewController.view.frame = CGRectMake(fromViewController.view.frame.size.width, 0, fromViewController.view.frame.size.width, fromViewController.view.frame.size.height);
+//            toViewController.view.frame = CGRectMake(0, 0, toViewController.view.frame.size.width, toViewController.view.frame.size.height);
+//        } completion:^(BOOL finished) {
+//            [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+//        }];
     }
     
-    AlbumViewController *viewControllerOriginal; //= [[ViewController alloc] init];
-    ModifyViewController *scrollControllerOriginal; //= [[SharePictureViewController alloc] init];
-    CombinePictureViewController *longControllerOriginal;
-    
-    if ([fromViewController isKindOfClass:UINavigationController.class]) {
-        if ([fromViewController.topViewController isKindOfClass: ModifyViewController.class]) {
-            scrollControllerOriginal = (ModifyViewController *)fromViewController.topViewController;
-        } else if ([fromViewController.topViewController isKindOfClass: CombinePictureViewController.class]) {
-            longControllerOriginal = (CombinePictureViewController *)fromViewController.topViewController;
-        }
-    } else {
-        if ([fromViewController isKindOfClass: AlbumViewController.class]) {
-            viewControllerOriginal = (AlbumViewController *)fromViewController;
-        }
-    }
-    
-    if ([toViewController isKindOfClass:UINavigationController.class]) {
-        if ([toViewController.topViewController isKindOfClass: ModifyViewController.class]) {
-            scrollControllerOriginal = (ModifyViewController *)toViewController.topViewController;
-        } else if ([toViewController.topViewController isKindOfClass: CombinePictureViewController.class]) {
-            longControllerOriginal = (CombinePictureViewController *)toViewController.topViewController;
-        }
-    } else {
-        if ([toViewController isKindOfClass: AlbumViewController.class]) {
-            viewControllerOriginal = (AlbumViewController *)toViewController;
-        }
-    }
-    
-    
-    
-    if (viewControllerOriginal == nil && scrollControllerOriginal == nil && longControllerOriginal == nil) {
-        return;
-    }
+//    AlbumViewController *viewControllerOriginal; //= [[ViewController alloc] init];
+//    ModifyViewController *scrollControllerOriginal; //= [[SharePictureViewController alloc] init];
+//
+//
+//    if ([fromViewController isKindOfClass:UINavigationController.class]) {
+//        if ([fromViewController.topViewController isKindOfClass: ModifyViewController.class]) {
+//            scrollControllerOriginal = (ModifyViewController *)fromViewController.topViewController;
+//        }
+//    } else {
+//        if ([fromViewController isKindOfClass: AlbumViewController.class]) {
+//            viewControllerOriginal = (AlbumViewController *)fromViewController;
+//        }
+//    }
+//
+//    if ([toViewController isKindOfClass:UINavigationController.class]) {
+//        if ([toViewController.topViewController isKindOfClass: ModifyViewController.class]) {
+//            scrollControllerOriginal = (ModifyViewController *)toViewController.topViewController;
+//        }
+//    } else {
+//        if ([toViewController isKindOfClass: AlbumViewController.class]) {
+//            viewControllerOriginal = (AlbumViewController *)toViewController;
+//        }
+//    }
+//
+//    
+//
+//    if (viewControllerOriginal == nil && scrollControllerOriginal == nil) {
+//        return;
+//    } else {
+//
+//    }
     
     
 }

@@ -50,6 +50,14 @@
     return [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:0.6];
 }
 
++ (UIColor *)borderBgColor {
+    return [UIColor colorWithRed:190/255.0 green:190/255.0 blue:190/255.0 alpha:1.0];
+}
+
++ (UIColor *)goldColor {
+    return [UIColor colorWithRed:250/255.0 green:247/255.0 blue:241/255.0 alpha:1.0];
+}
+
 + (UIColor *)cellTimeColor {
     return [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
 }

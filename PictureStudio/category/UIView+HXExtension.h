@@ -30,6 +30,7 @@
 @property (nonatomic, assign) CGPoint rightBottom;
 @property (strong, nonatomic) HXHUD *hud;
 
+- (void)setCurveAnimation:(id)delegate startPoint:(CGPoint)startPoint controlPoint:(CGPoint)controlPoint endPoint:(CGPoint)endPoint duration:(CGFloat)duration;
 /**
  获取当前视图的控制器
  

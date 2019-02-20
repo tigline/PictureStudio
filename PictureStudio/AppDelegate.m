@@ -37,6 +37,7 @@ void uncaughtExceptionHandler(NSException *exception) {
     
     //向微信注册应用。
     //[WXApi registerApp:URL_APPID ];
+
     [self configUSharePlatforms];
     [self confitUShareSettings];
     return YES;

@@ -68,6 +68,7 @@
     self.frame = CGRectMake(rightBottom.x - self.size.width, rightBottom.y - self.size.height, self.size.width, self.size.height);
 }
 
+
 - (void)setHx_x:(CGFloat)hx_x
 {
     CGRect frame = self.frame;
@@ -181,6 +182,21 @@
     border.frame = CGRectMake(self.frame.size.width - borderWidth, 0, borderWidth, self.frame.size.height);
     [self.layer addSublayer:border];
     
+}
+
+- (void)setCurveAnimation:(id)delegate startPoint:(CGPoint)startPoint controlPoint:(CGPoint)controlPoint endPoint:(CGPoint)endPoint duration:(CGFloat)duration {
+    CGMutablePathRef path = CGPathCreateMutable();
+    CGPathMoveToPoint(path, NULL, startPoint.x, startPoint.y);
+    CGPathAddQuadCurveToPoint(path, NULL, controlPoint.x , controlPoint.y, endPoint.x, endPoint.y);
+    CAKeyframeAnimation *animate = [CAKeyframeAnimation animationWithKeyPath:@"position"];
+    animate.delegate = delegate;
+    animate.duration = duration;
+    animate.fillMode = kCAFillModeForwards;
+    animate.repeatCount = 0;
+    animate.path = path;
+    animate.removedOnCompletion = NO;
+    CGPathRelease(path);
+    [self.layer addAnimation:animate forKey:@"curveToPoint"];
 }
 
 /**

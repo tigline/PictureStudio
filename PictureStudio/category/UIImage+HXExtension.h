@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface UIImage (HXExtension)
+- (UIImage *)addBorderForImage:(CGFloat)borderWidth borderColor:(UIColor *)borderColor beginY:(CGFloat)beginY bottomY:(CGFloat)bottomY;
 + (UIImage *)animatedGIFWithData:(NSData *)data;
 - (UIImage *)animatedImageByScalingAndCroppingToSize:(CGSize)size;
 - (UIImage *)normalizedImage;

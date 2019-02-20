@@ -12,31 +12,29 @@
 #import <MessageUI/MFMailComposeViewController.h>
 #import <StoreKit/StoreKit.h>
 #import "UIView+HXExtension.h"
+#import "deleteSourceTableCell.h"
+#import "ReplyTableCell.h"
+#import "InfoTableCell.h"
+
+
+typedef enum  {
+    setting,
+    active,
+    info
+} cellType;
+
+typedef NSDictionary <NSString *, id> CPXCell;
 
 @interface AboutViewController ()<UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate,
 SKStoreProductViewControllerDelegate
 >
-
-@property (weak, nonatomic) IBOutlet UIImageView *bgImageView;
-
-
-@property (weak, nonatomic) IBOutlet UIButton *quitButton;
-@property (weak, nonatomic) IBOutlet UIView *infoContantView;
-@property (weak, nonatomic) IBOutlet UITableView *teamInfoTableView;
-@property (weak, nonatomic) IBOutlet UIButton *likeBtn;
-@property (weak, nonatomic) IBOutlet UIButton *contactBtn;
 @property (nonatomic, strong) NSMutableDictionary *teamInfoDictionary;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *InfoViewHeight;
-
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bgImageViewHeight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bgImageViewWidth;
-
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bgImageToInfoHeight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *quitBtnHeight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *quitBtnToTop;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *quitBtnToRight;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bgImageViewToTop;
-
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UIView *tableHeaderView;
+@property (strong, nonatomic) NSArray <NSDictionary *> *sectionOneItems;
+@property (strong, nonatomic) NSArray <NSDictionary *> *sectionTwoItems;
+@property (assign, nonatomic) cellType type;
+@property (weak, nonatomic) IBOutlet UIImageView *settingImage;
 
 @end
 
@@ -47,72 +45,50 @@ static NSString *identifier = @"AboutTableViewCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-
-    UINib *teamInfoNib = [UINib nibWithNibName:@"WeiboTableViewCell" bundle:nil];
-    [self.teamInfoTableView registerNib:teamInfoNib forCellReuseIdentifier:identifier];
-
-    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"teamWeiboInfo" ofType:@"plist"];
-    _teamInfoDictionary = [[NSMutableDictionary alloc] initWithContentsOfFile:plistPath];
-    _teamInfoTableView.showsHorizontalScrollIndicator = NO;
-    _teamInfoTableView.showsVerticalScrollIndicator = NO;
-    _teamInfoTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    _teamInfoTableView.scrollEnabled = NO;
-//    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
-//    NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
-//    //NSString *app_build = [infoDictionary objectForKey:@"CFBundleVersion"];
-//
-//    NSString *versionText = [NSString stringWithFormat:@"v%@",app_Version];
-    //_appNameLabel.font = [UIFont systemFontOfSize:];
-    [self.likeBtn setTitle:LocalString(@"like_us") forState:UIControlStateNormal];
-    [self.likeBtn setTitleColor:[UIColor colorWithRed:177/255.0 green:191/255.0 blue:219/255.0 alpha:1.0] forState:UIControlStateNormal];
-    [self.contactBtn setTitle:LocalString(@"contact") forState:UIControlStateNormal];
-    [self.contactBtn setTitleColor:[UIColor colorWithRed:177/255.0 green:191/255.0 blue:219/255.0 alpha:1.0] forState:UIControlStateNormal];
+    self.view.backgroundColor = UIColor.backgroundColor;
+    self.tableView.backgroundColor = UIColor.backgroundColor;
+    [self initItems];
+    
+    
     
    
     
 }
 
+- (void)initItems {
+    self.sectionOneItems = @[@{
+                                 @"title":@"冷静评分",
+                                 @"type":@"top"
+                                 },
+                             @{
+                                 @"title":@"激情打赏",
+                                 @"type":@"mid"
+                                 },
+                             @{
+                                 @"title":@"联系我们",
+                                 @"type":@"bottom"
+                                 }];
+    self.sectionTwoItems = @[@{
+                                 @"title":@"产品",
+                                 @"name":@"@王啵粒"
+                                 },
+                             @{
+                                 @"title":@"设计",
+                                 @"name":@"@品布尔"
+                                 },
+                             @{
+                                 @"title":@"开发",
+                                 @"name":@"@youTobe兵長，@付杰"
+                                 }];
+}
+
+
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    CGFloat offsetToTop = kDevice_Is_iPhoneX? 18:0;
-    _bgImageViewToTop.constant = 33*ScreenHeightRatio + offsetToTop;
-    _quitBtnToTop.constant = 48*ScreenHeightRatio + offsetToTop;
-    _quitBtnHeight.constant = 19*ScreenWidthRatio;
-    _quitBtnToRight.constant = 31*ScreenWidthRatio;
 
-    _bgImageViewHeight.constant = 200*ScreenHeightRatio;
-    _bgImageViewWidth.constant = 340*ScreenWidthRatio;
-    _bgImageToInfoHeight.constant = 24*ScreenHeightRatio;
-    
-    
-    if (kDevice_Is_iPhoneX || kDevice_Is_iPhone55 || kDevice_Is_iPhone47) {
-    } else {
-        _bgImageViewHeight.constant = self.view.frame.size.height * 0.299;
-        _InfoViewHeight.constant = self.view.frame.size.height * 0.589;
-    }
-    self.bgImageView.layer.shadowOpacity = 0.8f;
-    self.bgImageView.layer.shadowColor = UIColor.settingBgShadowColor.CGColor;
-    self.bgImageView.layer.shadowRadius = 6;
-    self.bgImageView.layer.shadowOffset = CGSizeMake(0, 4);
-    self.bgImageView.layer.cornerRadius = 12;
-    
-    _infoContantView.layer.cornerRadius = 12;
-    _infoContantView.layer.masksToBounds = YES;
-//    _infoContantView.layer.shadowColor = [UIColor colorWithRed:208/255.0 green:217/255.0 blue:237/255.0 alpha:1.0].CGColor;
-//    _infoContantView.layer.shadowOpacity = 0.8f;
-//    _infoContantView.layer.shadowOffset = CGSizeMake(0, 0);
-    
-    _likeBtn.layer.cornerRadius = 12;
-    _likeBtn.layer.shadowColor = [UIColor colorWithRed:60/255.0 green:95/255.0 blue:166/255.0 alpha:0.05].CGColor;
-    _likeBtn.layer.shadowOpacity = 0.8f;
-    _likeBtn.layer.shadowOffset = CGSizeMake(0, 2);
-    
-    _contactBtn.layer.cornerRadius = 12;
-    _contactBtn.layer.shadowColor = [UIColor colorWithRed:60/255.0 green:95/255.0 blue:166/255.0 alpha:0.05].CGColor;
-    _contactBtn.layer.shadowOpacity = 0.8f;
-    _contactBtn.layer.shadowOffset = CGSizeMake(0, 2);
-    
+    CGFloat heightRatio = _tableView.size.width/343;
+    _tableHeaderView.size = CGSizeMake(_tableView.size.width, 200*heightRatio);
 
 }
 - (IBAction)quickBtnClicked:(id)sender {
@@ -183,7 +159,7 @@ static NSString *identifier = @"AboutTableViewCell";
             
         case MFMailComposeResultFailed:
             [self showTips:@"Failed"];
-            NSLog(@"发送失败") ;
+            NSLog(@"发送失败");
             
             break;
             
@@ -225,48 +201,91 @@ static NSString *identifier = @"AboutTableViewCell";
 {
     
 
-    WeiboTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+//    WeiboTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     
-    if (cell == nil) {
-        cell= [[[NSBundle  mainBundle]  loadNibNamed:@"WeiboTableViewCell" owner:self options:nil]  lastObject];
-    }
-    NSDictionary *weiboInfo = [_teamInfoDictionary objectForKey:[NSString stringWithFormat:@"%ld", indexPath.row]];
-    cell.titleName.text = [weiboInfo objectForKey:@"title"];
-    cell.weiboName.text = [weiboInfo objectForKey:@"name"];
-    cell.weiboLink = [weiboInfo objectForKey:@"weibo"];
-    cell.selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
-    cell.selectedBackgroundView.backgroundColor = [UIColor colorWithRed:238/255.0 green:241/255.0 blue:247/255.0 alpha:1.0];
+//    if (cell == nil) {
+//        cell= [[[NSBundle  mainBundle]  loadNibNamed:@"WeiboTableViewCell" owner:self options:nil]  lastObject];
+//    }
+//    NSDictionary *weiboInfo = [_teamInfoDictionary objectForKey:[NSString stringWithFormat:@"%ld", indexPath.row]];
+//    cell.titleName.text = [weiboInfo objectForKey:@"title"];
+//    cell.weiboName.text = [weiboInfo objectForKey:@"name"];
+//    cell.weiboLink = [weiboInfo objectForKey:@"weibo"];
+//    cell.selectedBackgroundView = [[UIView alloc] initWithFrame:cell.frame];
+//    cell.selectedBackgroundView.backgroundColor = [UIColor colorWithRed:238/255.0 green:241/255.0 blue:247/255.0 alpha:1.0];
     //cell.weiboIcon.image = [UIImage imageNamed:@"share_weibo"];
     
     //AboutViewTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AboutViewTableViewCell"];
     
+    if (indexPath.section == 0) {
+        deleteSourceTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"deleteSourceTableCell"];
+        cell.title.text = NSLocalizedString(@"保存场截图时删除原图", nil);
+        cell.toggle.on = YES;
+        return cell;
+    } else if (indexPath.section == 1) {
+        ReplyTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ReplyTableCell"];
+        //cell.title.text = self.sectionOneItems[indexPath.item];
+        NSDictionary *cellData = self.sectionOneItems[indexPath.item];
+        cell.title.text = [cellData objectForKey:@"title"];
+        [cell configCell:cellData];
+        return cell;
+    } else {
+        InfoTableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"InfoTableCell"];
+        NSDictionary *cellData = self.sectionTwoItems[indexPath.item];
+        cell.title.text = [cellData objectForKey:@"title"];
+        cell.name.text = [cellData objectForKey:@"name"];
+        return cell;
+    }
     
 
-    
+}
 
-    return cell;
+-(void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
+{
+    // Background color
+    view.tintColor = [UIColor clearColor];
+    
+    // Text Color
+    //UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
+    //[header.textLabel setTextColor:[UIColor clearColor]];
+    //header.backgroundColor = UIColor.clearColor;
+    // Another way to set the background color
+    // Note: does not preserve gradient effect of original header
+    // header.contentView.backgroundColor = [UIColor blackColor];
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 3;
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 16*ScreenHeightRatio;
 }
 
 - (NSInteger)tableView:(nonnull UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 4;
+    if (section == 0) {
+        return 1;
+    } else if (section == 1) {
+        return 3;
+    } else {
+        return 3;
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    WeiboTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    NSURL *URL = [NSURL URLWithString:[[NSString stringWithFormat:@"%@", cell.weiboLink] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"sinaweibo://"]]) {
-        
-        
-        [[UIApplication sharedApplication] openURL:URL];
-        //return;
-        
-    } else {
-        //用浏览器访问微博
-        //[[UIApplication sharedApplication] openURL:URL];
-        [self showShareError];
-    }
+//    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+//    WeiboTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+//    NSURL *URL = [NSURL URLWithString:[[NSString stringWithFormat:@"%@", cell.weiboLink] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+//    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"sinaweibo://"]]) {
+//
+//
+//        [[UIApplication sharedApplication] openURL:URL];
+//        //return;
+//
+//    } else {
+//        //用浏览器访问微博
+//        //[[UIApplication sharedApplication] openURL:URL];
+//        [self showShareError];
+//    }
     
 
 }

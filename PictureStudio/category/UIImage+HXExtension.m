@@ -10,6 +10,22 @@
 #import <ImageIO/ImageIO.h>
 @implementation UIImage (HXExtension)
 
+
+- (UIImage *)addBorderForImage:(CGFloat)borderWidth borderColor:(UIColor *)borderColor beginY:(CGFloat)beginY bottomY:(CGFloat)bottomY {
+    
+    CGSize size = CGSizeMake(self.size.width + 2 * borderWidth, self.size.height + beginY + bottomY);
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+    UIBezierPath *path = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, size.width, size.height)];
+    [borderColor set];
+    [path fill];
+    path = [UIBezierPath bezierPathWithRect:CGRectMake(borderWidth, beginY, self.size.width, self.size.height)];
+    [path addClip];
+    [self drawInRect:CGRectMake(borderWidth, beginY, self.size.width, self.size.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
 + (UIImage *)animatedGIFWithData:(NSData *)data {
     if (!data) {
         return nil;

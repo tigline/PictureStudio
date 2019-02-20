@@ -10,19 +10,16 @@
 @class PhotoCutModel;
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol ModifyCellDelegate <NSObject>
-@optional
-- (void)onUpDragItemTap:(NSInteger)index;
-- (void)onDownDragItemTap:(NSInteger)index;
-@end
+
 
 @interface ModifyCollectionViewCell : UICollectionViewCell
-@property (weak, nonatomic) IBOutlet UIScrollView *imageScrollView;
-@property (weak, nonatomic) IBOutlet UIImageView *moveUpItem;
-@property (weak, nonatomic) IBOutlet UIImageView *moveDownItem;
+@property (strong, nonatomic) UIImageView *imageView;
+@property (assign, nonatomic) BOOL eidtMove;
+@property (strong, nonatomic) UIImageView *moveUpItem;
+@property (strong, nonatomic) UIImageView *moveDownItem;
 @property (strong, nonatomic) PhotoCutModel *model;
-@property (weak, nonatomic) id<ModifyCellDelegate> modifyDelegate;
-- (void)configCell:(PhotoCutModel *)model;
+
+- (void)configCell:(PhotoCutModel *)model isEditMove:(BOOL)editMove isEditBorder:(BOOL)editBorder width:(CGFloat)width color:(UIColor*)color;
 @end
 
 NS_ASSUME_NONNULL_END

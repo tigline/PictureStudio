@@ -19,9 +19,9 @@
 #import "ModifyViewController.h"
 #import "AboutViewController.h"
 #import "PhotoPreviewController.h"
-#import "UINavigationController+FDFullscreenPopGesture.h"
+//#import "UINavigationController+FDFullscreenPopGesture.h"
 #import "HXPhoto3DTouchViewController.h"
-#import "ASPopover.h"
+//#import "ASPopover.h"
 #import "AssetTitleButton.h"
 #import "AssetGroupViewController.h"
 #import "PictureStudio_Bridging_Header.h"
@@ -99,7 +99,7 @@ UIViewControllerTransitioningDelegate
 @property (weak, nonatomic) IBOutlet UILabel *imageCount;
 
 @property (nonatomic, strong) AssetGroupViewController *assetGroupViewController;
-@property (strong, nonatomic) SwipeEdgeInteractionController *interactionController;
+
 
 @property (nonatomic, strong) NSTimer *timer;
 
@@ -471,7 +471,7 @@ UIViewControllerTransitioningDelegate
     [UIView animateWithDuration:0.9 animations:^{
     } completion:^(BOOL finished) {
         [button setImage:[UIImage imageNamed:@"nav_about"] forState:UIControlStateNormal];
-        _aboutViewController = [[AboutViewController alloc] initWithNibName:@"AboutViewController" bundle:nil];
+        _aboutViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"AboutViewController"];
         [self presentViewController:_aboutViewController animated:YES completion:nil];
     }];
 }
@@ -1101,12 +1101,52 @@ UIViewControllerTransitioningDelegate
 
 - (void)datePhotoBottomViewDidCombineBtn {
     
-    self.manager.isCombineVertical = YES;
-    //[self performSegueWithIdentifier:@"toLongPictureView" sender:nil];
-    CombinePictureViewController *longVc = [[CombinePictureViewController alloc] init];
-    longVc.manager = self.manager;
-    //scrollVc.resultModels = resultModels;
-    BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:longVc];
+//    self.manager.isCombineVertical = YES;
+//    //[self performSegueWithIdentifier:@"toLongPictureView" sender:nil];
+//    CombinePictureViewController *longVc = [[CombinePictureViewController alloc] init];
+//    longVc.manager = self.manager;
+//    //scrollVc.resultModels = resultModels;
+//    BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:longVc];
+//    [nav.view layoutIfNeeded];
+//    nav.transitioningDelegate = self;
+//    [self presentViewController:nav animated:YES completion:nil];
+    __block NSMutableArray *photoArray = [[NSMutableArray alloc] init];
+    PHCachingImageManager *imageManager = [[PHCachingImageManager alloc] init];
+    for (int i = 0; i < _manager.selectedArray.count; i++) {
+        HXPhotoModel *model;
+        model = _manager.selectedArray[i];
+        PHAsset *phAsset = model.asset;
+        PHImageRequestOptions * options=[[PHImageRequestOptions alloc]init];
+        options.resizeMode = PHImageRequestOptionsResizeModeFast;
+        options.synchronous=YES;
+        [imageManager requestImageForAsset:phAsset targetSize:PHImageManagerMaximumSize
+                               contentMode:PHImageContentModeDefault
+                                   options:options
+                             resultHandler:^(UIImage *result, NSDictionary *info)
+         {
+             [photoArray addObject:result];
+         }];
+    }
+    NSMutableArray *resultModels = [[NSMutableArray alloc] init];
+    for (int i = 0; i < photoArray.count; i++) {
+        PhotoCutModel *model = [[PhotoCutModel alloc] init];
+        model.originPhoto = [photoArray objectAtIndex:i];
+        model.index = i;
+        model.beginY = 0;
+        model.endY = model.originPhoto.size.height;
+        [resultModels addObject:model];
+    }
+    
+    [self.manager setScrollResult:resultModels];
+    //ModifyViewController *scrollVc = [[ModifyViewController alloc] init];
+    
+    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    NSString * className = [NSStringFromClass([ModifyViewController classForCoder]) componentsSeparatedByString:@","].lastObject;
+    ModifyViewController *scrollVc = (ModifyViewController *)[storyBoard instantiateViewControllerWithIdentifier:className];
+    scrollVc.manager = self.manager;
+    scrollVc.resultModels = resultModels;
+    scrollVc.isCombineView = YES;
+    BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:scrollVc];
     [nav.view layoutIfNeeded];
     nav.transitioningDelegate = self;
     [self presentViewController:nav animated:YES completion:nil];
@@ -1271,6 +1311,8 @@ UIViewControllerTransitioningDelegate
     [nav.view layoutIfNeeded];
     nav.transitioningDelegate = self;
     [self presentViewController:nav animated:YES completion:nil];
+    
+    
 }
 
 - (void)datePhotoBottomSelectNotAllScreenShot {
@@ -1285,8 +1327,7 @@ UIViewControllerTransitioningDelegate
      
         UINavigationController *presentNav = (UINavigationController*)presented;
     
-        if ([presentNav.viewControllers.firstObject isKindOfClass:ModifyViewController.class]
-            || [presentNav.viewControllers.firstObject isKindOfClass:CombinePictureViewController.class]) {
+        if ([presentNav.viewControllers.firstObject isKindOfClass:ModifyViewController.class]) {
             CustomTransitionPushSimilarHepler *pushTransition = [[CustomTransitionPushSimilarHepler alloc]init];
             pushTransition.isPush = YES;
             
@@ -1296,6 +1337,8 @@ UIViewControllerTransitioningDelegate
     }
     return nil;
 }
+
+
 
 - (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
     if ([dismissed isKindOfClass:UINavigationController.class]) {
@@ -1310,16 +1353,24 @@ UIViewControllerTransitioningDelegate
             popTransition.interactionController =  vc.interactionController;
             
             return popTransition;
-        } else if ([dismissNav.viewControllers.firstObject isKindOfClass:CombinePictureViewController.class]) {
-            CombinePictureViewController *vc = (CombinePictureViewController *)dismissNav.viewControllers.firstObject;
-            CustomTransitionPushSimilarHepler *popTransition = [[CustomTransitionPushSimilarHepler alloc]init];
-            popTransition.isPush = NO;
-            popTransition.interactionController =  vc.interactionController;
-            
-            return popTransition;
+//        } else if ([dismissNav.viewControllers.firstObject isKindOfClass:CombinePictureViewController.class]) {
+//            CombinePictureViewController *vc = (CombinePictureViewController *)dismissNav.viewControllers.firstObject;
+//            CustomTransitionPushSimilarHepler *popTransition = [[CustomTransitionPushSimilarHepler alloc]init];
+//            popTransition.isPush = NO;
+//            popTransition.interactionController =  vc.interactionController;
+//
+//            return popTransition;
         }
 
     }
+    return nil;
+}
+
+- (nullable id <UIViewControllerInteractiveTransitioning>)interactionControllerForPresentation:(id <UIViewControllerAnimatedTransitioning>)animator {
+//    if ([animator isKindOfClass:CustomTransitionPushSimilarHepler.class]) {
+//        CustomTransitionPushSimilarHepler *transitionPushSimilarHepler = (CustomTransitionPushSimilarHepler*)animator;
+//        return transitionPushSimilarHepler.interactionController;
+//    }
     return nil;
 }
 

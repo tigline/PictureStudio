@@ -18,7 +18,8 @@
 + (UIColor *)cellTitleNormalColor;
 + (UIColor *)settingBgShadowColor;
 + (UIColor *)cellTitleSelectedColor;
-
++ (UIColor *)borderBgColor;
++ (UIColor *)goldColor;
 + (UIColor *)cellCountColor;
 
 + (UIColor *)cellTimeColor;

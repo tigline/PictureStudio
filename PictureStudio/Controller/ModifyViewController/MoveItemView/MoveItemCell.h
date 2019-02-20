@@ -10,18 +10,12 @@
 @class MoveInfoModel;
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol MoveCellDelegate <NSObject>
 
-- (void)beginMoveCellAt:(MoveInfoModel *)model moveDistance:(CGFloat)distance;
-- (void)endMoveCellAt:(MoveInfoModel *)model moveDistance:(CGFloat)distance;
-- (void)updateMoveOffset:(MoveInfoModel *)model moveOffset:(CGFloat)offset;
-- (void)updateCellState:(MoveInfoModel *)model;
-@end
 
 typedef void (^MoveOffset)(CGFloat offset);
 
 @interface MoveItemCell : UICollectionViewCell
-@property (weak, nonatomic) id<MoveCellDelegate> moveDelegate;
+
 @property (strong, nonatomic) MoveInfoModel *moveModel;
 @property (copy, nonatomic) MoveOffset moveOffsetBlock;
 @property (weak, nonatomic) IBOutlet UIScrollView *moveItemScrollView;
